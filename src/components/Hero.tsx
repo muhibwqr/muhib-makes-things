@@ -21,9 +21,14 @@ export function Hero() {
           <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto">
             Technical builder, cybersecurity engineer, and creative problem-solver
           </p>
-          <p className="text-lg text-muted-foreground mb-8">
+          <p className="text-lg text-muted-foreground mb-2">
             ✨ University of Waterloo Math • Been working on tech since I was 11
           </p>
+          <div className="inline-block glass px-6 py-3 rounded-lg mb-8 border-2 border-primary">
+            <p className="text-lg font-bold text-primary">
+              🚀 Actively seeking Summer 2026 internships in SWE, Cybersecurity & Product
+            </p>
+          </div>
           
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             <span className="glass px-4 py-2 rounded-full text-sm">Python</span>

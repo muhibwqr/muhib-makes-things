@@ -125,9 +125,18 @@ export function Work() {
             ))}
           </div>
           
-          <p className="text-center mt-8 text-muted-foreground">
-            <span className="gradient-text font-semibold">Looking for Summer 2026 internships!</span> Open to SWE, cybersecurity, and product roles ✨
-          </p>
+          
+          <div className="mt-12 text-center glass p-8 rounded-lg border-2 border-primary max-w-2xl mx-auto">
+            <h4 className="text-2xl font-bold mb-3">
+              🎯 Open to Summer 2026 Opportunities
+            </h4>
+            <p className="text-lg text-muted-foreground mb-4">
+              Actively seeking Software Engineering, Cybersecurity, and Product internships for Summer 2026
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Let's build something impactful together — reach out if you're hiring!
+            </p>
+          </div>
         </div>
       </div>
     </section>
