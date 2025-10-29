@@ -5,24 +5,44 @@ import { Button } from "@/components/ui/button";
 export function Work() {
   const experiences = [
     {
-      company: "Islamic Books Souvenirs",
-      role: "Software Engineering Intern",
-      period: "2023-2024",
+      company: "Islamic Books & Souvenirs",
+      role: "Software Engineer & Systems Design Intern",
+      period: "Dec 2024 - Jun 2025",
       highlights: [
-        "Automated product catalog system",
-        "Improved Shopify themes and UX",
-        "Built real-time WhatsApp support integration"
+        "Made cool automations & systems that made e-com operations seamless",
+        "Built a custom Shopify theme + WhatsApp integration for better UX & real-time support"
       ],
       link: "#"
     },
     {
-      company: "Blackstone Foundation",
-      role: "Cybersecurity Engineer",
-      period: "2023",
+      company: "Canadian Cyber Inc.",
+      role: "Cybersecurity Engineering",
+      period: "Jan 2020 - Oct 2023",
       highlights: [
-        "Developed Python automation tools",
-        "Implemented RBAC and IAM policies",
-        "Created incident management workflows"
+        "Led AWS & Azure integration projects that boosted security + efficiency",
+        "Rolled out WIP & BitLocker policies org-wide, strengthening endpoint protection",
+        "Handled incident response + vulnerability fixes, improving overall security posture",
+        "Reviewed + drafted ISO 27001 / SOC 2 / NIST docs to support audits & compliance"
+      ],
+      link: "#"
+    },
+    {
+      company: "The Blackstone Foundation Library",
+      role: "Software Engineer & Cybersecurity Intern",
+      period: "Feb 2024 - Jun 2024",
+      highlights: [
+        "Created a registration system w/ API that let admins log in & approve entries faster",
+        "Trained staff on security basics + implemented best practices so threat actors couldn't win"
+      ],
+      link: "#"
+    },
+    {
+      company: "Astralis",
+      role: "Founder",
+      period: "Jun 2022 - Feb 2023",
+      highlights: [
+        "Started a small tech + cyber consulting biz to help clients w/ support, security, and cloud",
+        "Led strategy, client projects, and built a team that delivered reliable + secure IT systems"
       ],
       link: "#"
     }
@@ -30,19 +50,22 @@ export function Work() {
 
   const currentProjects = [
     {
-      title: "AI Assistant for Slack",
-      status: "In Progress",
-      description: "Smart automation bot for team productivity"
+      title: "Triageo - AI Security Triage",
+      status: "Hack the North 2025",
+      description: "Slack-native AI assistant for incident response. From chaos to clarity, in seconds.",
+      badge: "🏆 HTN Finalist"
     },
     {
-      title: "Mental Health Voice Agent",
-      status: "Beta",
-      description: "Conversational AI for wellness support"
+      title: "Phenomenon Collective",
+      status: "Founded",
+      description: "Dynamic clothing brand blending creative vision with social impact. 7M+ views across platforms.",
+      badge: "🎨 Brand"
     },
     {
-      title: "Raspberry Pi Red-Team Emulator",
-      status: "Building",
-      description: "Portable security testing toolkit"
+      title: "Next Project",
+      status: "Coming Soon",
+      description: "Building something new. Stay tuned for updates!",
+      badge: "✨ TBA"
     }
   ];
 
@@ -96,13 +119,14 @@ export function Work() {
                   </span>
                 </div>
                 <h4 className="text-lg font-bold mb-2">{project.title}</h4>
-                <p className="text-sm text-muted-foreground">{project.description}</p>
+                <p className="text-sm text-muted-foreground mb-3">{project.description}</p>
+                <span className="text-xs text-primary font-semibold">{project.badge}</span>
               </Card>
             ))}
           </div>
           
           <p className="text-center mt-8 text-muted-foreground">
-            <span className="gradient-text font-semibold">Project dropping soon!</span> ✨
+            <span className="gradient-text font-semibold">Looking for Summer 2026 internships!</span> Open to SWE, cybersecurity, and product roles ✨
           </p>
         </div>
       </div>
