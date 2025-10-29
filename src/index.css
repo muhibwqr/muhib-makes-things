@@ -17,7 +17,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 10%;
 
-    --primary: 220 90% 56%;
+    --primary: 220 70% 35%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 240 20% 96%;
@@ -26,7 +26,7 @@ All colors MUST be HSL.
     --muted: 240 20% 96%;
     --muted-foreground: 220 10% 45%;
 
-    --accent: 280 70% 60%;
+    --accent: 220 80% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -34,13 +34,13 @@ All colors MUST be HSL.
 
     --border: 220 15% 90%;
     --input: 220 15% 90%;
-    --ring: 220 90% 56%;
+    --ring: 220 70% 35%;
 
     --radius: 0.75rem;
 
     /* Custom gradients */
-    --gradient-soft: linear-gradient(135deg, hsl(220 90% 96%) 0%, hsl(280 70% 96%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(220 90% 56%) 0%, hsl(280 70% 60%) 100%);
+    --gradient-soft: linear-gradient(135deg, hsl(220 60% 95%) 0%, hsl(220 80% 90%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(220 70% 35%) 0%, hsl(220 80% 50%) 100%);
     
     /* Glass effect */
     --glass-bg: hsla(0 0% 100% / 0.7);

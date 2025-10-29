@@ -22,7 +22,7 @@ export function Hero() {
             Technical builder, cybersecurity engineer, and creative problem-solver
           </p>
           <p className="text-lg text-muted-foreground mb-8">
-            ✨ University of Waterloo CS+Math • Coding since 2017
+            ✨ University of Waterloo Math • Been working on tech since I was 11
           </p>
           
           <div className="flex flex-wrap justify-center gap-3 mb-12">

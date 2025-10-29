@@ -5,9 +5,15 @@ export function Achievements() {
   const achievements = [
     {
       icon: Trophy,
-      title: "Hack the North",
-      description: "Multiple finalist positions",
+      title: "7M+ Views",
+      description: "Across all platforms",
       color: "text-yellow-500"
+    },
+    {
+      icon: Users,
+      title: "3 Businesses",
+      description: "Before graduating high school",
+      color: "text-primary"
     },
     {
       icon: Target,
@@ -20,12 +26,6 @@ export function Achievements() {
       title: "Cloud Certifications",
       description: "AWS, Cisco, Microsoft certified",
       color: "text-accent"
-    },
-    {
-      icon: Users,
-      title: "Velocity Incubator",
-      description: "University of Waterloo affiliation",
-      color: "text-primary"
     }
   ];
 
@@ -54,7 +54,7 @@ export function Achievements() {
 
         <div className="mt-12 text-center max-w-2xl mx-auto">
           <p className="text-muted-foreground">
-            Mentored by industry experts and cyber professionals. Active member of the University of Waterloo tech community and Velocity Incubator.
+            Studying Math at University of Waterloo, focused on software and cybersecurity engineering. Mentored by industry experts and cyber professionals.
           </p>
         </div>
       </div>
