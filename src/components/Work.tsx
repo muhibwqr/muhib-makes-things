@@ -70,7 +70,7 @@ export function Work() {
     {
       title: "Phenomenon Collective",
       status: "Founded",
-      description: "Dynamic clothing brand blending creative vision with social impact. 7M+ views across platforms.",
+      description: "Dynamic clothing brand blending creative vision with social impact.",
       badge: "🎨 Brand"
     }
   ];
