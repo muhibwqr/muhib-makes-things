@@ -44,7 +44,7 @@ export function Hero() {
             Hi, I&apos;m <span className={`gradient-text transition-all duration-500 ease-in-out ${fonts[currentFont]}`}>Muhib Waqar</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto">
-            Technical builder, cybersecurity engineer, and creative problem-solver
+            Fullstack, cybersecurity, and machine learning engineering, approaching problems with a creative mindset
           </p>
           <p className="text-lg text-muted-foreground mb-2">
             ✨ University of Waterloo Math • Been working on tech since I was 11
@@ -67,12 +67,24 @@ export function Hero() {
             </a>
           </Button>
           
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            <span className="glass px-4 py-2 rounded-full text-sm">Python</span>
-            <span className="glass px-4 py-2 rounded-full text-sm">JavaScript</span>
-            <span className="glass px-4 py-2 rounded-full text-sm">Cloud Security</span>
-            <span className="glass px-4 py-2 rounded-full text-sm">AWS</span>
+          <div className="flex flex-wrap justify-center gap-3 mb-8 max-w-4xl mx-auto">
+            <span className="glass px-4 py-2 rounded-full text-sm font-semibold">Python</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">TensorFlow</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">PyTorch</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">Pandas</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">NumPy</span>
+            <span className="glass px-4 py-2 rounded-full text-sm font-semibold">JavaScript</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">TypeScript</span>
             <span className="glass px-4 py-2 rounded-full text-sm">React</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">Node.js</span>
+            <span className="glass px-4 py-2 rounded-full text-sm font-semibold">Cloud Security</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">AWS</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">Azure</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">Docker</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">Kubernetes</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">Scikit-learn</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">FastAPI</span>
+            <span className="glass px-4 py-2 rounded-full text-sm">SQL</span>
           </div>
         </div>
 
