@@ -1,7 +1,29 @@
 import { ChevronDown, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 
 export function Hero() {
+  const [currentEmoji, setCurrentEmoji] = useState(0);
+  const [currentFont, setCurrentFont] = useState(0);
+
+  const emojis = ["👨‍💻", "🔐", "📐", "☁️", "🚀", "🛠️", "⚡", "🎯"];
+  const fonts = ["font-space", "font-orbitron", "font-righteous", "font-playfair", "font-montserrat"];
+
+  useEffect(() => {
+    const emojiInterval = setInterval(() => {
+      setCurrentEmoji((prev) => (prev + 1) % emojis.length);
+    }, 2000);
+
+    const fontInterval = setInterval(() => {
+      setCurrentFont((prev) => (prev + 1) % fonts.length);
+    }, 1000);
+
+    return () => {
+      clearInterval(emojiInterval);
+      clearInterval(fontInterval);
+    };
+  }, []);
+
   const scrollToAbout = () => {
     document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -15,9 +37,11 @@ export function Hero() {
 
       <div className="container mx-auto px-4 text-center">
         <div className="animate-fade-in">
-          <div className="mb-6 text-6xl">👨‍💻</div>
+          <div className="mb-6 text-6xl transition-all duration-500 animate-bounce">
+            {emojis[currentEmoji]}
+          </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            Hi, I'm <span className="gradient-text">Muhib Waqar</span>
+            Hi, I&apos;m <span className={`gradient-text transition-all duration-300 ${fonts[currentFont]}`}>Muhib Waqar</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto">
             Technical builder, cybersecurity engineer, and creative problem-solver
