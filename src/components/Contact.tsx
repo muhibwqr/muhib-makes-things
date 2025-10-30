@@ -10,8 +10,8 @@ export function Contact() {
   ];
 
   return (
-    <section id="contact" className="py-20 bg-gradient-to-br from-accent/5 to-primary/5">
-      <div className="container mx-auto px-4 text-center">
+    <section id="contact" className="py-20 bg-gradient-to-br from-accent/5 to-primary/5 scroll-mt-20 transition-all duration-700">
+      <div className="container mx-auto px-4 text-center animate-fade-in">
         <h2 className="text-4xl md:text-5xl font-bold mb-6">
           Let's Connect <span className="gradient-text">◆</span>
         </h2>

@@ -70,8 +70,8 @@ export function Work() {
   ];
 
   return (
-    <section id="work" className="py-20 bg-gradient-to-br from-primary/5 to-accent/5">
-      <div className="container mx-auto px-4">
+    <section id="work" className="py-20 bg-gradient-to-br from-accent/5 to-primary/5 scroll-mt-20 transition-all duration-700">
+      <div className="container mx-auto px-4 animate-fade-in">
         <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
           Work & Projects <span className="gradient-text">◆</span>
         </h2>

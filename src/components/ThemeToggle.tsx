@@ -3,12 +3,19 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
     const root = window.document.documentElement;
     const initialTheme = root.classList.contains("dark") ? "dark" : "light";
-    setTheme(initialTheme);
+    
+    // Set dark mode by default on first load
+    if (!root.classList.contains("light") && !root.classList.contains("dark")) {
+      root.classList.add("dark");
+      setTheme("dark");
+    } else {
+      setTheme(initialTheme);
+    }
   }, []);
 
   const toggleTheme = () => {

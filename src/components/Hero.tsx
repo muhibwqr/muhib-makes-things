@@ -1,4 +1,5 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function Hero() {
   const scrollToAbout = () => {
@@ -24,11 +25,23 @@ export function Hero() {
           <p className="text-lg text-muted-foreground mb-2">
             ✨ University of Waterloo Math • Been working on tech since I was 11
           </p>
-          <div className="inline-block glass px-6 py-3 rounded-lg mb-8 border-2 border-primary">
+          <div className="inline-block glass px-6 py-3 rounded-lg mb-6 border-2 border-primary animate-pulse">
             <p className="text-lg font-bold text-primary">
               🚀 Actively seeking Summer 2026 internships in SWE, Cybersecurity & Product
             </p>
           </div>
+
+          <Button 
+            variant="outline" 
+            size="lg"
+            className="glass hover-lift mb-8 border-primary/50"
+            asChild
+          >
+            <a href="/muhib_waqar_resume.pdf" download="Muhib_Waqar_Resume.pdf">
+              <Download className="w-5 h-5 mr-2" />
+              Download Resume
+            </a>
+          </Button>
           
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             <span className="glass px-4 py-2 rounded-full text-sm">Python</span>

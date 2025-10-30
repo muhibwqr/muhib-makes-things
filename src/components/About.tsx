@@ -26,8 +26,9 @@ export function About() {
   ];
 
   return (
-    <section id="about" className="py-20 relative">
-      <div className="container mx-auto px-4">
+    <section id="about" className="py-20 relative scroll-mt-20 transition-all duration-700">
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background -z-10" />
+      <div className="container mx-auto px-4 animate-fade-in">
         <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
           About Me <span className="gradient-text">◆</span>
         </h2>

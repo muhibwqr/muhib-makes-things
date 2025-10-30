@@ -1,6 +1,21 @@
 import { ThemeToggle } from "./ThemeToggle";
+import { useEffect, useState } from "react";
 
 export function Header() {
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const currentScroll = window.scrollY;
+      const progress = (currentScroll / totalScroll) * 100;
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
@@ -8,6 +23,10 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass border-b">
+      {/* Scroll Progress Bar */}
+      <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary via-accent to-primary transition-all duration-300"
+           style={{ width: `${scrollProgress}%` }} />
+      
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <h1 className="text-xl font-bold gradient-text">Muhib Waqar</h1>
         
