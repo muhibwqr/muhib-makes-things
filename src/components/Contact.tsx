@@ -41,7 +41,7 @@ export function Contact() {
         </div>
 
         <div className="text-sm text-muted-foreground">
-          <p>Built with 💙 using React, TypeScript, and Tailwind CSS</p>
+          <p>Built by muhibwaqar using React, TypeScript, and Tailwind CSS</p>
         </div>
       </div>
     </section>
