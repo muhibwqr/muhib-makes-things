@@ -12,11 +12,11 @@ export function Hero() {
   useEffect(() => {
     const emojiInterval = setInterval(() => {
       setCurrentEmoji((prev) => (prev + 1) % emojis.length);
-    }, 2000);
+    }, 1500);
 
     const fontInterval = setInterval(() => {
       setCurrentFont((prev) => (prev + 1) % fonts.length);
-    }, 1000);
+    }, 800);
 
     return () => {
       clearInterval(emojiInterval);
@@ -37,11 +37,11 @@ export function Hero() {
 
       <div className="container mx-auto px-4 text-center">
         <div className="animate-fade-in">
-          <div className="mb-6 text-6xl transition-all duration-500 animate-bounce">
+          <div className="mb-6 text-6xl transition-all duration-700 ease-in-out">
             {emojis[currentEmoji]}
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            Hi, I&apos;m <span className={`gradient-text transition-all duration-300 ${fonts[currentFont]}`}>Muhib Waqar</span>
+            Hi, I&apos;m <span className={`gradient-text transition-all duration-500 ease-in-out ${fonts[currentFont]}`}>Muhib Waqar</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto">
             Technical builder, cybersecurity engineer, and creative problem-solver
