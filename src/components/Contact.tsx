@@ -41,7 +41,7 @@ export function Contact() {
         </div>
 
         <div className="text-sm text-muted-foreground">
-          <p>Built by muhibwaqar using React, TypeScript, and Tailwind CSS</p>
+          <p>© {new Date().getFullYear()} Muhib Waqar. Built with React, TypeScript, and Tailwind CSS</p>
         </div>
       </div>
     </section>
