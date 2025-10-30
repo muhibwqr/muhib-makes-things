@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 
 export function Contact() {
   const socials = [
-    { icon: Mail, label: "Email", href: "mailto:muhib@example.com", color: "hover:text-primary" },
-    { icon: Github, label: "GitHub", href: "https://github.com", color: "hover:text-foreground" },
-    { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com", color: "hover:text-blue-500" },
-    { icon: Twitter, label: "Twitter", href: "https://twitter.com", color: "hover:text-sky-500" }
+    { icon: Mail, label: "Email", href: "mailto:m7waqar@uwaterloo.ca", color: "hover:text-primary" },
+    { icon: Github, label: "GitHub", href: "https://github.com/muhibwqr", color: "hover:text-foreground" },
+    { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/in/muhibwaqar", color: "hover:text-blue-500" },
+    { icon: Twitter, label: "Twitter", href: "https://x.com/muhibwqr", color: "hover:text-sky-500" }
   ];
 
   return (
