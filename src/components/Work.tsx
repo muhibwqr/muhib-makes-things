@@ -53,19 +53,25 @@ export function Work() {
       title: "Triageo - AI Security Triage",
       status: "Hack the North 2025",
       description: "Slack-native AI assistant for incident response. From chaos to clarity, in seconds.",
-      badge: "🏆 HTN Finalist"
+      badge: "🏆 HTN Project"
+    },
+    {
+      title: "Malicious Payload USB Project",
+      status: "Security Research",
+      description: "USB-based payload emulator using Raspberry Pi to mimic HID attacks and demonstrate access risk with modular scripts for keystroke injection.",
+      badge: "🔐 Red Team"
+    },
+    {
+      title: "AI Mental Health Voice Agent",
+      status: "Healthcare AI",
+      description: "Voice-based conversational agent for empathetic mental health support with crisis detection and safe escalation to human services.",
+      badge: "🤖 AI Health"
     },
     {
       title: "Phenomenon Collective",
       status: "Founded",
       description: "Dynamic clothing brand blending creative vision with social impact. 7M+ views across platforms.",
       badge: "🎨 Brand"
-    },
-    {
-      title: "Next Project",
-      status: "Coming Soon",
-      description: "Building something new. Stay tuned for updates!",
-      badge: "✨ TBA"
     }
   ];
 
@@ -106,11 +112,11 @@ export function Work() {
 
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-semibold">Building Now 🚀</h3>
+            <h3 className="text-2xl font-semibold">Projects & Research 🚀</h3>
             <span className="text-sm text-accent animate-pulse">● Live Updates</span>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {currentProjects.map((project, index) => (
               <Card key={index} className="glass p-6 hover-lift glow">
                 <div className="mb-4">
