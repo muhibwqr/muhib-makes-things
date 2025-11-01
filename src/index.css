@@ -122,6 +122,7 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
     font-family: 'Space Grotesk', system-ui, sans-serif;
   }
+}
 
 html {
   scroll-behavior: smooth;
