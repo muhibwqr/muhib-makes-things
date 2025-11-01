@@ -20,7 +20,11 @@ cd <YOUR_PROJECT_NAME>
 # Step 3: Install the necessary dependencies
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview
+# Step 4: Set up environment variables
+# Create a .env.local file with your Gemini API key:
+# VITE_GEMINI_API_KEY=your_api_key_here
+
+# Step 5: Start the development server with auto-reloading and an instant preview
 npm run dev
 ```
 
@@ -38,6 +42,13 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment
 - Edit files directly within the Codespace and commit and push your changes once you're done
 
+## Features
+
+- **AI Chatbot**: Interact with an AI trained on Muhib's information and personality
+- **Keanu Photo Generator**: Take photos with Keanu Reeves using camera capture
+- **Responsive Design**: Mobile-first design with smooth animations
+- **Modern UI**: Built with shadcn-ui and Tailwind CSS
+
 ## Technologies Used
 
 This project is built with:
@@ -47,6 +58,8 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- Google Gemini AI API
+- PlaceKeanu API
 
 ## Building for Production
 
