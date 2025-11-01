@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Link, useLocation } from "react-router-dom";
 
 export function Header() {
   const [scrollProgress, setScrollProgress] = useState(0);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,10 +27,15 @@ export function Header() {
   };
 
   const navItems = [
-    { id: "about", label: "About Me" },
-    { id: "work", label: "Projects" },
-    { id: "achievements", label: "Achievements" },
-    { id: "contact", label: "Contact" },
+    { id: "about", label: "About Me", scroll: true },
+    { id: "work", label: "Projects", scroll: true },
+    { id: "achievements", label: "Achievements", scroll: true },
+    { id: "contact", label: "Contact", scroll: true },
+  ];
+
+  const interactiveItems = [
+    { to: "/chat", label: "🤖 Chat AI" },
+    { to: "/keanu", label: "📸 Keanu" },
   ];
 
   return (
@@ -38,10 +45,12 @@ export function Header() {
            style={{ width: `${scrollProgress}%` }} />
       
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold gradient-text">Muhib Waqar</h1>
+        <Link to="/" className="text-xl font-bold gradient-text hover:opacity-80 transition-opacity">
+          Muhib Waqar
+        </Link>
         
         <nav className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
+          {location.pathname === "/" && navItems.map((item) => (
             <button 
               key={item.id} 
               onClick={() => scrollToSection(item.id)} 
@@ -49,6 +58,15 @@ export function Header() {
             >
               {item.label}
             </button>
+          ))}
+          {interactiveItems.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="hover:text-primary transition-colors"
+            >
+              {item.label}
+            </Link>
           ))}
           <ThemeToggle />
         </nav>
@@ -62,7 +80,7 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
               <nav className="flex flex-col gap-4 mt-8">
-                {navItems.map((item) => (
+                {location.pathname === "/" && navItems.map((item) => (
                   <Button
                     key={item.id}
                     variant="ghost"
@@ -71,6 +89,16 @@ export function Header() {
                   >
                     {item.label}
                   </Button>
+                ))}
+                {interactiveItems.map((item) => (
+                  <Link key={item.to} to={item.to}>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-lg"
+                    >
+                      {item.label}
+                    </Button>
+                  </Link>
                 ))}
               </nav>
             </SheetContent>
