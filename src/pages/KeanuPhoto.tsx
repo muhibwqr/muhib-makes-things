@@ -46,13 +46,29 @@ export default function KeanuPhoto() {
       }
 
       videoRef.current.srcObject = stream;
+      
+      // Add all event handlers before setting srcObject
       videoRef.current.onloadedmetadata = () => {
-        videoRef.current?.play();
-        setStreaming(true);
-        setIsLoading(false);
+        if (videoRef.current) {
+          videoRef.current.play()
+            .then(() => {
+              setStreaming(true);
+              setIsLoading(false);
+            })
+            .catch(err => {
+              console.error("Error playing video:", err);
+              setError("Failed to start video playback");
+              setIsLoading(false);
+            });
+        }
       };
 
-      videoRef.current.onerror = () => {
+      videoRef.current.onloadeddata = () => {
+        console.log("Video data loaded");
+      };
+
+      videoRef.current.onerror = (event) => {
+        console.error("Video error:", event);
         setError("Error playing video stream");
         setIsLoading(false);
       };
@@ -121,7 +137,7 @@ export default function KeanuPhoto() {
       };
 
       // Load Keanu image and draw on the right
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         const keanuImg = new Image();
         keanuImg.crossOrigin = 'anonymous';
         
@@ -226,7 +242,9 @@ export default function KeanuPhoto() {
                         ref={videoRef}
                         autoPlay
                         playsInline
+                        muted
                         className="w-full h-full object-contain"
+                        style={{ transform: 'scaleX(-1)' }} // Mirror the video
                       />
                     ) : (
                       <div className="text-center text-muted-foreground">
