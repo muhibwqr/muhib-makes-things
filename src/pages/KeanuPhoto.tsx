@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +13,16 @@ export default function KeanuPhoto() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  // Cleanup function to stop camera when component unmounts
+  useEffect(() => {
+    return () => {
+      if (videoRef.current?.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
+
   const checkCameraPermissions = async () => {
     try {
       const permissions = await navigator.permissions.query({ name: 'camera' as PermissionName });
@@ -21,6 +31,34 @@ export default function KeanuPhoto() {
       // Some browsers might not support the permissions API
       return null;
     }
+  };
+
+  const attachStreamToVideo = async (stream: MediaStream) => {
+    return new Promise<void>((resolve, reject) => {
+      if (!videoRef.current) {
+        reject(new Error("Video element not initialized"));
+        return;
+      }
+
+      const videoEl = videoRef.current;
+      
+      // Set up event listeners before attaching stream
+      const timeoutId = setTimeout(() => {
+        reject(new Error("Video element setup timed out"));
+      }, 10000); // 10 second timeout
+
+      const handleCanPlay = () => {
+        clearTimeout(timeoutId);
+        videoEl.removeEventListener('canplay', handleCanPlay);
+        resolve();
+      };
+
+      videoEl.addEventListener('canplay', handleCanPlay);
+      
+      // Attach stream
+      videoEl.srcObject = stream;
+      videoEl.muted = true;
+    });
   };
 
   const startCamera = async () => {
@@ -41,14 +79,8 @@ export default function KeanuPhoto() {
         video: { facingMode: 'user', width: 1280, height: 720 }
       });
       
-      if (!videoRef.current) {
-        throw new Error("Video element not initialized");
-      }
-
-      // Attach stream and try to play
-      const videoEl = videoRef.current;
-      // show the video element immediately (React will display it when streaming===true)
-      videoEl.srcObject = stream;
+      // Wait for video element to be ready
+      await attachStreamToVideo(stream);
 
       // Log stream tracks for debugging
       try {
@@ -58,44 +90,43 @@ export default function KeanuPhoto() {
         console.warn('Could not inspect stream tracks', e);
       }
 
-      // Some browsers require muted to allow autoplay; set it explicitly
-      videoEl.muted = true;
-
-      // Helper to attempt play and set states; make UI show the video before play resolves
-      const tryPlay = async (attempt = 0) => {
-        // Make UI show the video element regardless of play success
-        setStreaming(true);
-
-        try {
-          const playPromise = videoEl.play();
-          if (playPromise !== undefined) {
-            await playPromise;
-          }
-          console.log('Video playback started');
+      // Set up event handlers and try to play video
+      if (videoRef.current) {
+        const video = videoRef.current;
+        
+        video.onloadeddata = () => console.log('Video data loaded');
+        video.onplaying = () => console.log('Video playing event');
+        video.onerror = (ev) => {
+          console.error('Video element error:', ev);
+          setError('Error playing video stream');
           setIsLoading(false);
-        } catch (err) {
-          console.warn('Play attempt failed, retrying...', attempt, err);
-          if (attempt < 3) {
-            setTimeout(() => tryPlay(attempt + 1), 500);
-            return;
+        };
+
+        // Helper to attempt play and set states
+        const tryPlay = async (attempt = 0) => {
+          setStreaming(true); // Show video element before play attempt
+          
+          try {
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+              await playPromise;
+            }
+            console.log('Video playback started');
+            setIsLoading(false);
+          } catch (err) {
+            console.warn('Play attempt failed, retrying...', attempt, err);
+            if (attempt < 3) {
+              setTimeout(() => tryPlay(attempt + 1), 500);
+              return;
+            }
+            setError('Failed to start video playback. If you are on Safari or iOS, enable camera autoplay or tap the video. Also check camera permissions.');
+            setIsLoading(false);
           }
-          // fallback: show helpful error instructions
-          setError('Failed to start video playback. If you are on Safari or iOS, enable camera autoplay or tap the video. Also check camera permissions.');
-          setIsLoading(false);
-        }
-      };
+        };
 
-      // Ensure video element shows even if events are flaky
-      videoEl.onloadeddata = () => console.log('Video data loaded');
-      videoEl.onplaying = () => console.log('Video playing event');
-      videoEl.onerror = (ev) => {
-        console.error('Video element error:', ev);
-        setError('Error playing video stream');
-        setIsLoading(false);
-      };
-
-      // Immediately show video element and try to play
-      tryPlay();
+        // Start playing
+        tryPlay();
+      }
 
     } catch (error) {
       console.error("Error accessing camera:", error);

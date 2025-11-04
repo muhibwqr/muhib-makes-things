@@ -34,7 +34,6 @@ export function Header() {
   ];
 
   const interactiveItems = [
-    { to: "/chat", label: "🤖 Chat AI" },
     { to: "/keanu", label: "📸 Keanu" },
   ];
 
