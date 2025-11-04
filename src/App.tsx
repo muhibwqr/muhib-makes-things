@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import TypingTest from "./pages/TypingTest";
 import NotFound from "./pages/NotFound";
-import Chatbot from "./components/Chatbot";
+// import Chatbot from "./components/Chatbot";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +23,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-      <Chatbot />
+  {/* <Chatbot /> */}
     </TooltipProvider>
   </QueryClientProvider>
 );
