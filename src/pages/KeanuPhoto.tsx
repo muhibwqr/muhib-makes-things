@@ -45,33 +45,57 @@ export default function KeanuPhoto() {
         throw new Error("Video element not initialized");
       }
 
-      videoRef.current.srcObject = stream;
-      
-      // Add all event handlers before setting srcObject
-      videoRef.current.onloadedmetadata = () => {
-        if (videoRef.current) {
-          videoRef.current.play()
-            .then(() => {
-              setStreaming(true);
-              setIsLoading(false);
-            })
-            .catch(err => {
-              console.error("Error playing video:", err);
-              setError("Failed to start video playback");
-              setIsLoading(false);
-            });
+      // Attach stream and try to play
+      const videoEl = videoRef.current;
+      // show the video element immediately (React will display it when streaming===true)
+      videoEl.srcObject = stream;
+
+      // Log stream tracks for debugging
+      try {
+        const ms = stream as MediaStream;
+        console.log('Stream tracks:', ms.getTracks().map(t => ({ kind: t.kind, id: t.id, enabled: t.enabled })));
+      } catch (e) {
+        console.warn('Could not inspect stream tracks', e);
+      }
+
+      // Some browsers require muted to allow autoplay; set it explicitly
+      videoEl.muted = true;
+
+      // Helper to attempt play and set states; make UI show the video before play resolves
+      const tryPlay = async (attempt = 0) => {
+        // Make UI show the video element regardless of play success
+        setStreaming(true);
+
+        try {
+          const playPromise = videoEl.play();
+          if (playPromise !== undefined) {
+            await playPromise;
+          }
+          console.log('Video playback started');
+          setIsLoading(false);
+        } catch (err) {
+          console.warn('Play attempt failed, retrying...', attempt, err);
+          if (attempt < 3) {
+            setTimeout(() => tryPlay(attempt + 1), 500);
+            return;
+          }
+          // fallback: show helpful error instructions
+          setError('Failed to start video playback. If you are on Safari or iOS, enable camera autoplay or tap the video. Also check camera permissions.');
+          setIsLoading(false);
         }
       };
 
-      videoRef.current.onloadeddata = () => {
-        console.log("Video data loaded");
-      };
-
-      videoRef.current.onerror = (event) => {
-        console.error("Video error:", event);
-        setError("Error playing video stream");
+      // Ensure video element shows even if events are flaky
+      videoEl.onloadeddata = () => console.log('Video data loaded');
+      videoEl.onplaying = () => console.log('Video playing event');
+      videoEl.onerror = (ev) => {
+        console.error('Video element error:', ev);
+        setError('Error playing video stream');
         setIsLoading(false);
       };
+
+      // Immediately show video element and try to play
+      tryPlay();
 
     } catch (error) {
       console.error("Error accessing camera:", error);
@@ -270,6 +294,13 @@ export default function KeanuPhoto() {
                     className="w-full h-full object-contain"
                   />
                 )}
+              </div>
+
+              {/* Diagnostics */}
+              <div className="mt-2 text-sm">
+                <p className="font-medium">Status: {isLoading ? 'Initializing' : streaming ? 'Streaming' : 'Idle'}</p>
+                {error && <p className="text-destructive">Error: {error}</p>}
+                <p className="text-xs text-muted-foreground mt-1">If the camera doesn't start: ensure your browser has camera permissions, try refreshing, or use a different browser. On mobile, try tapping the video area after allowing permission.</p>
               </div>
 
               {/* Controls */}

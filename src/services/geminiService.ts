@@ -17,22 +17,36 @@ About Muhib:
 - Combines love for travel and food by seeking out culinary experiences in every destination`;
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
+
+let genAI: InstanceType<typeof GoogleGenerativeAI> | null = null;
+
+function ensureClient() {
+  if (!apiKey) {
+    throw new Error('VITE_GEMINI_API_KEY is not set. Add it to your .env file and restart the dev server.');
+  }
+
+  if (!genAI) {
+    try {
+      genAI = new GoogleGenerativeAI(apiKey as string);
+    } catch (err) {
+      console.error('Failed to initialize GoogleGenerativeAI client', err);
+      genAI = null;
+      throw err;
+    }
+  }
+
+  return genAI;
+}
 
 export async function getChatResponse(message: string): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    
+    const client = ensureClient();
+
+    const model = client.getGenerativeModel({ model: 'gemini-pro' });
+
     const chat = model.startChat({
       history: [
-        {
-          role: "user",
-          parts: [{ text: systemPrompt }],
-        },
-        {
-          role: "model",
-          parts: [{ text: "I understand. I'll represent Muhib Waqar with his authentic voice and personality." }],
-        },
+        { role: 'system', parts: [{ text: systemPrompt }] },
       ],
       generationConfig: {
         temperature: 0.7,
@@ -42,11 +56,17 @@ export async function getChatResponse(message: string): Promise<string> {
       },
     });
 
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    return response.text();
+    const sendResult = await chat.sendMessage({ content: [{ type: 'input_text', text: message }] } as any);
+
+    const candidateText = (sendResult as any)?.output?.[0]?.content?.[0]?.text || (sendResult as any)?.response?.text || (sendResult as any)?.text;
+    if (!candidateText) {
+      console.error('Unexpected Gemini response format', sendResult);
+      throw new Error('Unexpected response from Gemini API');
+    }
+
+    return candidateText as string;
   } catch (error) {
-    console.error("Error calling Gemini API:", error);
-    throw error;
+    console.error('Gemini service error:', error);
+    throw error instanceof Error ? error : new Error('Unknown Gemini error');
   }
 }
