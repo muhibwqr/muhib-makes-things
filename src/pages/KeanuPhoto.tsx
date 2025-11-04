@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,7 @@ import {
   Image as ImageIcon,
   Loader2,
 } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 
 export default function KeanuPhoto() {
   const [streaming, setStreaming] = useState(false);
@@ -27,34 +28,106 @@ export default function KeanuPhoto() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  // Helper function to initialize camera stream
+  const initializeCamera = async (video: HTMLVideoElement): Promise<MediaStream> => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error("Camera access is not supported in your browser");
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { 
+        facingMode: "user",
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    });
+
+    video.srcObject = stream;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+
+    return stream;
+  };
+
+  // Helper function to set up video element
+  const setupVideoElement = async (video: HTMLVideoElement): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => {
+        reject(new Error("Video setup timed out"));
+      }, 10000);
+
+      const handleLoaded = () => {
+        clearTimeout(timeoutId);
+        resolve();
+      };
+
+      video.onloadedmetadata = handleLoaded;
+    });
+  };
+
   // Stop camera when component unmounts
   useEffect(() => {
     return () => stopCamera();
   }, []);
 
   const startCamera = async () => {
+    console.log("Starting camera initialization...");
     setIsLoading(true);
     setError(null);
+    
     try {
+      // Check browser support
       if (!navigator.mediaDevices?.getUserMedia) {
+        console.error("getUserMedia not supported");
         throw new Error("Camera access is not supported in your browser");
       }
 
+      // Check if video element exists
+      if (!videoRef.current) {
+        console.error("Video element not found");
+        throw new Error("Camera initialization failed: video element not ready");
+      }
+
+      console.log("Requesting camera access...");
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: 1280, height: 720 },
+        video: { 
+          facingMode: "user", 
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        },
         audio: false,
       });
 
-      if (videoRef.current) {
-        const video = videoRef.current;
-        video.srcObject = stream;
-        video.muted = true;
-        video.playsInline = true;
+      console.log("Camera access granted, setting up video element...");
+      const video = videoRef.current;
+      
+      // Clean up any existing stream
+      if (video.srcObject) {
+        const oldStream = video.srcObject as MediaStream;
+        oldStream.getTracks().forEach(track => track.stop());
+      }
 
-        // Wait for metadata to be ready
-        await new Promise((resolve) => {
-          video.onloadedmetadata = () => resolve(true);
-        });
+      // Set up video properties
+      video.srcObject = stream;
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute('playsinline', ''); // For iOS
+
+      console.log("Waiting for video metadata...");
+      // Wait for metadata with timeout
+      await Promise.race([
+        new Promise((resolve) => {
+          video.onloadedmetadata = () => {
+            console.log("Video metadata loaded");
+            resolve(true);
+          };
+        }),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Video metadata timeout")), 5000)
+        )
+      ]);
 
         try {
           await video.play();
