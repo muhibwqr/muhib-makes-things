@@ -45,7 +45,6 @@ npm run dev
 ## Features
 
 - **AI Chatbot**: Interact with an AI trained on Muhib's information and personality
-- **Keanu Photo Generator**: Take photos with Keanu Reeves using camera capture
 - **Responsive Design**: Mobile-first design with smooth animations
 - **Modern UI**: Built with shadcn-ui and Tailwind CSS
 
@@ -59,7 +58,6 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 - Google Gemini AI API
-- PlaceKeanu API
 
 ## Building for Production
 
@@ -68,6 +66,17 @@ npm run build
 ```
 
 The built files will be in the `dist` directory.
+
+## Deployment (Vercel)
+
+1. Push your code to GitHub (or your preferred git provider).
+2. Go to [vercel.com](https://vercel.com/) and sign in with your GitHub account.
+3. Click "New Project" and import your portfolio repository.
+4. Set the build command to `npm run build` and the output directory to `dist` (default for Vite).
+5. Add your environment variable `VITE_GEMINI_API_KEY` in the Vercel dashboard.
+6. Click "Deploy". Your site will be live on a Vercel URL.
+
+For custom domains, follow Vercel's instructions to add your domain.
 
 ## License
 
