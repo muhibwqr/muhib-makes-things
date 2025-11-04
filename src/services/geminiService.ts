@@ -41,9 +41,7 @@ function ensureClient() {
 export async function getChatResponse(message: string): Promise<string> {
   try {
     const client = ensureClient();
-
     const model = client.getGenerativeModel({ model: 'gemini-pro' });
-
     const chat = model.startChat({
       history: [
         { role: 'system', parts: [{ text: systemPrompt }] },
@@ -55,18 +53,20 @@ export async function getChatResponse(message: string): Promise<string> {
         maxOutputTokens: 1024,
       },
     });
-
     const sendResult = await chat.sendMessage({ content: [{ type: 'input_text', text: message }] } as any);
-
     const candidateText = (sendResult as any)?.output?.[0]?.content?.[0]?.text || (sendResult as any)?.response?.text || (sendResult as any)?.text;
     if (!candidateText) {
       console.error('Unexpected Gemini response format', sendResult);
       throw new Error('Unexpected response from Gemini API');
     }
-
     return candidateText as string;
   } catch (error) {
-    console.error('Gemini service error:', error);
-    throw error instanceof Error ? error : new Error('Unknown Gemini error');
+    if (error instanceof Error) {
+      console.error('Gemini service error:', error.message, error.stack);
+      throw error;
+    } else {
+      console.error('Gemini service unknown error:', error);
+      throw new Error('Unknown Gemini error');
+    }
   }
 }

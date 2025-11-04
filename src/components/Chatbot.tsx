@@ -44,13 +44,22 @@ const Chatbot: React.FC = () => {
       const aiMessage: Message = { id: (Date.now() + 1).toString(), text: aiResponseText, sender: 'ai' };
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
-      console.error("Error getting response:", error);
-      const errorMessage: Message = { 
-        id: (Date.now() + 1).toString(), 
-        text: "Sorry, I'm having trouble connecting right now. Please try again later.", 
-        sender: 'ai' 
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      // Enhanced error logging
+      if (error instanceof Error) {
+        setMessages(prev => [...prev, {
+          id: (Date.now() + 1).toString(),
+          text: `Sorry, I'm having trouble connecting right now. Error: ${error.message}`,
+          sender: 'ai'
+        }]);
+        console.error("Chatbot error:", error.message, error.stack);
+      } else {
+        setMessages(prev => [...prev, {
+          id: (Date.now() + 1).toString(),
+          text: "Sorry, I'm having trouble connecting right now. Unknown error.",
+          sender: 'ai'
+        }]);
+        console.error("Chatbot unknown error:", error);
+      }
     } finally {
       setIsLoading(false);
     }
