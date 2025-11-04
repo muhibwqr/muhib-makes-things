@@ -2,28 +2,66 @@ import { useState, useRef } from "react";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, Download, RotateCcw, Image as ImageIcon } from "lucide-react";
+import { Camera, Download, RotateCcw, Image as ImageIcon, Loader2 } from "lucide-react";
 
 export default function KeanuPhoto() {
   const [streaming, setStreaming] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [keanuMode, setKeanuMode] = useState<'normal' | 'young' | 'grayscale' | 'young-gray'>('normal');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const startCamera = async () => {
+  const checkCameraPermissions = async () => {
     try {
+      const permissions = await navigator.permissions.query({ name: 'camera' as PermissionName });
+      return permissions.state === 'granted';
+    } catch (error) {
+      // Some browsers might not support the permissions API
+      return null;
+    }
+  };
+
+  const startCamera = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // First check if getUserMedia is supported
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("Camera access is not supported in your browser");
+      }
+      
+      const hasPermission = await checkCameraPermissions();
+      if (hasPermission === false) {
+        throw new Error("Camera permission denied. Please grant camera access in your browser settings.");
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user', width: 1280, height: 720 }
       });
       
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        setStreaming(true);
+      if (!videoRef.current) {
+        throw new Error("Video element not initialized");
       }
+
+      videoRef.current.srcObject = stream;
+      videoRef.current.onloadedmetadata = () => {
+        videoRef.current?.play();
+        setStreaming(true);
+        setIsLoading(false);
+      };
+
+      videoRef.current.onerror = () => {
+        setError("Error playing video stream");
+        setIsLoading(false);
+      };
+
     } catch (error) {
       console.error("Error accessing camera:", error);
-      alert("Could not access camera. Please make sure you've granted camera permissions.");
+      setError(error instanceof Error ? error.message : "Could not access camera. Please make sure you've granted camera permissions.");
+      setIsLoading(false);
+      setStreaming(false);
     }
   };
 
@@ -36,21 +74,38 @@ export default function KeanuPhoto() {
     }
   };
 
-  const capturePhoto = () => {
-    if (!videoRef.current || !canvasRef.current) return;
+  const capturePhoto = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      if (!videoRef.current || !canvasRef.current) {
+        throw new Error("Video or canvas element not initialized");
+      }
 
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    
-    const videoWidth = video.videoWidth;
-    const videoHeight = video.videoHeight;
-    
-    // Make canvas wide enough for both images side by side
-    canvas.width = videoWidth * 2;
-    canvas.height = videoHeight;
-    
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      
+      if (video.readyState !== video.HAVE_ENOUGH_DATA) {
+        throw new Error("Video stream is not ready yet");
+      }
+      
+      const videoWidth = video.videoWidth;
+      const videoHeight = video.videoHeight;
+      
+      if (videoWidth === 0 || videoHeight === 0) {
+        throw new Error("Video dimensions are not valid");
+      }
+      
+      // Make canvas wide enough for both images side by side
+      canvas.width = videoWidth * 2;
+      canvas.height = videoHeight;
+      
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        throw new Error("Could not get canvas context");
+      }
+      
       // Draw user's photo on the left
       ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
       
@@ -66,15 +121,33 @@ export default function KeanuPhoto() {
       };
 
       // Load Keanu image and draw on the right
-      const keanuImg = new Image();
-      keanuImg.crossOrigin = 'anonymous';
-      keanuImg.onload = () => {
-        ctx.drawImage(keanuImg, videoWidth, 0, videoWidth, videoHeight);
-        const imageData = canvas.toDataURL('image/png');
-        setCapturedImage(imageData);
-        stopCamera();
-      };
-      keanuImg.src = getKeanuUrl();
+      return new Promise((resolve, reject) => {
+        const keanuImg = new Image();
+        keanuImg.crossOrigin = 'anonymous';
+        
+        keanuImg.onload = () => {
+          ctx.drawImage(keanuImg, videoWidth, 0, videoWidth, videoHeight);
+          try {
+            const imageData = canvas.toDataURL('image/png');
+            setCapturedImage(imageData);
+            stopCamera();
+            setIsLoading(false);
+            resolve();
+          } catch (err) {
+            reject(new Error("Failed to convert canvas to image"));
+          }
+        };
+        
+        keanuImg.onerror = () => {
+          reject(new Error("Failed to load Keanu image"));
+        };
+        
+        keanuImg.src = getKeanuUrl();
+      });
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to capture photo");
+      setIsLoading(false);
+      console.error("Error capturing photo:", error);
     }
   };
 
@@ -143,7 +216,12 @@ export default function KeanuPhoto() {
               <div className="relative bg-black rounded-lg overflow-hidden aspect-video flex items-center justify-center">
                 {!capturedImage ? (
                   <>
-                    {streaming ? (
+                    {isLoading ? (
+                      <div className="text-center text-muted-foreground">
+                        <Loader2 className="w-16 h-16 mx-auto mb-4 opacity-50 animate-spin" />
+                        <p>Initializing camera...</p>
+                      </div>
+                    ) : streaming ? (
                       <video
                         ref={videoRef}
                         autoPlay
@@ -152,8 +230,17 @@ export default function KeanuPhoto() {
                       />
                     ) : (
                       <div className="text-center text-muted-foreground">
-                        <ImageIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                        <p>Camera not active</p>
+                        {error ? (
+                          <>
+                            <ImageIcon className="w-16 h-16 mx-auto mb-4 opacity-50 text-destructive" />
+                            <p className="text-destructive">{error}</p>
+                          </>
+                        ) : (
+                          <>
+                            <ImageIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                            <p>Camera not active</p>
+                          </>
+                        )}
                       </div>
                     )}
                     <canvas ref={canvasRef} className="hidden" />
@@ -176,9 +263,22 @@ export default function KeanuPhoto() {
                   </Button>
                 )}
                 {streaming && (
-                  <Button onClick={capturePhoto} size="lg">
-                    <Camera className="w-4 h-4 mr-2" />
-                    Capture with Keanu
+                  <Button 
+                    onClick={capturePhoto} 
+                    size="lg" 
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Capturing...
+                      </>
+                    ) : (
+                      <>
+                        <Camera className="w-4 h-4 mr-2" />
+                        Capture with Keanu
+                      </>
+                    )}
                   </Button>
                 )}
                 {capturedImage && (

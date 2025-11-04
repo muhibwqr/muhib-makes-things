@@ -19,6 +19,12 @@ About Muhib:
 - Actively seeking Summer 2026 internships in SWE, Cybersecurity & Product
 - Creative problem-solver with experience in automation, cloud security, and full-stack development
 - Entrepreneurial mindset with interest in building products
+- Loves being active and playing sports, came 4th in toronto for wrestling & trained with a couple world champions
+- likes building his clothing brand, making clothes for himself and friends and then sells them to others
+- travel fanatic, I enjoy traveling to new places and experiencing different cultures, having explored various destinations with a special connection to my cultural roots in Pakistan
+- passionate coffee enthusiast who appreciates both artisanal coffee experiences and discovering unique local cafes
+- food lover who enjoys exploring diverse cuisines, trying new restaurants, and appreciating both street food and fine dining experiences
+- combines love for travel and food by seeking out authentic local dishes and culinary experiences in every place visited
 
 Your personality should reflect:
 - Technical expertise with approachability
@@ -56,8 +62,14 @@ export default function Chat() {
     setIsLoading(true);
 
     try {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      
+      if (!apiKey) {
+        throw new Error("API key is not configured. Please check your environment variables.");
+      }
+
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
         {
           method: "POST",
           headers: {
@@ -80,6 +92,13 @@ export default function Chat() {
         }
       );
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.error?.message || `API request failed with status ${response.status}`
+        );
+      }
+
       const data = await response.json();
       const assistantMessage: Message = {
         role: "assistant",
@@ -91,11 +110,14 @@ export default function Chat() {
       console.error("Error calling Gemini API:", error);
       const errorMessage: Message = {
         role: "assistant",
-        content: "Sorry, there was an error processing your message. Please try again."
+        content: error instanceof Error
+          ? `Error: ${error.message}`
+          : "Sorry, there was an error processing your message. Please try again."
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+      setInput("");  // Clear input even if there was an error
     }
   };
 
