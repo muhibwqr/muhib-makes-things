@@ -1,4 +1,5 @@
 import { ThemeToggle } from "./ThemeToggle";
+import SplashCursor from "./SplashCursor";
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -44,9 +45,34 @@ export function Header() {
            style={{ width: `${scrollProgress}%` }} />
       
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link to="/" className="text-xl font-bold gradient-text hover:opacity-80 transition-opacity">
-          Muhib Waqar
-        </Link>
+        <div style={{ position: 'relative', width: 260, height: 60, display: 'flex', alignItems: 'center' }}>
+          <SplashCursor style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
+            pointerEvents: 'none',
+            borderRadius: 16,
+            overflow: 'hidden',
+          }} />
+          <Link
+            to="/"
+            className="text-4xl font-extrabold tracking-tight"
+            style={{
+              color: 'transparent',
+              WebkitTextStroke: '2px #fff',
+              textStroke: '2px #fff',
+              backgroundClip: 'text',
+              zIndex: 1,
+              position: 'relative',
+              userSelect: 'none',
+            }}
+          >
+            Muhib Waqar
+          </Link>
+        </div>
         
         <nav className="hidden md:flex items-center gap-6">
           {location.pathname === "/" && navItems.map((item) => (
