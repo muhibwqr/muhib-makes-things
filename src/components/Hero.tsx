@@ -1,6 +1,7 @@
 import { ChevronDown, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import SplashCursor from "./SplashCursor";
 
 export function Hero() {
   const [currentEmoji, setCurrentEmoji] = useState(0);
@@ -30,12 +31,17 @@ export function Hero() {
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-background -z-10" />
-      <div className="absolute top-20 right-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-20 left-20 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "1s" }} />
+      {/* Fluid SplashCursor animation only for hero section */}
+      <SplashCursor style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 0,
+        pointerEvents: 'none',
+      }} />
 
-      <div className="container mx-auto px-4 text-center">
+      <div className="container mx-auto px-4 text-center relative z-10">
         <div className="animate-fade-in">
           <div className="mb-6 text-6xl transition-all duration-700 ease-in-out">
             {emojis[currentEmoji]}

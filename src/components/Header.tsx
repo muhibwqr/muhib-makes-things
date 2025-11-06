@@ -39,7 +39,7 @@ export function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass border-b">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-transparent border-b border-none">
       {/* Scroll Progress Bar */}
       <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary via-accent to-primary transition-all duration-300"
            style={{ width: `${scrollProgress}%` }} />
