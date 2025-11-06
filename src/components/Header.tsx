@@ -45,30 +45,18 @@ export function Header() {
            style={{ width: `${scrollProgress}%` }} />
       
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div style={{ position: 'relative', width: 260, height: 60, display: 'flex', alignItems: 'center' }}>
-          <SplashCursor style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: 0,
-            pointerEvents: 'none',
-            borderRadius: 16,
-            overflow: 'hidden',
-          }} />
+        <div className="flex items-center" style={{ minWidth: 220, minHeight: 60 }}>
           <Link
             to="/"
-            className="text-4xl font-extrabold tracking-tight"
+            className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent drop-shadow-lg select-none"
             style={{
-              color: 'transparent',
-              WebkitTextStroke: '2px #fff',
-              textStroke: '2px #fff',
+              WebkitBackgroundClip: 'text',
               backgroundClip: 'text',
-              zIndex: 1,
-              position: 'relative',
               userSelect: 'none',
+              letterSpacing: '-0.04em',
             }}
+            tabIndex={0}
+            aria-label="Home"
           >
             Muhib Waqar
           </Link>
