@@ -1,8 +1,24 @@
-import { Github, Linkedin, Mail, Twitter, Download, Moon } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun } from "lucide-react";
 import Dither from "@/components/Dither";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { useState, useEffect } from "react";
 
 const Index = () => {
+  const [isDark, setIsDark] = useState(true);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const isDarkMode = root.classList.contains("dark");
+    setIsDark(isDarkMode);
+  }, []);
+
+  const toggleTheme = () => {
+    const root = window.document.documentElement;
+    const newTheme = isDark ? "light" : "dark";
+    root.classList.remove(isDark ? "dark" : "light");
+    root.classList.add(newTheme);
+    setIsDark(!isDark);
+  };
+
   const socials = [
     { icon: Mail, label: "Email", href: "mailto:m7waqar@uwaterloo.ca" },
     { icon: Github, label: "GitHub", href: "https://github.com/muhibwqr" },
@@ -11,28 +27,28 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen text-black dark:text-white relative">
+    <div className={`min-h-screen relative ${isDark ? 'bg-black text-white' : 'bg-white text-black'}`}>
       {/* Dither Background */}
-      <div className="fixed inset-0 w-full h-full z-0">
+      <div className="fixed inset-0 w-full h-full z-0 opacity-20">
         <Dither
-          waveColor={[0.5, 0.5, 0.5]}
+          waveColor={isDark ? [0.2, 0.2, 0.3] : [0.8, 0.8, 0.9]}
           disableAnimation={false}
           enableMouseInteraction={true}
           mouseRadius={0.3}
           colorNum={4}
-          waveAmplitude={0.3}
+          waveAmplitude={0.2}
           waveFrequency={3}
           waveSpeed={0.05}
         />
       </div>
       
-      {/* Content with backdrop */}
-      <div className="relative z-10 bg-white/80 dark:bg-black/80 backdrop-blur-sm min-h-screen">
+      {/* Content */}
+      <div className="relative z-10 min-h-screen">
       {/* Header */}
-      <header className="container mx-auto px-6 py-8 flex justify-between items-start">
+      <header className={`container mx-auto px-6 py-8 flex justify-between items-start border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
         <div>
-          <h1 className="text-2xl font-bold underline">◆ Muhib Waqar</h1>
-          <div className="mt-2 space-y-1 text-sm">
+          <h1 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-black'}`}>◆ Muhib Waqar</h1>
+          <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
             <div className="flex items-center gap-2">
               <span>→</span>
               <span>CS</span>
@@ -41,79 +57,95 @@ const Index = () => {
           </div>
         </div>
         <nav className="text-sm">
-          <div className="flex items-center gap-2">
-            <a href="#projects" className="hover:underline">Projects</a>
-            <span>|</span>
-            <a href="#about" className="hover:underline">About me</a>
-            <span>|</span>
-            <div className="flex items-center gap-1">
-              <Moon className="w-4 h-4" />
-              <span>Dark mode</span>
-            </div>
-            <ThemeToggle />
+          <div className="flex items-center gap-4">
+            <a href="#projects" className={`transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Projects</a>
+            <span className={isDark ? 'text-gray-600' : 'text-gray-300'}>|</span>
+            <a href="#about" className={`transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>About me</a>
+            <span className={isDark ? 'text-gray-600' : 'text-gray-300'}>|</span>
+            <button
+              onClick={toggleTheme}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
+                isDark 
+                  ? 'bg-white/5 hover:bg-white/10 border border-white/10 text-white' 
+                  : 'bg-black/5 hover:bg-black/10 border border-black/10 text-black'
+              }`}
+              aria-label="Toggle theme"
+            >
+              {isDark ? (
+                <>
+                  <Sun className="w-4 h-4" />
+                  <span>Light</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-4 h-4" />
+                  <span>Dark</span>
+                </>
+              )}
+            </button>
           </div>
         </nav>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 pb-12 max-w-4xl">
+      <main className="container mx-auto px-6 py-12 max-w-4xl">
         {/* What makes me different */}
-        <section className="mb-12">
-          <h2 className="text-lg font-semibold mb-4">◆ What makes me different:</h2>
-          <div className="space-y-3 text-sm leading-relaxed">
+        <section className="mb-16">
+          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ What makes me different:</h2>
+          <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
             <p>
-              → <strong>Started coding at age 11</strong> → Been building tech projects for over a decade, from simple scripts to full-stack applications.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Started coding at age 11</strong> → Been building tech projects for over a decade, from simple scripts to full-stack applications.
             </p>
             <p>
-              → <strong>4th place in Toronto wrestling championships</strong> → Trained with world champions, learned discipline and resilience that I apply to every project.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>4th place in Toronto wrestling championships</strong> → Trained with world champions, learned discipline and resilience that I apply to every project.
             </p>
             <p>
-              → <strong>University of Waterloo</strong> → Studying Computer Science + Mathematics, combining technical depth with analytical thinking.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>University of Waterloo</strong> → Studying Computer Science + Mathematics, combining technical depth with analytical thinking.
             </p>
             <p>
-              → <strong>Building a clothing brand</strong> → Creating designs, managing production, and selling to friends and customers. Entrepreneurship meets creativity.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Building a clothing brand</strong> → Creating designs, managing production, and selling to friends and customers. Entrepreneurship meets creativity.
             </p>
             <p>
-              → <strong>Travel fanatic & food lover</strong> → Explored various destinations, especially connected to my cultural roots in Pakistan. Love discovering authentic local dishes and unique cafes.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Travel fanatic & food lover</strong> → Explored various destinations, especially connected to my cultural roots in Pakistan. Love discovering authentic local dishes and unique cafes.
             </p>
             <p>
-              → <strong>Coffee enthusiast</strong> → Appreciate both artisanal coffee experiences and discovering unique local cafes wherever I go.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Coffee enthusiast</strong> → Appreciate both artisanal coffee experiences and discovering unique local cafes wherever I go.
             </p>
             <p>
-              → <strong>Scrollify</strong> → Won <a href="https://goonhacks.devpost.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">GoOnHacks</a> with an app that keeps you scrolling. Built with modern web technologies. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">View on GitHub</a>
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won <a href="https://goonhacks.devpost.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GoOnHacks</a> with an app that keeps you scrolling. Built with modern web technologies. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">View on GitHub</a>
             </p>
             <p>
-              → <strong>Seeking Summer 2026 internships</strong> → Looking for opportunities in Software Engineering, Cybersecurity, and Product. Ready to build something amazing.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Seeking Summer 2026 internships</strong> → Looking for opportunities in Software Engineering, Cybersecurity, and Product. Ready to build something amazing.
             </p>
           </div>
         </section>
 
         {/* Building Section */}
-        <section className="mb-12" id="projects">
-          <h2 className="text-lg font-semibold mb-4">◆ Building:</h2>
-          <div className="space-y-3 text-sm leading-relaxed">
+        <section className="mb-16" id="projects">
+          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Building:</h2>
+          <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
             <p>
-              → <strong>Scrollify</strong> → Won <a href="https://goonhacks.devpost.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">GoOnHacks</a> with an app that keeps you scrolling. Built with modern web technologies. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">GitHub</a>
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won <a href="https://goonhacks.devpost.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GoOnHacks</a> with an app that keeps you scrolling. Built with modern web technologies. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a>
             </p>
             <p>
-              → <strong>Triageo - AI Security Triage</strong> → Hack the North 2025 project. Slack-native AI assistant for incident response. From chaos to clarity, in seconds.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Triageo - AI Security Triage</strong> → Hack the North 2025 project. Slack-native AI assistant for incident response. From chaos to clarity, in seconds.
             </p>
             <p>
-              → <strong>Malicious Payload USB Project</strong> → Security research project. USB-based payload emulator using Raspberry Pi to mimic HID attacks and demonstrate access risk with modular scripts for keystroke injection.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Malicious Payload USB Project</strong> → Security research project. USB-based payload emulator using Raspberry Pi to mimic HID attacks and demonstrate access risk with modular scripts for keystroke injection.
             </p>
             <p>
-              → <strong>AI Mental Health Voice Agent</strong> → Healthcare AI project. Voice-based conversational agent for empathetic mental health support with crisis detection and safe escalation to human services.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>AI Mental Health Voice Agent</strong> → Healthcare AI project. Voice-based conversational agent for empathetic mental health support with crisis detection and safe escalation to human services.
             </p>
             <p>
-              → <strong>Phenomenon Collective</strong> → Dynamic clothing brand blending creative vision with social impact. Creating designs, managing production, and building a community.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Phenomenon Collective</strong> → Dynamic clothing brand blending creative vision with social impact. Creating designs, managing production, and building a community.
             </p>
           </div>
         </section>
 
         {/* Reach Out */}
-        <section className="mb-12" id="about">
-          <h2 className="text-lg font-semibold mb-4">◆ Please reach out if you're:</h2>
-          <div className="space-y-2 text-sm">
+        <section className="mb-16" id="about">
+          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Please reach out if you're:</h2>
+          <div className={`space-y-3 text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
             <p>→ A fellow founder.</p>
             <p>→ Someone who is curious about me or what I'm doing.</p>
             <p>→ Looking for a software engineer, cybersecurity specialist, or product builder.</p>
@@ -121,9 +153,9 @@ const Index = () => {
         </section>
 
         {/* Contact */}
-        <section>
-          <h2 className="text-lg font-semibold mb-4">◆ Contact:</h2>
-          <div className="flex flex-wrap gap-4 text-sm">
+        <section className="pb-12">
+          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Contact:</h2>
+          <div className="flex flex-wrap gap-6 text-sm">
             {socials.map((social, index) => {
               const Icon = social.icon;
               return (
@@ -132,7 +164,11 @@ const Index = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:underline"
+                  className={`flex items-center gap-2 transition-colors border px-4 py-2 rounded-lg ${
+                    isDark 
+                      ? 'text-gray-300 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5' 
+                      : 'text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5'
+                  }`}
                 >
                   <Icon className="w-4 h-4" />
                   {social.label}
@@ -144,7 +180,11 @@ const Index = () => {
               download="muhib_waqar_resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:underline"
+              className={`flex items-center gap-2 transition-colors border px-4 py-2 rounded-lg ${
+                isDark 
+                  ? 'text-gray-300 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5' 
+                  : 'text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5'
+              }`}
             >
               <Download className="w-4 h-4" />
               Resume
