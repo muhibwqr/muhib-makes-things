@@ -11,7 +11,23 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
+    <div className="min-h-screen text-black dark:text-white relative">
+      {/* Dither Background */}
+      <div className="fixed inset-0 w-full h-full z-0">
+        <Dither
+          waveColor={[0.5, 0.5, 0.5]}
+          disableAnimation={false}
+          enableMouseInteraction={true}
+          mouseRadius={0.3}
+          colorNum={4}
+          waveAmplitude={0.3}
+          waveFrequency={3}
+          waveSpeed={0.05}
+        />
+      </div>
+      
+      {/* Content with backdrop */}
+      <div className="relative z-10 bg-white/80 dark:bg-black/80 backdrop-blur-sm min-h-screen">
       {/* Header */}
       <header className="container mx-auto px-6 py-8 flex justify-between items-start">
         <div>
@@ -77,24 +93,20 @@ const Index = () => {
           <h2 className="text-lg font-semibold mb-4">◆ Building:</h2>
           <div className="space-y-3 text-sm leading-relaxed">
             <p>
-              → <strong>Scrollify</strong> → An app that keeps you scrolling. Won GoOnHacks hackathon. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">GitHub</a>
+              → <strong>Scrollify</strong> → Won <a href="https://goonhacks.devpost.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">GoOnHacks</a> with an app that keeps you scrolling. Built with modern web technologies. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">GitHub</a>
             </p>
-          </div>
-        </section>
-
-        {/* Dither Component */}
-        <section className="mb-12">
-          <div style={{ width: '100%', height: '600px', position: 'relative' }}>
-            <Dither
-              waveColor={[0.5, 0.5, 0.5]}
-              disableAnimation={false}
-              enableMouseInteraction={true}
-              mouseRadius={0.3}
-              colorNum={4}
-              waveAmplitude={0.3}
-              waveFrequency={3}
-              waveSpeed={0.05}
-            />
+            <p>
+              → <strong>Triageo - AI Security Triage</strong> → Hack the North 2025 project. Slack-native AI assistant for incident response. From chaos to clarity, in seconds.
+            </p>
+            <p>
+              → <strong>Malicious Payload USB Project</strong> → Security research project. USB-based payload emulator using Raspberry Pi to mimic HID attacks and demonstrate access risk with modular scripts for keystroke injection.
+            </p>
+            <p>
+              → <strong>AI Mental Health Voice Agent</strong> → Healthcare AI project. Voice-based conversational agent for empathetic mental health support with crisis detection and safe escalation to human services.
+            </p>
+            <p>
+              → <strong>Phenomenon Collective</strong> → Dynamic clothing brand blending creative vision with social impact. Creating designs, managing production, and building a community.
+            </p>
           </div>
         </section>
 
@@ -140,6 +152,7 @@ const Index = () => {
           </div>
         </section>
       </main>
+      </div>
     </div>
   );
 };

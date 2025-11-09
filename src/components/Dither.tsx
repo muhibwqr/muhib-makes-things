@@ -32,9 +32,9 @@ export default function Dither({
     if (!ctx) return;
 
     const updateCanvasSize = () => {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      // Use viewport dimensions for full screen background
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     };
 
     updateCanvasSize();
@@ -138,7 +138,14 @@ export default function Dither({
   return (
     <canvas
       ref={canvasRef}
-      style={{ width: '100%', height: '100%', display: 'block' }}
+      style={{ 
+        width: '100vw', 
+        height: '100vh', 
+        display: 'block',
+        position: 'absolute',
+        top: 0,
+        left: 0
+      }}
     />
   );
 }
