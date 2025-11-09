@@ -53,32 +53,32 @@ const Index = () => {
         {/* Content wrapper */}
         <div className="relative z-10">
         {/* Header */}
-        <header className={`container mx-auto px-6 py-8 flex justify-between items-start border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
-        <div className="flex items-center gap-4">
-          <Avatar className="w-28 h-28 border-2 border-white/20">
+        <header className={`container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col sm:flex-row justify-between items-start gap-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+        <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+          <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-white/20 flex-shrink-0">
             <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
             <AvatarFallback className={`${isDark ? 'bg-gray-800 text-white' : 'bg-gray-200 text-black'}`}>MW</AvatarFallback>
           </Avatar>
-          <div>
-            <h1 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-black'}`}>◆ Muhib Waqar</h1>
-            <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <h1 className={`text-xl sm:text-2xl font-bold mb-1 sm:mb-2 ${isDark ? 'text-white' : 'text-black'}`}>◆ Muhib Waqar</h1>
+            <div className={`text-xs sm:text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              <div className="flex items-center gap-2 flex-wrap">
                 <span>→</span>
-                <span>Honours Math & Business Admin</span>
+                <span className="whitespace-nowrap">Honours Math & Business Admin</span>
                 <span className="text-xs">UWaterloo</span>
               </div>
             </div>
           </div>
         </div>
-        <nav className="text-sm">
-          <div className="flex items-center gap-4">
+        <nav className="text-xs sm:text-sm w-full sm:w-auto">
+          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
             <a href="#projects" className={`transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Projects</a>
             <span className={isDark ? 'text-gray-600' : 'text-gray-300'}>|</span>
             <a href="#about" className={`transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>About me</a>
             <span className={isDark ? 'text-gray-600' : 'text-gray-300'}>|</span>
             <button
               onClick={toggleTheme}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
+              className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-all text-xs sm:text-sm ${
                 isDark 
                   ? 'bg-white/5 hover:bg-white/10 border border-white/10 text-white' 
                   : 'bg-black/5 hover:bg-black/10 border border-black/10 text-black'
@@ -87,13 +87,13 @@ const Index = () => {
             >
               {isDark ? (
                 <>
-                  <Sun className="w-4 h-4" />
-                  <span>Light</span>
+                  <Sun className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Light</span>
                 </>
               ) : (
                 <>
-                  <Moon className="w-4 h-4" />
-                  <span>Dark</span>
+                  <Moon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Dark</span>
                 </>
               )}
             </button>
@@ -102,13 +102,13 @@ const Index = () => {
       </header>
 
         {/* Main Content */}
-        <main className="container mx-auto px-6 py-12 max-w-4xl">
+        <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
         {/* What makes me different */}
         <section className="mb-16">
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ What makes me different:</h2>
           <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Started coding at age 11</strong> → Been building tech projects for over a decade, from simple scripts to full-stack applications and AI systems.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Been in tech since age 11</strong> → From entrepreneurship, graphic design, to software engineering. Been building tech projects for over a decade, from simple scripts to full-stack applications and AI systems.
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>University of Waterloo</strong> → Honours Mathematics & Business Administration. Admitted with President's Scholarship. Combining technical depth with analytical thinking and business acumen.
@@ -166,7 +166,7 @@ const Index = () => {
         {/* Contact */}
         <section className="pb-12">
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Contact:</h2>
-          <div className="flex flex-wrap gap-6 text-sm">
+          <div className="flex flex-wrap gap-3 sm:gap-6 text-xs sm:text-sm">
             {socials.map((social, index) => {
               const Icon = social.icon;
               return (
@@ -175,13 +175,13 @@ const Index = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`flex items-center gap-2 transition-colors border px-4 py-2 rounded-lg ${
+                  className={`flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg ${
                     isDark 
                       ? 'text-gray-300 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5' 
                       : 'text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   {social.label}
                 </a>
               );
@@ -191,13 +191,13 @@ const Index = () => {
               download="muhib_waqar_resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center gap-2 transition-colors border px-4 py-2 rounded-lg ${
+              className={`flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg ${
                 isDark 
                   ? 'text-gray-300 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5' 
                   : 'text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5'
               }`}
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               Resume
             </a>
           </div>
