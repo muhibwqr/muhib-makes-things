@@ -148,7 +148,7 @@ const Index = () => {
               → <strong className={isDark ? 'text-white' : 'text-black'}>Malicious Payload USB Project</strong> → Security research project. USB-based payload emulator using Raspberry Pi to mimic HID attacks and demonstrate access risk with modular scripts for keystroke injection. <a href="https://github.com/muhibwqr/usb-payload" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Raspberry Pi, HID protocols
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>AI Mental Health Voice Agent</strong> → Healthcare AI project. Voice-based conversational agent for empathetic mental health support with crisis detection and safe escalation to human services. <a href="https://github.com/muhibwqr/mental-health-agent" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, OpenAI Whisper, GPT-4, WebRTC
+              → <strong className={isDark ? 'text-white' : 'text-black'}>AI Mental Health Voice Agent</strong> → Healthcare AI project. Voice-based conversational agent for empathetic mental health support with crisis detection and safe escalation to human services. <a href="https://github.com/muhibwqr/mental-health-agent" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Twilio, Deepgram, Conversational AI
             </p>
           </div>
         </section>
