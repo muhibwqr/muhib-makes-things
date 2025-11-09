@@ -108,13 +108,13 @@ const Index = () => {
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ What makes me different:</h2>
           <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Been in tech since age 11</strong> → Started with entrepreneurship and graphic design, then evolved into software engineering. That foundation taught me to think beyond code—understanding users, design, and business from day one.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Been in tech since age 11</strong> → Started with entrepreneurship and graphic design, then evolved into software engineering. That foundation taught me to think beyond code, understanding users, design, and business from day one.
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>University of Waterloo</strong> → Honours Mathematics & Business Administration, admitted with President's Scholarship. This dual focus lets me bridge technical complexity with real-world business impact—not just building things, but building things that matter.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>University of Waterloo</strong> → Honours Mathematics & Business Administration, admitted with President's Scholarship. This dual focus lets me bridge technical complexity with real-world business impact, not just building things, but building things that matter.
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>5M+ views across platforms</strong> → Built a personal brand that reaches millions. Beyond the numbers, I've used this reach to help non-profits amplify their message and mentor creators—proving I can scale impact beyond just my own work.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>5M+ views across platforms</strong> → Built a personal brand that reaches millions. Beyond the numbers, I've used this reach to help non-profits amplify their message and mentor creators, proving I can scale impact beyond just my own work.
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>Currently building in course generation & RAG</strong> → Applying my experience in education and AI to solve a real problem: making personalized learning accessible. Using Retrieval-Augmented Generation to create courses that adapt to how people actually learn.
@@ -136,19 +136,19 @@ const Index = () => {
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Building:</h2>
           <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Course Generation & RAG Platform</strong> → Taking my experience with education and scaling it with AI. Building tools that generate personalized courses using Retrieval-Augmented Generation—making quality education accessible at scale. <a href="https://github.com/muhibwqr" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, RAG, LLMs, Databases, Full Stack Development
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Course Generation & RAG Platform</strong> → Taking my experience with education and scaling it with AI. Building tools that generate personalized courses using Retrieval-Augmented Generation, making quality education accessible at scale. <a href="https://github.com/muhibwqr" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, RAG, LLMs, Databases, Full Stack Development
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>Triageo - AI Security Triage</strong> → Hack the North 2025 project. Applied my cybersecurity background to solve alert fatigue. Built a Slack-native assistant that goes from raw logs to actionable triage in under 5 seconds, using RAG over OWASP guidelines to ground decisions in security best practices. <a href="https://github.com/muhibwqr/triageo" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Cohere LLM, Slack API, FastAPI, RAG
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won GoOnHacks. A satirical take on productivity apps—tracks your productive time and penalizes you by having an AI agent call your dad for a chat. Rewards you for doomscrolling. Sometimes the best way to make a point is through humor. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Swift, Supabase, Vercel, Twilio, Deepgram
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won GoOnHacks. A satirical take on productivity apps that tracks your productive time and penalizes you by having an AI agent call your dad for a chat. Rewards you for doomscrolling. Sometimes the best way to make a point is through humor. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Swift, Supabase, Vercel, Twilio, Deepgram
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Malicious Payload USB Project</strong> → Security research that bridges theory and practice. Built a USB-based payload emulator using Raspberry Pi to demonstrate real-world HID attack vectors. Shows how physical access can be weaponized—knowledge that makes me a better defender. <a href="https://github.com/muhibwqr/usb-payload" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Raspberry Pi, HID protocols
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Malicious Payload USB Project</strong> → Security research that bridges theory and practice. Built a USB-based payload emulator using Raspberry Pi to demonstrate real-world HID attack vectors. Shows how physical access can be weaponized, knowledge that makes me a better defender. <a href="https://github.com/muhibwqr/usb-payload" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Raspberry Pi, HID protocols
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>AI Mental Health Voice Agent</strong> → Healthcare AI that combines my voice AI expertise with a real human need. Built a conversational agent that provides empathetic support with built-in crisis detection—proving AI can augment care, not replace human connection. <a href="https://github.com/muhibwqr/mental-health-agent" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Twilio, Deepgram, Conversational AI
+              → <strong className={isDark ? 'text-white' : 'text-black'}>AI Mental Health Voice Agent</strong> → Healthcare AI that combines my voice AI expertise with a real human need. Built a conversational agent that provides empathetic support with built-in crisis detection, proving AI can augment care, not replace human connection. <a href="https://github.com/muhibwqr/mental-health-agent" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Twilio, Deepgram, Conversational AI
             </p>
           </div>
         </section>
@@ -157,9 +157,12 @@ const Index = () => {
         <section className="mb-16" id="about">
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Please reach out if you're:</h2>
           <div className={`space-y-3 text-sm ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
-            <p>→ A fellow founder building something meaningful—I love connecting with people who think beyond the code.</p>
+            <p>→ A fellow founder building something meaningful. I love connecting with people who think beyond the code.</p>
             <p>→ Curious about my work, my journey, or just want to chat about tech, entrepreneurship, or wrestling.</p>
             <p>→ Looking for someone who brings technical depth, business acumen, and relentless execution to software engineering, cybersecurity, or product roles.</p>
+            <p className={`mt-4 pt-4 border-t ${isDark ? 'border-white/10 text-gray-300' : 'border-gray-200 text-gray-700'}`}>
+              I normally respond within 12 hours, so feel free to shoot me a message wherever you like.
+            </p>
           </div>
         </section>
 
