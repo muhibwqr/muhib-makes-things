@@ -1,6 +1,7 @@
 import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun } from "lucide-react";
 import Orb from "@/components/Orb";
 import { useState, useEffect } from "react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Index = () => {
   const [isDark, setIsDark] = useState(true);
@@ -53,13 +54,19 @@ const Index = () => {
         <div className="relative z-10">
         {/* Header */}
         <header className={`container mx-auto px-6 py-8 flex justify-between items-start border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
-        <div>
-          <h1 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-black'}`}>◆ Muhib Waqar</h1>
-          <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            <div className="flex items-center gap-2">
-              <span>→</span>
-              <span>Honours Math & Business Admin</span>
-              <span className="text-xs">UWaterloo</span>
+        <div className="flex items-center gap-4">
+          <Avatar className="w-16 h-16 border-2 border-white/20">
+            <AvatarImage src="/profile.jpg" alt="Muhib Waqar" />
+            <AvatarFallback className={`${isDark ? 'bg-gray-800 text-white' : 'bg-gray-200 text-black'}`}>MW</AvatarFallback>
+          </Avatar>
+          <div>
+            <h1 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-black'}`}>◆ Muhib Waqar</h1>
+            <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              <div className="flex items-center gap-2">
+                <span>→</span>
+                <span>Honours Math & Business Admin</span>
+                <span className="text-xs">UWaterloo</span>
+              </div>
             </div>
           </div>
         </div>
@@ -135,7 +142,7 @@ const Index = () => {
               → <strong className={isDark ? 'text-white' : 'text-black'}>Triageo - AI Security Triage</strong> → Hack the North 2025 project. Slack-native AI assistant that parses, classifies, and prioritizes security incidents. From log to triage in under 5 seconds with RAG over OWASP guidelines. <a href="https://github.com/muhibwqr/triageo" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Cohere LLM, Slack API, FastAPI, RAG
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won GoOnHacks with an app that keeps you scrolling. Built with modern web technologies. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind CSS
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won GoOnHacks. Tracks your productive time and penalizes you by calling your dad with an AI agent to have a chat. Rewards you for doomscrolling. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Swift, Supabase, Vercel, Twilio, Deepgram
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>Malicious Payload USB Project</strong> → Security research project. USB-based payload emulator using Raspberry Pi to mimic HID attacks and demonstrate access risk with modular scripts for keystroke injection. <a href="https://github.com/muhibwqr/usb-payload" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Raspberry Pi, HID protocols
