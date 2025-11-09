@@ -7,8 +7,14 @@ const Index = () => {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    const isDarkMode = root.classList.contains("dark");
-    setIsDark(isDarkMode);
+    // Default to dark mode if no class is set
+    if (!root.classList.contains("dark") && !root.classList.contains("light")) {
+      root.classList.add("dark");
+      setIsDark(true);
+    } else {
+      const isDarkMode = root.classList.contains("dark");
+      setIsDark(isDarkMode);
+    }
   }, []);
 
   const toggleTheme = () => {
@@ -31,7 +37,7 @@ const Index = () => {
       {/* Orb Background */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Orb
-          hoverIntensity={0.5}
+          hoverIntensity={0.8}
           rotateOnHover={true}
           hue={0}
           forceHoverState={false}
@@ -113,7 +119,7 @@ const Index = () => {
               → <strong className={isDark ? 'text-white' : 'text-black'}>Coffee enthusiast</strong> → Appreciate both artisanal coffee experiences and discovering unique local cafes wherever I go.
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won <a href="https://goonhacks.devpost.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GoOnHacks</a> with an app that keeps you scrolling. Built with modern web technologies. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">View on GitHub</a>
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won GoOnHacks with an app that keeps you scrolling. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind CSS
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>Seeking Summer 2026 internships</strong> → Looking for opportunities in Software Engineering, Cybersecurity, and Product. Ready to build something amazing.
@@ -126,19 +132,19 @@ const Index = () => {
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Building:</h2>
           <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won <a href="https://goonhacks.devpost.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GoOnHacks</a> with an app that keeps you scrolling. Built with modern web technologies. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a>
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won GoOnHacks with an app that keeps you scrolling. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind CSS
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Triageo - AI Security Triage</strong> → Hack the North 2025 project. Slack-native AI assistant for incident response. From chaos to clarity, in seconds.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Triageo - AI Security Triage</strong> → Hack the North 2025 project. Slack-native AI assistant for incident response. From chaos to clarity, in seconds. <a href="https://github.com/muhibwqr/triageo" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, OpenAI API, Slack API, FastAPI
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Malicious Payload USB Project</strong> → Security research project. USB-based payload emulator using Raspberry Pi to mimic HID attacks and demonstrate access risk with modular scripts for keystroke injection.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Malicious Payload USB Project</strong> → Security research project. USB-based payload emulator using Raspberry Pi to mimic HID attacks and demonstrate access risk with modular scripts for keystroke injection. <a href="https://github.com/muhibwqr/usb-payload" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Raspberry Pi, HID protocols
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>AI Mental Health Voice Agent</strong> → Healthcare AI project. Voice-based conversational agent for empathetic mental health support with crisis detection and safe escalation to human services.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>AI Mental Health Voice Agent</strong> → Healthcare AI project. Voice-based conversational agent for empathetic mental health support with crisis detection and safe escalation to human services. <a href="https://github.com/muhibwqr/mental-health-agent" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, OpenAI Whisper, GPT-4, WebRTC
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Phenomenon Collective</strong> → Dynamic clothing brand blending creative vision with social impact. Creating designs, managing production, and building a community.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Phenomenon Collective</strong> → Dynamic clothing brand blending creative vision with social impact. Creating designs, managing production, and building a community. <a href="https://github.com/muhibwqr/phenomenon-collective" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Next.js, TypeScript, Shopify API
             </p>
           </div>
         </section>
