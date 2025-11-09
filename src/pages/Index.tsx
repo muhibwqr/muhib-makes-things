@@ -55,8 +55,8 @@ const Index = () => {
         {/* Header */}
         <header className={`container mx-auto px-6 py-8 flex justify-between items-start border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
         <div className="flex items-center gap-4">
-          <Avatar className="w-16 h-16 border-2 border-white/20">
-            <AvatarImage src="/profile.jpg" alt="Muhib Waqar" />
+          <Avatar className="w-28 h-28 border-2 border-white/20">
+            <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
             <AvatarFallback className={`${isDark ? 'bg-gray-800 text-white' : 'bg-gray-200 text-black'}`}>MW</AvatarFallback>
           </Avatar>
           <div>
