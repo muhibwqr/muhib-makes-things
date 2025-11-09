@@ -1,5 +1,4 @@
-import { ScrollVelocity } from "@/components/ScrollVelocity";
-import { Github, Linkedin, Mail, Twitter, ArrowDown, ArrowRight, ArrowLeft, User } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, ArrowDown, ArrowRight, ArrowLeft, User, Download, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
@@ -62,39 +61,84 @@ const Index = () => {
             <span className="text-primary"> Waqar</span>
           </h1>
 
-          {/* Skills and Languages - Single scrolling row */}
-          <div className="w-full mt-4 mb-6">
-            <ScrollVelocity
-              texts={skills}
-              velocity={30}
-              parallaxClassName="py-2"
-              scrollerClassName="text-sm md:text-base text-gray-400"
-              numCopies={4}
-            />
-          </div>
-
-          {/* Tagline */}
-          <p className="text-xl md:text-2xl text-gray-300 font-light">
-            Software Engineer • Cybersecurity Specialist • Builder
-          </p>
-
-          {/* Key facts grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6">
-              <div className="text-3xl font-bold text-primary mb-2">11</div>
-              <div className="text-sm text-gray-400">Years old when I started coding</div>
-            </div>
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6">
-              <div className="text-3xl font-bold text-primary mb-2">4th</div>
-              <div className="text-sm text-gray-400">Place in Toronto wrestling championships</div>
-            </div>
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6">
-              <div className="text-3xl font-bold text-primary mb-2">∞</div>
-              <div className="text-sm text-gray-400">Passion for building & learning</div>
+          {/* Skills - Clean one line */}
+          <div className="w-full mt-4 mb-8">
+            <div className="text-sm md:text-base text-gray-400 text-center">
+              {skills.join(" • ")}
             </div>
           </div>
 
-          {/* Social links */}
+          {/* Story/Experience - Google Docs Style */}
+          <div className="mt-12 max-w-3xl mx-auto text-left bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-8 md:p-12">
+            <div className="space-y-6 text-gray-300 leading-relaxed">
+              <div className="flex items-start gap-3">
+                <ArrowRight className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                <p>
+                  <span className="text-white font-semibold">Started coding at age 11</span> → 
+                  Been building tech projects for over a decade, from simple scripts to full-stack applications.
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <ArrowRight className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                <p>
+                  <span className="text-white font-semibold">University of Waterloo</span> → 
+                  Studying Computer Science + Mathematics, combining technical depth with analytical thinking.
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <ArrowRight className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                <p>
+                  <span className="text-white font-semibold">4th place in Toronto wrestling championships</span> → 
+                  Trained with world champions, learned discipline and resilience that I apply to every project.
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <ArrowRight className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                <p>
+                  <span className="text-white font-semibold">Building a clothing brand</span> → 
+                  Creating designs, managing production, and selling to friends and customers. Entrepreneurship meets creativity.
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <ArrowRight className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                <p>
+                  <span className="text-white font-semibold">Travel fanatic & food lover</span> → 
+                  Explored various destinations, especially connected to my cultural roots in Pakistan. Love discovering authentic local dishes and unique cafes.
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <ArrowRight className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                <p>
+                  <span className="text-white font-semibold">Coffee enthusiast</span> → 
+                  Appreciate both artisanal coffee experiences and discovering unique local cafes wherever I go.
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <ArrowRight className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                <p>
+                  <span className="text-white font-semibold">Scrollify</span> → 
+                  Won <a href="https://goonhacks.devpost.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline inline-flex items-center gap-1">GoOnHacks <ExternalLink className="w-3 h-3" /></a> with an app that keeps you scrolling. Built with modern web technologies. 
+                  <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-2 inline-flex items-center gap-1">View on GitHub <ExternalLink className="w-3 h-3" /></a>
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <ArrowRight className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                <p>
+                  <span className="text-white font-semibold">Seeking Summer 2026 internships</span> → 
+                  Looking for opportunities in Software Engineering, Cybersecurity, and Product. Ready to build something amazing.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Social links and Resume */}
           <div className="flex flex-wrap justify-center gap-4 mt-12">
             {socials.map((social, index) => {
               const Icon = social.icon;
@@ -113,15 +157,21 @@ const Index = () => {
                 </Button>
               );
             })}
+            <Button
+              variant="outline"
+              size="lg"
+              className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-primary"
+              asChild
+            >
+              <a href="/muhib_waqar_resume.pdf" download="muhib_waqar_resume.pdf" target="_blank" rel="noopener noreferrer">
+                <Download className="w-5 h-5 mr-2" />
+                Resume
+              </a>
+            </Button>
           </div>
 
-          {/* Bottom text */}
-          <p className="text-sm text-gray-500 mt-12">
-            Seeking Summer 2026 internships in SWE, Cybersecurity & Product
-          </p>
-
           {/* Bottom Arrow */}
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-12">
             <ArrowDown className="w-6 h-6 md:w-8 md:h-8 text-primary/50 animate-bounce" />
           </div>
         </div>
