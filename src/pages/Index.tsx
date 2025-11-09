@@ -58,7 +58,7 @@ const Index = () => {
           <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
             <div className="flex items-center gap-2">
               <span>→</span>
-              <span>CS</span>
+              <span>Honours Math & Business Admin</span>
               <span className="text-xs">UWaterloo</span>
             </div>
           </div>
@@ -101,28 +101,25 @@ const Index = () => {
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ What makes me different:</h2>
           <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Started coding at age 11</strong> → Been building tech projects for over a decade, from simple scripts to full-stack applications.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Started coding at age 11</strong> → Been building tech projects for over a decade, from simple scripts to full-stack applications and AI systems.
+            </p>
+            <p>
+              → <strong className={isDark ? 'text-white' : 'text-black'}>University of Waterloo</strong> → Honours Mathematics & Business Administration. Admitted with President's Scholarship. Combining technical depth with analytical thinking and business acumen.
+            </p>
+            <p>
+              → <strong className={isDark ? 'text-white' : 'text-black'}>5M+ views across platforms</strong> → Built a personal brand that engages millions, helping non-profits with social media management and coaching creators on starting their own brands.
+            </p>
+            <p>
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Currently building in course generation & RAG</strong> → Working on AI-powered educational tools using Retrieval-Augmented Generation to create personalized learning experiences.
+            </p>
+            <p>
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Certified & experienced</strong> → AWS CCP, AZ-900, CCNA1, CCST - Cybersecurity. Previous SWE intern @ Islamic Books & Souvenirs, Cybersecurity Engineering @ Canadian Cyber Inc.
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>4th place in Toronto wrestling championships</strong> → Trained with world champions, learned discipline and resilience that I apply to every project.
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>University of Waterloo</strong> → Studying Computer Science + Mathematics, combining technical depth with analytical thinking.
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Building a clothing brand</strong> → Creating designs, managing production, and selling to friends and customers. Entrepreneurship meets creativity.
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Travel fanatic & food lover</strong> → Explored various destinations, especially connected to my cultural roots in Pakistan. Love discovering authentic local dishes and unique cafes.
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Coffee enthusiast</strong> → Appreciate both artisanal coffee experiences and discovering unique local cafes wherever I go.
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won GoOnHacks with an app that keeps you scrolling. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind CSS
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Seeking Summer 2026 internships</strong> → Looking for opportunities in Software Engineering, Cybersecurity, and Product. Ready to build something amazing.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Seeking Summer 2026 internships</strong> → Open to Intern, Software Engineer Intern, Application Security Intern, and SWE roles. Ready to build something amazing.
             </p>
           </div>
         </section>
@@ -132,19 +129,19 @@ const Index = () => {
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Building:</h2>
           <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won GoOnHacks with an app that keeps you scrolling. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind CSS
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Course Generation & RAG Platform</strong> → Currently building AI-powered educational tools using Retrieval-Augmented Generation to create personalized learning experiences and course content. <a href="https://github.com/muhibwqr" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, RAG, LLMs, Vector Databases
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Triageo - AI Security Triage</strong> → Hack the North 2025 project. Slack-native AI assistant for incident response. From chaos to clarity, in seconds. <a href="https://github.com/muhibwqr/triageo" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, OpenAI API, Slack API, FastAPI
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Triageo - AI Security Triage</strong> → Hack the North 2025 project. Slack-native AI assistant that parses, classifies, and prioritizes security incidents. From log to triage in under 5 seconds with RAG over OWASP guidelines. <a href="https://github.com/muhibwqr/triageo" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Cohere LLM, Slack API, FastAPI, RAG
+            </p>
+            <p>
+              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won GoOnHacks with an app that keeps you scrolling. Built with modern web technologies. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind CSS
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>Malicious Payload USB Project</strong> → Security research project. USB-based payload emulator using Raspberry Pi to mimic HID attacks and demonstrate access risk with modular scripts for keystroke injection. <a href="https://github.com/muhibwqr/usb-payload" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Raspberry Pi, HID protocols
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>AI Mental Health Voice Agent</strong> → Healthcare AI project. Voice-based conversational agent for empathetic mental health support with crisis detection and safe escalation to human services. <a href="https://github.com/muhibwqr/mental-health-agent" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, OpenAI Whisper, GPT-4, WebRTC
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Phenomenon Collective</strong> → Dynamic clothing brand blending creative vision with social impact. Creating designs, managing production, and building a community. <a href="https://github.com/muhibwqr/phenomenon-collective" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Next.js, TypeScript, Shopify API
             </p>
           </div>
         </section>
