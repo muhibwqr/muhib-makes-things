@@ -1,6 +1,7 @@
 import { ScrollVelocity } from "@/components/ScrollVelocity";
-import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, ArrowDown, ArrowRight, ArrowLeft, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Index = () => {
   const facts = [
@@ -40,6 +41,23 @@ const Index = () => {
       {/* Main content - centered */}
       <div className="min-h-screen flex flex-col items-center justify-center px-4 relative z-20">
         <div className="text-center space-y-8 max-w-4xl">
+          {/* Profile Icon */}
+          <div className="flex justify-center mb-4">
+            <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-primary/50 ring-4 ring-primary/20">
+              <AvatarImage src="/profile.jpg" alt="Muhib Waqar" />
+              <AvatarFallback className="bg-primary/20 text-primary text-4xl md:text-5xl font-bold">
+                <User className="w-16 h-16 md:w-20 md:h-20" />
+              </AvatarFallback>
+            </Avatar>
+          </div>
+
+          {/* Decorative Arrows */}
+          <div className="flex items-center justify-center gap-8 mb-4">
+            <ArrowLeft className="w-6 h-6 md:w-8 md:h-8 text-primary/50 animate-pulse" />
+            <div className="h-px w-16 md:w-24 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+            <ArrowRight className="w-6 h-6 md:w-8 md:h-8 text-primary/50 animate-pulse" />
+          </div>
+
           {/* Name */}
           <h1 className="text-6xl md:text-8xl font-bold tracking-tight">
             <span className="text-white">Muhib</span>
@@ -92,6 +110,11 @@ const Index = () => {
           <p className="text-sm text-gray-500 mt-12">
             Seeking Summer 2026 internships in SWE, Cybersecurity & Product
           </p>
+
+          {/* Bottom Arrow */}
+          <div className="flex justify-center mt-8">
+            <ArrowDown className="w-6 h-6 md:w-8 md:h-8 text-primary/50 animate-bounce" />
+          </div>
         </div>
       </div>
 
