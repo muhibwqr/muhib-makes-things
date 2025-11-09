@@ -221,6 +221,7 @@ export default function Orb({
     const rotationSpeed = 0.3;
 
     const handleMouseMove = (e: MouseEvent) => {
+      if (!container) return;
       const rect = container.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -232,19 +233,18 @@ export default function Orb({
       const uvX = ((x - centerX) / size) * 2.0;
       const uvY = ((y - centerY) / size) * 2.0;
 
-      if (Math.sqrt(uvX * uvX + uvY * uvY) < 0.8) {
-        targetHover = 1;
+      // Calculate distance from center and set hover state
+      const dist = Math.sqrt(uvX * uvX + uvY * uvY);
+      // Use a larger radius and smooth transition
+      if (dist < 1.2) {
+        targetHover = Math.max(0, 1 - (dist / 1.2));
       } else {
         targetHover = 0;
       }
     };
 
-    const handleMouseLeave = () => {
-      targetHover = 0;
-    };
-
-    container.addEventListener('mousemove', handleMouseMove);
-    container.addEventListener('mouseleave', handleMouseLeave);
+    // Listen to mouse events on the entire window
+    window.addEventListener('mousemove', handleMouseMove);
 
     let rafId: number;
     const update = (t: number) => {
@@ -270,9 +270,10 @@ export default function Orb({
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener('resize', resize);
-      container.removeEventListener('mousemove', handleMouseMove);
-      container.removeEventListener('mouseleave', handleMouseLeave);
-      container.removeChild(gl.canvas);
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (container && container.contains(gl.canvas)) {
+        container.removeChild(gl.canvas);
+      }
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, [hue, hoverIntensity, rotateOnHover, forceHoverState]);

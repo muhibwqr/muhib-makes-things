@@ -38,10 +38,15 @@ const Index = () => {
         />
       </div>
       
-      {/* Content */}
+      {/* Content with backdrop for readability */}
       <div className="relative z-10 min-h-screen">
-      {/* Header */}
-      <header className={`container mx-auto px-6 py-8 flex justify-between items-start border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+        {/* Semi-transparent backdrop for text readability */}
+        <div className={`fixed inset-0 ${isDark ? 'bg-black/60' : 'bg-white/60'} backdrop-blur-sm pointer-events-none`}></div>
+        
+        {/* Content wrapper */}
+        <div className="relative z-10">
+        {/* Header */}
+        <header className={`container mx-auto px-6 py-8 flex justify-between items-start border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
         <div>
           <h1 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-black'}`}>◆ Muhib Waqar</h1>
           <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -83,12 +88,12 @@ const Index = () => {
         </nav>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-12 max-w-4xl">
+        {/* Main Content */}
+        <main className="container mx-auto px-6 py-12 max-w-4xl">
         {/* What makes me different */}
         <section className="mb-16">
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ What makes me different:</h2>
-          <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+          <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>Started coding at age 11</strong> → Been building tech projects for over a decade, from simple scripts to full-stack applications.
             </p>
@@ -119,7 +124,7 @@ const Index = () => {
         {/* Building Section */}
         <section className="mb-16" id="projects">
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Building:</h2>
-          <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+          <div className={`space-y-4 text-sm leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won <a href="https://goonhacks.devpost.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GoOnHacks</a> with an app that keeps you scrolling. Built with modern web technologies. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a>
             </p>
@@ -141,7 +146,7 @@ const Index = () => {
         {/* Reach Out */}
         <section className="mb-16" id="about">
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Please reach out if you're:</h2>
-          <div className={`space-y-3 text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+          <div className={`space-y-3 text-sm ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>→ A fellow founder.</p>
             <p>→ Someone who is curious about me or what I'm doing.</p>
             <p>→ Looking for a software engineer, cybersecurity specialist, or product builder.</p>
@@ -187,7 +192,8 @@ const Index = () => {
             </a>
           </div>
         </section>
-      </main>
+        </main>
+        </div>
       </div>
     </div>
   );
