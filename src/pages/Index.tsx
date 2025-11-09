@@ -53,8 +53,8 @@ const Index = () => {
         {/* Content wrapper */}
         <div className="relative z-10">
         {/* Header */}
-        <header className={`container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col sm:flex-row justify-between items-start gap-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
-        <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+        <header className={`container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col items-center gap-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+        <div className="flex items-center gap-3 sm:gap-4">
           <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-white/20 flex-shrink-0">
             <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
             <AvatarFallback className={`${isDark ? 'bg-gray-800 text-white' : 'bg-gray-200 text-black'}`}>MW</AvatarFallback>
@@ -70,7 +70,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-        <nav className="text-xs sm:text-sm w-full sm:w-auto">
+        <nav className="text-xs sm:text-sm">
           <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
             <a href="#projects" className={`transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Projects</a>
             <span className={isDark ? 'text-gray-600' : 'text-gray-300'}>|</span>
