@@ -1,5 +1,5 @@
 import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun } from "lucide-react";
-import Dither from "@/components/Dither";
+import Orb from "@/components/Orb";
 import { useState, useEffect } from "react";
 
 const Index = () => {
@@ -28,17 +28,13 @@ const Index = () => {
 
   return (
     <div className={`min-h-screen relative ${isDark ? 'bg-black text-white' : 'bg-white text-black'}`}>
-      {/* Dither Background */}
-      <div className="fixed inset-0 w-full h-full z-0 opacity-20">
-        <Dither
-          waveColor={isDark ? [0.2, 0.2, 0.3] : [0.8, 0.8, 0.9]}
-          disableAnimation={false}
-          enableMouseInteraction={true}
-          mouseRadius={0.3}
-          colorNum={4}
-          waveAmplitude={0.2}
-          waveFrequency={3}
-          waveSpeed={0.05}
+      {/* Orb Background */}
+      <div className="fixed inset-0 w-full h-full z-0">
+        <Orb
+          hoverIntensity={0.5}
+          rotateOnHover={true}
+          hue={0}
+          forceHoverState={false}
         />
       </div>
       
