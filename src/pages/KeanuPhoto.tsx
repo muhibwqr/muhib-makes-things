@@ -1,235 +1,96 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Camera,
-  Download,
-  RotateCcw,
-  Image as ImageIcon,
-  Loader2,
-} from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Camera, Download, RotateCcw, Image as ImageIcon } from "lucide-react";
 
 export default function KeanuPhoto() {
   const [streaming, setStreaming] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [keanuMode, setKeanuMode] = useState<
-    "normal" | "young" | "grayscale" | "young-gray"
-  >("normal");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Helper function to initialize camera stream
-  const initializeCamera = async (video: HTMLVideoElement): Promise<MediaStream> => {
-    if (!navigator.mediaDevices?.getUserMedia) {
-      throw new Error("Camera access is not supported in your browser");
-    }
-
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { 
-        facingMode: "user",
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
-      },
-      audio: false
-    });
-
-    video.srcObject = stream;
-    video.muted = true;
-    video.playsInline = true;
-    video.setAttribute('playsinline', '');
-
-    return stream;
-  };
-
-  // Helper function to set up video element
-  const setupVideoElement = async (video: HTMLVideoElement): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      const timeoutId = setTimeout(() => {
-        reject(new Error("Video setup timed out"));
-      }, 10000);
-
-      const handleLoaded = () => {
-        clearTimeout(timeoutId);
-        resolve();
-      };
-
-      video.onloadedmetadata = handleLoaded;
-    });
-  };
-
-  // Stop camera when component unmounts
   useEffect(() => {
-    return () => stopCamera();
+    return () => {
+      if (videoRef.current?.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
   }, []);
 
   const startCamera = async () => {
-    console.log("Starting camera initialization...");
-    setIsLoading(true);
-    setError(null);
-    
     try {
-      // Check browser support
-      if (!navigator.mediaDevices?.getUserMedia) {
-        console.error("getUserMedia not supported");
-        throw new Error("Camera access is not supported in your browser");
-      }
-
-      // Check if video element exists
-      if (!videoRef.current) {
-        console.error("Video element not found");
-        throw new Error("Camera initialization failed: video element not ready");
-      }
-
-      console.log("Requesting camera access...");
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { 
-          facingMode: "user", 
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        },
-        audio: false,
+        video: { facingMode: 'user', width: 1280, height: 720 }
       });
-
-      console.log("Camera access granted, setting up video element...");
-      const video = videoRef.current;
       
-      // Clean up any existing stream
-      if (video.srcObject) {
-        const oldStream = video.srcObject as MediaStream;
-        oldStream.getTracks().forEach(track => track.stop());
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setStreaming(true);
       }
-
-      // Set up video properties
-      video.srcObject = stream;
-      video.muted = true;
-      video.playsInline = true;
-      video.setAttribute('playsinline', ''); // For iOS
-
-      console.log("Waiting for video metadata...");
-      // Wait for metadata with timeout
-      await Promise.race([
-        new Promise((resolve) => {
-          video.onloadedmetadata = () => {
-            console.log("Video metadata loaded");
-            resolve(true);
-          };
-        }),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error("Video metadata timeout")), 5000)
-        )
-      ]);
-
-        try {
-          await video.play();
-          setStreaming(true);
-          console.log("Camera stream started successfully");
-        } catch (err) {
-          console.error("Autoplay blocked, waiting for user interaction", err);
-          setError(
-            "Autoplay blocked. Tap the video or press 'Start Camera' again."
-          );
-        }
-      }
-
-      setIsLoading(false);
-    } catch (err) {
-      console.error("Error starting camera:", err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to access camera. Please grant permissions."
-      );
-      setIsLoading(false);
-      setStreaming(false);
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+      alert("Could not access camera. Please make sure you've granted camera permissions.");
     }
   };
 
   const stopCamera = () => {
     if (videoRef.current?.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
-      stream.getTracks().forEach((track) => track.stop());
+      stream.getTracks().forEach(track => track.stop());
       videoRef.current.srcObject = null;
+      setStreaming(false);
     }
-    setStreaming(false);
   };
 
-  const capturePhoto = async () => {
-    setIsLoading(true);
-    setError(null);
+  const capturePhoto = () => {
+    if (!videoRef.current || !canvasRef.current) return;
 
-    try {
-      if (!videoRef.current || !canvasRef.current)
-        throw new Error("Camera not initialized");
-
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-
-      if (video.readyState < video.HAVE_ENOUGH_DATA) {
-        throw new Error("Camera not ready yet");
-      }
-
-      const width = video.videoWidth;
-      const height = video.videoHeight;
-
-      if (!width || !height)
-        throw new Error("Invalid video dimensions for capture");
-
-      canvas.width = width * 2;
-      canvas.height = height;
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Could not get canvas context");
-
-      // Draw user
-      ctx.drawImage(video, 0, 0, width, height);
-
-      // Load Keanu image
-      const getKeanuUrl = () => {
-        let suffix = "";
-        if (keanuMode === "young") suffix = "y";
-        if (keanuMode === "grayscale") suffix = "g";
-        if (keanuMode === "young-gray") suffix = "yg";
-        return `https://placekeanu.com/${width}/${height}/${suffix}`;
-      };
-
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+    
+    // Set canvas to same size as video
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      // Draw user's photo
+      ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+      
+      // Get Keanu image - use a reasonable size (about 1/4 of the canvas)
+      const keanuSize = Math.min(videoWidth, videoHeight) * 0.4;
+      const keanuUrl = `https://placekeanu.com/${Math.round(keanuSize)}/${Math.round(keanuSize)}`;
+      
+      // Load Keanu image and overlay it in the bottom right corner
       const keanuImg = new Image();
-      keanuImg.crossOrigin = "anonymous";
-
-      await new Promise<void>((resolve, reject) => {
-        keanuImg.onload = () => {
-          ctx.drawImage(keanuImg, width, 0, width, height);
-          resolve();
-        };
-        keanuImg.onerror = () => reject(new Error("Failed to load Keanu image"));
-        keanuImg.src = getKeanuUrl();
-      });
-
-      const imageData = canvas.toDataURL("image/png");
-      setCapturedImage(imageData);
-      stopCamera();
-    } catch (err) {
-      console.error("Capture error:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to capture image."
-      );
-    } finally {
-      setIsLoading(false);
+      keanuImg.crossOrigin = 'anonymous';
+      keanuImg.onload = () => {
+        // Draw Keanu in bottom right corner with some padding
+        const padding = 20;
+        const x = videoWidth - keanuSize - padding;
+        const y = videoHeight - keanuSize - padding;
+        ctx.drawImage(keanuImg, x, y, keanuSize, keanuSize);
+        
+        const imageData = canvas.toDataURL('image/png');
+        setCapturedImage(imageData);
+        stopCamera();
+      };
+      keanuImg.onerror = () => {
+        alert("Failed to load Keanu image. Please try again.");
+      };
+      keanuImg.src = keanuUrl;
     }
   };
 
   const downloadImage = () => {
     if (!capturedImage) return;
-    const link = document.createElement("a");
+    
+    const link = document.createElement('a');
     link.download = `keanu-photo-${Date.now()}.png`;
     link.href = capturedImage;
     link.click();
@@ -237,8 +98,6 @@ export default function KeanuPhoto() {
 
   const resetPhoto = () => {
     setCapturedImage(null);
-    setError(null);
-    setStreaming(false);
   };
 
   return (
@@ -253,61 +112,26 @@ export default function KeanuPhoto() {
                 Take a Photo with Keanu
               </CardTitle>
               <CardDescription>
-                Capture yourself and get a Keanu Reeves photo added!
+                Capture yourself and Keanu will appear in your photo!
               </CardDescription>
             </CardHeader>
-
             <CardContent className="space-y-4">
-              {/* Keanu Mode Buttons */}
-              <div className="flex flex-wrap gap-2">
-                {[
-                  ["normal", "Normal Keanu"],
-                  ["young", "Young Keanu"],
-                  ["grayscale", "Grayscale"],
-                  ["young-gray", "Young + Grayscale"],
-                ].map(([mode, label]) => (
-                  <Button
-                    key={mode}
-                    variant={keanuMode === mode ? "default" : "outline"}
-                    onClick={() => setKeanuMode(mode as any)}
-                    disabled={!!capturedImage}
-                  >
-                    {label}
-                  </Button>
-                ))}
-              </div>
-
-              {/* Video or Image Display */}
+              {/* Camera/Preview Section */}
               <div className="relative bg-black rounded-lg overflow-hidden aspect-video flex items-center justify-center">
                 {!capturedImage ? (
                   <>
-                    {isLoading ? (
-                      <div className="text-center text-muted-foreground">
-                        <Loader2 className="w-16 h-16 mx-auto mb-4 animate-spin opacity-50" />
-                        <p>Initializing camera...</p>
-                      </div>
-                    ) : streaming ? (
+                    {streaming ? (
                       <video
                         ref={videoRef}
                         autoPlay
                         playsInline
-                        muted
                         className="w-full h-full object-contain"
                         style={{ transform: "scaleX(-1)" }}
                       />
                     ) : (
                       <div className="text-center text-muted-foreground">
-                        {error ? (
-                          <>
-                            <ImageIcon className="w-16 h-16 mx-auto mb-4 text-destructive opacity-50" />
-                            <p className="text-destructive">{error}</p>
-                          </>
-                        ) : (
-                          <>
-                            <ImageIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                            <p>Camera not active</p>
-                          </>
-                        )}
+                        <ImageIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                        <p>Camera not active</p>
                       </div>
                     )}
                     <canvas ref={canvasRef} className="hidden" />
@@ -321,24 +145,7 @@ export default function KeanuPhoto() {
                 )}
               </div>
 
-              {/* Status */}
-              <div className="mt-2 text-sm">
-                <p>
-                  <strong>Status:</strong>{" "}
-                  {isLoading
-                    ? "Initializing..."
-                    : streaming
-                    ? "Camera Active"
-                    : "Idle"}
-                </p>
-                {error && <p className="text-destructive">Error: {error}</p>}
-                <p className="text-xs text-muted-foreground mt-1">
-                  If the camera doesn't start, ensure you've granted permissions
-                  and tap the video (especially on Safari/iOS).
-                </p>
-              </div>
-
-              {/* Buttons */}
+              {/* Controls */}
               <div className="flex flex-wrap gap-2">
                 {!streaming && !capturedImage && (
                   <Button onClick={startCamera} size="lg">
@@ -346,26 +153,15 @@ export default function KeanuPhoto() {
                     Start Camera
                   </Button>
                 )}
-
                 {streaming && (
-                  <Button onClick={capturePhoto} size="lg" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Capturing...
-                      </>
-                    ) : (
-                      <>
-                        <Camera className="w-4 h-4 mr-2" />
-                        Capture with Keanu
-                      </>
-                    )}
+                  <Button onClick={capturePhoto} size="lg">
+                    <Camera className="w-4 h-4 mr-2" />
+                    Capture with Keanu
                   </Button>
                 )}
-
                 {capturedImage && (
                   <>
-                    <Button onClick={downloadImage} size="lg">
+                    <Button onClick={downloadImage} size="lg" variant="default">
                       <Download className="w-4 h-4 mr-2" />
                       Download
                     </Button>
@@ -377,18 +173,16 @@ export default function KeanuPhoto() {
                 )}
               </div>
 
-              {/* Info Section */}
+              {/* Info */}
               <div className="text-sm text-muted-foreground bg-muted/50 p-4 rounded-lg">
                 <p className="font-semibold mb-2">💡 How it works:</p>
                 <ol className="list-decimal list-inside space-y-1">
-                  <li>Click "Start Camera" and grant permission</li>
-                  <li>Select your preferred Keanu mode</li>
-                  <li>Click "Capture with Keanu"</li>
-                  <li>Download or retake your photo!</li>
+                  <li>Click "Start Camera" and grant camera permissions</li>
+                  <li>Click "Capture with Keanu" to take your photo</li>
+                  <li>Keanu will appear in the bottom right corner!</li>
+                  <li>Download or take another photo!</li>
                 </ol>
-                <p className="mt-2 text-xs">
-                  Powered by PlaceKeanu.com — You're breathtaking! ❤️
-                </p>
+                <p className="mt-2 text-xs">Powered by PlaceKeanu.com - You're breathtaking! ❤️</p>
               </div>
             </CardContent>
           </Card>

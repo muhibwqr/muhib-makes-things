@@ -68,6 +68,19 @@ export default function Chat() {
         throw new Error("API key is not configured. Please check your environment variables.");
       }
 
+      // Build conversation history
+      const conversationHistory = [...messages, userMessage].map(msg => ({
+        role: msg.role === "user" ? "user" : "model",
+        parts: [{ text: msg.content }]
+      }));
+
+      // Prepend system prompt to the first user message
+      const firstUserIndex = conversationHistory.findIndex(msg => msg.role === "user");
+      if (firstUserIndex !== -1) {
+        conversationHistory[firstUserIndex].parts[0].text = 
+          `${systemPrompt}\n\n${conversationHistory[firstUserIndex].parts[0].text}`;
+      }
+
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
         {
@@ -76,12 +89,7 @@ export default function Chat() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            contents: [
-              {
-                role: "user",
-                parts: [{ text: `${systemPrompt}\n\nUser: ${userMessage.content}\nAssistant:` }]
-              }
-            ],
+            contents: conversationHistory,
             generationConfig: {
               temperature: 0.7,
               topK: 40,

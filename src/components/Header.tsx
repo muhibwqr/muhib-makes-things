@@ -45,13 +45,15 @@ export function Header() {
            style={{ width: `${scrollProgress}%` }} />
       
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center" style={{ minWidth: 120, minHeight: 40 }}>
+        <div className="flex items-center" style={{ minWidth: 220, minHeight: 60 }}>
           <Link
             to="/"
-            className="text-xl md:text-2xl font-bold tracking-tight text-white select-none"
+            className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent drop-shadow-lg select-none"
             style={{
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
               userSelect: 'none',
-              letterSpacing: '-0.01em',
+              letterSpacing: '-0.04em',
             }}
             tabIndex={0}
             aria-label="Home"
