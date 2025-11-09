@@ -4,19 +4,27 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Index = () => {
-  const facts = [
-    "Started coding at age 11",
-    "4th place in Toronto wrestling championships",
-    "Trained with world champions",
-    "University of Waterloo CS + Math",
-    "Building a clothing brand",
-    "Travel fanatic",
-    "Coffee enthusiast",
-    "Food lover",
-    "Cybersecurity specialist",
-    "Full-stack engineer",
-    "Machine learning builder",
-    "Cloud infrastructure expert"
+  const skills = [
+    "TypeScript",
+    "Python",
+    "React",
+    "Node.js",
+    "Java",
+    "C++",
+    "Go",
+    "AWS",
+    "Docker",
+    "Kubernetes",
+    "PostgreSQL",
+    "MongoDB",
+    "GraphQL",
+    "Redis",
+    "Linux",
+    "Git",
+    "CI/CD",
+    "Machine Learning",
+    "Cybersecurity",
+    "Cloud Infrastructure"
   ];
 
   const socials = [
@@ -28,19 +36,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
-      {/* Animated scrolling text */}
-      <div className="absolute top-0 left-0 right-0 z-10">
-        <ScrollVelocity
-          texts={facts}
-          velocity={50}
-          parallaxClassName="bg-dark-blue/30 py-4"
-          scrollerClassName="text-white"
-        />
-      </div>
-
       {/* Main content - centered */}
       <div className="min-h-screen flex flex-col items-center justify-center px-4 relative z-20">
-        <div className="text-center space-y-8 max-w-4xl">
+        <div className="text-center space-y-8 max-w-4xl w-full">
           {/* Profile Icon */}
           <div className="flex justify-center mb-4">
             <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-primary/50 ring-4 ring-primary/20">
@@ -63,6 +61,17 @@ const Index = () => {
             <span className="text-white">Muhib</span>
             <span className="text-primary"> Waqar</span>
           </h1>
+
+          {/* Skills and Languages - Single scrolling row */}
+          <div className="w-full mt-4 mb-6">
+            <ScrollVelocity
+              texts={skills}
+              velocity={30}
+              parallaxClassName="py-2"
+              scrollerClassName="text-sm md:text-base text-gray-400"
+              numCopies={4}
+            />
+          </div>
 
           {/* Tagline */}
           <p className="text-xl md:text-2xl text-gray-300 font-light">
@@ -116,16 +125,6 @@ const Index = () => {
             <ArrowDown className="w-6 h-6 md:w-8 md:h-8 text-primary/50 animate-bounce" />
           </div>
         </div>
-      </div>
-
-      {/* Bottom animated text */}
-      <div className="absolute bottom-0 left-0 right-0 z-10">
-        <ScrollVelocity
-          texts={facts}
-          velocity={-50}
-          parallaxClassName="bg-dark-blue/30 py-4"
-          scrollerClassName="text-white"
-        />
       </div>
     </div>
   );
