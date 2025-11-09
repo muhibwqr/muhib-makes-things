@@ -120,11 +120,9 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     font-family: 'Space Grotesk', system-ui, sans-serif;
-    overflow: hidden;
   }
 
   html {
-    overflow: hidden;
     scroll-behavior: smooth;
   }
 }
