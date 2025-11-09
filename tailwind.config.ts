@@ -22,6 +22,7 @@ export default {
         montserrat: ['Montserrat', 'sans-serif'],
       },
       colors: {
+        "dark-blue": "hsl(217 50% 15%)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
