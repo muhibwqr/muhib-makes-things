@@ -1,5 +1,4 @@
 import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun } from "lucide-react";
-import Orb from "@/components/Orb";
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
@@ -35,17 +34,7 @@ const Index = () => {
 
   return (
     <div className={`min-h-screen relative ${isDark ? 'bg-black text-white' : 'bg-white text-black'}`}>
-      {/* Orb Background */}
-      <div className="fixed inset-0 w-full h-full z-0">
-        <Orb
-          hoverIntensity={0.8}
-          rotateOnHover={true}
-          hue={0}
-          forceHoverState={false}
-        />
-      </div>
-      
-      {/* Content with backdrop for readability */}
+      {/* Content wrapper */}
       <div className="relative z-10 min-h-screen">
         {/* Semi-transparent backdrop for text readability */}
         <div className={`fixed inset-0 ${isDark ? 'bg-black/60' : 'bg-white/60'} backdrop-blur-sm pointer-events-none`}></div>
