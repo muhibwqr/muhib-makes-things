@@ -12,12 +12,13 @@ export interface GhostCursorProps {
   bloomThreshold?: number;
   fadeDelayMs?: number;
   fadeDurationMs?: number;
+  haloColor?: string;
   className?: string;
   style?: CSSProperties;
 }
 
 const DEFAULT_PROPS: Required<Omit<GhostCursorProps, "className" | "style">> = {
-  color: "#B19EEF",
+  color: "#FFFFFF",
   brightness: 1,
   edgeIntensity: 0.2,
   trailLength: 40,
@@ -27,7 +28,8 @@ const DEFAULT_PROPS: Required<Omit<GhostCursorProps, "className" | "style">> = {
   bloomRadius: 0.9,
   bloomThreshold: 0.05,
   fadeDelayMs: 1200,
-  fadeDurationMs: 1200
+  fadeDurationMs: 1200,
+  haloColor: "#B19EEF"
 };
 
 export default function GhostCursor({
@@ -42,6 +44,7 @@ export default function GhostCursor({
   bloomThreshold = DEFAULT_PROPS.bloomThreshold,
   fadeDelayMs = DEFAULT_PROPS.fadeDelayMs,
   fadeDurationMs = DEFAULT_PROPS.fadeDurationMs,
+  haloColor = DEFAULT_PROPS.haloColor,
   className,
   style
 }: GhostCursorProps) {
@@ -129,20 +132,31 @@ export default function GhostCursor({
           );
           gradient.addColorStop(0, hexToRgba(color, baseAlpha));
           gradient.addColorStop(
-            Math.min(0.4 + bloomStrength, 1),
-            hexToRgba(color, baseAlpha * 0.5)
+            Math.min(0.35 + bloomStrength * 0.5, 0.9),
+            hexToRgba(color, baseAlpha * 0.6)
           );
-          gradient.addColorStop(1, hexToRgba(color, 0));
+          gradient.addColorStop(
+            Math.min(0.85 + bloomStrength * 0.25, 1),
+            hexToRgba(haloColor, baseAlpha * 0.45)
+          );
+          gradient.addColorStop(1, hexToRgba(haloColor, 0));
 
-          ctx.globalCompositeOperation = "lighter";
+          ctx.save();
+          ctx.globalCompositeOperation = "source-over";
+          ctx.shadowColor = hexToRgba(haloColor, baseAlpha * 0.8);
+          ctx.shadowBlur = radius * 0.65;
           ctx.fillStyle = gradient;
           ctx.beginPath();
           ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
           ctx.fill();
+          ctx.restore();
 
           if (edgeIntensity > 0) {
-            ctx.globalCompositeOperation = "screen";
-            ctx.strokeStyle = hexToRgba(color, baseAlpha * edgeIntensity);
+            ctx.globalCompositeOperation = "source-over";
+            ctx.strokeStyle = hexToRgba(
+              haloColor,
+              baseAlpha * Math.max(0.15, edgeIntensity)
+            );
             ctx.lineWidth = 1.5;
             ctx.beginPath();
             ctx.arc(point.x, point.y, radius * 0.6, 0, Math.PI * 2);
@@ -204,7 +218,7 @@ export default function GhostCursor({
         position: "absolute",
         inset: 0,
         pointerEvents: "none",
-        mixBlendMode: "screen",
+        mixBlendMode: "normal",
         ...style
       }}
     />
