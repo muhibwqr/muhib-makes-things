@@ -1,6 +1,7 @@
 import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import ColorBends from "@/components/ColorBends";
 
 const Index = () => {
   const [isDark, setIsDark] = useState(true);
@@ -34,11 +35,25 @@ const Index = () => {
 
   return (
     <div className={`min-h-screen relative ${isDark ? 'bg-black text-white' : 'bg-white text-black'}`}>
+      {/* ColorBends background animation */}
+      <div className="fixed inset-0 z-0">
+        <ColorBends 
+          transparent={true}
+          speed={0.2}
+          scale={1}
+          frequency={1}
+          warpStrength={1}
+          mouseInfluence={1}
+          parallax={0.5}
+          noise={0.1}
+        />
+      </div>
+      
+      {/* Semi-transparent backdrop for text readability */}
+      <div className={`fixed inset-0 z-[1] ${isDark ? 'bg-black/60' : 'bg-white/60'} backdrop-blur-sm pointer-events-none`}></div>
+      
       {/* Content wrapper */}
       <div className="relative z-10 min-h-screen">
-        {/* Semi-transparent backdrop for text readability */}
-        <div className={`fixed inset-0 ${isDark ? 'bg-black/60' : 'bg-white/60'} backdrop-blur-sm pointer-events-none`}></div>
-        
         {/* Content wrapper */}
         <div className="relative z-10">
         {/* Header */}
