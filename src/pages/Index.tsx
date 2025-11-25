@@ -150,7 +150,7 @@ const Index = () => {
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ building:</h2>
           <div className={`space-y-3 text-base leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>goosetype</strong> → minimal typing test with real-time wpm tracking and leaderboards. built for speed, designed for focus. <a href="https://goosetype.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">goosetype.com</a> • <a href="https://github.com/muhibwqr/waterloo-type-racer" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind, Vercel
+              → <strong className={isDark ? 'text-white' : 'text-black'}>goosetype</strong> → minimal typing test with real-time wpm tracking and leaderboards. built for speed, designed for focus. 500 users in 12 hours (initial launch). <a href="https://goosetype.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">goosetype.com</a> • <a href="https://github.com/muhibwqr/waterloo-type-racer" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind, Vercel
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>waterlootype</strong> → monkey type contest only for Waterloo students. <a href="https://github.com/muhibwqr/waterlootype" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • TypeScript
