@@ -4,14 +4,14 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
 
 const Index = () => {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     const root = window.document.documentElement;
-    // Default to dark mode if no class is set
+    // Default to light mode if no class is set
     if (!root.classList.contains("dark") && !root.classList.contains("light")) {
-      root.classList.add("dark");
-      setIsDark(true);
+      root.classList.add("light");
+      setIsDark(false);
     } else {
       const isDarkMode = root.classList.contains("dark");
       setIsDark(isDarkMode);
