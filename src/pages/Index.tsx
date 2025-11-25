@@ -150,10 +150,10 @@ const Index = () => {
           <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ building:</h2>
           <div className={`space-y-3 text-base leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>goosetype</strong> → minimal typing test with real-time wpm tracking and leaderboards. built for speed, designed for focus. <a href="https://github.com/muhibwqr/goosetype" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind, Vercel
+              → <strong className={isDark ? 'text-white' : 'text-black'}>goosetype</strong> → minimal typing test with real-time wpm tracking and leaderboards. built for speed, designed for focus. <a href="https://goosetype.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">goosetype.com</a> • <a href="https://github.com/muhibwqr/waterloo-type-racer" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind, Vercel
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>course generation & RAG platform</strong> → ai-powered tools for personalized learning. <a href="https://github.com/muhibwqr" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • python, RAG, LLMs, databases, full stack
+              → <strong className={isDark ? 'text-white' : 'text-black'}>waterlootype</strong> → monkey type contest only for Waterloo students. <a href="https://github.com/muhibwqr/waterlootype" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • TypeScript
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>triageo - ai security triage</strong> → hack the north 2025. slack-native assistant that triages security incidents in under 5 seconds using RAG over OWASP guidelines. <a href="https://github.com/muhibwqr/triageo" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • python, Cohere LLM, Slack API, FastAPI, RAG
@@ -162,10 +162,10 @@ const Index = () => {
               → <strong className={isDark ? 'text-white' : 'text-black'}>scrollify</strong> → won GoOnHacks. satirical productivity app that penalizes productive time by calling your dad via ai agent. rewards doomscrolling. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • swift, supabase, vercel, twilio, deepgram
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>malicious payload usb project</strong> → security research. usb-based payload emulator using Raspberry Pi to demonstrate HID attack vectors. <a href="https://github.com/muhibwqr/usb-payload" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • python, Raspberry Pi, HID protocols
+              → <strong className={isDark ? 'text-white' : 'text-black'}>vibesecure</strong> → security and privacy tools. <a href="https://github.com/muhibwqr/vibesecure" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a>
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>ai mental health voice agent</strong> → healthcare ai with empathetic support and crisis detection. proves ai can augment care, not replace human connection. <a href="https://github.com/muhibwqr/mental-health-agent" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • python, Twilio, Deepgram, Conversational AI
+              → <strong className={isDark ? 'text-white' : 'text-black'}>interactive-portfolio</strong> → interactive dark-themed portfolio with face-controlled obstacle avoidance game. <a href="https://github.com/muhibwqr/interactive-portfolio" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a>
             </p>
           </div>
         </section>
