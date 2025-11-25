@@ -117,9 +117,9 @@ const Index = () => {
 
         {/* Main Content */}
         <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
-        {/* What makes me different */}
+        {/* Why me */}
         <section className="mb-16">
-          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ what makes me different:</h2>
+          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ why me:</h2>
           <div className={`space-y-3 text-base leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>been in tech since age 11</strong> → from entrepreneurship and graphic design to software engineering. think beyond code.
@@ -160,12 +160,6 @@ const Index = () => {
             </p>
             <p>
               → <strong className={isDark ? 'text-white' : 'text-black'}>anti-productivity doomscroll reward system</strong> → won GoOnHacks. satirical productivity app that penalizes productive time by calling your dad via ai agent. rewards doomscrolling. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • swift, supabase, vercel, twilio, deepgram
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>privacy-first security toolkit</strong> → security and privacy tools. <a href="https://github.com/muhibwqr/vibesecure" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a>
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>face-controlled portfolio game</strong> → interactive dark-themed portfolio with face-controlled obstacle avoidance game. <a href="https://github.com/muhibwqr/interactive-portfolio" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a>
             </p>
           </div>
         </section>
