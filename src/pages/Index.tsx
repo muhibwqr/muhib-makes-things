@@ -1,7 +1,7 @@
 import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import ColorBends from "@/components/ColorBends";
+import LiquidEther from "@/components/LiquidEther";
 
 const Index = () => {
   const [isDark, setIsDark] = useState(true);
@@ -35,17 +35,15 @@ const Index = () => {
 
   return (
     <div className={`min-h-screen relative ${isDark ? 'bg-black text-white' : 'bg-white text-black'}`}>
-      {/* ColorBends background animation */}
+      {/* LiquidEther background animation */}
       <div className="fixed inset-0 z-0">
-        <ColorBends 
-          transparent={true}
-          speed={0.2}
-          scale={1}
-          frequency={1}
-          warpStrength={1}
-          mouseInfluence={1}
-          parallax={0.5}
-          noise={0.1}
+        <LiquidEther 
+          autoDemo={true}
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          mouseForce={20}
+          cursorSize={100}
+          resolution={0.5}
         />
       </div>
       
