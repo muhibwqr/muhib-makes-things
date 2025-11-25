@@ -39,11 +39,14 @@ const Index = () => {
       <div className="fixed inset-0 z-0">
         <LiquidEther 
           autoDemo={true}
-          autoSpeed={0.5}
-          autoIntensity={2.2}
-          mouseForce={20}
-          cursorSize={100}
-          resolution={0.5}
+          autoSpeed={0.4}
+          autoIntensity={2.0}
+          mouseForce={18}
+          cursorSize={120}
+          resolution={0.6}
+          dt={0.016}
+          BFECC={true}
+          isViscous={false}
         />
       </div>
       
@@ -62,13 +65,16 @@ const Index = () => {
             <AvatarFallback className={`${isDark ? 'bg-gray-800 text-white' : 'bg-gray-200 text-black'}`}>MW</AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <h1 className={`text-xl sm:text-2xl font-bold mb-1 sm:mb-2 ${isDark ? 'text-white' : 'text-black'}`}>◆ Muhib Waqar</h1>
+            <h1 className={`text-xl sm:text-2xl font-bold mb-1 sm:mb-2 ${isDark ? 'text-white' : 'text-black'}`}>◆ muhib waqar</h1>
             <div className={`text-xs sm:text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
               <div className="flex items-center gap-2 flex-wrap">
                 <span>→</span>
-                <span className="whitespace-nowrap">Honours Math & Business Admin</span>
-                <span className="text-xs">UWaterloo</span>
+                <span className="whitespace-nowrap">honours math & business admin</span>
+                <span className="text-xs">@ university of waterloo</span>
               </div>
+              <p className={`text-xs mt-1 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                building ai tools, security systems, and products that scale
+              </p>
             </div>
           </div>
         </div>
@@ -107,70 +113,73 @@ const Index = () => {
         <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
         {/* What makes me different */}
         <section className="mb-16">
-          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ What makes me different:</h2>
+          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ what makes me different:</h2>
           <div className={`space-y-3 text-base leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Been in tech since age 11</strong> → From entrepreneurship and graphic design to software engineering. Think beyond code.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>been in tech since age 11</strong> → from entrepreneurship and graphic design to software engineering. think beyond code.
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>University of Waterloo</strong> → Honours Math & Business Admin, President's Scholarship. Bridge technical depth with business impact.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>university of waterloo</strong> → honours math & business admin, president's scholarship. bridge technical depth with business impact.
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>5M+ views across platforms</strong> → Built a personal brand, helped non-profits, and mentored creators. Scale impact beyond my own work.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>5M+ views across platforms</strong> → built a personal brand, helped non-profits, and mentored creators. scale impact beyond my own work.
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Building course generation & RAG</strong> → AI-powered tools for personalized learning. Making quality education accessible at scale.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>building course generation & RAG</strong> → ai-powered tools for personalized learning. making quality education accessible at scale.
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Certified & experienced</strong> → AWS CCP, AZ-900, CCNA1, CCST. SWE intern @ IBS, Cybersecurity @ Canadian Cyber Inc.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>certified & experienced</strong> → aws ccp, az-900, ccna1, ccst. swe intern @ ibs, cybersecurity @ canadian cyber inc.
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>4th place Toronto wrestling</strong> → Trained with world champions. That discipline translates to debugging at 2am.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>4th place toronto wrestling</strong> → trained with world champions. that discipline translates to debugging at 2am.
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Seeking Summer 2026 internships</strong> → Open to Intern, SWE Intern, Application Security Intern, and SWE roles.
+              → <strong className={isDark ? 'text-white' : 'text-black'}>seeking summer 2026 internships</strong> → open to intern, swe intern, application security intern, and swe roles.
             </p>
           </div>
         </section>
 
         {/* Building Section */}
         <section className="mb-16" id="projects">
-          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Building:</h2>
+          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ building:</h2>
           <div className={`space-y-3 text-base leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Course Generation & RAG Platform</strong> → AI-powered tools for personalized learning. <a href="https://github.com/muhibwqr" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, RAG, LLMs, Databases, Full Stack
+              → <strong className={isDark ? 'text-white' : 'text-black'}>goosetype</strong> → minimal typing test with real-time wpm tracking and leaderboards. built for speed, designed for focus. <a href="https://github.com/muhibwqr/goosetype" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind, Vercel
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Triageo - AI Security Triage</strong> → Hack the North 2025. Slack-native assistant that triages security incidents in under 5 seconds using RAG over OWASP guidelines. <a href="https://github.com/muhibwqr/triageo" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Cohere LLM, Slack API, FastAPI, RAG
+              → <strong className={isDark ? 'text-white' : 'text-black'}>course generation & RAG platform</strong> → ai-powered tools for personalized learning. <a href="https://github.com/muhibwqr" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • python, RAG, LLMs, databases, full stack
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Scrollify</strong> → Won GoOnHacks. Satirical productivity app that penalizes productive time by calling your dad via AI agent. Rewards doomscrolling. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Swift, Supabase, Vercel, Twilio, Deepgram
+              → <strong className={isDark ? 'text-white' : 'text-black'}>triageo - ai security triage</strong> → hack the north 2025. slack-native assistant that triages security incidents in under 5 seconds using RAG over OWASP guidelines. <a href="https://github.com/muhibwqr/triageo" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • python, Cohere LLM, Slack API, FastAPI, RAG
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>Malicious Payload USB Project</strong> → Security research. USB-based payload emulator using Raspberry Pi to demonstrate HID attack vectors. <a href="https://github.com/muhibwqr/usb-payload" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Raspberry Pi, HID protocols
+              → <strong className={isDark ? 'text-white' : 'text-black'}>scrollify</strong> → won GoOnHacks. satirical productivity app that penalizes productive time by calling your dad via ai agent. rewards doomscrolling. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • swift, supabase, vercel, twilio, deepgram
             </p>
             <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>AI Mental Health Voice Agent</strong> → Healthcare AI with empathetic support and crisis detection. Proves AI can augment care, not replace human connection. <a href="https://github.com/muhibwqr/mental-health-agent" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • Python, Twilio, Deepgram, Conversational AI
+              → <strong className={isDark ? 'text-white' : 'text-black'}>malicious payload usb project</strong> → security research. usb-based payload emulator using Raspberry Pi to demonstrate HID attack vectors. <a href="https://github.com/muhibwqr/usb-payload" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • python, Raspberry Pi, HID protocols
+            </p>
+            <p>
+              → <strong className={isDark ? 'text-white' : 'text-black'}>ai mental health voice agent</strong> → healthcare ai with empathetic support and crisis detection. proves ai can augment care, not replace human connection. <a href="https://github.com/muhibwqr/mental-health-agent" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • python, Twilio, Deepgram, Conversational AI
             </p>
           </div>
         </section>
 
         {/* Reach Out */}
         <section className="mb-16" id="about">
-          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Please reach out if you're:</h2>
+          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ please reach out if you're:</h2>
           <div className={`space-y-2 text-base leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
-            <p>→ A fellow founder building something meaningful.</p>
-            <p>→ Curious about my work or want to chat about tech, entrepreneurship, or wrestling.</p>
-            <p>→ Looking for technical depth, business acumen, and execution in SWE, cybersecurity, or product roles.</p>
+            <p>→ a fellow founder building something meaningful.</p>
+            <p>→ curious about my work or want to chat about tech, entrepreneurship, or wrestling.</p>
+            <p>→ looking for technical depth, business acumen, and execution in SWE, cybersecurity, or product roles.</p>
             <p className={`mt-4 pt-4 border-t ${isDark ? 'border-white/10 text-gray-300' : 'border-gray-200 text-gray-700'}`}>
-              I respond within 12 hours. Feel free to message me anywhere.
+              i respond within 12 hours. feel free to message me anywhere.
             </p>
           </div>
         </section>
 
         {/* Contact */}
         <section className="pb-12">
-          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ Contact:</h2>
+          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ contact:</h2>
           <div className="flex flex-wrap gap-3 sm:gap-6 text-xs sm:text-sm">
             {socials.map((social, index) => {
               const Icon = social.icon;
@@ -207,6 +216,13 @@ const Index = () => {
             </a>
           </div>
         </section>
+        
+        {/* CTA */}
+        <div className={`text-center py-8 border-t ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            seeking summer 2026 internships — let's talk.
+          </p>
+        </div>
         </main>
         </div>
       </div>
