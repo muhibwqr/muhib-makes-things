@@ -34,11 +34,11 @@ const Index = () => {
   ];
 
   return (
-    <div className={`min-h-screen relative ${isDark ? 'bg-black text-white' : 'bg-white text-black'}`}>
+    <div className={`min-h-screen relative ${isDark ? "bg-black text-white" : "bg-white text-black"}`}>
       {/* LiquidEther background animation */}
       <div className="fixed inset-0 z-0">
-        <LiquidEther 
-          colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+        <LiquidEther
+          colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
           mouseForce={20}
           cursorSize={100}
           isViscous={false}
@@ -55,175 +55,315 @@ const Index = () => {
           autoRampDuration={0.6}
         />
       </div>
-      
+
       {/* Semi-transparent backdrop for text readability */}
-      <div className={`fixed inset-0 z-[1] ${isDark ? 'bg-black/60' : 'bg-white/60'} backdrop-blur-sm pointer-events-none`}></div>
-      
+      <div
+        className={`fixed inset-0 z-[1] ${
+          isDark ? "bg-black/60" : "bg-white/60"
+        } backdrop-blur-sm pointer-events-none`}
+      ></div>
+
       {/* Content wrapper */}
       <div className="relative z-10 min-h-screen">
-        {/* Content wrapper */}
         <div className="relative z-10">
-        {/* Header */}
-        <header className={`container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col items-center gap-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
-        <div className="flex items-center gap-3 sm:gap-4">
-          <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-white/20 flex-shrink-0">
-            <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
-            <AvatarFallback className={`${isDark ? 'bg-gray-800 text-white' : 'bg-gray-200 text-black'}`}>MW</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1">
-            <h1 className={`text-xl sm:text-2xl font-bold mb-1 sm:mb-2 ${isDark ? 'text-white' : 'text-black'}`}>◆ muhib waqar</h1>
-            <div className={`text-xs sm:text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span>→</span>
-                <span className="whitespace-nowrap">honours math & business admin</span>
-                <span className="text-xs">@ university of waterloo</span>
+          {/* Header */}
+          <header
+            className={`container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col items-center gap-4 border-b ${
+              isDark ? "border-white/10" : "border-gray-200"
+            }`}
+          >
+            <div className="flex items-center gap-3 sm:gap-4">
+              <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-white/20 flex-shrink-0">
+                <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
+                <AvatarFallback
+                  className={`${isDark ? "bg-gray-800 text-white" : "bg-gray-200 text-black"}`}
+                >
+                  MW
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <h1
+                  className={`text-xl sm:text-2xl font-bold mb-1 sm:mb-2 tracking-[0.2em] ${
+                    isDark ? "text-white" : "text-black"
+                  }`}
+                >
+                  MUHIB WAQAR
+                </h1>
+                <p className={`text-xs sm:text-sm ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+                  math & business @ waterloo • software + security engineer • product builder
+                </p>
               </div>
-              <p className={`text-xs mt-1 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                building ai tools, security systems, and products that scale
-              </p>
             </div>
-          </div>
-        </div>
-        <nav className="text-xs sm:text-sm">
-          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-            <a href="#projects" className={`transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Projects</a>
-            <span className={isDark ? 'text-gray-600' : 'text-gray-300'}>|</span>
-            <a href="#about" className={`transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>About me</a>
-            <span className={isDark ? 'text-gray-600' : 'text-gray-300'}>|</span>
-            <button
-              onClick={toggleTheme}
-              className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-all text-xs sm:text-sm ${
-                isDark 
-                  ? 'bg-white/5 hover:bg-white/10 border border-white/10 text-white' 
-                  : 'bg-black/5 hover:bg-black/10 border border-black/10 text-black'
-              }`}
-              aria-label="Toggle theme"
-            >
-              {isDark ? (
-                <>
-                  <Sun className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Light</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Dark</span>
-                </>
-              )}
-            </button>
-          </div>
-        </nav>
-      </header>
+            <nav className="text-xs sm:text-sm">
+              <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+                <button
+                  onClick={toggleTheme}
+                  className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-all text-xs sm:text-sm ${
+                    isDark
+                      ? "bg-white/5 hover:bg-white/10 border border-white/10 text-white"
+                      : "bg-black/5 hover:bg-black/10 border border-black/10 text-black"
+                  }`}
+                  aria-label="Toggle theme"
+                >
+                  {isDark ? (
+                    <>
+                      <Sun className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span className="hidden sm:inline">Light</span>
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span className="hidden sm:inline">Dark</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </nav>
+          </header>
 
-        {/* Main Content */}
-        <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
-        {/* Why me */}
-        <section className="mb-16">
-          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ why me:</h2>
-          <div className={`space-y-3 text-base leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>been in tech since age 11</strong> → from entrepreneurship and graphic design to software engineering. think beyond code.
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>university of waterloo</strong> → honours math & business admin, president's scholarship. bridge technical depth with business impact.
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>5M+ views across platforms</strong> → built a personal brand, helped non-profits, and mentored creators. scale impact beyond my own work.
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>building course generation & RAG</strong> → ai-powered tools for personalized learning. making quality education accessible at scale.
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>certified & experienced</strong> → aws ccp, az-900, ccna1, ccst. swe intern @ ibs, cybersecurity @ canadian cyber inc.
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>4th place toronto wrestling</strong> → trained with world champions. that discipline translates to debugging at 2am.
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>seeking summer 2026 internships</strong> → open to intern, swe intern, application security intern, and swe roles.
-            </p>
-          </div>
-        </section>
+          {/* Main Content */}
+          <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl space-y-16">
+            {/* Who I am */}
+            <section>
+              <h2
+                className={`text-xl font-semibold mb-6 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                ◆ who I am
+              </h2>
+              <div
+                className={`space-y-4 text-base leading-relaxed ${
+                  isDark ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
+                <p>
+                  I grew up believing discipline, humility, and hard work are forms of worship —
+                  that you show gratitude through action.
+                </p>
+                <p>
+                  That shaped everything: in high school I tried multiple businesses, built tools,
+                  failed fast, and kept shipping.
+                </p>
+                <p>
+                  I didn’t take loans for university (religious reasoning).
+                </p>
+                <p>
+                  Instead, I worked three part-time jobs while doing honours Math &amp; Business at
+                  Waterloo — sometimes washing dishes at 1am, then going home to code and study
+                  until sunrise.
+                </p>
+                <p>
+                  During a week of exams, quizzes, and assignments, I worked all three jobs.
+                </p>
+                <p>No boss dissatisfied. No deliverable missed.</p>
+                <p>I don’t wait for ideal conditions — I move anyway.</p>
+                <p>
+                  That hunger shows up in my engineering: calm under pressure, fast execution, zero
+                  entitlement, high ownership.
+                </p>
+              </div>
+            </section>
 
-        {/* Building Section */}
-        <section className="mb-16" id="projects">
-          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ building:</h2>
-          <div className={`space-y-3 text-base leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>minimalist typing arena</strong> → real-time wpm tracking and leaderboards. built for speed, designed for focus. 500 users in 12 hours (initial launch). <a href="https://goosetype.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">goosetype.com</a> • <a href="https://github.com/muhibwqr/waterloo-type-racer" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • React, TypeScript, Tailwind, Vercel
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>campus typing championship</strong> → monkey type contest only for Waterloo students. got banned cause 40 users sent too many auth emails too fast. <a href="https://github.com/muhibwqr/waterlootype" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • TypeScript
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>automated security incident responder</strong> → hack the north 2025. slack-native assistant that triages security incidents in under 5 seconds using RAG over OWASP guidelines. <a href="https://github.com/muhibwqr/triageo" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • python, Cohere LLM, Slack API, FastAPI, RAG
-            </p>
-            <p>
-              → <strong className={isDark ? 'text-white' : 'text-black'}>anti-productivity doomscroll reward system</strong> → won GoOnHacks. satirical productivity app that penalizes productive time by calling your dad via ai agent. rewards doomscrolling. <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">GitHub</a> • swift, supabase, vercel, twilio, deepgram
-            </p>
-          </div>
-        </section>
+            {/* What I build */}
+            <section>
+              <h2
+                className={`text-xl font-semibold mb-6 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                ◆ what I build
+              </h2>
+              <div
+                className={`space-y-4 text-base leading-relaxed ${
+                  isDark ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
+                <div>
+                  <p className="font-semibold">
+                    goosetype.com — typing arena
+                  </p>
+                  <p>
+                    Shipped in 1 week → 500 users in 12 hours.
+                  </p>
+                  <p>
+                    Originally “Waterloo Type” but after 40 students signed up instantly, Waterloo’s
+                    email security flagged it as phishing and auto-banned it — so I rebranded and
+                    rebuilt it into GooseType.
+                  </p>
+                  <p className="text-sm">
+                    stack: react, ts, tailwind, vercel
+                  </p>
+                </div>
 
-        {/* Reach Out */}
-        <section className="mb-16" id="about">
-          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ please reach out if you're:</h2>
-          <div className={`space-y-2 text-base leading-relaxed ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
-            <p>→ a fellow founder building something meaningful.</p>
-            <p>→ curious about my work or want to chat about tech, entrepreneurship, or wrestling.</p>
-            <p>→ looking for technical depth, business acumen, and execution in SWE, cybersecurity, or product roles.</p>
-            <p className={`mt-4 pt-4 border-t ${isDark ? 'border-white/10 text-gray-300' : 'border-gray-200 text-gray-700'}`}>
-              i respond within 12 hours. feel free to message me anywhere.
-            </p>
-          </div>
-        </section>
+                <div>
+                  <p className="font-semibold">
+                    campus typing championship (banned variant)
+                  </p>
+                  <p>Waterloo-only version; banned due to security auto-flags.</p>
+                  <p className="text-sm">stack: ts</p>
+                </div>
 
-        {/* Contact */}
-        <section className="pb-12">
-          <h2 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-black'}`}>◆ contact:</h2>
-          <div className="flex flex-wrap gap-3 sm:gap-6 text-xs sm:text-sm">
-            {socials.map((social, index) => {
-              const Icon = social.icon;
-              return (
+                <div>
+                  <p className="font-semibold">
+                    triageo — AI security incident responder (HTN 2025)
+                  </p>
+                  <p>Slack-native agent for 5-second triage over OWASP.</p>
+                  <p>Severity scoring, RAG, log insights, recommended actions.</p>
+                  <p className="text-sm">
+                    stack: python, fastapi, cohere, slack api
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-semibold">
+                    anti-productivity doomscroll app — GoOnHacks Winner
+                  </p>
+                  <p>
+                    Satirical app that punishes productivity and rewards doomscrolling (AI calls
+                    your dad).
+                  </p>
+                  <p className="text-sm">stack: swift, supabase, twilio</p>
+                </div>
+              </div>
+            </section>
+
+            {/* Experience */}
+            <section>
+              <h2
+                className={`text-xl font-semibold mb-6 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                ◆ experience
+              </h2>
+              <div
+                className={`space-y-4 text-base leading-relaxed ${
+                  isDark ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
+                <p>
+                  <span className="font-semibold">founding fullstack engineer — stealth ai</span>{" "}
+                  — Built interactive learning systems, RAG workflows, backend infra, UI/UX.
+                </p>
+                <p>
+                  <span className="font-semibold">
+                    software &amp; systems engineering — e-commerce + non-profits
+                  </span>{" "}
+                  — Shopify automation, internal tooling, workflow systems.
+                </p>
+                <p>
+                  <span className="font-semibold">cybersecurity engineering — canadian cyber inc.</span>{" "}
+                  — aws/azure integrations, bitlocker deployment, iso/soc2 documentation.
+                </p>
+              </div>
+            </section>
+
+            {/* Certifications */}
+            <section>
+              <h2
+                className={`text-xl font-semibold mb-4 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                ◆ certifications
+              </h2>
+              <p
+                className={`text-base leading-relaxed ${
+                  isDark ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
+                aws ccp • az-900 • ccna1 • ccst • python it specialist • cybersecurity essentials
+              </p>
+            </section>
+
+            {/* Ethos */}
+            <section>
+              <h2
+                className={`text-xl font-semibold mb-6 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                ◆ ethos
+              </h2>
+              <div
+                className={`space-y-2 text-base leading-relaxed ${
+                  isDark ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
+                <p>ship fast • stay humble • solve real problems • grateful, not entitled</p>
+                <p>high pressure? steady.</p>
+                <p>big workload? execute.</p>
+                <p>new domain? learn fast.</p>
+              </div>
+            </section>
+
+            {/* Let's talk + contact */}
+            <section>
+              <h2
+                className={`text-xl font-semibold mb-6 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                ◆ let’s talk
+              </h2>
+              <p
+                className={`mb-6 text-base leading-relaxed ${
+                  isDark ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
+                I’m looking for Summer 2026 SWE / AppSec / fullstack roles — ideally founder-led
+                teams that value speed, resilience, and ownership.
+              </p>
+
+              <div className="flex flex-wrap gap-3 sm:gap-6 text-xs sm:text-sm">
+                {socials.map((social, index) => {
+                  const Icon = social.icon;
+                  return (
+                    <a
+                      key={index}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg ${
+                        isDark
+                          ? "text-gray-300 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5"
+                          : "text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5"
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      {social.label}
+                    </a>
+                  );
+                })}
                 <a
-                  key={index}
-                  href={social.href}
+                  href="/muhib_waqar_resume.pdf"
+                  download="muhib_waqar_resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg ${
-                    isDark 
-                      ? 'text-gray-300 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5' 
-                      : 'text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5'
+                    isDark
+                      ? "text-gray-300 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5"
+                      : "text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5"
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  {social.label}
+                  <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  Resume
                 </a>
-              );
-            })}
-            <a
-              href="/muhib_waqar_resume.pdf"
-              download="muhib_waqar_resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg ${
-                isDark 
-                  ? 'text-gray-300 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5' 
-                  : 'text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5'
+              </div>
+            </section>
+
+            {/* CTA footer */}
+            <div
+              className={`text-center pt-8 border-t ${
+                isDark ? "border-white/10" : "border-gray-200"
               }`}
             >
-              <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              Resume
-            </a>
-          </div>
-        </section>
-        
-        {/* CTA */}
-        <div className={`text-center py-8 border-t ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
-          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            seeking summer 2026 internships — let's talk.
-          </p>
-        </div>
-        </main>
+              <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                high ownership, fast execution, zero entitlement — let&apos;s build.
+              </p>
+            </div>
+          </main>
         </div>
       </div>
     </div>
@@ -231,3 +371,4 @@ const Index = () => {
 };
 
 export default Index;
+
