@@ -8,10 +8,10 @@ const Index = () => {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    // Default to light mode if no class is set
+    // Default to dark mode if no class is set
     if (!root.classList.contains("dark") && !root.classList.contains("light")) {
-      root.classList.add("light");
-      setIsDark(false);
+      root.classList.add("dark");
+      setIsDark(true);
     } else {
       const isDarkMode = root.classList.contains("dark");
       setIsDark(isDarkMode);
@@ -165,14 +165,14 @@ const Index = () => {
               </div>
             </section>
 
-            {/* What I build */}
+            {/* What I've built */}
             <section>
               <h2
                 className={`text-xl font-semibold mb-6 ${
                   isDark ? "text-white" : "text-black"
                 }`}
               >
-                ◆ what I build
+                ◆ what I've built
               </h2>
               <div
                 className={`space-y-4 text-base leading-relaxed ${
