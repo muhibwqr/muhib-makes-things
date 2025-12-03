@@ -72,7 +72,7 @@ const Index = () => {
               isDark ? "border-white/10" : "border-gray-200"
             }`}
           >
-            <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center justify-center gap-3 sm:gap-4">
               <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-white/20 flex-shrink-0">
                 <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
                 <AvatarFallback
@@ -81,7 +81,7 @@ const Index = () => {
                   MW
                 </AvatarFallback>
               </Avatar>
-              <div className="min-w-0 flex-1">
+              <div className="text-center">
                 <h1
                   className={`text-xl sm:text-2xl font-bold mb-1 sm:mb-2 tracking-[0.2em] ${
                     isDark ? "text-white" : "text-black"
