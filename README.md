@@ -21,10 +21,16 @@ cd <YOUR_PROJECT_NAME>
 npm i
 
 # Step 4: Set up environment variables
-# Create a .env.local file with your Gemini API key:
+# Create a .env file in the root directory with your API keys:
 # VITE_GEMINI_API_KEY=your_api_key_here
+# X_BEARER_TOKEN=your_x_bearer_token_here (optional, for X/Twitter feed)
+# LINKEDIN_ACCESS_TOKEN=your_linkedin_access_token_here (optional, for LinkedIn feed)
+# LINKEDIN_PERSON_ID=your_linkedin_person_id_here (optional, for LinkedIn feed)
 
-# Step 5: Start the development server with auto-reloading and an instant preview
+# Step 5: Start the backend API server (in a separate terminal)
+npm run dev:server
+
+# Step 6: Start the development server with auto-reloading and an instant preview
 npm run dev
 ```
 
@@ -45,8 +51,10 @@ npm run dev
 ## Features
 
 - **AI Chatbot**: Interact with an AI trained on Muhib's information and personality
+- **Dynamic Updates Feed**: Automatically pulls latest posts from X (Twitter) and LinkedIn
 - **Responsive Design**: Mobile-first design with smooth animations
 - **Modern UI**: Built with shadcn-ui and Tailwind CSS
+- **Component-Based Layout**: Clean section structure (Hero, About, Projects, Updates)
 
 ## Technologies Used
 
@@ -55,9 +63,31 @@ This project is built with:
 - Vite
 - TypeScript
 - React
+- Express (backend API server)
 - shadcn-ui
 - Tailwind CSS
 - Google Gemini AI API
+- X (Twitter) API v2
+- LinkedIn API v2
+
+## API Server Setup
+
+The portfolio includes a backend API server for fetching dynamic content from X (Twitter) and LinkedIn.
+
+### X (Twitter) API Setup
+
+1. Go to [Twitter Developer Portal](https://developer.twitter.com/en/portal/dashboard)
+2. Create a new app and get your Bearer Token
+3. Add `X_BEARER_TOKEN=your_token_here` to your `.env` file
+
+### LinkedIn API Setup
+
+1. Go to [LinkedIn Developer Portal](https://www.linkedin.com/developers/)
+2. Create a new app and set up OAuth
+3. Get your access token and person ID
+4. Add `LINKEDIN_ACCESS_TOKEN` and `LINKEDIN_PERSON_ID` to your `.env` file
+
+Note: The API routes will return empty arrays if credentials are not provided, so the site will still work without them.
 
 ## Building for Production
 
@@ -66,6 +96,10 @@ npm run build
 ```
 
 The built files will be in the `dist` directory.
+
+For production deployment, you'll need to:
+1. Deploy the backend server (Express) separately or use serverless functions
+2. Update the API proxy configuration in `vite.config.ts` to point to your production API URL
 
 ## Deployment (Vercel)
 

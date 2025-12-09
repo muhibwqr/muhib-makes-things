@@ -1,52 +1,36 @@
-import { Code, Shield, Trophy, Award } from "lucide-react";
-import { Card } from "@/components/ui/card";
-
 export function About() {
-  const highlights = [
-    {
-      icon: Code,
-      title: "Software Engineering",
-      description: "Automated business workflows and cut support times as a software engineering intern at Islamic Books Souvenirs"
-    },
-    {
-      icon: Shield,
-      title: "Cybersecurity",
-      description: "Delivered impactful solutions: IAM policies, RBAC, SIEM log automation, and incident response playbooks"
-    },
-    {
-      icon: Trophy,
-      title: "Hackathons",
-      description: "Multiple finalist and award wins at Hack the North, CanHack, PicoCTF, LyonCTF"
-    },
-    {
-      icon: Award,
-      title: "Certifications",
-      description: "AWS, Cisco, and Microsoft certifications for cloud and security"
-    }
-  ];
-
   return (
-    <section id="about" className="py-20 relative scroll-mt-20 transition-all duration-700">
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background -z-10" />
-      <div className="container mx-auto px-4 animate-fade-in">
-        <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-          About Me <span className="gradient-text">◆</span>
+    <section id="about" className="py-12 sm:py-16 relative scroll-mt-20">
+      <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
+        <h2 className="text-xl font-semibold mb-6">
+          ◆ about
         </h2>
-
-        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {highlights.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <Card
-                key={index}
-                className="glass p-6 hover-lift border-border/50"
-              >
-                <Icon className="w-8 h-8 text-primary mb-4" />
-                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                <p className="text-muted-foreground">{item.description}</p>
-              </Card>
-            );
-          })}
+        <div className="space-y-4 text-base leading-relaxed">
+          <p>
+            I grew up believing discipline, humility, and hard work are forms of worship —
+            that you show gratitude through action.
+          </p>
+          <p>
+            That shaped everything: in high school I tried multiple businesses, built tools,
+            failed fast, and kept shipping.
+          </p>
+          <p>
+            I didn't take loans for university (religious reasoning).
+          </p>
+          <p>
+            Instead, I worked three part-time jobs while doing honours Math & Business at
+            Waterloo — sometimes washing dishes at 1am, then going home to code and study
+            until sunrise.
+          </p>
+          <p>
+            During a week of exams, quizzes, and assignments, I worked all three jobs.
+          </p>
+          <p>No boss dissatisfied. No deliverable missed.</p>
+          <p>I don't wait for ideal conditions — I move anyway.</p>
+          <p>
+            That hunger shows up in my engineering: calm under pressure, fast execution, zero
+            entitlement, high ownership.
+          </p>
         </div>
       </div>
     </section>

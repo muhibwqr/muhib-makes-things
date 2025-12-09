@@ -2,6 +2,10 @@ import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun } from "lucide-rea
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
+import { Hero } from "@/components/Hero";
+import { About } from "@/components/About";
+import { Projects } from "@/components/Projects";
+import { Updates } from "@/components/Updates";
 
 const Index = () => {
   const [isDark, setIsDark] = useState(false);
@@ -122,197 +126,34 @@ const Index = () => {
           </header>
 
           {/* Main Content */}
-          <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl space-y-16">
-            {/* Who I am */}
-            <section>
-              <h2
-                className={`text-xl font-semibold mb-6 ${
-                  isDark ? "text-white" : "text-black"
-                }`}
-              >
-                ◆ who I am
-              </h2>
-              <div
-                className={`space-y-4 text-base leading-relaxed ${
-                  isDark ? "text-gray-100" : "text-gray-900"
-                }`}
-              >
-                <p>
-                  I grew up believing discipline, humility, and hard work are forms of worship —
-                  that you show gratitude through action.
-                </p>
-                <p>
-                  That shaped everything: in high school I tried multiple businesses, built tools,
-                  failed fast, and kept shipping.
-                </p>
-                <p>
-                  I didn’t take loans for university (religious reasoning).
-                </p>
-                <p>
-                  Instead, I worked three part-time jobs while doing honours Math &amp; Business at
-                  Waterloo — sometimes washing dishes at 1am, then going home to code and study
-                  until sunrise.
-                </p>
-                <p>
-                  During a week of exams, quizzes, and assignments, I worked all three jobs.
-                </p>
-                <p>No boss dissatisfied. No deliverable missed.</p>
-                <p>I don’t wait for ideal conditions — I move anyway.</p>
-                <p>
-                  That hunger shows up in my engineering: calm under pressure, fast execution, zero
-                  entitlement, high ownership.
-                </p>
-              </div>
-            </section>
+          <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
+            {/* Hero / Intro */}
+            <Hero />
 
-            {/* What I've built */}
-            <section>
-              <h2
-                className={`text-xl font-semibold mb-6 ${
-                  isDark ? "text-white" : "text-black"
-                }`}
-              >
-                ◆ what I've built
-              </h2>
-              <div
-                className={`space-y-4 text-base leading-relaxed ${
-                  isDark ? "text-gray-100" : "text-gray-900"
-                }`}
-              >
-                <div>
-                  <p className="font-semibold">
-                    goosetype.com — typing arena
-                  </p>
-                  <p>
-                    Shipped in 1 week → 500 users in 12 hours.
-                  </p>
-                  <p>
-                    Originally “Waterloo Type” but after 40 students signed up instantly, Waterloo’s
-                    email security flagged it as phishing and auto-banned it — so I rebranded and
-                    rebuilt it into GooseType.
-                  </p>
-                  <p className="text-sm">
-                    stack: react, ts, tailwind, vercel
-                  </p>
-                </div>
+            {/* About */}
+            <About />
 
-                <div>
-                  <p className="font-semibold">
-                    campus typing championship (banned variant)
-                  </p>
-                  <p>Waterloo-only version; banned due to security auto-flags.</p>
-                  <p className="text-sm">stack: ts</p>
-                </div>
+            {/* Projects */}
+            <Projects />
 
-                <div>
-                  <p className="font-semibold">
-                    triageo — AI security incident responder (HTN 2025)
-                  </p>
-                  <p>Slack-native agent for 5-second triage over OWASP.</p>
-                  <p>Severity scoring, RAG, log insights, recommended actions.</p>
-                  <p className="text-sm">
-                    stack: python, fastapi, cohere, slack api
-                  </p>
-                </div>
-
-                <div>
-                  <p className="font-semibold">
-                    anti-productivity doomscroll app — GoOnHacks Winner
-                  </p>
-                  <p>
-                    Satirical app that punishes productivity and rewards doomscrolling (AI calls
-                    your dad).
-                  </p>
-                  <p className="text-sm">stack: swift, supabase, twilio</p>
-                </div>
-              </div>
-            </section>
-
-            {/* Experience */}
-            <section>
-              <h2
-                className={`text-xl font-semibold mb-6 ${
-                  isDark ? "text-white" : "text-black"
-                }`}
-              >
-                ◆ experience
-              </h2>
-              <div
-                className={`space-y-4 text-base leading-relaxed ${
-                  isDark ? "text-gray-100" : "text-gray-900"
-                }`}
-              >
-                <p>
-                  <span className="font-semibold">founding fullstack engineer — stealth ai</span>{" "}
-                  — Built interactive learning systems, RAG workflows, backend infra, UI/UX.
-                </p>
-                <p>
-                  <span className="font-semibold">
-                    software &amp; systems engineering — e-commerce + non-profits
-                  </span>{" "}
-                  — Shopify automation, internal tooling, workflow systems.
-                </p>
-                <p>
-                  <span className="font-semibold">cybersecurity engineering — canadian cyber inc.</span>{" "}
-                  — aws/azure integrations, bitlocker deployment, iso/soc2 documentation.
-                </p>
-              </div>
-            </section>
-
-            {/* Certifications */}
-            <section>
-              <h2
-                className={`text-xl font-semibold mb-4 ${
-                  isDark ? "text-white" : "text-black"
-                }`}
-              >
-                ◆ certifications
-              </h2>
-              <p
-                className={`text-base leading-relaxed ${
-                  isDark ? "text-gray-100" : "text-gray-900"
-                }`}
-              >
-                aws ccp • az-900 • ccna1 • ccst • python it specialist • cybersecurity essentials
-              </p>
-            </section>
-
-            {/* Ethos */}
-            <section>
-              <h2
-                className={`text-xl font-semibold mb-6 ${
-                  isDark ? "text-white" : "text-black"
-                }`}
-              >
-                ◆ ethos
-              </h2>
-              <div
-                className={`space-y-2 text-base leading-relaxed ${
-                  isDark ? "text-gray-100" : "text-gray-900"
-                }`}
-              >
-                <p>ship fast • stay humble • solve real problems • grateful, not entitled</p>
-                <p>high pressure? steady.</p>
-                <p>big workload? execute.</p>
-                <p>new domain? learn fast.</p>
-              </div>
-            </section>
+            {/* Updates */}
+            <Updates />
 
             {/* Let's talk + contact */}
-            <section>
+            <section className="py-12 sm:py-16">
               <h2
                 className={`text-xl font-semibold mb-6 ${
                   isDark ? "text-white" : "text-black"
                 }`}
               >
-                ◆ let’s talk
+                ◆ let's talk
               </h2>
               <p
                 className={`mb-6 text-base leading-relaxed ${
                   isDark ? "text-gray-100" : "text-gray-900"
                 }`}
               >
-                I’m looking for Summer 2026 SWE / AppSec / fullstack roles — ideally founder-led
+                I'm looking for Summer 2026 SWE / AppSec / fullstack roles — ideally founder-led
                 teams that value speed, resilience, and ownership.
               </p>
 
