@@ -84,8 +84,14 @@ export const useFaceNav = ({ enabled, debugMode }: UseFaceNavProps) => {
         const { drawConnectors } = await import('@mediapipe/drawing_utils');
         const { FACEMESH_TESSELATION } = await import('@mediapipe/face_mesh');
 
+        // Initialize FaceMesh with local files from public folder
+        // This avoids CDN issues and works in production
         const faceMesh = new FaceMesh({
-          locateFile: (file) => `https://unpkg.com/@mediapipe/face_mesh/${file}`,
+          locateFile: (file: string) => {
+            // Use local files from public/mediapipe folder
+            // This works in both dev and production
+            return `/mediapipe/${file}`;
+          },
         });
 
         faceMesh.setOptions({
