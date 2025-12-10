@@ -1,0 +1,43 @@
+import { Navbar } from "@/components/Navbar";
+import { Projects } from "@/components/Projects";
+import LiquidEther from "@/components/LiquidEther";
+
+export default function ProjectsPage() {
+  return (
+    <div className="min-h-screen relative bg-black text-white dark:bg-black dark:text-white">
+      {/* LiquidEther background animation */}
+      <div className="fixed inset-0 z-0">
+        <LiquidEther
+          colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
+          mouseForce={20}
+          cursorSize={100}
+          isViscous={false}
+          viscous={30}
+          iterationsViscous={32}
+          iterationsPoisson={32}
+          resolution={0.5}
+          isBounce={false}
+          autoDemo={true}
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          takeoverDuration={0.25}
+          autoResumeDelay={3000}
+          autoRampDuration={0.6}
+        />
+      </div>
+
+      {/* Semi-transparent backdrop for text readability */}
+      <div className="fixed inset-0 z-[1] bg-black/60 backdrop-blur-sm pointer-events-none"></div>
+
+      {/* Content wrapper */}
+      <div className="relative z-10 min-h-screen">
+        <Navbar />
+        
+        <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl pt-20 sm:pt-24">
+          <Projects />
+        </main>
+      </div>
+    </div>
+  );
+}
+
