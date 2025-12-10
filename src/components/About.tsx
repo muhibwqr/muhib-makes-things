@@ -25,7 +25,8 @@ export function About() {
             → 4th place toronto wrestling → trained with world champions. that discipline translates to debugging at 2am.
           </p>
           <p>
-            
+            → seeking summer 2026 internships → open to intern, swe intern, application security intern, and swe roles.
+          </p>
         </div>
       </div>
     </section>
