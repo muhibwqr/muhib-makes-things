@@ -12,7 +12,8 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// X (Twitter) API route
+// X (Twitter) API v2 route
+// API Tiers: Free (100 reads/month), Basic ($200/mo - 15k reads), Pro ($5k/mo - 1M reads)
 app.get('/api/x-feed', async (req, res) => {
   try {
     const bearerToken = process.env.X_BEARER_TOKEN;
@@ -21,9 +22,9 @@ app.get('/api/x-feed', async (req, res) => {
       return res.status(200).json([]);
     }
 
-    // Get user ID first
+    // Get user ID first using X API v2
     const userResponse = await fetch(
-      'https://api.twitter.com/2/users/by/username/muhibwqr',
+      'https://api.x.com/2/users/by/username/muhibwqr?user.fields=id',
       {
         headers: {
           Authorization: `Bearer ${bearerToken}`,
@@ -32,7 +33,15 @@ app.get('/api/x-feed', async (req, res) => {
     );
 
     if (!userResponse.ok) {
-      console.error('Failed to fetch user:', await userResponse.text());
+      const errorText = await userResponse.text();
+      console.error('Failed to fetch user:', errorText);
+      
+      // Handle rate limiting
+      if (userResponse.status === 429) {
+        console.error('X API rate limit exceeded');
+        return res.status(200).json([]);
+      }
+      
       return res.status(200).json([]);
     }
 
@@ -43,9 +52,10 @@ app.get('/api/x-feed', async (req, res) => {
       return res.status(200).json([]);
     }
 
-    // Fetch tweets
+    // Fetch tweets using X API v2
+    // max_results=10 to stay within free tier limits (100 posts/month)
     const tweetsResponse = await fetch(
-      `https://api.twitter.com/2/users/${userId}/tweets?max_results=10&tweet.fields=created_at&exclude=replies,retweets`,
+      `https://api.x.com/2/users/${userId}/tweets?max_results=10&tweet.fields=created_at,public_metrics&exclude=replies,retweets`,
       {
         headers: {
           Authorization: `Bearer ${bearerToken}`,
@@ -54,7 +64,15 @@ app.get('/api/x-feed', async (req, res) => {
     );
 
     if (!tweetsResponse.ok) {
-      console.error('Failed to fetch tweets:', await tweetsResponse.text());
+      const errorText = await tweetsResponse.text();
+      console.error('Failed to fetch tweets:', errorText);
+      
+      // Handle rate limiting
+      if (tweetsResponse.status === 429) {
+        console.error('X API rate limit exceeded');
+        return res.status(200).json([]);
+      }
+      
       return res.status(200).json([]);
     }
 
