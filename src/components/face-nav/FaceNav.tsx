@@ -21,21 +21,30 @@ export default function FaceNav({ debugMode = false }: FaceNavProps) {
     if (!isEnabled || gesture === 'none') return;
     const now = Date.now();
 
-    // Scroll Actions (Fast)
+    // Scroll Actions (Fast) - Only smile now
     if (now - lastActionTime.current > 50) {
-      if (gesture === 'tongue_out') {
-        window.scrollBy({ top: 40, behavior: 'smooth' });
-        lastActionTime.current = now;
-      } else if (gesture === 'smile') {
+      if (gesture === 'smile') {
         window.scrollBy({ top: -40, behavior: 'smooth' });
         lastActionTime.current = now;
       }
     }
 
     // Navigation Actions (Slow / Debounced)
+    // Tongue out (speed face) = Switch pages
     if (now - lastNavTime.current > 2000) {
-      if (gesture === 'head_shake_left' || gesture === 'head_shake_right') {
-         // Example Logic: Toggle between Home and Projects/Updates
+      if (gesture === 'tongue_out') {
+        // Cycle through pages: / -> /projects -> /updates -> /
+        const isHome = location.pathname === '/';
+        if (isHome) {
+          navigate('/projects');
+        } else if (location.pathname === '/projects') {
+          navigate('/updates');
+        } else {
+          navigate('/');
+        }
+        lastNavTime.current = now;
+      } else if (gesture === 'head_shake_left' || gesture === 'head_shake_right') {
+         // Head shake also navigates
          const isHome = location.pathname === '/';
          if (isHome) {
            navigate('/projects');
@@ -50,27 +59,50 @@ export default function FaceNav({ debugMode = false }: FaceNavProps) {
   }, [gesture, isEnabled, navigate, location.pathname]);
 
   // Handle Error (Camera Denied)
-  if (error) return null;
+  if (error && isEnabled) {
+    return (
+      <div className="fixed bottom-6 right-6 z-50 bg-red-500 text-white px-5 py-3 rounded-lg shadow-xl">
+        <p className="text-sm font-bold">Error: {error}</p>
+        <button 
+          onClick={() => setIsEnabled(false)}
+          className="mt-2 text-xs underline"
+        >
+          Close
+        </button>
+      </div>
+    );
+  }
 
   // --- UI: ENABLE BUTTON ---
   if (!isEnabled) {
     return (
-      <button 
-        onClick={() => setIsEnabled(true)}
-        className="fixed bottom-6 right-6 z-50 bg-black text-white px-5 py-3 rounded-full font-bold shadow-xl hover:scale-105 transition-all flex items-center gap-2 border border-gray-800 dark:bg-white dark:text-black dark:border-gray-200"
-      >
-        <span>👁️</span> Enable AI Nav
-      </button>
+      <>
+        <button 
+          onClick={() => setIsEnabled(true)}
+          className="fixed bottom-6 right-6 z-50 bg-black text-white px-5 py-3 rounded-full font-bold shadow-xl hover:scale-105 transition-all flex items-center gap-2 border border-gray-800 dark:bg-white dark:text-black dark:border-gray-200"
+        >
+          <span>👁️</span> Enable AI Nav
+        </button>
+        {/* Pre-render video element so ref is available */}
+        <video 
+          ref={videoRef} 
+          className="hidden" 
+          playsInline 
+          muted 
+          autoPlay
+          style={{ transform: 'scaleX(-1)' }}
+        />
+      </>
     );
   }
 
   // --- UI: ACTIVE HUD ---
   const statusText = {
     'none': 'Scanning...',
-    'tongue_out': '👅 Scroll Down',
+    'tongue_out': '👅 Switch Page',
     'smile': '😊 Scroll Up',
-    'head_shake_left': '⬅️ Back',
-    'head_shake_right': '➡️ Next'
+    'head_shake_left': '⬅️ Switch Page',
+    'head_shake_right': '➡️ Switch Page'
   }[gesture] || 'Scanning...';
 
   return (
@@ -98,7 +130,14 @@ export default function FaceNav({ debugMode = false }: FaceNavProps) {
       )}
 
       {/* 3. HIDDEN VIDEO (Required for Logic) */}
-      <video ref={videoRef} className="hidden" playsInline muted />
+      <video 
+        ref={videoRef} 
+        className="hidden" 
+        playsInline 
+        muted 
+        autoPlay
+        style={{ transform: 'scaleX(-1)' }} // Mirror for better UX
+      />
     </>
   );
 }

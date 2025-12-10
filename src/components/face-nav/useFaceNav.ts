@@ -103,16 +103,43 @@ export const useFaceNav = ({ enabled, debugMode }: UseFaceNavProps) => {
           }
         });
 
-        if (videoRef.current) {
-          const camera = new Camera(videoRef.current, {
-            onFrame: async () => {
-              if (videoRef.current) await faceMesh.send({ image: videoRef.current });
-            },
-            width: 640, height: 480
-          });
-          camera.start();
-          cameraRef.current = camera;
-        }
+        // Wait a bit for video element to be ready
+        const initCamera = () => {
+          if (!videoRef.current) {
+            setError('Video element not found');
+            return;
+          }
+
+          // Ensure video element has proper attributes
+          videoRef.current.setAttribute('autoplay', '');
+          videoRef.current.setAttribute('playsinline', '');
+          videoRef.current.setAttribute('muted', '');
+          
+          try {
+            const camera = new Camera(videoRef.current, {
+              onFrame: async () => {
+                if (videoRef.current && isActive) {
+                  await faceMesh.send({ image: videoRef.current });
+                }
+              },
+              width: 640, 
+              height: 480
+            });
+            
+            camera.start().catch((err) => {
+              console.error('Camera start error:', err);
+              setError('Failed to start camera. Please allow camera access.');
+            });
+            
+            cameraRef.current = camera;
+          } catch (err) {
+            console.error('Camera initialization error:', err);
+            setError('Failed to initialize camera');
+          }
+        };
+
+        // Small delay to ensure DOM is ready
+        setTimeout(initCamera, 100);
       } catch (err) {
         setError('Camera denied or API error');
         console.error(err);

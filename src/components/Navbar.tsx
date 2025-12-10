@@ -8,8 +8,21 @@ export function Navbar() {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    if (!root.classList.contains("dark") && !root.classList.contains("light")) {
+    const body = window.document.body;
+    
+    // Check body class first (set in index.html)
+    if (body.classList.contains("light")) {
+      root.classList.remove("dark");
       root.classList.add("light");
+      setIsDark(false);
+    } else if (body.classList.contains("dark")) {
+      root.classList.remove("light");
+      root.classList.add("dark");
+      setIsDark(true);
+    } else if (!root.classList.contains("dark") && !root.classList.contains("light")) {
+      // Default to light mode
+      root.classList.add("light");
+      body.classList.add("light");
       setIsDark(false);
     } else {
       const isDarkMode = root.classList.contains("dark");
