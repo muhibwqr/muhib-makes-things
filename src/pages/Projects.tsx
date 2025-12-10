@@ -4,7 +4,7 @@ import LiquidEther from "@/components/LiquidEther";
 
 export default function ProjectsPage() {
   return (
-    <div className="min-h-screen relative bg-black text-white dark:bg-black dark:text-white">
+    <div className="min-h-screen relative bg-white text-black dark:bg-black dark:text-white">
       {/* LiquidEther background animation */}
       <div className="fixed inset-0 z-0">
         <LiquidEther
@@ -27,7 +27,7 @@ export default function ProjectsPage() {
       </div>
 
       {/* Semi-transparent backdrop for text readability */}
-      <div className="fixed inset-0 z-[1] bg-black/60 backdrop-blur-sm pointer-events-none"></div>
+      <div className="fixed inset-0 z-[1] bg-white/60 dark:bg-black/60 backdrop-blur-sm pointer-events-none"></div>
 
       {/* Content wrapper */}
       <div className="relative z-10 min-h-screen">

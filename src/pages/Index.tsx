@@ -14,7 +14,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen relative bg-black text-white dark:bg-black dark:text-white">
+    <div className="min-h-screen relative bg-white text-black dark:bg-black dark:text-white">
       {/* LiquidEther background animation */}
       <div className="fixed inset-0 z-0">
         <LiquidEther
@@ -37,7 +37,7 @@ const Index = () => {
       </div>
 
       {/* Semi-transparent backdrop for text readability */}
-      <div className="fixed inset-0 z-[1] bg-black/60 dark:bg-black/60 backdrop-blur-sm pointer-events-none"></div>
+      <div className="fixed inset-0 z-[1] bg-white/60 dark:bg-black/60 backdrop-blur-sm pointer-events-none"></div>
 
       {/* Content wrapper */}
       <div className="relative z-10 min-h-screen">
@@ -45,19 +45,19 @@ const Index = () => {
         
         <div className="relative z-10">
           {/* Header */}
-          <header className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col items-center gap-4 border-b border-white/10 dark:border-white/10">
+          <header className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col items-center gap-4 border-b border-black/10 dark:border-white/10">
             <div className="flex items-center justify-center gap-3 sm:gap-4">
-              <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-white/20 flex-shrink-0">
+              <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-black/20 dark:border-white/20 flex-shrink-0">
                 <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
-                <AvatarFallback className="bg-gray-800 text-white dark:bg-gray-800 dark:text-white">
+                <AvatarFallback className="bg-gray-200 text-black dark:bg-gray-800 dark:text-white">
                   MW
                 </AvatarFallback>
               </Avatar>
               <div className="text-center">
-                <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 tracking-[0.2em] text-white dark:text-white">
+                <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 tracking-[0.2em] text-black dark:text-white">
                   MUHIB WAQAR
                 </h1>
-                <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">
+                <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                   math & business @ waterloo • software + security engineer • product builder
                 </p>
               </div>
@@ -74,10 +74,10 @@ const Index = () => {
 
             {/* Let's talk + contact */}
             <section className="py-12 sm:py-16">
-              <h2 className="text-xl font-semibold mb-6 text-white dark:text-white">
+              <h2 className="text-xl font-semibold mb-6 text-black dark:text-white">
                 ◆ let's talk
               </h2>
-              <p className="mb-6 text-base leading-relaxed text-gray-100 dark:text-gray-100">
+              <p className="mb-6 text-base leading-relaxed text-gray-900 dark:text-gray-100">
                 I'm looking for Summer 2026 SWE / AppSec / fullstack roles — ideally founder-led
                 teams that value speed, resilience, and ownership.
               </p>
@@ -91,7 +91,7 @@ const Index = () => {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-300 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5 dark:text-gray-300 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
+                      className="flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5 dark:text-gray-300 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
                     >
                       <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       {social.label}
@@ -103,7 +103,7 @@ const Index = () => {
                   download="muhib_waqar_resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-300 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5 dark:text-gray-300 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
+                  className="flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5 dark:text-gray-300 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
                 >
                   <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   Resume
@@ -112,8 +112,8 @@ const Index = () => {
             </section>
 
             {/* CTA footer */}
-            <div className="text-center pt-8 border-t border-white/10 dark:border-white/10">
-              <p className="text-sm text-gray-400 dark:text-gray-400">
+            <div className="text-center pt-8 border-t border-black/10 dark:border-white/10">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 high ownership, fast execution, zero entitlement — let&apos;s build.
               </p>
             </div>

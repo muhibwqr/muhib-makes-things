@@ -9,8 +9,8 @@ export function Navbar() {
   useEffect(() => {
     const root = window.document.documentElement;
     if (!root.classList.contains("dark") && !root.classList.contains("light")) {
-      root.classList.add("dark");
-      setIsDark(true);
+      root.classList.add("light");
+      setIsDark(false);
     } else {
       const isDarkMode = root.classList.contains("dark");
       setIsDark(isDarkMode);
