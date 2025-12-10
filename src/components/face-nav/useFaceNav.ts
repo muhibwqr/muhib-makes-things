@@ -78,7 +78,7 @@ export const useFaceNav = ({ enabled, debugMode }: UseFaceNavProps) => {
           console.log('Permission API check failed, continuing...', permCheckErr);
         }
 
-        // Load MediaPipe modules
+        // Load MediaPipe modules (dynamic imports to avoid SSR errors)
         const { FaceMesh } = await import('@mediapipe/face_mesh');
         const { Camera } = await import('@mediapipe/camera_utils');
         const { drawConnectors } = await import('@mediapipe/drawing_utils');
@@ -92,13 +92,13 @@ export const useFaceNav = ({ enabled, debugMode }: UseFaceNavProps) => {
           maxNumFaces: 1,
           refineLandmarks: true,
           minDetectionConfidence: 0.5,
-          minTrackingConfidence: 0.4,
+          minTrackingConfidence: 0.4, // Lower confidence = Fails fast when you push friend out
         });
 
         faceMesh.onResults((results) => {
           if (!isActive) return;
 
-          // Drawing Logic (The "Matrix" Effect)
+          // Drawing Logic (The "Matrix" Effect) - Cyberpunk Green
           if (debugMode && canvasRef.current && videoRef.current) {
              const canvas = canvasRef.current;
              const ctx = canvas.getContext('2d');
@@ -110,7 +110,7 @@ export const useFaceNav = ({ enabled, debugMode }: UseFaceNavProps) => {
                 if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
                     for (const landmarks of results.multiFaceLandmarks) {
                         drawConnectors(ctx, landmarks, FACEMESH_TESSELATION, { 
-                            color: '#00FF0040',
+                            color: '#00FF00', // Cyberpunk Green
                             lineWidth: 1 
                         });
                     }
@@ -188,4 +188,3 @@ export const useFaceNav = ({ enabled, debugMode }: UseFaceNavProps) => {
 
   return { gesture, isFaceDetected, error, videoRef, canvasRef };
 };
-

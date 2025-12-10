@@ -64,7 +64,7 @@ const Index = () => {
           </header>
 
           {/* Main Content */}
-          <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl pt-20 sm:pt-24">
+          <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
             {/* About */}
             <About />
 

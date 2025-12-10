@@ -39,4 +39,3 @@ export const calculateFaceMetrics = (landmarks: any) => {
     centerDelta: headCenterX - 0.5, // 0.0 is center, -0.5 is left, +0.5 is right
   };
 };
-
