@@ -78,7 +78,7 @@ const Index = () => {
                 ◆ let's talk
               </h2>
               <p className="mb-6 text-base leading-relaxed text-gray-900 dark:text-gray-100">
-                I'm looking for Summer 2026 SWE / AppSec / fullstack roles — ideally founder-led
+                I'm looking for Summer 2026 SWE / Product Management/ fullstack roles — ideally founder-led
                 teams that value speed, resilience, and ownership.
               </p>
 

@@ -54,6 +54,31 @@ export const useFaceNav = ({ enabled, debugMode }: UseFaceNavProps) => {
 
     const init = async () => {
       try {
+        // Check if camera is available
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          setError('Camera not supported. Please use HTTPS or a modern browser.');
+          return;
+        }
+
+        // Check if we're on HTTPS (required for camera in most browsers)
+        if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+          setError('Camera requires HTTPS. Please use a secure connection.');
+          return;
+        }
+
+        // Check camera permission status (non-intrusive)
+        try {
+          const permissionStatus = await navigator.permissions?.query({ name: 'camera' as PermissionName });
+          if (permissionStatus?.state === 'denied') {
+            setError('Camera permission denied. Please allow camera access in your browser settings.');
+            return;
+          }
+        } catch (permCheckErr) {
+          // Permission API not supported or other error - continue anyway
+          console.log('Permission API check failed, continuing...', permCheckErr);
+        }
+
+        // Load MediaPipe modules
         const { FaceMesh } = await import('@mediapipe/face_mesh');
         const { Camera } = await import('@mediapipe/camera_utils');
         const { drawConnectors } = await import('@mediapipe/drawing_utils');
@@ -67,7 +92,7 @@ export const useFaceNav = ({ enabled, debugMode }: UseFaceNavProps) => {
           maxNumFaces: 1,
           refineLandmarks: true,
           minDetectionConfidence: 0.5,
-          minTrackingConfidence: 0.4, // Lower confidence = Fails fast when you push friend out
+          minTrackingConfidence: 0.4,
         });
 
         faceMesh.onResults((results) => {
@@ -85,7 +110,7 @@ export const useFaceNav = ({ enabled, debugMode }: UseFaceNavProps) => {
                 if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
                     for (const landmarks of results.multiFaceLandmarks) {
                         drawConnectors(ctx, landmarks, FACEMESH_TESSELATION, { 
-                            color: '#00FF0040', // Semi-transparent Matrix Green
+                            color: '#00FF0040',
                             lineWidth: 1 
                         });
                     }
@@ -126,23 +151,33 @@ export const useFaceNav = ({ enabled, debugMode }: UseFaceNavProps) => {
               height: 480
             });
             
-            camera.start().catch((err) => {
+            camera.start().catch((err: any) => {
               console.error('Camera start error:', err);
-              setError('Failed to start camera. Please allow camera access.');
+              if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                setError('Camera permission denied. Please allow camera access.');
+              } else if (err.name === 'NotFoundError') {
+                setError('No camera found. Please connect a camera.');
+              } else {
+                setError(`Camera error: ${err.message || 'Failed to start camera'}`);
+              }
             });
             
             cameraRef.current = camera;
-          } catch (err) {
+          } catch (err: any) {
             console.error('Camera initialization error:', err);
-            setError('Failed to initialize camera');
+            setError(`Failed to initialize camera: ${err.message || 'Unknown error'}`);
           }
         };
 
         // Small delay to ensure DOM is ready
         setTimeout(initCamera, 100);
-      } catch (err) {
-        setError('Camera denied or API error');
-        console.error(err);
+      } catch (err: any) {
+        console.error('Initialization error:', err);
+        if (err.message?.includes('Failed to fetch') || err.message?.includes('network')) {
+          setError('Failed to load MediaPipe. Check your internet connection.');
+        } else {
+          setError(`Error: ${err.message || 'Unknown error occurred'}`);
+        }
       }
     };
 

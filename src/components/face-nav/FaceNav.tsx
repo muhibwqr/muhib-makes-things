@@ -61,14 +61,31 @@ export default function FaceNav({ debugMode = false }: FaceNavProps) {
   // Handle Error (Camera Denied)
   if (error && isEnabled) {
     return (
-      <div className="fixed bottom-6 right-6 z-50 bg-red-500 text-white px-5 py-3 rounded-lg shadow-xl">
-        <p className="text-sm font-bold">Error: {error}</p>
-        <button 
-          onClick={() => setIsEnabled(false)}
-          className="mt-2 text-xs underline"
-        >
-          Close
-        </button>
+      <div className="fixed bottom-6 right-6 z-50 bg-red-500 text-white px-5 py-3 rounded-lg shadow-xl max-w-sm">
+        <p className="text-sm font-bold mb-2">⚠️ {error}</p>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => {
+              setIsEnabled(false);
+              // Reset after a moment to allow retry
+              setTimeout(() => setIsEnabled(true), 500);
+            }}
+            className="text-xs underline hover:no-underline"
+          >
+            Retry
+          </button>
+          <button 
+            onClick={() => setIsEnabled(false)}
+            className="text-xs underline hover:no-underline ml-auto"
+          >
+            Close
+          </button>
+        </div>
+        {error.includes('permission') && (
+          <p className="text-xs mt-2 opacity-90">
+            Tip: Check your browser's camera permissions in settings
+          </p>
+        )}
       </div>
     );
   }
