@@ -7,29 +7,25 @@ export function About() {
         </h2>
         <div className="space-y-4 text-base leading-relaxed">
           <p>
-            I grew up believing discipline, humility, and hard work are forms of worship —
-            that you show gratitude through action.
+            → been in tech since age 11 → from entrepreneurship and graphic design to software engineering. think beyond code.
           </p>
           <p>
-            That shaped everything: in high school I tried multiple businesses, built tools,
-            failed fast, and kept shipping.
+            → university of waterloo → honours math & business admin, president's scholarship. bridge technical depth with business impact.
           </p>
           <p>
-            I didn't take loans for university (religious reasoning).
+            → 5M+ views across platforms → built a personal brand, helped non-profits, and mentored creators. scale impact beyond my own work.
           </p>
           <p>
-            Instead, I worked three part-time jobs while doing honours Math & Business at
-            Waterloo — sometimes washing dishes at 1am, then going home to code and study
-            until sunrise.
+            → building course generation & RAG → ai-powered tools for personalized learning. making quality education accessible at scale.
           </p>
           <p>
-            During a week of exams, quizzes, and assignments, I worked all three jobs.
+            → certified & experienced → aws ccp, az-900, ccna1, ccst. swe intern @ ibs, cybersecurity @ canadian cyber inc.
           </p>
-          <p>No boss dissatisfied. No deliverable missed.</p>
-          <p>I don't wait for ideal conditions — I move anyway.</p>
           <p>
-            That hunger shows up in my engineering: calm under pressure, fast execution, zero
-            entitlement, high ownership.
+            → 4th place toronto wrestling → trained with world champions. that discipline translates to debugging at 2am.
+          </p>
+          <p>
+            → seeking summer 2026 internships → open to intern, swe intern, application security intern, and swe roles.
           </p>
         </div>
       </div>
