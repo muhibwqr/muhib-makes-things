@@ -2,7 +2,6 @@ import { Github, Linkedin, Mail, Twitter, Download } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
 import { Navbar } from "@/components/Navbar";
-import { Hero } from "@/components/Hero";
 import { About } from "@/components/About";
 
 const Index = () => {
@@ -66,9 +65,6 @@ const Index = () => {
 
           {/* Main Content */}
           <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl pt-20 sm:pt-24">
-            {/* Hero / Intro */}
-            <Hero />
-
             {/* About */}
             <About />
 
