@@ -76,10 +76,10 @@ export function Updates() {
   };
 
   return (
-    <section id="updates" className="py-12 sm:py-16 relative scroll-mt-20">
-      <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
-        <h2 className="text-xl font-semibold mb-6">
-          ◆ updates
+    <section id="updates" className="relative">
+      <div>
+        <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
+          Updates
         </h2>
 
         {loading && (
