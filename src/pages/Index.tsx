@@ -1,15 +1,37 @@
-import { Github, Linkedin, Mail, Twitter, Download } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, ChevronLeft, ChevronRight, Settings } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
 import { Navbar } from "@/components/Navbar";
-import { About } from "@/components/About";
 
 const Index = () => {
   const socials = [
-    { icon: Mail, label: "Email", href: "mailto:m7waqar@uwaterloo.ca" },
-    { icon: Github, label: "GitHub", href: "https://github.com/muhibwqr" },
-    { icon: Twitter, label: "Twitter", href: "https://x.com/muhibwqr" },
-    { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/in/muhibwaqar" }
+    { icon: Mail, href: "mailto:m7waqar@uwaterloo.ca" },
+    { icon: Linkedin, href: "https://linkedin.com/in/muhibwaqar" },
+    { icon: Github, href: "https://github.com/muhibwqr" },
+    { icon: Twitter, href: "https://x.com/muhibwqr" }
+  ];
+
+  const currently = [
+    { name: "Math & Business @ Waterloo", logo: "🏛️" }
+  ];
+
+  const previously = [
+    { name: "Founding Fullstack Engineer", company: "Stealth AI", logo: "🚀" },
+    { name: "Software & Systems Engineering", company: "E-commerce + Non-profits", logo: "💼" },
+    { name: "Cybersecurity Engineering", company: "Canadian Cyber Inc.", logo: "🔒" }
+  ];
+
+  const projects = [
+    "goosetype.com — typing arena",
+    "triageo — AI security incident responder",
+    "anti-productivity doomscroll app",
+    "campus typing championship",
+    "course generation & RAG tools"
+  ];
+
+  const writing = [
+    "why ontology for text-to-sql?",
+    "building at scale"
   ];
 
   return (
@@ -39,46 +61,108 @@ const Index = () => {
       <div className="fixed inset-0 z-[1] bg-white/60 dark:bg-black/60 backdrop-blur-sm pointer-events-none"></div>
 
       {/* Content wrapper */}
-      <div className="relative z-10 min-h-screen">
+      <div className="relative z-10 min-h-screen flex flex-col">
         <Navbar />
         
-        <div className="relative z-10">
-          {/* Header */}
-          <header className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col items-center gap-4 border-b border-black/10 dark:border-white/10">
-            <div className="flex items-center justify-center gap-3 sm:gap-4">
-              <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-black/20 dark:border-white/20 flex-shrink-0">
-                <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
-                <AvatarFallback className="bg-gray-200 text-black dark:bg-gray-800 dark:text-white">
-                  MW
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-center">
-                <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 tracking-[0.2em] text-black dark:text-white">
-                  MUHIB WAQAR
-                </h1>
-                <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
-                  math & business @ waterloo • software + security engineer • product builder
-                </p>
-              </div>
-            </div>
-          </header>
+        {/* Header - Top section */}
+        <header className="px-6 sm:px-8 py-8 sm:py-12 flex justify-between items-start">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-black dark:text-white">
+            hi im muhib
+          </h1>
+          <Avatar className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-black/20 dark:border-white/20 flex-shrink-0">
+            <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
+            <AvatarFallback className="bg-gray-200 text-black dark:bg-gray-800 dark:text-white">
+              MW
+            </AvatarFallback>
+          </Avatar>
+        </header>
 
-          {/* Main Content */}
-          <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
-            {/* About */}
-            <About />
-
-            {/* Let's talk + contact */}
-            <section className="py-12 sm:py-16">
-              <h2 className="text-xl font-semibold mb-6 text-black dark:text-white">
-                ◆ let's talk
+        {/* Main Content */}
+        <main className="flex-1 px-6 sm:px-8 pb-24">
+          <div className="max-w-4xl space-y-12">
+            
+            {/* Currently */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
+                Currently
               </h2>
-              <p className="mb-6 text-base leading-relaxed text-gray-900 dark:text-gray-100">
-                I'm looking for Summer 2026 SWE / Product Management/ fullstack roles — ideally founder-led
-                teams that value speed, resilience, and ownership.
-              </p>
+              <div className="space-y-3">
+                {currently.map((item, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <span className="text-2xl">{item.logo}</span>
+                    <span className="text-base text-black dark:text-white">{item.name}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-              <div className="flex flex-wrap gap-3 sm:gap-6 text-xs sm:text-sm">
+            {/* Previously */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
+                Previously
+              </h2>
+              <div className="space-y-3">
+                {previously.map((item, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <span className="text-2xl">{item.logo}</span>
+                    <div>
+                      <span className="text-base text-black dark:text-white">{item.name}</span>
+                      {item.company && (
+                        <span className="text-base text-gray-600 dark:text-gray-400 ml-2">@ {item.company}</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Projects */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
+                Projects
+              </h2>
+              <div className="space-y-2">
+                {projects.map((project, index) => (
+                  <div key={index} className="text-base text-black dark:text-white">
+                    {project}
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Writing */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
+                Writing
+              </h2>
+              <div className="space-y-2">
+                {writing.map((article, index) => (
+                  <div key={index} className="text-base text-black dark:text-white">
+                    {article}
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </main>
+
+        {/* Footer - Bottom section */}
+        <footer className="fixed bottom-0 left-0 right-0 z-20 px-6 sm:px-8 py-6">
+          <div className="flex justify-between items-end">
+            {/* Left side - Navigation */}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <button className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded transition-colors">
+                  <ChevronLeft className="w-5 h-5 text-black dark:text-white" />
+                </button>
+                <button className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded transition-colors">
+                  <Settings className="w-5 h-5 text-black dark:text-white" />
+                </button>
+                <button className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded transition-colors">
+                  <ChevronRight className="w-5 h-5 text-black dark:text-white" />
+                </button>
+              </div>
+              <div className="flex items-center gap-4">
                 {socials.map((social, index) => {
                   const Icon = social.icon;
                   return (
@@ -87,38 +171,26 @@ const Index = () => {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5 dark:text-gray-300 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
+                      className="text-black dark:text-white hover:opacity-70 transition-opacity"
                     >
-                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      {social.label}
+                      <Icon className="w-5 h-5" />
                     </a>
                   );
                 })}
-                <a
-                  href="/muhib_waqar_resume.pdf"
-                  download="muhib_waqar_resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5 dark:text-gray-300 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
-                >
-                  <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  Resume
-                </a>
               </div>
-            </section>
-
-            {/* CTA footer */}
-            <div className="text-center pt-8 border-t border-black/10 dark:border-white/10">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                high ownership, fast execution, zero entitlement — let&apos;s build.
-              </p>
             </div>
-          </main>
-        </div>
+
+            {/* Right side - Language selector (optional) */}
+            <div className="text-sm text-black dark:text-white">
+              <span className="opacity-100">EN</span>
+              <span className="opacity-50 mx-1">/</span>
+              <span className="opacity-50">中文</span>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );
 };
 
 export default Index;
-
