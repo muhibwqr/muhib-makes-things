@@ -76,11 +76,10 @@ export function Updates() {
   };
 
   return (
-    <section id="updates" className="relative">
-      <div>
-        <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
-          Updates
-        </h2>
+    <>
+      <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
+        Updates
+      </h2>
 
         {loading && (
           <div className="text-center py-8 text-muted-foreground">
@@ -145,8 +144,7 @@ export function Updates() {
             ))}
           </div>
         )}
-      </div>
-    </section>
+    </>
   );
 }
 
