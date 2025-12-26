@@ -1,10 +1,9 @@
-import { Github, Linkedin, Mail, Twitter, ChevronLeft, ChevronRight, Settings, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, ChevronLeft, ChevronRight, Settings } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
 import { Navbar } from "@/components/Navbar";
 import { Updates } from "@/components/Updates";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Projects } from "@/components/Projects";
 
 const Index = () => {
   const socials = [
@@ -24,13 +23,6 @@ const Index = () => {
     { name: "Cybersecurity Engineering", company: "Canadian Cyber Inc.", logo: "🔒" }
   ];
 
-  const projects = [
-    "goosetype.com — typing arena",
-    "triageo — AI security incident responder",
-    "anti-productivity doomscroll app",
-    "campus typing championship",
-    "course generation & RAG tools"
-  ];
 
   const writing = [
     "why ontology for text-to-sql?",
@@ -121,100 +113,7 @@ const Index = () => {
 
             {/* Projects */}
             <section>
-              <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
-                Projects
-              </h2>
-              <div className="space-y-2 mb-6">
-                {projects.map((project, index) => (
-                  <div key={index} className="text-base text-black dark:text-white">
-                    {project}
-                  </div>
-                ))}
-              </div>
-              
-              {/* Detailed Project Cards */}
-              <div className="space-y-4 mt-6">
-                <Card className="glass hover-lift border-border/50">
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg font-semibold mb-2">
-                          goosetype.com — typing arena
-                        </CardTitle>
-                        <CardDescription className="text-base leading-relaxed">
-                          Shipped in 1 week → 500 users in 12 hours. Originally 'Waterloo Type' but after 40 students signed up instantly, Waterloo's email security flagged it as phishing and auto-banned it — so I rebranded and rebuilt it into GooseType.
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-muted-foreground">
-                        react, ts, tailwind, vercel
-                      </p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        asChild
-                        className="gap-2"
-                      >
-                        <a
-                          href="https://goosetype.com"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                          View
-                        </a>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="glass hover-lift border-border/50">
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg font-semibold mb-2">
-                          Triageo — AI security incident responder (HTN 2025)
-                        </CardTitle>
-                        <CardDescription className="text-base leading-relaxed">
-                          Slack-native agent for 5-second triage over OWASP. Severity scoring, RAG, log insights, recommended actions.
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-muted-foreground">
-                        python, fastapi, cohere, slack api
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="glass hover-lift border-border/50">
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                      <CardTitle className="text-lg font-semibold mb-2">
-                        anti-productivity doomscroll app — GoOnHacks Winner
-                      </CardTitle>
-                      <CardDescription className="text-base leading-relaxed">
-                        Satirical app that punishes productivity and rewards doomscrolling (AI calls your dad).
-                      </CardDescription>
-                    </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-muted-foreground">
-                        swift, supabase, twilio
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <Projects />
             </section>
 
             {/* Writing */}

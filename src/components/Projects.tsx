@@ -25,13 +25,12 @@ export function Projects() {
   ];
 
   return (
-    <section id="projects" className="py-12 sm:py-16 relative scroll-mt-20">
-      <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
-        <h2 className="text-xl font-semibold mb-6">
-          ◆ projects
-        </h2>
-        
-        <div className="space-y-4">
+    <>
+      <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
+        Projects
+      </h2>
+      
+      <div className="space-y-4">
           {projects.map((project, index) => (
             <Card key={index} className="glass hover-lift border-border/50">
               <CardHeader>
@@ -72,9 +71,8 @@ export function Projects() {
               </CardContent>
             </Card>
           ))}
-        </div>
       </div>
-    </section>
+    </>
   );
 }
 
