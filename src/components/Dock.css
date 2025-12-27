@@ -5,8 +5,12 @@
   transform: translateX(-50%);
   z-index: 50;
   overflow: visible;
-  pointer-events: none;
+  pointer-events: auto;
   padding-bottom: 12px;
+  padding-top: 40px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .dock-panel {
@@ -22,6 +26,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   pointer-events: auto;
   min-height: 68px;
+  width: fit-content;
 }
 
 .dark .dock-panel {

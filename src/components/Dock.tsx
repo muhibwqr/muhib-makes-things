@@ -146,25 +146,19 @@ export default function Dock({
   baseItemSize = 50
 }: DockProps) {
   const mouseX = useMotionValue(Infinity);
-  const isHovered = useMotionValue(0);
-
-  const maxHeight = useMemo(
-    () => Math.max(dockHeight, magnification + magnification / 2 + 4),
-    [magnification, dockHeight]
-  );
-  const heightRow = useTransform(isHovered, [0, 1], [panelHeight, maxHeight]);
-  const height = useSpring(heightRow, spring);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <motion.div style={{ height, scrollbarWidth: 'none' }} className="dock-outer">
+    <div 
+      ref={containerRef}
+      className="dock-outer"
+      onMouseLeave={() => {
+        mouseX.set(Infinity);
+      }}
+    >
       <motion.div
         onMouseMove={({ pageX }) => {
-          isHovered.set(1);
           mouseX.set(pageX);
-        }}
-        onMouseLeave={() => {
-          isHovered.set(0);
-          mouseX.set(Infinity);
         }}
         className={`dock-panel ${className}`}
         style={{ height: panelHeight }}
@@ -187,7 +181,7 @@ export default function Dock({
           </DockItem>
         ))}
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
 
