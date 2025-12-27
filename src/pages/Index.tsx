@@ -1,13 +1,14 @@
-import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun, Code, Shield, Zap } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun, Code, Shield, Zap, FolderKanban } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
 import Dock from "@/components/Dock";
 import { About } from "@/components/About";
-import { Projects } from "@/components/Projects";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [isDark, setIsDark] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -76,6 +77,12 @@ const Index = () => {
       label: 'Twitter', 
       onClick: () => window.open('https://x.com/muhibwqr', '_blank')
     },
+    // Navigation
+    { 
+      icon: <FolderKanban size={18} />, 
+      label: 'Projects', 
+      onClick: () => navigate('/projects')
+    },
     // Projects
     { 
       icon: <Code size={18} />, 
@@ -83,16 +90,6 @@ const Index = () => {
       onClick: () => window.open('https://goosetype.com', '_blank'),
       previewImage: '/goosetype-preview.png',
       previewAlt: 'GooseType University Leaderboard'
-    },
-    { 
-      icon: <Shield size={18} />, 
-      label: 'Triageo', 
-      onClick: () => scrollToSection('projects')
-    },
-    { 
-      icon: <Zap size={18} />, 
-      label: 'Doomscroll App', 
-      onClick: () => scrollToSection('projects')
     },
     { 
       icon: isDark ? <Sun size={18} /> : <Moon size={18} />, 
@@ -169,9 +166,6 @@ const Index = () => {
           <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
             {/* About */}
             <About />
-
-            {/* Projects */}
-            <Projects />
 
             {/* Let's talk + contact */}
             <section className="py-12 sm:py-16">
