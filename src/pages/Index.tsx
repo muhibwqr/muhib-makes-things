@@ -1,9 +1,9 @@
 import { Github, Linkedin, Mail, Twitter, Moon, Sun } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
 import Dock from "@/components/Dock";
 import { Updates } from "@/components/Updates";
 import { Projects } from "@/components/Projects";
+import { About } from "@/components/About";
 import { useState, useEffect } from "react";
 
 const Index = () => {
@@ -67,21 +67,12 @@ const Index = () => {
     },
   ];
 
-  const currently = [
-    { name: "Math & Business @ Waterloo", logo: "🏛️" }
-  ];
-
-  const previously = [
-    { name: "Founding Fullstack Engineer", company: "Stealth AI", logo: "🚀" },
-    { name: "Software & Systems Engineering", company: "E-commerce + Non-profits", logo: "💼" },
-    { name: "Cybersecurity Engineering", company: "Canadian Cyber Inc.", logo: "🔒" }
-  ];
-
-
-  const writing = [
-    "why ontology for text-to-sql?",
-    "building at scale"
-  ];
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <div className="min-h-screen relative bg-white text-black dark:bg-black dark:text-white">
@@ -111,6 +102,51 @@ const Index = () => {
 
       {/* Content wrapper */}
       <div className="relative z-10 min-h-screen flex flex-col">
+        {/* Top Navigation */}
+        <nav className="fixed top-0 left-0 z-50 p-4 sm:p-6">
+          <div className="flex flex-col gap-3 sm:gap-4">
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="text-xs sm:text-sm font-medium transition-colors text-left text-black dark:text-white hover:opacity-70"
+            >
+              home
+            </button>
+            <button
+              onClick={() => scrollToSection('projects')}
+              className="text-xs sm:text-sm font-medium transition-colors text-left text-black dark:text-white hover:opacity-70"
+            >
+              projects
+            </button>
+            <button
+              onClick={() => scrollToSection('updates')}
+              className="text-xs sm:text-sm font-medium transition-colors text-left text-black dark:text-white hover:opacity-70"
+            >
+              updates
+            </button>
+            <button
+              onClick={toggleTheme}
+              className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-all text-xs sm:text-sm mt-2 ${
+                isDark
+                  ? "bg-white/5 hover:bg-white/10 border border-white/10 text-white"
+                  : "bg-black/5 hover:bg-black/10 border border-black/10 text-black"
+              }`}
+              aria-label="Toggle theme"
+            >
+              {isDark ? (
+                <>
+                  <Sun className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">dark</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">dark</span>
+                </>
+              )}
+            </button>
+          </div>
+        </nav>
+
         {/* Dock Navigation */}
         <Dock 
           items={dockItems}
@@ -120,78 +156,87 @@ const Index = () => {
         />
         
         {/* Header - Top section */}
-        <header className="px-6 sm:px-8 py-8 sm:py-12 flex justify-between items-start">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-black dark:text-white">
-            hi im muhib
-          </h1>
-          <Avatar className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-black/20 dark:border-white/20 flex-shrink-0">
-            <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
-            <AvatarFallback className="bg-gray-200 text-black dark:bg-gray-800 dark:text-white">
-              MW
-            </AvatarFallback>
-          </Avatar>
+        <header className="px-6 sm:px-8 py-8 sm:py-12 pt-24 sm:pt-32">
+          <div className="max-w-4xl">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black dark:text-white mb-2">
+              Muhib Waqar
+            </h1>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-black dark:text-white mb-4">
+              MUHIB WAQAR
+            </h2>
+            <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300">
+              math & business @ waterloo • software + security engineer • product builder
+            </p>
+          </div>
         </header>
 
         {/* Main Content */}
         <main className="flex-1 px-6 sm:px-8 pb-24">
           <div className="max-w-4xl space-y-12">
             
-            {/* Currently */}
-            <section>
-              <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
-                Currently
-              </h2>
-              <div className="space-y-3">
-                {currently.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <span className="text-2xl">{item.logo}</span>
-                    <span className="text-base text-black dark:text-white">{item.name}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
+            {/* About */}
+            <About />
 
-            {/* Previously */}
-            <section>
-              <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
-                Previously
+            {/* Let's Talk */}
+            <section id="lets-talk" className="py-12 sm:py-16 relative scroll-mt-20">
+              <h2 className="text-xl font-semibold mb-6 text-black dark:text-white">
+                ◆ let's talk
               </h2>
-              <div className="space-y-3">
-                {previously.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <span className="text-2xl">{item.logo}</span>
-                    <div>
-                      <span className="text-base text-black dark:text-white">{item.name}</span>
-                      {item.company && (
-                        <span className="text-base text-gray-600 dark:text-gray-400 ml-2">@ {item.company}</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
+              <p className="text-base leading-relaxed mb-6 text-black dark:text-white">
+                I'm looking for Summer 2026 SWE / Product Management/ fullstack roles — ideally founder-led teams that value speed, resilience, and ownership.
+              </p>
+              <div className="flex flex-wrap gap-4 mb-6">
+                <a
+                  href="mailto:m7waqar@uwaterloo.ca"
+                  className="text-base text-black dark:text-white hover:opacity-70 transition-opacity"
+                >
+                  Email
+                </a>
+                <a
+                  href="https://github.com/muhibwqr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base text-black dark:text-white hover:opacity-70 transition-opacity"
+                >
+                  GitHub
+                </a>
+                <a
+                  href="https://x.com/muhibwqr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base text-black dark:text-white hover:opacity-70 transition-opacity"
+                >
+                  Twitter
+                </a>
+                <a
+                  href="https://linkedin.com/in/muhibwaqar"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base text-black dark:text-white hover:opacity-70 transition-opacity"
+                >
+                  LinkedIn
+                </a>
+                <a
+                  href="/resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base text-black dark:text-white hover:opacity-70 transition-opacity"
+                >
+                  Resume
+                </a>
               </div>
+              <p className="text-base leading-relaxed text-black dark:text-white">
+                high ownership, fast execution, zero entitlement — let's build.
+              </p>
             </section>
 
             {/* Projects */}
-            <section>
+            <section id="projects">
               <Projects />
             </section>
 
-            {/* Writing */}
-            <section>
-              <h2 className="text-lg sm:text-xl font-semibold mb-4 text-black dark:text-white">
-                Writing
-              </h2>
-              <div className="space-y-2">
-                {writing.map((article, index) => (
-                  <div key={index} className="text-base text-black dark:text-white">
-                    {article}
-                  </div>
-                ))}
-              </div>
-            </section>
-
             {/* Updates */}
-            <section>
+            <section id="updates">
               <Updates />
             </section>
           </div>
@@ -205,7 +250,7 @@ const Index = () => {
               <span className="opacity-50 mx-1">/</span>
               <span className="opacity-50">中文</span>
             </div>
-          </div>
+        </div>
         </footer>
       </div>
     </div>
