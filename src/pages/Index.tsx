@@ -80,7 +80,9 @@ const Index = () => {
     { 
       icon: <Code size={18} />, 
       label: 'GooseType', 
-      onClick: () => window.open('https://goosetype.com', '_blank')
+      onClick: () => window.open('https://goosetype.com', '_blank'),
+      previewImage: '/goosetype-preview.png',
+      previewAlt: 'GooseType University Leaderboard'
     },
     { 
       icon: <Shield size={18} />, 
