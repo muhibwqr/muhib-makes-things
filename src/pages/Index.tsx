@@ -1,8 +1,9 @@
-import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun, Code, Shield, Zap } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
 import Dock from "@/components/Dock";
 import { About } from "@/components/About";
+import { Projects } from "@/components/Projects";
 import { useState, useEffect } from "react";
 
 const Index = () => {
@@ -38,6 +39,22 @@ const Index = () => {
     setIsDark(!isDark);
   };
 
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      // If on a different page, navigate to home and then scroll
+      if (window.location.pathname !== '/') {
+        window.location.href = '/';
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  };
+
   const dockItems = [
     { 
       icon: <Mail size={18} />, 
@@ -58,6 +75,22 @@ const Index = () => {
       icon: <Twitter size={18} />, 
       label: 'Twitter', 
       onClick: () => window.open('https://x.com/muhibwqr', '_blank')
+    },
+    // Projects
+    { 
+      icon: <Code size={18} />, 
+      label: 'GooseType', 
+      onClick: () => window.open('https://goosetype.com', '_blank')
+    },
+    { 
+      icon: <Shield size={18} />, 
+      label: 'Triageo', 
+      onClick: () => scrollToSection('projects')
+    },
+    { 
+      icon: <Zap size={18} />, 
+      label: 'Doomscroll App', 
+      onClick: () => scrollToSection('projects')
     },
     { 
       icon: isDark ? <Sun size={18} /> : <Moon size={18} />, 
@@ -134,6 +167,9 @@ const Index = () => {
           <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
             {/* About */}
             <About />
+
+            {/* Projects */}
+            <Projects />
 
             {/* Let's talk + contact */}
             <section className="py-12 sm:py-16">
