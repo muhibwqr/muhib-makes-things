@@ -1,0 +1,32 @@
+.project-preview-wrapper {
+  width: 400px;
+  max-width: calc(100vw - 2rem);
+}
+
+.project-preview {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.9);
+  padding: 4px;
+}
+
+.dark .project-preview {
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.project-preview-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+@media (max-width: 1024px) {
+  .project-preview-wrapper {
+    display: none;
+  }
+}
+

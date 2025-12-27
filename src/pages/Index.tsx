@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun, Code, Shield, Zap, FolderKanban } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun, Code, FolderKanban } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
 import Dock from "@/components/Dock";
@@ -40,21 +40,6 @@ const Index = () => {
     setIsDark(!isDark);
   };
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      // If on a different page, navigate to home and then scroll
-      if (window.location.pathname !== '/') {
-        window.location.href = '/';
-        setTimeout(() => {
-          const el = document.getElementById(id);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      }
-    }
-  };
 
   const dockItems = [
     { 
