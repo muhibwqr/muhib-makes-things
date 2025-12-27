@@ -1,10 +1,71 @@
-import { Github, Linkedin, Mail, Twitter, Download } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
-import { Navbar } from "@/components/Navbar";
+import Dock from "@/components/Dock";
 import { About } from "@/components/About";
+import { useState, useEffect } from "react";
 
 const Index = () => {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const body = window.document.body;
+    
+    if (body.classList.contains("light")) {
+      root.classList.remove("dark");
+      root.classList.add("light");
+      setIsDark(false);
+    } else if (body.classList.contains("dark")) {
+      root.classList.remove("light");
+      root.classList.add("dark");
+      setIsDark(true);
+    } else if (!root.classList.contains("dark") && !root.classList.contains("light")) {
+      root.classList.add("light");
+      body.classList.add("light");
+      setIsDark(false);
+    } else {
+      const isDarkMode = root.classList.contains("dark");
+      setIsDark(isDarkMode);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const root = window.document.documentElement;
+    const newTheme = isDark ? "light" : "dark";
+    root.classList.remove(isDark ? "dark" : "light");
+    root.classList.add(newTheme);
+    setIsDark(!isDark);
+  };
+
+  const dockItems = [
+    { 
+      icon: <Mail size={18} />, 
+      label: 'Email', 
+      onClick: () => window.open('mailto:m7waqar@uwaterloo.ca', '_blank')
+    },
+    { 
+      icon: <Linkedin size={18} />, 
+      label: 'LinkedIn', 
+      onClick: () => window.open('https://linkedin.com/in/muhibwaqar', '_blank')
+    },
+    { 
+      icon: <Github size={18} />, 
+      label: 'GitHub', 
+      onClick: () => window.open('https://github.com/muhibwqr', '_blank')
+    },
+    { 
+      icon: <Twitter size={18} />, 
+      label: 'Twitter', 
+      onClick: () => window.open('https://x.com/muhibwqr', '_blank')
+    },
+    { 
+      icon: isDark ? <Sun size={18} /> : <Moon size={18} />, 
+      label: isDark ? 'Light Mode' : 'Dark Mode', 
+      onClick: toggleTheme
+    },
+  ];
+
   const socials = [
     { icon: Mail, label: "Email", href: "mailto:m7waqar@uwaterloo.ca" },
     { icon: Github, label: "GitHub", href: "https://github.com/muhibwqr" },
@@ -40,7 +101,13 @@ const Index = () => {
 
       {/* Content wrapper */}
       <div className="relative z-10 min-h-screen">
-        <Navbar />
+        {/* Dock Navigation */}
+        <Dock 
+          items={dockItems}
+          panelHeight={68}
+          baseItemSize={50}
+          magnification={70}
+        />
         
         <div className="relative z-10">
           {/* Header */}
