@@ -14,7 +14,7 @@ export function Projects() {
       description: "Shipped in 1 week → 500 users in 12 hours. Originally 'Waterloo Type' but after 40 students signed up instantly, Waterloo's email security flagged it as phishing and auto-banned it — so I rebranded and rebuilt it into GooseType.",
       stack: "react, ts, tailwind, vercel",
       link: "https://goosetype.com",
-      previewImage: "/goosetype-preview.png"
+      previewVideo: "/goosetype-preview.mp4"
     },
     {
       title: "Triageo — AI security incident responder (HTN 2025)",
@@ -34,7 +34,7 @@ export function Projects() {
 
   return (
     <section id="projects" className="py-12 sm:py-16 relative scroll-mt-20">
-      <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
+      <div className="px-4 sm:px-6">
         <h2 className="text-xl font-semibold mb-6 text-black dark:text-white">
           ◆ projects
         </h2>
@@ -88,7 +88,7 @@ export function Projects() {
 
               {/* Preview on the right */}
               <AnimatePresence>
-                {hoveredIndex === index && project.previewImage && (
+                {hoveredIndex === index && (project.previewImage || project.previewVideo) && (
                   <motion.div
                     initial={{ opacity: 0, x: -20, scale: 0.95 }}
                     animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -97,11 +97,22 @@ export function Projects() {
                     className="absolute left-full top-0 ml-6 z-50 pointer-events-none project-preview-wrapper"
                   >
                     <div className="project-preview">
-                      <img 
-                        src={project.previewImage} 
-                        alt={`${project.title} preview`}
-                        className="project-preview-image"
-                      />
+                      {project.previewVideo ? (
+                        <video
+                          src={project.previewVideo}
+                          className="project-preview-image"
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                        />
+                      ) : project.previewImage ? (
+                        <img 
+                          src={project.previewImage} 
+                          alt={`${project.title} preview`}
+                          className="project-preview-image"
+                        />
+                      ) : null}
                     </div>
                   </motion.div>
                 )}
