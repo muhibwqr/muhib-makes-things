@@ -113,10 +113,16 @@
 
 .dock-preview-image {
   display: block;
-  width: 150px;
+  width: 400px;
   height: auto;
-  max-width: 9vw;
+  max-width: 90vw;
   border-radius: 10px;
+}
+
+/* Larger preview for hireme */
+.dock-preview-image[src*="hireme"] {
+  width: 600px;
+  max-width: 90vw;
 }
 
 .dock-preview video {
