@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, Twitter, Moon, Sun, Code, FolderKanban } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, Moon, Sun, FolderKanban, Home, FileText } from "lucide-react";
 import { Projects } from "@/components/Projects";
 import LiquidEther from "@/components/LiquidEther";
 import Dock from "@/components/Dock";
@@ -40,15 +40,31 @@ export default function ProjectsPage() {
   };
 
   const dockItems = [
+    // Navigation
+    { 
+      icon: <Home size={18} />, 
+      label: 'Home', 
+      onClick: () => navigate('/'),
+      previewImage: '/speedface.webp',
+    },
+    { 
+      icon: <FolderKanban size={18} />, 
+      label: 'Projects', 
+      onClick: () => navigate('/projects')
+    },
+    // Social
     { 
       icon: <Mail size={18} />, 
       label: 'Email', 
-      onClick: () => window.open('mailto:m7waqar@uwaterloo.ca', '_blank')
+      onClick: () => window.open('mailto:m7waqar@uwaterloo.ca', '_blank'),
+      previewImage: '/IMG_1754.JPG',
     },
     { 
       icon: <Linkedin size={18} />, 
       label: 'LinkedIn', 
-      onClick: () => window.open('https://linkedin.com/in/muhibwaqar', '_blank')
+      onClick: () => window.open('https://linkedin.com/in/muhibwaqar', '_blank'),
+      previewVideo: '/linkedin-preview.mp4',
+      previewAlt: 'LinkedIn Content'
     },
     { 
       icon: <Github size={18} />, 
@@ -58,20 +74,21 @@ export default function ProjectsPage() {
     { 
       icon: <Twitter size={18} />, 
       label: 'Twitter', 
-      onClick: () => window.open('https://x.com/muhibwqr', '_blank')
-    },
-    // Navigation
-    { 
-      icon: <FolderKanban size={18} />, 
-      label: 'Projects', 
-      onClick: () => navigate('/projects')
+      onClick: () => window.open('https://x.com/muhibwqr', '_blank'),
+      previewVideo: '/twitter-preview.mp4',
+      previewAlt: 'Twitter Content'
     },
     { 
-      icon: <Code size={18} />, 
-      label: 'GooseType', 
-      onClick: () => window.open('https://goosetype.com', '_blank'),
-      previewImage: '/goosetype-preview.png',
-      previewAlt: 'GooseType University Leaderboard'
+      icon: <FileText size={18} />, 
+      label: 'Resume', 
+      onClick: () => {
+        const link = document.createElement('a');
+        link.href = '/muhib_waqar_resume.pdf';
+        link.download = 'muhib_waqar_resume.pdf';
+        link.click();
+      },
+      previewImage: '/hireme.jpeg',
+      previewAlt: 'Hire Me'
     },
     { 
       icon: isDark ? <Sun size={18} /> : <Moon size={18} />, 

@@ -11,23 +11,23 @@ export function Projects() {
   const projects = [
     {
       title: "goosetype.com — typing arena",
-      description: "Shipped in 1 week → 500 users in 12 hours. Originally 'Waterloo Type' but after 40 students signed up instantly, Waterloo's email security flagged it as phishing and auto-banned it — so I rebranded and rebuilt it into GooseType.",
+      description: "Shipped in 1 week → 500 users in 12 hours. Originally 'Waterloo Type' but after 40 students signed up instantly, Waterloo's email security flagged it as phishing and auto-banned it — so I rebranded and rebuilt it into GooseType and we now have 5000+ tests given in less than a week and a half.",
       stack: "react, ts, tailwind, vercel",
       link: "https://goosetype.com",
       previewVideo: "/goosetype-preview.mp4"
     },
     {
       title: "Triageo — AI security incident responder (HTN 2025)",
-      description: "Slack-native agent for 5-second triage over OWASP. Severity scoring, RAG, log insights, recommended actions.",
+      description: "We asked security engineers what was their biggest problem? We found that incident triage and response is a common pain in the butt, so we decided to build a that is Slack-native AI agent for 5-second triage over OWASP. Severity scoring, RAG, log insights, recommended actions. It tags a relevant responder with the reccomended best practices, as incidents are flagged the algorithm learns and flags simillar incidents the same way. Didn't podium but got kudos from Tom for being a well though-out and problem specific tool",
       stack: "python, fastapi, cohere, slack api",
-      link: "#",
+      link: "devpost.com/triageo",
       previewImage: undefined
     },
     {
-      title: "anti-productivity doomscroll app — GoOnHacks Winner",
-      description: "Satirical app that punishes productivity and rewards doomscrolling (AI calls your dad).",
+      title: "anti-productivity doomscroll app (GoOnHacks25 Winner)",
+      description: "We wanted to make something that kept people scrolling so that we could get more opportunities to ourselves, we built and app that connects to a browser extension to track where you spend your time, if you spend more than 5 mins on any site or page that is not social media it triggers an voice AI agent that calls your dad, on the app we also have a leaderboard to see who scrolled the most, and on your phone it also blocks apps other than social media after 5 mins of use.",
       stack: "swift, supabase, twilio",
-      link: "#",
+      link: "devpost.com/scrollify",
       previewImage: undefined
     }
   ];
@@ -36,18 +36,18 @@ export function Projects() {
     <section id="projects" className="py-12 sm:py-16 relative scroll-mt-20">
       <div className="px-4 sm:px-6">
         <h2 className="text-xl font-semibold mb-6 text-black dark:text-white">
-          ◆ projects
+        → projects i worked on (hover over them!)
         </h2>
         
         <div className="space-y-4 relative">
           {projects.map((project, index) => (
             <div 
               key={index} 
-              className="relative"
+              className="relative project-card-wrapper"
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
-              <Card className="glass hover-lift border-border/50">
+              <Card className="glass hover-lift border-border/50 project-card">
                 <CardHeader>
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
@@ -97,10 +97,16 @@ export function Projects() {
                     className="absolute left-full top-0 ml-6 z-50 pointer-events-none project-preview-wrapper"
                   >
                     <div className="project-preview">
+                      {/* Title */}
+                      <div className="project-preview-header">
+                        <h3 className="project-preview-title">{project.title}</h3>
+                      </div>
+                      
+                      {/* Video/Image */}
                       {project.previewVideo ? (
                         <video
                           src={project.previewVideo}
-                          className="project-preview-image"
+                          className="project-preview-media"
                           autoPlay
                           loop
                           muted
@@ -110,9 +116,15 @@ export function Projects() {
                         <img 
                           src={project.previewImage} 
                           alt={`${project.title} preview`}
-                          className="project-preview-image"
+                          className="project-preview-media"
                         />
                       ) : null}
+                      
+                      {/* Description */}
+                      <div className="project-preview-description">
+                        <p className="project-preview-text">{project.description}</p>
+                        <p className="project-preview-stack">{project.stack}</p>
+                      </div>
                     </div>
                   </motion.div>
                 )}

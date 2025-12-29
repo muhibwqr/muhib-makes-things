@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun, Code, FolderKanban } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun, FolderKanban, Home, FileText } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
 import Dock from "@/components/Dock";
@@ -42,15 +42,31 @@ const Index = () => {
 
 
   const dockItems = [
+    // Navigation
+    { 
+      icon: <Home size={18} />, 
+      label: 'Home', 
+      onClick: () => navigate('/'),
+      previewImage: '/speedface.webp',
+    },
+    { 
+      icon: <FolderKanban size={18} />, 
+      label: 'Projects', 
+      onClick: () => navigate('/projects')
+    },
+    // Social
     { 
       icon: <Mail size={18} />, 
       label: 'Email', 
-      onClick: () => window.open('mailto:m7waqar@uwaterloo.ca', '_blank')
+      onClick: () => window.open('mailto:m7waqar@uwaterloo.ca', '_blank'),
+      previewImage: '/IMG_1754.JPG',
     },
     { 
       icon: <Linkedin size={18} />, 
       label: 'LinkedIn', 
-      onClick: () => window.open('https://linkedin.com/in/muhibwaqar', '_blank')
+      onClick: () => window.open('https://linkedin.com/in/muhibwaqar', '_blank'),
+      previewVideo: '/linkedin-preview.mp4',
+      previewAlt: 'LinkedIn Content'
     },
     { 
       icon: <Github size={18} />, 
@@ -60,21 +76,21 @@ const Index = () => {
     { 
       icon: <Twitter size={18} />, 
       label: 'Twitter', 
-      onClick: () => window.open('https://x.com/muhibwqr', '_blank')
+      onClick: () => window.open('https://x.com/muhibwqr', '_blank'),
+      previewVideo: '/twitter-preview.mp4',
+      previewAlt: 'Twitter Content'
     },
-    // Navigation
     { 
-      icon: <FolderKanban size={18} />, 
-      label: 'Projects', 
-      onClick: () => navigate('/projects')
-    },
-    // Projects
-    { 
-      icon: <Code size={18} />, 
-      label: 'GooseType', 
-      onClick: () => window.open('https://goosetype.com', '_blank'),
-      previewImage: '/goosetype-preview.png',
-      previewAlt: 'GooseType University Leaderboard'
+      icon: <FileText size={18} />, 
+      label: 'Resume', 
+      onClick: () => {
+        const link = document.createElement('a');
+        link.href = '/muhib_waqar_resume.pdf';
+        link.download = 'muhib_waqar_resume.pdf';
+        link.click();
+      },
+      previewImage: '/hireme.jpeg',
+      previewAlt: 'Hire Me'
     },
     { 
       icon: isDark ? <Sun size={18} /> : <Moon size={18} />, 
@@ -95,7 +111,7 @@ const Index = () => {
       {/* LiquidEther background animation */}
       <div className="fixed inset-0 z-0">
         <LiquidEther
-          colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
+          colors={["#4227GG", "#FF9FFC", "#B19EEF"]}
           mouseForce={20}
           cursorSize={100}
           isViscous={false}
@@ -130,7 +146,7 @@ const Index = () => {
           {/* Header */}
           <header className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col items-center gap-4 border-b border-black/10 dark:border-white/10">
             <div className="flex items-center justify-center gap-3 sm:gap-4">
-              <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-black/20 dark:border-white/20 flex-shrink-0">
+              <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-black/30 dark:border-white/20 flex-shrink-0">
                 <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
                 <AvatarFallback className="bg-gray-200 text-black dark:bg-gray-800 dark:text-white">
                   MW
@@ -138,10 +154,10 @@ const Index = () => {
               </Avatar>
               <div className="text-center">
                 <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 tracking-[0.2em] text-black dark:text-white">
-                  MUHIB WAQAR
+                 muhib waqar
                 </h1>
                 <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
-                  math & business @ waterloo • software + security engineer • product builder
+                  math & business @ uwaterloo • swe • security • product management
                 </p>
               </div>
             </div>
@@ -158,8 +174,8 @@ const Index = () => {
                 ◆ let's talk
               </h2>
               <p className="mb-6 text-base leading-relaxed text-gray-900 dark:text-gray-100">
-                I'm looking for Summer 2026 SWE / Product Management/ fullstack roles — ideally founder-led
-                teams that value speed, resilience, and ownership.
+                I'm looking for Summer 2026 SWE / Product Management/ fullstack roles — ideally
+                teams that value speed, resilience, and ownership. I'm adamant on learning, growing & adapting to new environments
               </p>
 
               <div className="flex flex-wrap gap-3 sm:gap-6 text-xs sm:text-sm">
@@ -190,13 +206,6 @@ const Index = () => {
                 </a>
               </div>
             </section>
-
-            {/* CTA footer */}
-            <div className="text-center pt-8 border-t border-black/10 dark:border-white/10">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                high ownership, fast execution, zero entitlement — let&apos;s build.
-              </p>
-            </div>
           </main>
         </div>
       </div>
