@@ -98,7 +98,7 @@ interface LiquidEtherWebGL {
 
 }
 
-const defaultColors = ['#5227FF', '#FF9FFC', '#B19EEF'];
+const defaultColors = ['#4A9EFF', '#9FF5FF', '#B1D4FF'];
 
 export default function LiquidEther({
 

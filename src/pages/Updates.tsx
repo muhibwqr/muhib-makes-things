@@ -8,7 +8,7 @@ export default function UpdatesPage() {
       {/* LiquidEther background animation */}
       <div className="fixed inset-0 z-0">
         <LiquidEther
-          colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
+          colors={["#4A9EFF", "#9FF5FF", "#B1D4FF"]}
           mouseForce={20}
           cursorSize={100}
           isViscous={false}
