@@ -83,12 +83,7 @@ export default function ProjectsPage() {
     { 
       icon: <FileText size={18} />, 
       label: 'Resume', 
-      onClick: () => {
-        const link = document.createElement('a');
-        link.href = '/muhib_waqar_resume.pdf';
-        link.download = 'muhib_waqar_resume.pdf';
-        link.click();
-      },
+      onClick: () => navigate('/resume'),
       previewImage: '/hireme.jpeg',
       previewAlt: 'Hire Me'
     },

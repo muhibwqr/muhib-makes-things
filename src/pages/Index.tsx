@@ -85,12 +85,7 @@ const Index = () => {
     { 
       icon: <FileText size={18} />, 
       label: 'Resume', 
-      onClick: () => {
-        const link = document.createElement('a');
-        link.href = '/muhib_waqar_resume.pdf';
-        link.download = 'muhib_waqar_resume.pdf';
-        link.click();
-      },
+      onClick: () => navigate('/resume'),
       previewImage: '/hireme.jpeg',
       previewAlt: 'Hire Me'
     },
@@ -198,8 +193,8 @@ const Index = () => {
                   );
                 })}
                 <a
-                  href="/muhib_waqar_resume.pdf"
-                  download="muhib_waqar_resume.pdf"
+                  href="/muhib_waqar_resume_app.pdf"
+                  download="muhib_waqar_resume_app.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5 dark:text-gray-300 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
