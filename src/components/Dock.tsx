@@ -16,6 +16,7 @@ export type DockItemData = {
   onClick: () => void;
   className?: string;
   previewImage?: string;
+  previewVideo?: string;
   previewAlt?: string;
 };
 
@@ -40,6 +41,7 @@ type DockItemProps = {
   baseItemSize: number;
   magnification: number;
   previewImage?: string;
+  previewVideo?: string;
   previewAlt?: string;
 };
 
@@ -53,6 +55,7 @@ function DockItem({
   magnification,
   baseItemSize,
   previewImage,
+  previewVideo,
   previewAlt
 }: DockItemProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -73,12 +76,12 @@ function DockItem({
   useEffect(() => {
     if (!isHovered) return;
     const unsubscribe = isHovered.on('change', latest => {
-      if (previewImage) {
+      if (previewImage || previewVideo) {
         setShowPreview(latest === 1);
       }
     });
     return () => unsubscribe();
-  }, [isHovered, previewImage]);
+  }, [isHovered, previewImage, previewVideo]);
 
   return (
     <div className="dock-item-wrapper">
@@ -110,21 +113,32 @@ function DockItem({
             : child
         )}
       </motion.div>
-      {previewImage && (
+      {(previewImage || previewVideo) && (
         <AnimatePresence>
           {showPreview && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
+              animate={{ opacity: 1, scale: 0.5, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 10 }}
               transition={{ duration: 0.2 }}
               className="dock-preview"
             >
-              <img 
-                src={previewImage} 
-                alt={previewAlt || 'Preview'} 
-                className="dock-preview-image"
-              />
+              {previewVideo ? (
+                <video
+                  src={previewVideo}
+                  className="dock-preview-image"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                />
+              ) : previewImage ? (
+                <img 
+                  src={previewImage} 
+                  alt={previewAlt || 'Preview'} 
+                  className="dock-preview-image"
+                />
+              ) : null}
             </motion.div>
           )}
         </AnimatePresence>
@@ -182,10 +196,10 @@ function DockIcon({ children, className = '' }: DockIconProps) {
 export default function Dock({
   items,
   className = '',
-  spring = { mass: 0.1, stiffness: 150, damping: 12 },
+  spring = { mass: 0.2, stiffness: 100, damping: 20 },
   magnification = 70,
-  distance = 200,
-  panelHeight = 68,
+  distance = 2000,
+  panelHeight = 69,
   dockHeight = 256,
   baseItemSize = 50
 }: DockProps) {
@@ -220,6 +234,7 @@ export default function Dock({
             magnification={magnification}
             baseItemSize={baseItemSize}
             previewImage={item.previewImage}
+            previewVideo={item.previewVideo}
             previewAlt={item.previewAlt}
           >
             <DockIcon>{item.icon}</DockIcon>
