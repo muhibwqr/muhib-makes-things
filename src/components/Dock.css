@@ -97,8 +97,8 @@
 }
 
 .dock-preview {
-  position: absolute;
-  bottom: calc(100% + 16px);
+  position: fixed;
+  bottom: 120px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -117,12 +117,6 @@
   height: auto;
   max-width: 90vw;
   border-radius: 10px;
-}
-
-/* Larger preview for hireme */
-.dock-preview-image[src*="hireme"] {
-  width: 600px;
-  max-width: 90vw;
 }
 
 .dock-preview video {

@@ -52,7 +52,8 @@ const Index = () => {
     { 
       icon: <FolderKanban size={18} />, 
       label: 'Projects', 
-      onClick: () => navigate('/projects')
+      onClick: () => navigate('/projects'),
+      previewImage: '/hireme.jpeg',
     },
     // Social
     { 
@@ -71,7 +72,8 @@ const Index = () => {
     { 
       icon: <Github size={18} />, 
       label: 'GitHub', 
-      onClick: () => window.open('https://github.com/muhibwqr', '_blank')
+      onClick: () => window.open('https://github.com/muhibwqr', '_blank'),
+      previewImage: '/hireme.jpeg',
     },
     { 
       icon: <Twitter size={18} />, 
@@ -95,7 +97,8 @@ const Index = () => {
     { 
       icon: isDark ? <Sun size={18} /> : <Moon size={18} />, 
       label: isDark ? 'Light Mode' : 'Dark Mode', 
-      onClick: toggleTheme
+      onClick: toggleTheme,
+      previewImage: '/hireme.jpeg',
     },
   ];
 

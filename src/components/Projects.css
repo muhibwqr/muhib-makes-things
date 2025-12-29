@@ -1,83 +1,43 @@
-.project-card-wrapper {
-  width: fit-content;
-  max-width: 600px;
-}
-
-.project-card {
-  width: 500px;
-  max-width: 100%;
-}
-
-.project-preview-wrapper {
-  width: 500px;
-  max-width: calc(100vw - 2rem);
-}
-
-.project-preview {
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(10px);
+.projects-layout {
   display: flex;
-  flex-direction: column;
+  gap: 60px;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.dark .project-preview {
-  background: rgba(0, 0, 0, 0.98);
-  border: 2px solid rgba(255, 255, 255, 0.15);
+.projects-list {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
 }
 
-.project-preview-header {
-  padding: 16px 16px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+.projects-tv-container {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+  z-index: 20;
 }
 
-.project-preview-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: white;
-  margin: 0;
-  line-height: 1.4;
-}
-
-.project-preview-media {
-  display: block;
+.project-card-minimal {
   width: 100%;
-  height: auto;
-  border-radius: 0;
-}
-
-.project-preview video {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.project-preview-description {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.project-preview-text {
-  font-size: 13px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 12px 0;
-}
-
-.project-preview-stack {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0;
-  font-family: monospace;
-  text-transform: lowercase;
-}
-
+/* Remove old preview styles */
 @media (max-width: 1024px) {
-  .project-preview-wrapper {
+  .projects-tv-container {
     display: none;
   }
+  
+  .projects-layout {
+    justify-content: center;
+  }
 }
-

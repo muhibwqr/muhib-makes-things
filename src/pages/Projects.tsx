@@ -1,6 +1,6 @@
 import { Github, Linkedin, Mail, Twitter, Moon, Sun, FolderKanban, Home, FileText } from "lucide-react";
 import { Projects } from "@/components/Projects";
-import LiquidEther from "@/components/LiquidEther";
+import Cubes from "@/components/Cubes";
 import Dock from "@/components/Dock";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -50,7 +50,8 @@ export default function ProjectsPage() {
     { 
       icon: <FolderKanban size={18} />, 
       label: 'Projects', 
-      onClick: () => navigate('/projects')
+      onClick: () => navigate('/projects'),
+      previewImage: '/hireme.jpeg',
     },
     // Social
     { 
@@ -69,7 +70,8 @@ export default function ProjectsPage() {
     { 
       icon: <Github size={18} />, 
       label: 'GitHub', 
-      onClick: () => window.open('https://github.com/muhibwqr', '_blank')
+      onClick: () => window.open('https://github.com/muhibwqr', '_blank'),
+      previewImage: '/hireme.jpeg',
     },
     { 
       icon: <Twitter size={18} />, 
@@ -93,31 +95,16 @@ export default function ProjectsPage() {
     { 
       icon: isDark ? <Sun size={18} /> : <Moon size={18} />, 
       label: isDark ? 'Light Mode' : 'Dark Mode', 
-      onClick: toggleTheme
+      onClick: toggleTheme,
+      previewImage: '/hireme.jpeg',
     },
   ];
 
   return (
     <div className="min-h-screen relative bg-white text-black dark:bg-black dark:text-white">
-      {/* LiquidEther background animation */}
+      {/* Cubes background animation */}
       <div className="fixed inset-0 z-0">
-        <LiquidEther
-          colors={["#4A9EFF", "#9FF5FF", "#B1D4FF"]}
-          mouseForce={20}
-          cursorSize={100}
-          isViscous={false}
-          viscous={30}
-          iterationsViscous={32}
-          iterationsPoisson={32}
-          resolution={0.5}
-          isBounce={false}
-          autoDemo={true}
-          autoSpeed={0.5}
-          autoIntensity={2.2}
-          takeoverDuration={0.25}
-          autoResumeDelay={3000}
-          autoRampDuration={0.6}
-        />
+        <Cubes />
       </div>
 
       {/* Semi-transparent backdrop for text readability */}
