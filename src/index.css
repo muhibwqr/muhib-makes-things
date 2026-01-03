@@ -153,3 +153,21 @@ All colors MUST be HSL.
     @apply shadow-[0_0_20px_rgba(0,255,255,0.3)] dark:shadow-[0_0_30px_rgba(0,255,255,0.5)];
   }
 }
+
+/* Webring styling - ensure it appears above all content and is not blurred */
+[data-webring],
+[data-webring] *,
+.webring,
+#webring,
+iframe[src*="uwaterloo.network"],
+[id*="webring"],
+[class*="webring"] {
+  position: fixed !important;
+  z-index: 99999 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: none !important;
+}

@@ -42,19 +42,19 @@ export function Projects() {
         
         <div className="projects-layout">
             <div className="projects-list space-y-4">
-            {projects.map((project, index) => (
+          {projects.map((project, index) => (
                 <div 
                 key={index} 
                 className="relative"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                >
-                <a 
-                    href={project.link}
-                    target="_blank" 
-                    rel="noopener noreferrer"
+                    >
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
                     className="block"
-                >
+                      >
                     <Card className={`glass hover-lift border-border/50 project-card-minimal ${hoveredIndex === index ? 'border-primary/50 bg-primary/5' : ''}`}>
                     <div className="flex items-center gap-4">
                         <div className="p-2 bg-black/5 dark:bg-white/10 rounded-lg">
@@ -68,7 +68,7 @@ export function Projects() {
                     </Card>
                 </a>
                 </div>
-            ))}
+          ))}
             </div>
 
             <div className="projects-tv-container">
