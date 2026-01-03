@@ -55,20 +55,17 @@ const Index = () => {
       icon: <Home size={18} />, 
       label: 'Home', 
       onClick: () => navigate('/'),
-      previewImage: '/speedface.webp',
     },
     { 
       icon: <FolderKanban size={18} />, 
       label: 'Projects', 
       onClick: () => navigate('/projects'),
-      previewImage: '/hireme.jpeg',
     },
     // Social
     { 
       icon: <Mail size={18} />, 
       label: 'Email', 
       onClick: () => window.open('mailto:m7waqar@uwaterloo.ca', '_blank'),
-      previewImage: '/IMG_1754.JPG',
     },
     { 
       icon: <Linkedin size={18} />, 
@@ -81,7 +78,6 @@ const Index = () => {
       icon: <Github size={18} />, 
       label: 'GitHub', 
       onClick: () => window.open('https://github.com/muhibwqr', '_blank'),
-      previewImage: '/hireme.jpeg',
     },
     { 
       icon: <Twitter size={18} />, 
@@ -101,7 +97,6 @@ const Index = () => {
       icon: isDark ? <Sun size={18} /> : <Moon size={18} />, 
       label: isDark ? 'Light Mode' : 'Dark Mode', 
       onClick: toggleTheme,
-      previewImage: '/hireme.jpeg',
     },
   ];
 

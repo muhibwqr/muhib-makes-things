@@ -57,8 +57,8 @@ export function getCurrentTheme(): Theme {
   if (root.classList.contains('dark')) return 'dark';
   if (root.classList.contains('light')) return 'light';
   
-  // Default to dark if neither is set
-  return 'dark';
+  // Default to light if neither is set
+  return 'light';
 }
 
 /**
@@ -74,9 +74,8 @@ export function initializeTheme(): Theme {
     return storedTheme;
   }
   
-  // If no stored theme, check system preference
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const defaultTheme: Theme = prefersDark ? 'dark' : 'light';
+  // If no stored theme, default to light mode
+  const defaultTheme: Theme = 'light';
   
   applyTheme(defaultTheme);
   saveTheme(defaultTheme);

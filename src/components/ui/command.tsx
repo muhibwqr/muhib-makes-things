@@ -26,7 +26,7 @@ interface CommandDialogProps extends DialogProps {}
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent className="overflow-hidden p-0 shadow-lg bg-gray-900 border-gray-800 max-w-2xl">
+      <DialogContent className="overflow-hidden p-0 shadow-lg bg-gray-900/80 backdrop-blur-xl border-gray-800/50 max-w-2xl">
         <div className="flex flex-col">
           {children}
         </div>
@@ -39,7 +39,7 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center border-b border-gray-800 px-3 bg-gray-800/50" cmdk-input-wrapper="">
+  <div className="flex items-center border-b border-gray-800/50 px-3 bg-gray-800/30" cmdk-input-wrapper="">
     <Search className="mr-2 h-4 w-4 shrink-0 opacity-50 text-gray-400" />
     <CommandPrimitive.Input
       ref={ref}
