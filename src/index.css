@@ -173,5 +173,5 @@ iframe[src*="uwaterloo.network"],
   filter: none !important;
   opacity: 1 !important;
   pointer-events: auto !important;
-  transform: none !important;
+  transform: scale(0.7) !important;
 }

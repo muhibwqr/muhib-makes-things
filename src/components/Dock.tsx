@@ -7,7 +7,7 @@ import {
   type SpringOptions,
   AnimatePresence
 } from 'framer-motion';
-import React, { Children, cloneElement, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Children, cloneElement, useEffect, useRef, useState } from 'react';
 import './Dock.css';
 
 export type DockItemData = {
@@ -60,7 +60,6 @@ function DockItem({
 }: DockItemProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isHovered = useMotionValue(0);
-  const [showPreview, setShowPreview] = useState(false);
 
   const mouseDistance = useTransform(mouseX, val => {
     const rect = ref.current?.getBoundingClientRect() ?? {
@@ -73,16 +72,6 @@ function DockItem({
   const targetSize = useTransform(mouseDistance, [-distance, 0, distance], [baseItemSize, magnification, baseItemSize]);
   const size = useSpring(targetSize, spring);
 
-  useEffect(() => {
-    if (!isHovered) return;
-    const unsubscribe = isHovered.on('change', latest => {
-      if (previewImage || previewVideo) {
-        setShowPreview(latest === 1);
-      }
-    });
-    return () => unsubscribe();
-  }, [isHovered, previewImage, previewVideo]);
-
   return (
     <div className="dock-item-wrapper">
       <motion.div
@@ -92,15 +81,9 @@ function DockItem({
           height: size
         }}
         onHoverStart={() => isHovered.set(1)}
-        onHoverEnd={() => {
-          isHovered.set(0);
-          setShowPreview(false);
-        }}
+        onHoverEnd={() => isHovered.set(0)}
         onFocus={() => isHovered.set(1)}
-        onBlur={() => {
-          isHovered.set(0);
-          setShowPreview(false);
-        }}
+        onBlur={() => isHovered.set(0)}
         onClick={onClick}
         className={`dock-item ${className}`}
         tabIndex={0}
@@ -109,40 +92,20 @@ function DockItem({
       >
         {Children.map(children, child =>
           React.isValidElement(child)
-            ? cloneElement(child as React.ReactElement<{ isHovered?: MotionValue<number> }>, { isHovered })
+            ? cloneElement(child as React.ReactElement<{ 
+                isHovered?: MotionValue<number>;
+                previewImage?: string;
+                previewVideo?: string;
+                previewAlt?: string;
+              }>, { 
+                isHovered,
+                previewImage,
+                previewVideo,
+                previewAlt
+              })
             : child
         )}
       </motion.div>
-      {(previewImage || previewVideo) && (
-        <AnimatePresence>
-          {showPreview && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-              className="dock-preview"
-            >
-              {previewVideo ? (
-                <video
-                  src={previewVideo}
-                  className="dock-preview-image"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                />
-              ) : previewImage ? (
-                <img 
-                  src={previewImage} 
-                  alt={previewAlt || 'Preview'} 
-                  className="dock-preview-image"
-                />
-              ) : null}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      )}
     </div>
   );
 }
@@ -187,10 +150,71 @@ type DockIconProps = {
   className?: string;
   children: React.ReactNode;
   isHovered?: MotionValue<number>;
+  previewImage?: string;
+  previewVideo?: string;
+  previewAlt?: string;
 };
 
-function DockIcon({ children, className = '' }: DockIconProps) {
-  return <div className={`dock-icon ${className}`}>{children}</div>;
+function DockIcon({ children, className = '', isHovered, previewImage, previewVideo, previewAlt }: DockIconProps) {
+  const [showPreview, setShowPreview] = useState(false);
+
+  useEffect(() => {
+    if (!isHovered) {
+      setShowPreview(false);
+      return;
+    }
+    const unsubscribe = isHovered.on('change', latest => {
+      if (previewImage || previewVideo) {
+        setShowPreview(latest === 1);
+      } else {
+        setShowPreview(false);
+      }
+    });
+    return () => unsubscribe();
+  }, [isHovered, previewImage, previewVideo]);
+
+  return (
+    <div className={`dock-icon ${className}`}>
+      {showPreview && (previewImage || previewVideo) ? (
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={previewVideo ? 'video' : 'image'}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            className="dock-icon-preview"
+          >
+            {previewVideo ? (
+              <video
+                src={previewVideo}
+                className="dock-icon-preview-media"
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            ) : previewImage ? (
+              <img 
+                src={previewImage} 
+                alt={previewAlt || 'Preview'} 
+                className="dock-icon-preview-media"
+              />
+            ) : null}
+          </motion.div>
+        </AnimatePresence>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {children}
+        </motion.div>
+      )}
+    </div>
+  );
 }
 
 export default function Dock({
@@ -237,7 +261,13 @@ export default function Dock({
             previewVideo={item.previewVideo}
             previewAlt={item.previewAlt}
           >
-            <DockIcon>{item.icon}</DockIcon>
+            <DockIcon 
+              previewImage={item.previewImage}
+              previewVideo={item.previewVideo}
+              previewAlt={item.previewAlt}
+            >
+              {item.icon}
+            </DockIcon>
             <DockLabel>{item.label}</DockLabel>
           </DockItem>
         ))}
