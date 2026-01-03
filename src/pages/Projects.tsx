@@ -119,7 +119,7 @@ export default function ProjectsPage() {
         />
         
         <main className="px-4 sm:px-6 py-8 sm:py-12">
-          <div className="max-w-7xl">
+          <div className="max-w-7xl section-spacing">
             <Projects />
           </div>
         </main>

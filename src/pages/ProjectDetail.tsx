@@ -238,7 +238,7 @@ export default function ProjectDetailPage() {
           magnification={70}
         />
         
-        <main className="px-4 sm:px-6 py-8 sm:py-12">
+        <main className="px-4 sm:px-6 py-8 sm:py-12 section-spacing">
           <div className="max-w-4xl mx-auto">
             <button
               onClick={() => navigate('/projects')}
@@ -250,7 +250,7 @@ export default function ProjectDetailPage() {
 
             <div className="space-y-8">
               <div>
-                <h1 className="text-4xl font-bold mb-4">{project.fullTitle}</h1>
+                <h1 className="hero-title mb-4">{project.fullTitle}</h1>
                 <div className="flex items-center gap-4 mb-6">
                   <a
                     href={project.link}
@@ -297,7 +297,7 @@ export default function ProjectDetailPage() {
                 </div>
               )}
 
-              <div className="whitespace-pre-line text-lg leading-relaxed text-foreground">
+              <div className="whitespace-pre-line text-foreground">
                 {project.longDescription}
               </div>
 
@@ -324,7 +324,7 @@ export default function ProjectDetailPage() {
 
               {project.challenges && project.challenges.length > 0 && (
                 <div>
-                  <h2 className="text-2xl font-semibold mb-4">Challenges</h2>
+                  <h2 className="mb-4">Challenges</h2>
                   <ul className="space-y-2">
                     {project.challenges.map((challenge, idx) => (
                       <li key={idx} className="flex items-start gap-2">
@@ -338,7 +338,7 @@ export default function ProjectDetailPage() {
 
               {project.results && project.results.length > 0 && (
                 <div>
-                  <h2 className="text-2xl font-semibold mb-4">Results</h2>
+                  <h2 className="mb-4">Results</h2>
                   <ul className="space-y-2">
                     {project.results.map((result, idx) => (
                       <li key={idx} className="flex items-start gap-2">

@@ -154,10 +154,10 @@ const Index = () => {
                 </AvatarFallback>
               </Avatar>
               <div className="text-center">
-                <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 tracking-[0.2em] text-black dark:text-white">
+                <h1 className="hero-title mb-1 sm:mb-2 text-black dark:text-white">
                  muhib waqar
                 </h1>
-                <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                <p className="subtitle text-gray-700 dark:text-gray-300">
                   math & business @ uwaterloo • swe • security • product management
                 </p>
               </div>
@@ -165,16 +165,16 @@ const Index = () => {
           </header>
 
           {/* Main Content */}
-          <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
+          <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl section-spacing">
             {/* About */}
             <About />
 
             {/* Let's talk + contact */}
-            <section className="py-12 sm:py-16">
-              <h2 className="text-xl font-semibold mb-6 text-black dark:text-white">
+            <section className="section-spacing">
+              <h2 className="cta-heading mb-6 text-black dark:text-white">
                 ◆ let's talk
               </h2>
-              <p className="mb-6 text-base leading-relaxed text-gray-900 dark:text-gray-100">
+              <p className="mb-6 text-gray-900 dark:text-gray-100">
                 I'm looking for Summer 2026 SWE / Product Management/ fullstack roles — ideally
                 teams that value speed, resilience, and ownership. I'm adamant on learning, growing & adapting to new environments
               </p>
@@ -188,7 +188,7 @@ const Index = () => {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5 dark:text-gray-300 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
+                      className="cta-button flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-800 hover:text-black border-black/15 hover:border-black/30 hover:bg-black/8 dark:text-gray-200 dark:hover:text-white dark:border-white/15 dark:hover:border-white/30 dark:hover:bg-white/8"
                     >
                       <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       {social.label}

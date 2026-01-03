@@ -39,9 +39,9 @@ export function Projects() {
   const activeProject = hoveredIndex !== null ? projects[hoveredIndex] : null;
 
   return (
-    <section id="projects" className="py-12 sm:py-16 relative scroll-mt-20">
+    <section id="projects" className="section-spacing relative scroll-mt-20">
       <div className="px-4 sm:px-6">
-        <h2 className="text-xl font-semibold mb-6 text-black dark:text-white">
+        <h2 className="section-header text-black dark:text-white">
         → projects i worked on (hover over them!)
         </h2>
         
@@ -62,7 +62,7 @@ export function Projects() {
                         <div className="p-2 bg-black/5 dark:bg-white/10 rounded-lg">
                         <Folder size={20} className="text-black dark:text-white" />
                         </div>
-                        <h3 className="text-lg font-medium text-black dark:text-white">
+                        <h3 className="project-title text-black dark:text-white">
                         {project.title}
                         </h3>
                     </div>

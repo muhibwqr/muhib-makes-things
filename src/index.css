@@ -115,15 +115,141 @@ All colors MUST be HSL.
 @layer base {
   * {
     @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    transition: font-size 150ms ease, font-weight 150ms ease, letter-spacing 150ms ease, line-height 150ms ease;
   }
 
   html {
     scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.3px;
+  }
+
+  .dark body {
+    letter-spacing: 0.4px;
+  }
+
+  /* Typography Hierarchy */
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .dark h1 {
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .dark h2 {
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0em;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .dark h3 {
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.3px;
+    max-width: 75ch;
+  }
+
+  .dark p {
+    letter-spacing: 0.4px;
+  }
+
+  /* Subtitles and metadata */
+  .subtitle,
+  .metadata {
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+  }
+
+  /* Code sections */
+  code,
+  pre {
+    font-family: 'Courier New', monospace;
+  }
+
+  /* Hero title specific */
+  .hero-title {
+    font-size: clamp(3rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  /* Section headers */
+  .section-header {
+    font-size: clamp(1.5rem, 2.5vw, 1.75rem);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* Arrow bullets */
+  .arrow-bullet {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    font-weight: 400;
+  }
+
+  /* Project card titles */
+  .project-title {
+    font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    line-height: 1.4;
+  }
+
+  /* CTA section heading */
+  .cta-heading {
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* CTA button styling for better contrast */
+  .cta-button {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    transition: all 150ms ease;
+  }
+
+  .cta-button:hover {
+    font-weight: 600;
+  }
+
+  .dark .cta-button {
+    letter-spacing: 0.4px;
   }
 }
 
@@ -151,6 +277,17 @@ All colors MUST be HSL.
 
   .glow {
     @apply shadow-[0_0_20px_rgba(0,255,255,0.3)] dark:shadow-[0_0_30px_rgba(0,255,255,0.5)];
+  }
+
+  /* Spacing utilities */
+  .section-spacing {
+    margin-bottom: 4rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .project-card-padding {
+    padding: 24px 28px;
   }
 }
 
