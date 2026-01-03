@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Home, FolderKanban } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getCurrentTheme, toggleTheme as toggleThemeUtil } from "@/lib/theme";
 import "./Navbar.css";
@@ -46,8 +46,8 @@ export function Navbar() {
   };
 
   const navItems = [
-    { path: "/", label: "home" },
-    { path: "/projects", label: "projects" },
+    { path: "/", label: "home", icon: Home },
+    { path: "/projects", label: "projects", icon: FolderKanban },
   ];
 
   return (
@@ -56,11 +56,12 @@ export function Navbar() {
         <div className="flex flex-col gap-3 sm:gap-4">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
+            const Icon = item.icon;
             return (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-xs sm:text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors ${
                   isActive
                     ? isDark
                       ? "text-white"
@@ -70,7 +71,8 @@ export function Navbar() {
                     : "text-gray-600 hover:text-black"
                 }`}
               >
-                {item.label}
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+                <span>{item.label}</span>
               </Link>
             );
           })}

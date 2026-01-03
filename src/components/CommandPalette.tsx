@@ -58,7 +58,7 @@ export function CommandPalette() {
       label: "go to about",
       icon: User,
       path: "/",
-      description: "who i am, what drives me, where i'm headed",
+      description: "my story, what i'm building, where i'm going",
     },
     {
       id: "projects",
