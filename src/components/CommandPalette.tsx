@@ -13,7 +13,6 @@ import {
   User,
   FolderKanban,
   FileText,
-  BookOpen,
   Moon,
   Sun,
   Sparkles,
@@ -74,13 +73,6 @@ export function CommandPalette() {
       icon: FileText,
       path: "/resume",
       description: "download my resume",
-    },
-    {
-      id: "updates",
-      label: "go to updates",
-      icon: BookOpen,
-      path: "/updates",
-      description: "latest updates and fieldnotes",
     },
   ];
 

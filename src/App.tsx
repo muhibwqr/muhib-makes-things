@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import ProjectsPage from "./pages/Projects";
 import ProjectDetailPage from "./pages/ProjectDetail";
-import UpdatesPage from "./pages/Updates";
 import ResumePage from "./pages/Resume";
 import NotFound from "./pages/NotFound";
 import { CommandPalette } from "./components/CommandPalette";
@@ -21,7 +20,6 @@ const App = () => {
         <Route path="/" element={<Index />} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
-        <Route path="/updates" element={<UpdatesPage />} />
         <Route path="/resume" element={<ResumePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
