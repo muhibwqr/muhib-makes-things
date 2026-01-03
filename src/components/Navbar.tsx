@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Moon, Sun, Home, FolderKanban } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getCurrentTheme, toggleTheme as toggleThemeUtil } from "@/lib/theme";
+import { motion, AnimatePresence } from "framer-motion";
 import "./Navbar.css";
 
 export function Navbar() {
@@ -47,7 +48,7 @@ export function Navbar() {
 
   const navItems = [
     { path: "/", label: "home", icon: Home },
-    { path: "/projects", label: "projects", icon: FolderKanban },
+    { path: "/projects", label: "projects", icon: FolderKanban, previewVideo: "/goosetype-preview.mp4" },
   ];
 
   return (
@@ -57,23 +58,62 @@ export function Navbar() {
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
+            const [showPreview, setShowPreview] = useState(false);
             return (
-              <Link
+              <div
                 key={item.path}
-                to={item.path}
-                className={`flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors ${
-                  isActive
-                    ? isDark
-                      ? "text-white"
-                      : "text-black"
-                    : isDark
-                    ? "text-gray-400 hover:text-white"
-                    : "text-gray-600 hover:text-black"
-                }`}
+                className="relative"
+                onMouseEnter={() => item.previewVideo && setShowPreview(true)}
+                onMouseLeave={() => setShowPreview(false)}
               >
-                <Icon className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
-                <span>{item.label}</span>
-              </Link>
+                <Link
+                  to={item.path}
+                  className={`flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors ${
+                    isActive
+                      ? isDark
+                        ? "text-white"
+                        : "text-black"
+                      : isDark
+                      ? "text-gray-400 hover:text-white"
+                      : "text-gray-600 hover:text-black"
+                  }`}
+                >
+                  <div className="relative w-4 h-4 sm:w-5 sm:h-5">
+                    <AnimatePresence mode="wait">
+                      {showPreview && item.previewVideo ? (
+                        <motion.div
+                          key="preview"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute inset-0 rounded overflow-hidden"
+                        >
+                          <video
+                            src={item.previewVideo}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover"
+                          />
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="icon"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <Icon className="w-full h-full" strokeWidth={1.5} />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  <span>{item.label}</span>
+                </Link>
+              </div>
             );
           })}
           <button

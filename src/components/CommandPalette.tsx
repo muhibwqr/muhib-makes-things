@@ -118,7 +118,7 @@ export function CommandPalette() {
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
       {/* Header Section - Custom styling */}
-      <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-gray-800/50">
+      <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-gray-800/50 bg-transparent backdrop-blur-xl">
         <div className="flex items-start gap-3">
           <CurrentIcon className="h-5 w-5 mt-0.5 text-white" strokeWidth={1.5} />
           <div className="flex flex-col">
