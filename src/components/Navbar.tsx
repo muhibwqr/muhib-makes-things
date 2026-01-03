@@ -1,41 +1,47 @@
 import { Link, useLocation } from "react-router-dom";
 import { Moon, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
+import { getCurrentTheme, toggleTheme as toggleThemeUtil } from "@/lib/theme";
 
 export function Navbar() {
   const [isDark, setIsDark] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    const body = window.document.body;
+    // Initialize theme state from document
+    setIsDark(getCurrentTheme() === 'dark');
     
-    // Check body class first (set in index.html)
-    if (body.classList.contains("light")) {
-      root.classList.remove("dark");
-      root.classList.add("light");
-      setIsDark(false);
-    } else if (body.classList.contains("dark")) {
-      root.classList.remove("light");
-      root.classList.add("dark");
-      setIsDark(true);
-    } else if (!root.classList.contains("dark") && !root.classList.contains("light")) {
-      // Default to light mode
-      root.classList.add("light");
-      body.classList.add("light");
-      setIsDark(false);
-    } else {
-      const isDarkMode = root.classList.contains("dark");
-      setIsDark(isDarkMode);
-    }
+    // Listen for theme changes (e.g., from other tabs/windows)
+    const observer = new MutationObserver(() => {
+      setIsDark(getCurrentTheme() === 'dark');
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    // Listen for storage changes (other tabs)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'muhib-theme') {
+        const newTheme = e.newValue as 'light' | 'dark' | null;
+        if (newTheme) {
+          setIsDark(newTheme === 'dark');
+        }
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const toggleTheme = () => {
-    const root = window.document.documentElement;
-    const newTheme = isDark ? "light" : "dark";
-    root.classList.remove(isDark ? "dark" : "light");
-    root.classList.add(newTheme);
-    setIsDark(!isDark);
+    const newTheme = toggleThemeUtil();
+    setIsDark(newTheme === 'dark');
   };
 
   const navItems = [

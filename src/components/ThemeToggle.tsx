@@ -1,29 +1,45 @@
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { getCurrentTheme, toggleTheme as toggleThemeUtil } from "@/lib/theme";
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    const initialTheme = root.classList.contains("dark") ? "dark" : "light";
-
-    // Set dark mode by default on first load
-    if (!root.classList.contains("light") && !root.classList.contains("dark")) {
-      root.classList.add("dark");
-      setTheme("dark");
-    } else {
-      setTheme(initialTheme);
-    }
+    // Initialize theme state from document
+    setTheme(getCurrentTheme());
+    
+    // Listen for theme changes (e.g., from other tabs/windows)
+    const observer = new MutationObserver(() => {
+      setTheme(getCurrentTheme());
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    // Listen for storage changes (other tabs)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'muhib-theme') {
+        const newTheme = e.newValue as 'light' | 'dark' | null;
+        if (newTheme) {
+          setTheme(newTheme);
+        }
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const toggleTheme = () => {
-    const root = window.document.documentElement;
-    const newTheme = theme === "light" ? "dark" : "light";
-    
-    root.classList.remove(theme);
-    root.classList.add(newTheme);
+    const newTheme = toggleThemeUtil();
     setTheme(newTheme);
   };
 
