@@ -1,6 +1,6 @@
 .tv-wrapper {
   position: relative;
-  width: 380px;
+  width: 500px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
@@ -156,7 +156,7 @@
   width: 80%;
   margin-top: -10px;
   z-index: -1;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .tv-legs::before, .tv-legs::after {
@@ -193,11 +193,12 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
-  padding: 12px;
+  padding: 16px;
   min-height: 80px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-top: 0;
 }
 
 .tv-external-header {

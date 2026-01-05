@@ -33,6 +33,14 @@ export function Projects() {
       stack: "swift, supabase, twilio",
       link: "https://devpost.com/software/scrollify-tp4a2l",
       previewVideo: '/scrollify.mov'
+    },
+    {
+      id: "brev-analyzer",
+      title: "Model Cost Analyzer — brev.dev instance optimizer",
+      description: "A friend and I were setting up a GPU instance on Brev.Dev by NVIDIA and were struggling to pick an instance for our model that wouldn't cost us extra. Built a cost analyzer to help choose the right GPU instance based on model requirements and budget constraints.",
+      stack: "python, jupyter notebook, shell",
+      link: "https://brev.dev",
+      previewVideo: '/brev-instance.mp4'
     }
   ];
 

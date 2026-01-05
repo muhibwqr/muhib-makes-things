@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Moon, Sun, Home, FolderKanban } from "lucide-react";
+import { Moon, Sun, Home, FolderKanban, Mail, Linkedin, Github, Twitter, FileText } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getCurrentTheme, toggleTheme as toggleThemeUtil } from "@/lib/theme";
 import { motion, AnimatePresence } from "framer-motion";
@@ -116,6 +116,74 @@ export function Navbar() {
               </div>
             );
           })}
+          
+          {/* Contact Info */}
+          <div className="border-t border-gray-200/20 dark:border-gray-700/20 pt-3 mt-3 space-y-2">
+            <a
+              href="mailto:m7waqar@uwaterloo.ca"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors ${
+                isDark
+                  ? "text-gray-400 hover:text-white"
+                  : "text-gray-600 hover:text-black"
+              }`}
+            >
+              <Mail className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+              <span>email</span>
+            </a>
+            <a
+              href="https://linkedin.com/in/muhibwaqar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors ${
+                isDark
+                  ? "text-gray-400 hover:text-white"
+                  : "text-gray-600 hover:text-black"
+              }`}
+            >
+              <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+              <span>linkedin</span>
+            </a>
+            <a
+              href="https://github.com/muhibwqr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors ${
+                isDark
+                  ? "text-gray-400 hover:text-white"
+                  : "text-gray-600 hover:text-black"
+              }`}
+            >
+              <Github className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+              <span>github</span>
+            </a>
+            <a
+              href="https://x.com/muhibwqr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors ${
+                isDark
+                  ? "text-gray-400 hover:text-white"
+                  : "text-gray-600 hover:text-black"
+              }`}
+            >
+              <Twitter className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+              <span>twitter</span>
+            </a>
+            <Link
+              to="/resume"
+              className={`flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors ${
+                isDark
+                  ? "text-gray-400 hover:text-white"
+                  : "text-gray-600 hover:text-black"
+              }`}
+            >
+              <FileText className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+              <span>resume</span>
+            </Link>
+          </div>
+
           <button
             onClick={toggleTheme}
             className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-all text-xs sm:text-sm mt-2 ${

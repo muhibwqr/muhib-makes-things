@@ -23,7 +23,7 @@
   backdrop-filter: blur(20px) saturate(180%);
   border-radius: 24px;
   border: 1px solid rgba(168, 230, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(74, 158, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(74, 158, 255, 0.1), 0 0 40px rgba(74, 158, 255, 0.3), 0 0 60px rgba(159, 245, 255, 0.2);
   pointer-events: auto;
   min-height: 68px;
   width: fit-content;
@@ -32,7 +32,7 @@
 .dark .dock-panel {
   background: rgba(61, 80, 100, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 32px rgba(155, 200, 240, 0.1);
+  box-shadow: 0 8px 32px rgba(155, 200, 240, 0.1), 0 0 40px rgba(74, 158, 255, 0.4), 0 0 60px rgba(159, 245, 255, 0.3);
 }
 
 .dock-item-wrapper {

@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbar for preview strip */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
@@ -138,38 +147,41 @@ All colors MUST be HSL.
   /* Typography Hierarchy */
   h1 {
     font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 800;
+    font-weight: 400;
     letter-spacing: -0.03em;
     line-height: 1.1;
     font-family: 'Apple Garamond', 'Garamond', 'Times New Roman', serif;
+    text-transform: lowercase;
   }
 
   .dark h1 {
-    font-weight: 800;
+    font-weight: 400;
   }
 
   h2 {
     font-size: clamp(1.5rem, 3vw, 2rem);
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: -0.01em;
     line-height: 1.3;
     font-family: 'Apple Garamond', 'Garamond', 'Times New Roman', serif;
+    text-transform: lowercase;
   }
 
   .dark h2 {
-    font-weight: 700;
+    font-weight: 400;
   }
 
   h3 {
     font-size: clamp(1.25rem, 2vw, 1.5rem);
-    font-weight: 600;
+    font-weight: 400;
     line-height: 1.4;
     letter-spacing: 0em;
     font-family: 'Apple Garamond', 'Garamond', 'Times New Roman', serif;
+    text-transform: lowercase;
   }
 
   .dark h3 {
-    font-weight: 600;
+    font-weight: 400;
   }
 
   p {
@@ -206,15 +218,17 @@ All colors MUST be HSL.
     letter-spacing: -0.03em;
     line-height: 1.1;
     font-family: 'Apple Garamond', 'Garamond', 'Times New Roman', serif;
+    text-transform: lowercase;
   }
 
   /* Section headers */
   .section-header {
     font-size: clamp(1.5rem, 2.5vw, 1.75rem);
-    font-weight: 700;
+    font-weight: 400;
     margin-bottom: 1.5rem;
     letter-spacing: -0.01em;
     font-family: 'Apple Garamond', 'Garamond', 'Times New Roman', serif;
+    text-transform: lowercase;
   }
 
   /* Arrow bullets */
@@ -227,18 +241,20 @@ All colors MUST be HSL.
   /* Project card titles */
   .project-title {
     font-size: clamp(1.1rem, 1.5vw, 1.25rem);
-    font-weight: 600;
+    font-weight: 400;
     letter-spacing: -0.005em;
     line-height: 1.4;
     font-family: 'Apple Garamond', 'Garamond', 'Times New Roman', serif;
+    text-transform: lowercase;
   }
 
   /* CTA section heading */
   .cta-heading {
     font-size: clamp(1.25rem, 2vw, 1.5rem);
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: -0.01em;
     font-family: 'Apple Garamond', 'Garamond', 'Times New Roman', serif;
+    text-transform: lowercase;
   }
 
   /* CTA button styling for better contrast */

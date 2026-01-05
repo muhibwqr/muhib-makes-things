@@ -1,111 +1,15 @@
-import { Github, Linkedin, Mail, Twitter, Download, Moon, Sun, FolderKanban, Home, FileText } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import LiquidEther from "@/components/LiquidEther";
 import Dock from "@/components/Dock";
-import { About } from "@/components/About";
-import { useState, useEffect } from "react";
+import { KeyboardShortcut } from "@/components/KeyboardShortcut";
+import { useDockItems } from "@/lib/dockItems";
 import { useNavigate } from "react-router-dom";
-import { getCurrentTheme, toggleTheme as toggleThemeUtil } from "@/lib/theme";
+import { motion } from "framer-motion";
+import { ArrowRight, FolderKanban } from "lucide-react";
 
 const Index = () => {
-  const [isDark, setIsDark] = useState(false);
+  const dockItems = useDockItems();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Initialize theme state from document
-    setIsDark(getCurrentTheme() === 'dark');
-    
-    // Listen for theme changes (e.g., from other tabs/windows)
-    const observer = new MutationObserver(() => {
-      setIsDark(getCurrentTheme() === 'dark');
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-    
-    // Listen for storage changes (other tabs)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'muhib-theme') {
-        const newTheme = e.newValue as 'light' | 'dark' | null;
-        if (newTheme) {
-          setIsDark(newTheme === 'dark');
-        }
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = toggleThemeUtil();
-    setIsDark(newTheme === 'dark');
-  };
-
-
-  const dockItems = [
-    // Navigation
-    { 
-      icon: <Home size={18} />, 
-      label: 'Home', 
-      onClick: () => navigate('/'),
-    },
-    { 
-      icon: <FolderKanban size={18} />, 
-      label: 'Projects', 
-      onClick: () => navigate('/projects'),
-    },
-    // Social
-    { 
-      icon: <Mail size={18} />, 
-      label: 'Email', 
-      onClick: () => window.open('mailto:m7waqar@uwaterloo.ca', '_blank'),
-    },
-    { 
-      icon: <Linkedin size={18} />, 
-      label: 'LinkedIn', 
-      onClick: () => window.open('https://linkedin.com/in/muhibwaqar', '_blank'),
-      previewVideo: '/linkedin-preview.mp4',
-      previewAlt: 'LinkedIn Content'
-    },
-    { 
-      icon: <Github size={18} />, 
-      label: 'GitHub', 
-      onClick: () => window.open('https://github.com/muhibwqr', '_blank'),
-    },
-    { 
-      icon: <Twitter size={18} />, 
-      label: 'Twitter', 
-      onClick: () => window.open('https://x.com/muhibwqr', '_blank'),
-      previewVideo: '/twitter-preview.mp4',
-      previewAlt: 'Twitter Content'
-    },
-    { 
-      icon: <FileText size={18} />, 
-      label: 'Resume', 
-      onClick: () => navigate('/resume'),
-      previewImage: '/hireme.jpeg',
-      previewAlt: 'Hire Me'
-    },
-    { 
-      icon: isDark ? <Sun size={18} /> : <Moon size={18} />, 
-      label: isDark ? 'Light Mode' : 'Dark Mode', 
-      onClick: toggleTheme,
-    },
-  ];
-
-  const socials = [
-    { icon: Mail, label: "Email", href: "mailto:m7waqar@uwaterloo.ca" },
-    { icon: Github, label: "GitHub", href: "https://github.com/muhibwqr" },
-    { icon: Twitter, label: "Twitter", href: "https://x.com/muhibwqr" },
-    { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/in/muhibwaqar" }
-  ];
 
   return (
     <div className="min-h-screen relative bg-white text-black dark:bg-black dark:text-white">
@@ -144,69 +48,256 @@ const Index = () => {
         />
         
         <div className="relative z-10">
-          {/* Header */}
-          <header className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col items-center gap-4 border-b border-black/10 dark:border-white/10">
-            <div className="flex items-center justify-center gap-3 sm:gap-4">
-              <Avatar className="w-20 h-20 sm:w-28 sm:h-28 border-2 border-black/30 dark:border-white/20 flex-shrink-0">
+          {/* Header - Minimal */}
+          <header className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-2xl">
+            <div className="flex items-center gap-4 mb-4">
+              <Avatar className="w-20 h-20 border border-black/20 dark:border-white/20 flex-shrink-0">
                 <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" />
                 <AvatarFallback className="bg-gray-200 text-black dark:bg-gray-800 dark:text-white">
                   MW
                 </AvatarFallback>
               </Avatar>
-              <div className="text-center">
-                <h1 className="hero-title mb-1 sm:mb-2 text-black dark:text-white">
-                 muhib waqar
+              <div className="flex-1 relative">
+                <div className="absolute right-16 top-6">
+                  <KeyboardShortcut />
+                </div>
+                <h1 className="hero-title text-black dark:text-white mb-1">
+                  muhib waqar
                 </h1>
-                <p className="subtitle text-gray-700 dark:text-gray-300">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   math & business @ uwaterloo • swe • security • product management
                 </p>
               </div>
             </div>
           </header>
 
-          {/* Main Content */}
-          <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl section-spacing">
-            {/* About */}
-            <About />
-
-            {/* Let's talk + contact */}
-            <section className="section-spacing">
-              <h2 className="cta-heading mb-6 text-black dark:text-white">
-                ◆ let's talk
+          {/* Main Content - Timeline Layout */}
+          <main className="container mx-auto px-4 sm:px-6 pt-0 pb-8 sm:pb-12 max-w-2xl">
+            {/* Timeline Container */}
+            <div className="space-y-8">
+              
+              {/* Who am i Section */}
+            <section>
+                <h2 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4 tracking-wider">
+                  who am i
               </h2>
-              <p className="mb-6 text-gray-900 dark:text-gray-100">
-                I'm looking for Summer 2026 SWE / Product Management/ fullstack roles — ideally
-                teams that value speed, resilience, and ownership. I'm adamant on learning, growing & adapting to new environments
-              </p>
-
-              <div className="flex flex-wrap gap-3 sm:gap-6 text-xs sm:text-sm">
-                {socials.map((social, index) => {
-                  const Icon = social.icon;
-                  return (
-                    <a
-                      key={index}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="cta-button flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-800 hover:text-black border-black/15 hover:border-black/30 hover:bg-black/8 dark:text-gray-200 dark:hover:text-white dark:border-white/15 dark:hover:border-white/30 dark:hover:bg-white/8"
-                    >
-                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      {social.label}
-                    </a>
-                  );
-                })}
-                <a
-                  href="/muhib_waqar_resume_app.pdf"
-                  download="muhib_waqar_resume_app.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 sm:gap-2 transition-colors border px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-gray-700 hover:text-black border-black/10 hover:border-black/20 hover:bg-black/5 dark:text-gray-300 dark:hover:text-white dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
-                >
-                  <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  Resume
-                </a>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2 text-sm">
+                    <span className="text-gray-400 dark:text-gray-500">→</span>
+                <div>
+                      <span className="text-black dark:text-white font-medium">been in tech since age 11</span>
+                      <span className="text-gray-500 dark:text-gray-400"> → from entrepreneurship and graphic design to software engineering. think beyond code.</span>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 text-sm">
+                    <span className="text-gray-400 dark:text-gray-500">→</span>
+                    <div className="flex flex-wrap items-center gap-1">
+                      <a 
+                        href="https://uwaterloo.ca"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 cursor-pointer relative group"
+                      >
+                        <span className="text-black dark:text-white font-medium">math/ business administration at</span>
+                        <img 
+                          src="/waterloo.webp" 
+                          alt="University of Waterloo" 
+                          className="h-4 w-auto object-contain flex-shrink-0"
+                        />
+                        <span className="text-black dark:text-white font-medium">university of waterloo</span>
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black dark:bg-white group-hover:w-full transition-all duration-300 ease-out"></span>
+                      </a>
+                        <span className="text-gray-500 dark:text-gray-400"> → studying to bridge technical and mathematical depth with business impact.</span>
+                    </div>
+                </div>
+                  <div className="flex items-start gap-2 text-sm">
+                    <span className="text-gray-400 dark:text-gray-500">→</span>
+                <div>
+                      <span className="text-black dark:text-white font-medium">5M+ views across platforms</span>
+                      <span className="text-gray-500 dark:text-gray-400"> → built a personal brand surrounding my values, helped non-profits, and mentored creators + students. scale & focused on impact beyond my own work.</span>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 text-sm">
+                    <span className="text-gray-400 dark:text-gray-500">→</span>
+                    <div className="flex flex-wrap items-center gap-1">
+                      <span className="text-black dark:text-white font-medium">certified & experienced</span>
+                      <span className="text-gray-500 dark:text-gray-400"> → </span>
+                      <a 
+                        href="https://aws.amazon.com/certification/certified-cloud-practitioner/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 cursor-pointer relative group"
+                      >
+                        <img 
+                          src="/aws.png" 
+                          alt="AWS" 
+                          className="h-4 w-auto object-contain flex-shrink-0"
+                        />
+                        <span className="text-gray-500 dark:text-gray-400">aws ccp</span>
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black dark:bg-white group-hover:w-full transition-all duration-300 ease-out"></span>
+                      </a>
+                      <span className="text-gray-500 dark:text-gray-400">,</span>
+                      <a 
+                        href="https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 cursor-pointer relative group"
+                      >
+                        <img 
+                          src="/azure.png" 
+                          alt="Azure" 
+                          className="h-4 w-auto object-contain flex-shrink-0"
+                        />
+                        <span className="text-gray-500 dark:text-gray-400">az-900</span>
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black dark:bg-white group-hover:w-full transition-all duration-300 ease-out"></span>
+                      </a>
+                      <span className="text-gray-500 dark:text-gray-400">,</span>
+                      <a 
+                        href="https://www.cisco.com/c/en/us/training-events/training/certifications/associate/ccna.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 cursor-pointer relative group"
+                      >
+                        <img 
+                          src="/cisco.jpeg" 
+                          alt="Cisco" 
+                          className="h-4 w-auto object-contain flex-shrink-0"
+                        />
+                        <span className="text-gray-500 dark:text-gray-400">ccna1</span>
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black dark:bg-white group-hover:w-full transition-all duration-300 ease-out"></span>
+                      </a>
+                      <span className="text-gray-500 dark:text-gray-400">,</span>
+                      <a 
+                        href="https://www.cisco.com/c/en/us/training-events/training/certifications/entry/ccst.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 cursor-pointer relative group"
+                      >
+                        <img 
+                          src="/cisco.jpeg" 
+                          alt="Cisco" 
+                          className="h-4 w-auto object-contain flex-shrink-0"
+                        />
+                        <span className="text-gray-500 dark:text-gray-400">ccst</span>
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black dark:bg-white group-hover:w-full transition-all duration-300 ease-out"></span>
+                      </a>
+                      <span className="text-gray-500 dark:text-gray-400">+ more.</span>
+                      <a 
+                        href="#"
+                        className="inline-flex items-center gap-1 cursor-pointer relative group"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <span className="text-gray-500 dark:text-gray-400">founding backend engineer @</span>
+                        <img 
+                          src="/stealthstartup.png" 
+                          alt="Stealth Startup" 
+                          className="h-4 w-auto object-contain flex-shrink-0"
+                        />
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black dark:bg-white group-hover:w-full transition-all duration-300 ease-out"></span>
+                      </a>
+                      <span className="text-gray-500 dark:text-gray-400">,</span>
+                      <a 
+                        href="https://thebfl.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 cursor-pointer relative group"
+                      >
+                        <span className="text-gray-500 dark:text-gray-400">swe & cyber intern @</span>
+                        <img 
+                          src="/bfl.jpg" 
+                          alt="Blackstone Foundation Library" 
+                          className="h-4 w-auto object-contain flex-shrink-0"
+                        />
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black dark:bg-white group-hover:w-full transition-all duration-300 ease-out"></span>
+                      </a>
+                      <span className="text-gray-500 dark:text-gray-400">,</span>
+                      <a 
+                        href="https://islamicbookstoronto.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 cursor-pointer relative group"
+                      >
+                        <span className="text-gray-500 dark:text-gray-400">swe intern @</span>
+                        <img 
+                          src="/ibs.avif" 
+                          alt="IBS" 
+                          className="h-4 w-auto object-contain flex-shrink-0"
+                        />
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black dark:bg-white group-hover:w-full transition-all duration-300 ease-out"></span>
+                      </a>
+                      <span className="text-gray-500 dark:text-gray-400">,</span>
+                      <a 
+                        href="https://canadiancyber.ca"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 cursor-pointer relative group"
+                      >
+                        <span className="text-gray-500 dark:text-gray-400">cybersecurity @</span>
+                        <img 
+                          src="/canadiancyber_logo.jpeg" 
+                          alt="Canadian Cyber Inc" 
+                          className="h-4 w-auto object-contain flex-shrink-0"
+                        />
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black dark:bg-white group-hover:w-full transition-all duration-300 ease-out"></span>
+                      </a>
+                    </div>
+                </div>
+                  <div className="flex items-start gap-2 text-sm">
+                    <span className="text-gray-400 dark:text-gray-500">→</span>
+                <div>
+                      <span className="text-black dark:text-white font-medium">4th place toronto wrestling</span>
+                      <span className="text-gray-500 dark:text-gray-400"> → I had to discipline myself insanely, and am applying that to other aspects of my life.</span>
+                </div>
+                </div>
               </div>
             </section>
+
+            {/* Projects Button */}
+            <section className="pt-4">
+              <motion.a
+                href="/projects"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/projects');
+                }}
+                className="group relative inline-flex items-center gap-3 px-6 py-4 bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-xl text-black dark:text-white font-medium text-sm hover:border-blue-400/50 dark:hover:border-blue-400/50 transition-all duration-300 overflow-hidden"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {/* Animated gradient background */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-cyan-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  animate={{
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'linear',
+                  }}
+                  style={{
+                    backgroundSize: '200% 100%',
+                  }}
+                />
+                
+                {/* Glow effect */}
+                <motion.div
+                  className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(74, 158, 255, 0.4) 0%, transparent 70%)',
+                  }}
+                />
+                
+                {/* Content */}
+                <div className="relative z-10 flex items-center gap-3">
+                  <FolderKanban className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+                  <span>checkout my projects</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+              </div>
+              </motion.a>
+            </section>
+
+            </div>
           </main>
         </div>
       </div>

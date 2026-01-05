@@ -16,6 +16,11 @@ import {
   Moon,
   Sun,
   Sparkles,
+  Mail,
+  Linkedin,
+  Github,
+  Twitter,
+  Download,
 } from "lucide-react";
 import { getCurrentTheme, toggleTheme as toggleThemeUtil } from "@/lib/theme";
 
@@ -98,10 +103,68 @@ export function CommandPalette() {
       path: "/projects/scrollify",
       description: "anti-productivity doomscroll app",
     },
+    {
+      id: "brev-analyzer",
+      label: "view model cost analyzer",
+      icon: Sparkles,
+      path: "/projects/brev-analyzer",
+      description: "brev.dev instance optimizer",
+    },
+  ];
+
+  const contactItems = [
+    {
+      id: "email",
+      label: "send email",
+      icon: Mail,
+      href: "mailto:m7waqar@uwaterloo.ca",
+      description: "m7waqar@uwaterloo.ca",
+    },
+    {
+      id: "linkedin",
+      label: "open linkedin",
+      icon: Linkedin,
+      href: "https://linkedin.com/in/muhibwaqar",
+      description: "connect on linkedin",
+    },
+    {
+      id: "github",
+      label: "open github",
+      icon: Github,
+      href: "https://github.com/muhibwqr",
+      description: "view my code",
+    },
+    {
+      id: "twitter",
+      label: "open twitter",
+      icon: Twitter,
+      href: "https://x.com/muhibwqr",
+      description: "follow on twitter",
+    },
+    {
+      id: "resume",
+      label: "download resume",
+      icon: Download,
+      href: "/muhib_waqar_resume_app.pdf",
+      description: "download pdf resume",
+      download: true,
+    },
   ];
 
   const runCommand = (path: string) => {
     navigate(path);
+    setOpen(false);
+  };
+
+  const handleContactAction = (item: typeof contactItems[0]) => {
+    if (item.download) {
+      const link = document.createElement('a');
+      link.href = item.href;
+      link.download = 'muhib_waqar_resume_app.pdf';
+      link.click();
+    } else {
+      window.open(item.href, '_blank', 'noopener,noreferrer');
+    }
     setOpen(false);
   };
 
@@ -163,6 +226,22 @@ export function CommandPalette() {
                   className={`${
                     isActive ? "bg-gray-800" : ""
                   } text-white hover:bg-gray-800`}
+                >
+                  <Icon className="mr-2 h-4 w-4" strokeWidth={1.5} />
+                  <span>{item.label}</span>
+                </CommandItem>
+              );
+            })}
+          </CommandGroup>
+          <CommandGroup heading="contact">
+            {contactItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <CommandItem
+                  key={item.id}
+                  value={item.label}
+                  onSelect={() => handleContactAction(item)}
+                  className="text-white hover:bg-gray-800"
                 >
                   <Icon className="mr-2 h-4 w-4" strokeWidth={1.5} />
                   <span>{item.label}</span>

@@ -1,9 +1,9 @@
-import { Github, Linkedin, Mail, Twitter, Moon, Sun, FolderKanban, Home, FileText, ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import Dock from "@/components/Dock";
 import Cubes from "@/components/Cubes";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getCurrentTheme, toggleTheme as toggleThemeUtil } from "@/lib/theme";
+import { useDockItems } from "@/lib/dockItems";
 
 interface ProjectData {
   id: string;
@@ -108,47 +108,42 @@ const projectsData: ProjectData[] = [
       "Created engaging social accountability mechanism",
       "Successfully integrated multiple platforms and technologies"
     ]
+  },
+  {
+    id: "brev-analyzer",
+    title: "Model Cost Analyzer — brev.dev instance optimizer",
+    fullTitle: "Model Cost Analyzer — Brev.Dev Instance Optimizer",
+    description: "A friend and I were setting up a GPU instance on Brev.Dev by NVIDIA and were struggling to pick an instance for our model that wouldn't cost us extra.",
+    longDescription: "While setting up a GPU instance on Brev.Dev by NVIDIA, my friend and I found it challenging to select the right instance for our model without overspending. The platform offers various GPU options with different pricing tiers, and choosing the wrong instance could lead to unnecessary costs or insufficient resources.\n\nTo solve this problem, I built a Model Cost Analyzer that helps developers choose the optimal GPU instance based on their model's requirements and budget constraints. The tool analyzes model specifications, compares available GPU instances, and recommends the most cost-effective option that meets performance needs.\n\nThe analyzer takes into account factors like model size, inference speed requirements, memory needs, and budget limits to provide intelligent recommendations. This helps developers avoid over-provisioning expensive instances or under-provisioning and facing performance issues.",
+    stack: "python, jupyter notebook, shell",
+    link: "https://brev.dev",
+    previewVideo: "/brev-instance.mp4",
+    highlights: [
+      "Helps choose optimal GPU instance for ML models",
+      "Cost-effective instance recommendations",
+      "Analyzes model requirements vs. available instances",
+      "Prevents over-provisioning and unnecessary costs",
+      "Integrates with Brev.Dev platform"
+    ],
+    challenges: [
+      "Understanding different GPU instance specifications",
+      "Matching model requirements to instance capabilities",
+      "Calculating cost vs. performance trade-offs",
+      "Integrating with Brev.Dev API"
+    ],
+    results: [
+      "Successfully helped choose the right instance for our model",
+      "Saved costs by avoiding over-provisioning",
+      "Created a reusable tool for future projects",
+      "Demonstrated practical problem-solving approach"
+    ]
   }
 ];
 
 export default function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    setIsDark(getCurrentTheme() === 'dark');
-    
-    const observer = new MutationObserver(() => {
-      setIsDark(getCurrentTheme() === 'dark');
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-    
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'muhib-theme') {
-        const newTheme = e.newValue as 'light' | 'dark' | null;
-        if (newTheme) {
-          setIsDark(newTheme === 'dark');
-        }
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = toggleThemeUtil();
-    setIsDark(newTheme === 'dark');
-  };
+  const dockItems = useDockItems();
 
   const project = projectsData.find(p => p.id === projectId);
 
@@ -174,54 +169,6 @@ export default function ProjectDetailPage() {
     );
   }
 
-  const dockItems = [
-    { 
-      icon: <Home size={18} />, 
-      label: 'Home', 
-      onClick: () => navigate('/'),
-    },
-    { 
-      icon: <FolderKanban size={18} />, 
-      label: 'Projects', 
-      onClick: () => navigate('/projects'),
-    },
-    { 
-      icon: <Mail size={18} />, 
-      label: 'Email', 
-      onClick: () => window.open('mailto:m7waqar@uwaterloo.ca', '_blank'),
-    },
-    { 
-      icon: <Linkedin size={18} />, 
-      label: 'LinkedIn', 
-      onClick: () => window.open('https://linkedin.com/in/muhibwaqar', '_blank'),
-      previewVideo: '/linkedin-preview.mp4',
-      previewAlt: 'LinkedIn Content'
-    },
-    { 
-      icon: <Github size={18} />, 
-      label: 'GitHub', 
-      onClick: () => window.open('https://github.com/muhibwqr', '_blank'),
-    },
-    { 
-      icon: <Twitter size={18} />, 
-      label: 'Twitter', 
-      onClick: () => window.open('https://x.com/muhibwqr', '_blank'),
-      previewVideo: '/twitter-preview.mp4',
-      previewAlt: 'Twitter Content'
-    },
-    { 
-      icon: <FileText size={18} />, 
-      label: 'Resume', 
-      onClick: () => navigate('/resume'),
-      previewImage: '/hireme.jpeg',
-      previewAlt: 'Hire Me'
-    },
-    { 
-      icon: isDark ? <Sun size={18} /> : <Moon size={18} />, 
-      label: isDark ? 'Light Mode' : 'Dark Mode', 
-      onClick: toggleTheme,
-    },
-  ];
 
   return (
     <div className="min-h-screen relative bg-white text-black dark:bg-black dark:text-white">

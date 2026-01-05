@@ -8,6 +8,12 @@ import {
   AnimatePresence
 } from 'framer-motion';
 import React, { Children, cloneElement, useEffect, useRef, useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import './Dock.css';
 
 export type DockItemData = {
@@ -18,6 +24,14 @@ export type DockItemData = {
   previewImage?: string;
   previewVideo?: string;
   previewAlt?: string;
+  isDropdown?: boolean;
+  dropdownItems?: Array<{
+    icon: React.ReactNode;
+    label: string;
+    href: string;
+    previewVideo?: string;
+    previewImage?: string;
+  }>;
 };
 
 export type DockProps = {
@@ -43,6 +57,14 @@ type DockItemProps = {
   previewImage?: string;
   previewVideo?: string;
   previewAlt?: string;
+  isDropdown?: boolean;
+  dropdownItems?: Array<{
+    icon: React.ReactNode;
+    label: string;
+    href: string;
+    previewVideo?: string;
+    previewImage?: string;
+  }>;
 };
 
 function DockItem({
@@ -56,7 +78,9 @@ function DockItem({
   baseItemSize,
   previewImage,
   previewVideo,
-  previewAlt
+  previewAlt,
+  isDropdown,
+  dropdownItems
 }: DockItemProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isHovered = useMotionValue(0);
@@ -72,40 +96,127 @@ function DockItem({
   const targetSize = useTransform(mouseDistance, [-distance, 0, distance], [baseItemSize, magnification, baseItemSize]);
   const size = useSpring(targetSize, spring);
 
+  const dockItemContent = (
+    <motion.div
+      ref={ref}
+      style={{
+        width: size,
+        height: size
+      }}
+      onHoverStart={() => isHovered.set(1)}
+      onHoverEnd={() => isHovered.set(0)}
+      onFocus={() => isHovered.set(1)}
+      onBlur={() => isHovered.set(0)}
+      onClick={!isDropdown ? onClick : undefined}
+      className={`dock-item ${className}`}
+      tabIndex={0}
+      role="button"
+      aria-haspopup={isDropdown ? "true" : "false"}
+    >
+      {Children.map(children, child =>
+        React.isValidElement(child)
+          ? cloneElement(child as React.ReactElement<{ 
+              isHovered?: MotionValue<number>;
+              previewImage?: string;
+              previewVideo?: string;
+              previewAlt?: string;
+            }>, { 
+              isHovered,
+              previewImage,
+              previewVideo,
+              previewAlt
+            })
+          : child
+      )}
+    </motion.div>
+  );
+
+  if (isDropdown && dropdownItems) {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [hoveredItemIndex, setHoveredItemIndex] = useState<number | null>(null);
+
+    return (
+      <div 
+        className="dock-item-wrapper"
+        onMouseEnter={() => setIsDropdownOpen(true)}
+        onMouseLeave={() => {
+          setIsDropdownOpen(false);
+          setHoveredItemIndex(null);
+        }}
+      >
+        {dockItemContent}
+        {isDropdownOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[160px] bg-popover border rounded-md shadow-lg p-1 z-50 backdrop-blur-xl"
+            style={{ transformOrigin: 'bottom center' }}
+          >
+            {dropdownItems.map((item, idx) => (
+              <div
+                key={idx}
+                onMouseEnter={() => setHoveredItemIndex(idx)}
+                onMouseLeave={() => setHoveredItemIndex(null)}
+                className="relative"
+              >
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-accent cursor-pointer relative overflow-hidden min-h-[36px]"
+                >
+                  <AnimatePresence mode="wait">
+                    {hoveredItemIndex === idx && (item.previewVideo || item.previewImage) ? (
+                      <motion.div
+                        key="preview"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="absolute inset-0 flex items-center justify-center w-full h-full"
+                      >
+                        {item.previewVideo ? (
+                          <video
+                            src={item.previewVideo}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover rounded-sm"
+                          />
+                        ) : item.previewImage ? (
+                          <img
+                            src={item.previewImage}
+                            alt={item.label}
+                            className="w-full h-full object-cover rounded-sm"
+                          />
+                        ) : null}
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="content"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex items-center gap-2 w-full"
+                      >
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </a>
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="dock-item-wrapper">
-      <motion.div
-        ref={ref}
-        style={{
-          width: size,
-          height: size
-        }}
-        onHoverStart={() => isHovered.set(1)}
-        onHoverEnd={() => isHovered.set(0)}
-        onFocus={() => isHovered.set(1)}
-        onBlur={() => isHovered.set(0)}
-        onClick={onClick}
-        className={`dock-item ${className}`}
-        tabIndex={0}
-        role="button"
-        aria-haspopup="true"
-      >
-        {Children.map(children, child =>
-          React.isValidElement(child)
-            ? cloneElement(child as React.ReactElement<{ 
-                isHovered?: MotionValue<number>;
-                previewImage?: string;
-                previewVideo?: string;
-                previewAlt?: string;
-              }>, { 
-                isHovered,
-                previewImage,
-                previewVideo,
-                previewAlt
-              })
-            : child
-        )}
-      </motion.div>
+      {dockItemContent}
     </div>
   );
 }
@@ -260,6 +371,8 @@ export default function Dock({
             previewImage={item.previewImage}
             previewVideo={item.previewVideo}
             previewAlt={item.previewAlt}
+            isDropdown={item.isDropdown}
+            dropdownItems={item.dropdownItems}
           >
             <DockIcon 
               previewImage={item.previewImage}
