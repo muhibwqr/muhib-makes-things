@@ -1,5 +1,4 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import LiquidEther from "@/components/LiquidEther";
 import Dock from "@/components/Dock";
 import { KeyboardShortcut } from "@/components/KeyboardShortcut";
 import { useDockItems } from "@/lib/dockItems";
@@ -12,30 +11,34 @@ const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen relative bg-white text-black dark:bg-black dark:text-white">
-      {/* LiquidEther background animation */}
-      <div className="fixed inset-0 z-0">
-        <LiquidEther
-          colors={["#4A9EFF", "#9FF5FF", "#B1D4FF"]}
-          mouseForce={20}
-          cursorSize={100}
-          isViscous={false}
-          viscous={30}
-          iterationsViscous={32}
-          iterationsPoisson={32}
-          resolution={0.5}
-          isBounce={false}
-          autoDemo={true}
-          autoSpeed={0.5}
-          autoIntensity={2.2}
-          takeoverDuration={0.25}
-          autoResumeDelay={3000}
-          autoRampDuration={0.6}
-        />
-      </div>
-
-      {/* Semi-transparent backdrop for text readability */}
-      <div className="fixed inset-0 z-[1] bg-white/60 dark:bg-black/60 backdrop-blur-sm pointer-events-none"></div>
+    <div className="min-h-screen w-full relative text-black dark:text-white">
+      {/* Light mode - Dot Matrix */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none dark:hidden"
+        style={{
+          backgroundColor: '#fafafa',
+          backgroundImage: `
+            radial-gradient(circle at 25% 25%, #e5e5e5 0.5px, transparent 1px),
+            radial-gradient(circle at 75% 75%, #d4d4d4 0.5px, transparent 1px)
+          `,
+          backgroundSize: '10px 10px',
+          imageRendering: 'pixelated',
+        }}
+      />
+      
+      {/* Dark mode - Dark Dot Matrix */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none hidden dark:block"
+        style={{
+          backgroundColor: '#0a0a0a',
+          backgroundImage: `
+            radial-gradient(circle at 25% 25%, #222222 0.5px, transparent 1px),
+            radial-gradient(circle at 75% 75%, #111111 0.5px, transparent 1px)
+          `,
+          backgroundSize: '10px 10px',
+          imageRendering: 'pixelated',
+        }}
+      />
 
       {/* Content wrapper */}
       <div className="relative z-10 min-h-screen">
@@ -74,13 +77,10 @@ const Index = () => {
           {/* Main Content - Timeline Layout */}
           <main className="container mx-auto px-4 sm:px-6 pt-0 pb-8 sm:pb-12 max-w-2xl">
             {/* Timeline Container */}
-            <div className="space-y-8">
+            <div className="space-y-4">
               
               {/* Who am i Section */}
-            <section>
-                <h2 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4 tracking-wider">
-                  who am i
-              </h2>
+            <section className="-mt-2">
                 <div className="space-y-2">
                   <div className="flex items-start gap-2 text-sm">
                     <span className="text-gray-400 dark:text-gray-500">→</span>

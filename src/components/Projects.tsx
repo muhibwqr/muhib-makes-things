@@ -73,7 +73,7 @@ export function Projects() {
                         <h3 className="project-title text-black dark:text-white">
                         {project.title}
                         </h3>
-                    </div>
+                  </div>
                     <ExternalLink size={18} className="text-muted-foreground opacity-50 group-hover:opacity-100 transition-opacity" />
                     </Card>
                 </div>
