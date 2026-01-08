@@ -84,13 +84,13 @@ const projectsData: ProjectData[] = [
     id: "scrollify",
     title: "Scrollify — anti-productivity doomscroll app (GoOnHacks25)",
     fullTitle: "Scrollify — Anti-Productivity Doomscroll App",
-    description: "Scrollify — an app that maximizes doomscrolling. If you're off social media for 5+ mins, it triggers a Twilio voice AI agent that calls your dad. Features live leaderboard, browser extension tracking, and iOS app blocking. Won GoOnHacks25 by design.",
-    longDescription: "Scrollify is a satirical anti-productivity app that gamifies doomscrolling. The concept is simple yet powerful: if you're off social media for more than 5 minutes, the app triggers a Twilio voice AI agent that calls your dad to check in.\n\nBuilt for GoOnHacks25, Scrollify features a live leaderboard showing who's been scrolling the longest, browser extension tracking for desktop usage, and iOS app blocking capabilities. The app uses humor and social accountability to highlight the absurdity of our relationship with social media.\n\nThe project won GoOnHacks25 by design, impressing judges with its creative approach to addressing digital wellness through satire. It combines multiple technologies—Swift for iOS, Supabase for backend, Twilio for voice AI, and browser extensions—to create a comprehensive tracking and intervention system.",
+    description: "Scrollify — an app that maximizes doomscrolling. If you're off social media for 5+ mins, it triggers a Twilio voice AI agent that calls your dad. Features live leaderboard, browser extension tracking, and iOS app blocking. Won the 67 award at GoOnHacks25.",
+    longDescription: "Scrollify is a satirical anti-productivity app that gamifies doomscrolling. The concept is simple yet powerful: if you're off social media for more than 5 minutes, the app triggers a Twilio voice AI agent that calls your dad to check in.\n\nBuilt for GoOnHacks25, Scrollify features a live leaderboard showing who's been scrolling the longest, browser extension tracking for desktop usage, and iOS app blocking capabilities. The app uses humor and social accountability to highlight the absurdity of our relationship with social media.\n\nThe project won the 67 award at GoOnHacks25, impressing judges with its creative approach to addressing digital wellness through satire. It combines multiple technologies—Swift for iOS, Supabase for backend, Twilio for voice AI, and browser extensions—to create a comprehensive tracking and intervention system.",
     stack: "swift, supabase, twilio",
     link: "https://devpost.com/software/scrollify-tp4a2l",
     previewVideo: '/scrollify.mov',
     highlights: [
-      "Won GoOnHacks25 by design",
+      "Won the 67 award at GoOnHacks25",
       "Twilio voice AI integration for automated calls",
       "Live leaderboard for competitive doomscrolling",
       "Cross-platform tracking (browser extension + iOS)",
@@ -103,7 +103,7 @@ const projectsData: ProjectData[] = [
       "Designing a compelling user experience despite the satirical nature"
     ],
     results: [
-      "Won GoOnHacks25 by design award",
+      "Won the 67 award at GoOnHacks25",
       "Demonstrated creative problem-solving approach",
       "Created engaging social accountability mechanism",
       "Successfully integrated multiple platforms and technologies"
@@ -149,11 +149,34 @@ export default function ProjectDetailPage() {
 
   if (!project) {
     return (
-      <div className="min-h-screen relative bg-white text-black dark:bg-black dark:text-white">
-        <div className="fixed inset-0 z-0">
-          <Cubes />
-        </div>
-        <div className="fixed inset-0 z-[1] bg-white/60 dark:bg-black/60 backdrop-blur-sm pointer-events-none"></div>
+      <div className="min-h-screen relative bg-white dark:bg-[#0f0f0f] text-black dark:text-white">
+        {/* Light mode - Subtle Crosshatch */}
+        <div
+          className="absolute inset-0 z-0 pointer-events-none dark:hidden"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(22.5deg, transparent, transparent 2px, rgba(0, 0, 0, 0.08) 2px, rgba(0, 0, 0, 0.08) 3px, transparent 3px, transparent 8px),
+              repeating-linear-gradient(67.5deg, transparent, transparent 2px, rgba(0, 0, 0, 0.05) 2px, rgba(0, 0, 0, 0.05) 3px, transparent 3px, transparent 8px)
+            `,
+          }}
+        />
+        
+        {/* Dark mode - Crosshatch Art Pattern */}
+        <div
+          className="absolute inset-0 z-0 pointer-events-none hidden dark:block"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(22.5deg, transparent, transparent 2px, rgba(16, 185, 129, 0.18) 2px, rgba(16, 185, 129, 0.18) 3px, transparent 3px, transparent 8px),
+              repeating-linear-gradient(67.5deg, transparent, transparent 2px, rgba(245, 101, 101, 0.10) 2px, rgba(245, 101, 101, 0.10) 3px, transparent 3px, transparent 8px),
+              repeating-linear-gradient(112.5deg, transparent, transparent 2px, rgba(234, 179, 8, 0.08) 2px, rgba(234, 179, 8, 0.08) 3px, transparent 3px, transparent 8px),
+              repeating-linear-gradient(157.5deg, transparent, transparent 2px, rgba(249, 115, 22, 0.06) 2px, rgba(249, 115, 22, 0.06) 3px, transparent 3px, transparent 8px)
+            `,
+          }}
+        />
+        
+        {/* Black overlay for dark mode */}
+        <div className="absolute inset-0 z-[1] hidden dark:block bg-black/60 pointer-events-none"></div>
+        
         <div className="relative z-10 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Project not found</h1>
@@ -171,11 +194,33 @@ export default function ProjectDetailPage() {
 
 
   return (
-    <div className="min-h-screen relative bg-white text-black dark:bg-black dark:text-white">
-      <div className="fixed inset-0 z-0">
-        <Cubes />
-      </div>
-      <div className="fixed inset-0 z-[1] bg-white/60 dark:bg-black/60 backdrop-blur-sm pointer-events-none"></div>
+    <div className="min-h-screen relative bg-white dark:bg-[#0f0f0f] text-black dark:text-white">
+      {/* Light mode - Subtle Crosshatch */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none dark:hidden"
+        style={{
+          backgroundImage: `
+            repeating-linear-gradient(22.5deg, transparent, transparent 2px, rgba(0, 0, 0, 0.08) 2px, rgba(0, 0, 0, 0.08) 3px, transparent 3px, transparent 8px),
+            repeating-linear-gradient(67.5deg, transparent, transparent 2px, rgba(0, 0, 0, 0.05) 2px, rgba(0, 0, 0, 0.05) 3px, transparent 3px, transparent 8px)
+          `,
+        }}
+      />
+      
+      {/* Dark mode - Crosshatch Art Pattern */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none hidden dark:block"
+        style={{
+          backgroundImage: `
+            repeating-linear-gradient(22.5deg, transparent, transparent 2px, rgba(16, 185, 129, 0.18) 2px, rgba(16, 185, 129, 0.18) 3px, transparent 3px, transparent 8px),
+            repeating-linear-gradient(67.5deg, transparent, transparent 2px, rgba(245, 101, 101, 0.10) 2px, rgba(245, 101, 101, 0.10) 3px, transparent 3px, transparent 8px),
+            repeating-linear-gradient(112.5deg, transparent, transparent 2px, rgba(234, 179, 8, 0.08) 2px, rgba(234, 179, 8, 0.08) 3px, transparent 3px, transparent 8px),
+            repeating-linear-gradient(157.5deg, transparent, transparent 2px, rgba(249, 115, 22, 0.06) 2px, rgba(249, 115, 22, 0.06) 3px, transparent 3px, transparent 8px)
+          `,
+        }}
+      />
+      
+      {/* Black overlay for dark mode */}
+      <div className="absolute inset-0 z-[1] hidden dark:block bg-black/60 pointer-events-none"></div>
       
       <div className="relative z-10 min-h-screen">
         <Dock 

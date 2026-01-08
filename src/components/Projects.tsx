@@ -29,7 +29,7 @@ export function Projects() {
     {
       id: "scrollify",
       title: "Scrollify — anti-productivity doomscroll app (GoOnHacks25)",
-      description: "Scrollify — an app that maximizes doomscrolling. If you're off social media for 5+ mins, it triggers a Twilio voice AI agent that calls your dad. Features live leaderboard, browser extension tracking, and iOS app blocking. Won GoOnHacks25 by design.",
+      description: "Scrollify — an app that maximizes doomscrolling. If you're off social media for 5+ mins, it triggers a Twilio voice AI agent that calls your dad. Features live leaderboard, browser extension tracking, and iOS app blocking. Won the 67 award at GoOnHacks25.",
       stack: "swift, supabase, twilio",
       link: "https://devpost.com/software/scrollify-tp4a2l",
       previewVideo: '/scrollify.mov'
