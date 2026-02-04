@@ -57,8 +57,8 @@ export function getCurrentTheme(): Theme {
   if (root.classList.contains('dark')) return 'dark';
   if (root.classList.contains('light')) return 'light';
   
-  // Default to light if neither is set
-  return 'light';
+  // Default to dark if neither is set
+  return 'dark';
 }
 
 /**
@@ -74,8 +74,8 @@ export function initializeTheme(): Theme {
     return storedTheme;
   }
   
-  // If no stored theme, default to light mode
-  const defaultTheme: Theme = 'light';
+  // If no stored theme, default to dark mode
+  const defaultTheme: Theme = 'dark';
   
   applyTheme(defaultTheme);
   saveTheme(defaultTheme);

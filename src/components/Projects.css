@@ -42,3 +42,27 @@
     justify-content: center;
   }
 }
+
+/* Mobile: full width, touch-friendly, safe area */
+@media (max-width: 640px) {
+  .projects-layout {
+    gap: 24px;
+    margin-bottom: 2rem;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  
+  .projects-list {
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+  }
+  
+  .project-card-minimal {
+    padding: 16px 20px;
+    min-height: 52px;
+  }
+  
+  .section-header {
+    font-size: 1.25rem;
+  }
+}

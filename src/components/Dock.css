@@ -6,7 +6,7 @@
   z-index: 50;
   overflow: visible;
   pointer-events: auto;
-  padding-bottom: 12px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
   padding-top: 40px;
   display: flex;
   align-items: flex-end;

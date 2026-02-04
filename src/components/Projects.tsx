@@ -1,12 +1,15 @@
 import { ExternalLink, Folder } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import TvPreview from "./TvPreview";
 import "./Projects.css";
 
+const ROTATE_INTERVAL_MS = 5000;
+
 export function Projects() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [rotateIndex, setRotateIndex] = useState(0);
   const navigate = useNavigate();
 
   const projects = [
@@ -41,10 +44,35 @@ export function Projects() {
       stack: "python, jupyter notebook, shell",
       link: "https://brev.dev",
       previewVideo: '/brev-instance.mp4'
+    },
+    {
+      id: "flowerOS",
+      title: "flowerOS — dedicated to zahid mehboob",
+      description: "If you sacrifice purpose for technical prowess, you're ngmi. A tool built for a seventy-year-old artisan—my grandfather—to bridge the engineering principles of tech with the workflow of hand sewn ribbons and floral motifs.",
+      stack: "built for purpose",
+      link: "#",
+      previewVideo: "/cursorful-video-1770059587142.mp4"
+    },
+    {
+      id: "cursor-doc-intelligence",
+      title: "Document intelligence pipeline — nv-ingest + NIMs (cursor.md)",
+      description: "RL documentation is a desert. We built a document intelligence pipeline on NVIDIA nv-ingest with NIMs, fed a real Amazon PRD through the system, and ran it with cursor.md—Cursor analyzed the full schema and mapped the logic within seconds.",
+      stack: "nvidia nv-ingest, nvidia NIMs, docker",
+      link: "#",
+      previewVideo: "/cursor-doc-intelligence.mov"
     }
   ];
 
-  const activeProject = hoveredIndex !== null ? projects[hoveredIndex] : null;
+  // Rotate through projects in the TV when nothing is hovered
+  useEffect(() => {
+    if (hoveredIndex !== null) return;
+    const interval = setInterval(() => {
+      setRotateIndex((prev) => (prev + 1) % projects.length);
+    }, ROTATE_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [hoveredIndex, projects.length]);
+
+  const activeProject = hoveredIndex !== null ? projects[hoveredIndex] : projects[rotateIndex];
 
   return (
     <section id="projects" className="section-spacing relative scroll-mt-20">

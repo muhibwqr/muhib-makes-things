@@ -41,7 +41,6 @@ const Index = () => {
     { id: "9", url: "/slider/post%20fajr%20motive.JPG", type: "image" as const, label: "lakeshore sunrise with the mandem" },
     { id: "10", url: "/slider/shipping%20with%20no%20internet%20on%20a%2014%20hour%20flight.MP4", type: "video" as const },
     { id: "11", url: "/slider/sneaking%20into%20alif%20office.JPG", type: "image" as const },
-    { id: "12", url: "/slider/Ummah%20hacks%20draft%20%232.mp4", type: "video" as const },
     { id: "13", url: "/slider/visiting%20serval%20office.JPG", type: "image" as const },
     { id: "14", url: "/slider/waterloo%20math%20in%20turket.JPG", type: "image" as const },
   ];
@@ -166,34 +165,34 @@ const Index = () => {
 
       {/* Content wrapper */}
       <div className="relative z-10 min-h-screen">
-        {/* Dock Navigation */}
+        {/* Dock Navigation — smaller on mobile for touch */}
         <Dock 
           items={dockItems}
-          panelHeight={68}
-          baseItemSize={50}
+          panelHeight={isMobile ? 56 : 68}
+          baseItemSize={isMobile ? 42 : 50}
           magnification={70}
         />
         
         {/* Only hide dots when hovering over this center column */}
         <div
-          className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6"
+          className="relative z-10 max-w-2xl mx-auto px-3 sm:px-6 pb-24 sm:pb-0"
           onMouseEnter={() => setDotsHovered(true)}
           onMouseLeave={() => setDotsHovered(false)}
         >
-          {/* Header - Minimal */}
-          <header className="py-8 sm:py-12">
-            <div className="flex items-center gap-4 mb-4">
-              <Avatar className="w-20 h-20 rounded-none border border-black/20 dark:border-white/20 flex-shrink-0">
+          {/* Header - Minimal (responsive) */}
+          <header className="py-6 sm:py-12">
+            <div className="flex items-center gap-3 sm:gap-4 mb-4">
+              <Avatar className="w-14 h-14 sm:w-20 sm:h-20 rounded-none border border-black/20 dark:border-white/20 flex-shrink-0">
                 <AvatarImage src="/profile.jpeg" alt="Muhib Waqar" className="rounded-none" />
                 <AvatarFallback className="bg-gray-200 text-black dark:bg-gray-800 dark:text-white rounded-none">
                   MW
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 relative">
+              <div className="flex-1 min-w-0">
                 <h1 className="hero-title text-black dark:text-white mb-1">
                   muhib waqar
                 </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                   math & business @ uwaterloo • swe • security • product management
                 </p>
               </div>
@@ -201,7 +200,7 @@ const Index = () => {
           </header>
 
           {/* Main Content - Timeline Layout */}
-          <main className="pt-0 pb-8 sm:pb-12">
+          <main className="pt-0 pb-8 sm:pb-12 min-h-[60vh]">
             {/* Timeline Container */}
             <div className="space-y-4">
               
@@ -386,13 +385,13 @@ const Index = () => {
                 </div>
               </section>
 
-              {/* Image slider + Check my projects */}
-              <section className="pt-4 flex flex-col gap-4 relative z-[9999]">
-                <h2 className="text-sm font-medium text-gray-600 dark:text-gray-400">scenes from my life</h2>
-                <div className="group relative overflow-hidden">
+              {/* Image slider + Check my projects (responsive) */}
+              <section className="pt-4 flex flex-col gap-3 sm:gap-4 relative z-[9999]">
+                <h2 className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">scenes from my life</h2>
+                <div className="group relative overflow-hidden -mx-3 sm:mx-0">
                   <div
                     ref={sliderRef}
-                    className={`images-container flex overflow-x-auto gap-3 min-w-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden select-none ${sliderDragging ? "cursor-grabbing" : "cursor-grab"}`}
+                    className={`images-container flex overflow-x-auto gap-2 sm:gap-3 min-w-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden select-none touch-pan-x ${sliderDragging ? "cursor-grabbing" : "cursor-grab"}`}
                     style={{ contain: "layout paint" }}
                     onMouseDown={onSliderMouseDown}
                     onTouchStart={onSliderTouchStart}
@@ -400,9 +399,9 @@ const Index = () => {
                     {sliderMedia.map((item) => (
                       <div
                         key={item.id}
-                        className="flex-shrink-0 w-[180px] flex flex-col gap-1.5 rounded-none group/item"
+                        className="flex-shrink-0 w-[140px] sm:w-[180px] flex flex-col gap-1 sm:gap-1.5 rounded-none group/item"
                       >
-                        <div className="w-full h-[112px] flex items-center justify-center overflow-hidden rounded-none">
+                        <div className="w-full h-[88px] sm:h-[112px] flex items-center justify-center overflow-hidden rounded-none">
                           {item.type === "video" ? (
                             <video
                               src={item.url}
@@ -424,7 +423,7 @@ const Index = () => {
                             />
                           )}
                         </div>
-                        <p className="text-[10px] text-gray-500 dark:text-gray-400 text-center px-0.5 opacity-80 group-hover/item:opacity-100 group-hover/item:scale-[1.02] transition-all duration-200 origin-left truncate max-w-full" title={"label" in item ? item.label : sliderItemLabel(item.url)}>
+                        <p className="text-[9px] sm:text-[10px] text-gray-500 dark:text-gray-400 text-center px-0.5 opacity-80 group-hover/item:opacity-100 group-hover/item:scale-[1.02] transition-all duration-200 origin-left truncate max-w-full" title={"label" in item ? item.label : sliderItemLabel(item.url)}>
                           {"label" in item ? item.label : sliderItemLabel(item.url)}
                         </p>
                       </div>
@@ -437,7 +436,7 @@ const Index = () => {
                     e.preventDefault();
                     navigate('/projects');
                   }}
-                  className="group relative inline-flex items-center justify-center gap-3 px-6 py-4 w-full sm:w-auto bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-black/10 dark:border-white/10 text-black dark:text-white font-medium text-sm hover:border-blue-400/50 dark:hover:border-blue-400/50 transition-colors duration-200 hero-title touch-manipulation"
+                  className="group relative inline-flex items-center justify-center gap-3 px-5 py-3.5 sm:px-6 sm:py-4 w-full sm:w-auto min-h-[44px] bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-black/10 dark:border-white/10 text-black dark:text-white font-medium text-sm hover:border-blue-400/50 dark:hover:border-blue-400/50 transition-colors duration-200 hero-title touch-manipulation"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >

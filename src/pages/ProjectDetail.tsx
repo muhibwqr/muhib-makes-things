@@ -4,6 +4,7 @@ import Cubes from "@/components/Cubes";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDockItems } from "@/lib/dockItems";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ProjectData {
   id: string;
@@ -137,6 +138,104 @@ const projectsData: ProjectData[] = [
       "Created a reusable tool for future projects",
       "Demonstrated practical problem-solving approach"
     ]
+  },
+  {
+    id: "flowerOS",
+    title: "flowerOS — dedicated to zahid mehboob",
+    fullTitle: "flowerOS — dedicated to zahid mehboob",
+    description: "If you sacrifice purpose for technical prowess, you're ngmi. A tool built for a seventy-year-old artisan—my grandfather—to bridge the engineering principles of tech with the workflow of hand sewn ribbons and floral motifs.",
+    longDescription: `If you sacrifice purpose for technical prowess, you're ngmi.
+
+A few weeks ago, I returned to Pakistan. It is a place that remains, stubbornly and beautifully, my home. I went there to find a retreat from the noise, but I quickly realized that the infectious waterloo mindset does not have an off switch.
+
+While my surroundings were filled with the warmth of family, my internal dialogue remained cold. I felt the guilt of stasis. I felt as though every hour not spent building was an hour surrendered to irrelevance. I was searching for a spark in the abstract, yet I found it in the tangible.
+
+I found it in my grandfather.
+
+Nearing seventy years old, my grandfather is the silent architect of his own world. For decades, he has operated a business centered on the delicate art of hand sewn ribbons and floral motifs. These are the intricate details that breathe life into traditional clothing and footwear. It was patient, disciplined, and deeply human.
+
+Yet I also saw the friction. I saw how the pace of the modern world was putting pressure on his analog systems. Fragmented communication and manual logistics were creating barriers between his vision and his team.
+
+In that moment, my restlessness finally found its target.
+
+This is flowerOS.
+
+Stop building for your resume and start building for your legacy. flowerOS is a bridge. It is an attempt to take the engineering principles of the tech world and distill them into a tool that honors the workflow of a seventy year old artisan.
+
+This project was never about chasing a trend or optimizing a metric. While it's not the craziest system, it was made fast and specifically for a purpose, while life has been further than what I can control, I plan on (inshallah) overengineering it to make sure it works out well. It was about using code to preserve a legacy. I have learned that the most profound innovation happens when we stop looking at technology as a way to replace the old and start looking at it as a way to empower it.
+
+Code is just the medium. Purpose is the masterpiece.`,
+    stack: "built for purpose",
+    link: "#",
+    previewVideo: "/cursorful-video-1770059587142.mp4",
+    highlights: [
+      "Bridge between tech principles and artisan workflow",
+      "Built for a seventy-year-old craftsman",
+      "Hand sewn ribbons and floral motifs business",
+      "Preserving legacy through code",
+      "Empowering the old instead of replacing it"
+    ],
+    challenges: [
+      "Fragmented communication and manual logistics",
+      "Analog systems under pressure from modern pace",
+      "Honoring workflow while introducing tools"
+    ],
+    results: [
+      "A tool that honors the workflow of an artisan",
+      "Code as a medium for purpose",
+      "Legacy preserved and empowered by technology"
+    ]
+  },
+  {
+    id: "cursor-doc-intelligence",
+    title: "Document intelligence pipeline — nv-ingest + NIMs (cursor.md)",
+    fullTitle: "Document Intelligence Pipeline — nv-ingest + NIMs",
+    description: "RL documentation is a desert. After a conversation with Carter Abdallah about this gap, we built a document intelligence pipeline on NVIDIA nv-ingest with NIMs for multimodal extraction. We fed a real Amazon PRD through the system: could an agent reconstruct the entire product spec from raw JSON? Cursor analyzed the full schema and mapped the logic within seconds.",
+    longDescription: `RL documentation is a desert. It is a problem that goes beyond missing files because it defines how the next generation of AI systems are being built.
+
+After a conversation with Carter Abdallah about this gap, I called Demir Eren.
+
+Within twenty-four hours, we were already in the middle of a build.
+
+We constructed a document intelligence pipeline on top of NVIDIA nv-ingest, layering NVIDIA NIMs for multimodal extraction.
+
+We developed our own reasoning frameworks to analyze the structured output, then fed a real Amazon PRD (we found it online) through the system.
+
+The challenge was simple: could an agent reconstruct the entire product spec using nothing but the raw JSON?
+
+We previously ran this through claude.md, where the agent successfully reconstructed the functional requirements, user journeys, and system architecture from the structured data alone.
+
+We just finished the run with cursor.md.
+
+Using the same nv-ingest pipeline, Cursor successfully analyzed the entire schema and mapped the logic within seconds.
+
+Seeing a code-native framework interpret complex layout logic with that kind of speed changes the math on how we process enterprise data.
+
+The screen recording below shows the whole process from ingestion to the final analysis.
+
+For anyone attempting to replicate this, do not run the pipeline bare metal on a 2020 MacBook Air. My machine crashed five times before I admitted defeat and moved everything into Docker.
+
+On that note, if anyone wants to sponsor a new laptop for a Waterloo student who is currently melting his hardware in the name of progress, my DMs are open.`,
+    stack: "nvidia nv-ingest, nvidia NIMs, docker",
+    link: "#",
+    previewVideo: "/cursor-doc-intelligence.mov",
+    highlights: [
+      "Document intelligence pipeline on NVIDIA nv-ingest",
+      "NVIDIA NIMs for multimodal extraction",
+      "Agent reconstructs product spec from raw JSON",
+      "cursor.md analyzed full schema and mapped logic within seconds",
+      "claude.md reconstructed requirements, user journeys, system architecture"
+    ],
+    challenges: [
+      "RL documentation gap",
+      "Running pipeline on 2020 MacBook Air (crashed 5× → moved to Docker)",
+      "Interpreting complex layout logic from structured data"
+    ],
+    results: [
+      "Code-native framework interpreting enterprise data at speed",
+      "End-to-end run from ingestion to analysis",
+      "Proof that agents can reconstruct specs from structured output alone"
+    ]
   }
 ];
 
@@ -144,6 +243,7 @@ export default function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const dockItems = useDockItems();
+  const isMobile = useIsMobile();
 
   const project = projectsData.find(p => p.id === projectId);
 
@@ -177,30 +277,30 @@ export default function ProjectDetailPage() {
       <div className="relative z-10 min-h-screen">
         <Dock 
           items={dockItems}
-          panelHeight={68}
-          baseItemSize={50}
+          panelHeight={isMobile ? 56 : 68}
+          baseItemSize={isMobile ? 42 : 50}
           magnification={70}
         />
         
-        <main className="px-4 sm:px-6 py-8 sm:py-12 section-spacing">
+        <main className="px-3 sm:px-6 py-6 sm:py-12 pb-24 sm:pb-12 section-spacing">
           <div className="max-w-4xl mx-auto">
             <button
               onClick={() => navigate('/projects')}
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 min-h-[44px] -ml-2 pl-2 pr-3 py-2 transition-colors touch-manipulation"
             >
               <ArrowLeft size={18} />
               <span>Back to Projects</span>
             </button>
 
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               <div>
-                <h1 className="hero-title mb-4">{project.fullTitle}</h1>
-                <div className="flex items-center gap-4 mb-6">
+                <h1 className="hero-title mb-3 sm:mb-4">{project.fullTitle}</h1>
+                <div className="flex items-center gap-4 mb-4 sm:mb-6">
                   <a
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity"
+                    className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity min-h-[44px] items-center touch-manipulation"
                   >
                     <ExternalLink size={18} />
                     <span>View Project</span>
@@ -245,15 +345,15 @@ export default function ProjectDetailPage() {
                 {project.longDescription}
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
                 <div>
-                  <h2 className="text-2xl font-semibold mb-4">Tech Stack</h2>
-                  <p className="text-muted-foreground">{project.stack}</p>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Tech Stack</h2>
+                  <p className="text-muted-foreground text-sm sm:text-base">{project.stack}</p>
                 </div>
 
                 {project.highlights && project.highlights.length > 0 && (
                   <div>
-                    <h2 className="text-2xl font-semibold mb-4">Highlights</h2>
+                    <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Highlights</h2>
                     <ul className="space-y-2">
                       {project.highlights.map((highlight, idx) => (
                         <li key={idx} className="flex items-start gap-2">
@@ -268,7 +368,7 @@ export default function ProjectDetailPage() {
 
               {project.challenges && project.challenges.length > 0 && (
                 <div>
-                  <h2 className="mb-4">Challenges</h2>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Challenges</h2>
                   <ul className="space-y-2">
                     {project.challenges.map((challenge, idx) => (
                       <li key={idx} className="flex items-start gap-2">
@@ -282,7 +382,7 @@ export default function ProjectDetailPage() {
 
               {project.results && project.results.length > 0 && (
                 <div>
-                  <h2 className="mb-4">Results</h2>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Results</h2>
                   <ul className="space-y-2">
                     {project.results.map((result, idx) => (
                       <li key={idx} className="flex items-start gap-2">
