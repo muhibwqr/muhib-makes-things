@@ -4,7 +4,6 @@ import ProjectsPage from "./pages/Projects";
 import ProjectDetailPage from "./pages/ProjectDetail";
 import ResumePage from "./pages/Resume";
 import NotFound from "./pages/NotFound";
-import { CommandPalette } from "./components/CommandPalette";
 // import FaceNav from "./components/face-nav/FaceNav"; // Temporarily disabled
 
 const App = () => {
@@ -13,7 +12,6 @@ const App = () => {
     <BrowserRouter>
       {/* Face navigation temporarily disabled */}
       {/* <FaceNav debugMode={false} /> */}
-      <CommandPalette />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/projects" element={<ProjectsPage />} />
