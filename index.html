@@ -25,106 +25,10 @@
     <meta name="twitter:title" content="Muhib Waqar — builder, hacker, problem solver" />
     <meta name="twitter:description" content="Math/Business Administration @ UWaterloo. Built GooseType (5000+ tests), Triageo, Scrollify. Shipping fast, breaking things, fixing them faster." />
     <meta name="twitter:image" content="https://muhib-makes-things.com/profile.jpeg" />
-    
-    <style>
-      /* Ensure webring appears above background animations and is not blurred */
-      [data-webring],
-      [data-webring] *,
-      .webring,
-      #webring,
-      script[data-webring] + *,
-      script[data-webring] ~ * {
-        position: fixed !important;
-        z-index: 99999 !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-        filter: none !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-      }
-      
-      /* Target any iframe or container the webring might create */
-      iframe[src*="uwaterloo.network"],
-      [id*="webring"],
-      [class*="webring"],
-      [data-webring] iframe,
-      [data-webring] canvas,
-      [data-webring] svg {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        top: auto !important;
-        left: auto !important;
-        z-index: 99999 !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-        filter: none !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        transform: scale(0.3) !important;
-      }
-    </style>
   </head>
 
   <body class="dark">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script 
-      src="https://uwaterloo.network/embed.js" 
-      data-webring
-      data-user="muhibwaqar"
-    ></script>
-    <script>
-      // Ensure webring is properly styled after it loads
-      function styleWebring() {
-        const webringSelectors = [
-          '[data-webring]',
-          '.webring',
-          '#webring',
-          'iframe[src*="uwaterloo.network"]',
-          '[id*="webring"]',
-          '[class*="webring"]'
-        ];
-        
-        webringSelectors.forEach(selector => {
-          const elements = document.querySelectorAll(selector);
-          elements.forEach(el => {
-            if (el) {
-              el.style.position = 'fixed';
-              el.style.bottom = '20px';
-              el.style.right = '20px';
-              el.style.top = 'auto';
-              el.style.left = 'auto';
-              el.style.zIndex = '99999';
-              el.style.backdropFilter = 'none';
-              el.style.webkitBackdropFilter = 'none';
-              el.style.filter = 'none';
-              el.style.opacity = '1';
-              el.style.pointerEvents = 'auto';
-              el.style.transform = 'scale(0.3)';
-              
-              // Style all children
-              const children = el.querySelectorAll('*');
-              children.forEach(child => {
-                child.style.backdropFilter = 'none';
-                child.style.webkitBackdropFilter = 'none';
-                child.style.filter = 'none';
-                child.style.opacity = '1';
-              });
-            }
-          });
-        });
-      }
-      
-      // Run immediately and after a delay to catch dynamically created elements
-      styleWebring();
-      setTimeout(styleWebring, 100);
-      setTimeout(styleWebring, 500);
-      setTimeout(styleWebring, 1000);
-      
-      // Also watch for new elements
-      const observer = new MutationObserver(styleWebring);
-      observer.observe(document.body, { childList: true, subtree: true });
-    </script>
   </body>
 </html>

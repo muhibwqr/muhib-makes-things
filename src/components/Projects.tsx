@@ -73,12 +73,13 @@ export function Projects() {
   }, [hoveredIndex, projects.length]);
 
   const activeProject = hoveredIndex !== null ? projects[hoveredIndex] : projects[rotateIndex];
+  const activeIndex = hoveredIndex !== null ? hoveredIndex : rotateIndex;
 
   return (
     <section id="projects" className="section-spacing relative scroll-mt-20">
       <div className="px-4 sm:px-6">
         <h2 className="section-header text-black dark:text-white">
-        → projects i worked on (hover over them!)
+        ↳ projects i worked on (hover over them!)
         </h2>
         
         <div className="projects-layout">
@@ -91,7 +92,7 @@ export function Projects() {
                 onMouseLeave={() => setHoveredIndex(null)}
                     >
                       <Card 
-                        className={`glass hover-lift border-border/50 project-card-minimal cursor-pointer ${hoveredIndex === index ? 'border-primary/50 bg-primary/5' : ''}`}
+                        className={`glass hover-lift border-border/50 project-card-minimal cursor-pointer ${index === activeIndex ? 'border-primary/50 bg-primary/5 ring-2 ring-primary/30' : ''}`}
                         onClick={() => navigate(`/projects/${project.id}`)}
                       >
                     <div className="flex items-center gap-4">

@@ -311,24 +311,28 @@ All colors MUST be HSL.
   }
 }
 
-/* Webring styling - ensure it appears above all content and is not blurred */
+/* Webring – fixed at very bottom-left, top layer, small */
 [data-webring],
 [data-webring] *,
-.webring,
-#webring,
 iframe[src*="uwaterloo.network"],
-[id*="webring"],
-[class*="webring"] {
+body > [id*="webring"],
+body > [class*="webring"] {
   position: fixed !important;
-  bottom: 20px !important;
-  right: 20px !important;
+  bottom: 12px !important;
+  left: 12px !important;
   top: auto !important;
-  left: auto !important;
-  z-index: 99999 !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  filter: none !important;
-  opacity: 1 !important;
+  right: auto !important;
+  z-index: 2147483647 !important;
   pointer-events: auto !important;
-  transform: scale(0.3) !important;
+  transform: scale(0.4) !important;
+  transform-origin: bottom left !important;
 }
+
+/* Webring white in dark mode */
+.dark [data-webring],
+.dark [data-webring] *,
+.dark body > [id*="webring"],
+.dark body > [class*="webring"] {
+  filter: invert(1);
+}
+

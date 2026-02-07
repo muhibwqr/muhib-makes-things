@@ -54,6 +54,29 @@ const Index = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Webring embed: only on home page – fixed bottom-left, remove on unmount
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.id = "webring-embed-script";
+    script.src = "https://uwaterloo.network/embed.js";
+    script.setAttribute("data-webring", "");
+    script.setAttribute("data-user", "muhib-waqar");
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      script.remove();
+      const widget =
+        document.getElementById("webring") ??
+        document.querySelector("body > [data-webring]") ??
+        document.querySelector("[id*='webring']") ??
+        document.querySelector("[class*='webring']");
+      if (widget && widget.id !== "webring-embed-script") {
+        widget.remove();
+      }
+    };
+  }, []);
+
   // Auto-scroll slider (paused while dragging)
   useEffect(() => {
     const container = sliderRef.current;
@@ -179,7 +202,7 @@ const Index = () => {
           onMouseEnter={() => setDotsHovered(true)}
           onMouseLeave={() => setDotsHovered(false)}
         >
-          {/* Header - Minimal (responsive) */}
+          {/* Header - Minimal (responsive), button overlays name */}
           <header className="py-6 sm:py-12">
             <div className="flex items-center gap-3 sm:gap-4 mb-4">
               <Avatar className="w-14 h-14 sm:w-20 sm:h-20 rounded-none border border-black/20 dark:border-white/20 flex-shrink-0">
@@ -208,14 +231,7 @@ const Index = () => {
               <section className="-mt-2">
                 <div className="space-y-2">
                   <div className="flex items-start gap-2 text-sm">
-                    <span className="text-gray-400 dark:text-gray-500">→</span>
-                    <div>
-                      <span className="text-black dark:text-white font-medium">been in tech since age 11</span>
-                      <span className="text-gray-500 dark:text-gray-400"> → from entrepreneurship and graphic design to software engineering. think beyond code.</span>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2 text-sm">
-                    <span className="text-gray-400 dark:text-gray-500">→</span>
+                    <span className="text-gray-400 dark:text-gray-500">↳</span>
                     <div className="flex flex-wrap items-center gap-1">
                       <a 
                         href="https://uwaterloo.ca"
@@ -232,20 +248,27 @@ const Index = () => {
                         <span className="text-black dark:text-white font-medium">university of waterloo</span>
                         <HighlightSpan color="bg-yellow-300/40 dark:bg-yellow-400/30" />
                       </a>
-                      <span className="text-gray-500 dark:text-gray-400"> → studying to bridge technical and mathematical depth with business impact.</span>
-                    </div>
-                  </div>
+                      <span className="text-gray-500 dark:text-gray-400"> → studying to <span className="font-semibold text-gray-600 dark:text-gray-300">bridge</span> technical and mathematical depth with <span className="font-semibold text-gray-600 dark:text-gray-300">business impact</span>.</span>
+                </div>
+                </div>
                   <div className="flex items-start gap-2 text-sm">
-                    <span className="text-gray-400 dark:text-gray-500">→</span>
+                    <span className="text-gray-400 dark:text-gray-500">↳</span>
                     <div>
-                      <span className="text-black dark:text-white font-medium">5M+ views across platforms</span>
-                      <span className="text-gray-500 dark:text-gray-400"> → built a personal brand surrounding my values, helped non-profits, and mentored creators + students. scale & focused on impact beyond my own work.</span>
+                      <span className="text-black dark:text-white font-medium">shipped goosetype.com, <span className="font-semibold">5000+</span> users in <span className="font-semibold">one week</span></span>
+                      <span className="text-gray-500 dark:text-gray-400"> → typing arena, rebranded after Waterloo flagged the original; <span className="font-semibold text-gray-600 dark:text-gray-300">rebuilt and scaled fast</span>.</span>
                     </div>
                   </div>
                   <div className="flex items-start gap-2 text-sm">
-                    <span className="text-gray-400 dark:text-gray-500">→</span>
+                    <span className="text-gray-400 dark:text-gray-500">↳</span>
+                    <div>
+                      <span className="text-black dark:text-white font-medium">hosted the <span className="font-semibold">biggest</span> muslim ethics–based hackathon in <span className="font-semibold">north america</span></span>
+                      <span className="text-gray-500 dark:text-gray-400"> → <span className="font-semibold text-gray-600 dark:text-gray-300">300+</span> people, sponsored by <span className="font-semibold text-gray-600 dark:text-gray-300">YC-backed</span> startups, <span className="font-semibold text-gray-600 dark:text-gray-300">Shopify</span>, & <span className="font-semibold text-gray-600 dark:text-gray-300">a16z</span> scout.</span>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 text-sm">
+                    <span className="text-gray-400 dark:text-gray-500">↳</span>
                     <div className="flex flex-wrap items-center gap-1">
-                      <span className="text-black dark:text-white font-medium">certified & experienced</span>
+                      <span className="text-black dark:text-white font-medium">certified & <span className="font-semibold">experienced</span></span>
                       <span className="text-gray-500 dark:text-gray-400"> → </span>
                       <a 
                         href="https://aws.amazon.com/certification/certified-cloud-practitioner/"
@@ -312,7 +335,7 @@ const Index = () => {
                         className="inline-flex items-center gap-1 cursor-pointer relative group"
                         onClick={(e) => e.preventDefault()}
                       >
-                        <span className="text-gray-500 dark:text-gray-400">founding backend engineer @</span>
+                        <span className="text-gray-500 dark:text-gray-400"><span className="font-semibold text-gray-600 dark:text-gray-300">founding</span> backend engineer @</span>
                         <img 
                           src="/stealthstartup.png" 
                           alt="Stealth Startup" 
@@ -338,8 +361,8 @@ const Index = () => {
                       <span className="text-gray-500 dark:text-gray-400">,</span>
                       <a 
                         href="https://islamicbookstoronto.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      target="_blank"
+                      rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 relative group cursor-pointer"
                       >
                         <span className="text-gray-500 dark:text-gray-400">swe intern @</span>
@@ -353,8 +376,8 @@ const Index = () => {
                       <span className="text-gray-500 dark:text-gray-400">,</span>
                       <a 
                         href="https://canadiancyber.ca"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                  target="_blank"
+                  rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 relative group cursor-pointer"
                       >
                         <span className="text-gray-500 dark:text-gray-400">cybersecurity @</span>
@@ -368,22 +391,13 @@ const Index = () => {
                     </div>
                   </div>
                   <div className="flex items-start gap-2 text-sm">
-                    <span className="text-gray-400 dark:text-gray-500">→</span>
+                    <span className="text-gray-400 dark:text-gray-500">↳</span>
                     <div>
-                      <a
-                        href="https://www.instagram.com/reel/DE3VipVx8UT/?igsh=MWtpYWprbmRzdGFncQ=="
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex gap-1 relative group cursor-pointer"
-                      >
-                        <span className="text-black dark:text-white font-medium">4th place toronto wrestling</span>
-                        <HighlightSpan color="bg-yellow-300/40 dark:bg-yellow-400/30" />
-                      </a>
-                      <span className="text-gray-500 dark:text-gray-400"> → I had to discipline myself insanely, and am applying that to other aspects of my life.</span>
+                      <span className="text-black dark:text-white font-medium"><span className="font-semibold">cool facts:</span> first internship at <span className="font-semibold">11</span>, <span className="font-semibold">8 million</span> views on socials, <span className="font-semibold">4th place</span> toronto wrestling.</span>
                     </div>
                   </div>
-                </div>
-              </section>
+              </div>
+            </section>
 
               {/* Image slider + Check my projects (responsive) */}
               <section className="pt-4 flex flex-col gap-3 sm:gap-4 relative z-[9999]">
@@ -430,19 +444,19 @@ const Index = () => {
                     ))}
                   </div>
                 </div>
-                <motion.a
-                  href="/projects"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate('/projects');
-                  }}
-                  className="group relative inline-flex items-center justify-center gap-3 px-5 py-3.5 sm:px-6 sm:py-4 w-full sm:w-auto min-h-[44px] bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-black/10 dark:border-white/10 text-black dark:text-white font-medium text-sm hover:border-blue-400/50 dark:hover:border-blue-400/50 transition-colors duration-200 hero-title touch-manipulation"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                  <span className="relative z-10">checkout my projects</span>
-                </motion.a>
+                <div className="relative pt-6 pb-2 w-full flex justify-center group">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/30 blur-[60px] rounded-full group-hover:bg-primary/50 transition-colors duration-500 pointer-events-none"></div>
+                  <motion.button
+                    type="button"
+                    onClick={() => navigate("/projects")}
+                    className="hero-title relative w-full px-8 py-4 sm:px-10 sm:py-4 bg-primary/15 dark:bg-primary/20 backdrop-blur-xl border border-primary/40 dark:border-primary/35 text-primary dark:text-primary-foreground font-normal text-sm sm:text-base rounded-2xl shadow-[0_10px_30px_-10px_rgba(59,130,246,0.25),inset_0_1px_1px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 overflow-hidden flex items-center justify-center"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/15 to-transparent pointer-events-none"></div>
+                    <span className="relative z-10">check out my work</span>
+                  </motion.button>
+                </div>
               </section>
 
             </div>

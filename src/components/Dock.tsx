@@ -14,6 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import './Dock.css';
 
 export type DockItemData = {
@@ -32,6 +33,8 @@ export type DockItemData = {
     previewVideo?: string;
     previewImage?: string;
   }>;
+  /** When set, clicking the dock item opens this content in a popover instead of calling onClick. */
+  popoverContent?: React.ReactNode;
 };
 
 export type DockProps = {
@@ -80,7 +83,8 @@ function DockItem({
   previewVideo,
   previewAlt,
   isDropdown,
-  dropdownItems
+  dropdownItems,
+  popoverContent,
 }: DockItemProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isHovered = useMotionValue(0);
@@ -107,11 +111,11 @@ function DockItem({
       onHoverEnd={() => isHovered.set(0)}
       onFocus={() => isHovered.set(1)}
       onBlur={() => isHovered.set(0)}
-      onClick={!isDropdown ? onClick : undefined}
+      onClick={!isDropdown && !popoverContent ? onClick : undefined}
       className={`dock-item ${className}`}
       tabIndex={0}
       role="button"
-      aria-haspopup={isDropdown ? "true" : "false"}
+      aria-haspopup={isDropdown || !!popoverContent ? "true" : "false"}
     >
       {Children.map(children, child =>
         React.isValidElement(child)
@@ -130,6 +134,26 @@ function DockItem({
       )}
     </motion.div>
   );
+
+  if (popoverContent) {
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className="dock-item-wrapper">
+            {dockItemContent}
+          </div>
+        </PopoverTrigger>
+        <PopoverContent
+          side="top"
+          align="center"
+          sideOffset={12}
+          className="w-[min(90vw,400px)] p-0 overflow-hidden rounded-lg border bg-popover"
+        >
+          {popoverContent}
+        </PopoverContent>
+      </Popover>
+    );
+  }
 
   if (isDropdown && dropdownItems) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -373,6 +397,7 @@ export default function Dock({
             previewAlt={item.previewAlt}
             isDropdown={item.isDropdown}
             dropdownItems={item.dropdownItems}
+            popoverContent={item.popoverContent}
           >
             <DockIcon 
               previewImage={item.previewImage}

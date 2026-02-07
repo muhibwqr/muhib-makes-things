@@ -7,19 +7,19 @@ export function About() {
         </h2>
         <div className="space-y-2">
           <p className="arrow-bullet">
-            → been in tech since age 11 → from entrepreneurship and graphic design to software engineering. think beyond code.
+            ↳ had my first internship at age 11 ↳ from graphic design, to entrepreneurship to cyber, and then software. think beyond code.
           </p>
           <p className="arrow-bullet">
-            → university of waterloo → honours math & business admin, president's scholarship. bridge technical + mathematical depth with business impact.
+            ↳ university of waterloo ↳ honours math & business admin, president's scholarship. bridge technical + mathematical depth with business impact.
           </p>
           <p className="arrow-bullet">
-            → 5M+ views across platforms → built a personal brand surrounding my values, helped non-profits, and mentored creators + students. scale  & focused on impact beyond my own work.
+            ↳ 8M+ views across platforms ↳ built a personal brand surrounding my values, helped non-profits, and mentored creators + students. scale  & focused on impact beyond my own work.
           </p>
           <p className="arrow-bullet">
-            → certified & experienced → aws ccp, az-900, ccna1, ccst. founding backend engineer @ a stealth ed-tech startup, swe intern @ ibs, cybersecurity @ canadian cyber inc.
+            ↳ certified & experienced ↳ aws ccp, az-900, ccna1, ccst. founding backend engineer @ a stealth ed-tech startup, swe intern @ ibs, cybersecurity @ canadian cyber inc.
           </p>
           <p className="arrow-bullet">
-            → 4th place toronto wrestling → trained with world champions. discipline myself insanely, and am applying that to other aspects of my life.
+            ↳ 4th place toronto wrestling ↳ trained with world champions. discipline myself insanely, and am applying that to other aspects of my life.
           </p>
         </div>
       </div>
