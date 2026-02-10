@@ -45,6 +45,7 @@ export type DockProps = {
   baseItemSize?: number;
   dockHeight?: number;
   magnification?: number;
+  vertical?: boolean;
   spring?: SpringOptions;
 };
 
@@ -53,6 +54,8 @@ type DockItemProps = {
   children: React.ReactNode;
   onClick?: () => void;
   mouseX: MotionValue<number>;
+  mouseY: MotionValue<number>;
+  vertical: boolean;
   spring: SpringOptions;
   distance: number;
   baseItemSize: number;
@@ -68,6 +71,7 @@ type DockItemProps = {
     previewVideo?: string;
     previewImage?: string;
   }>;
+  popoverContent?: React.ReactNode;
 };
 
 function DockItem({
@@ -75,6 +79,8 @@ function DockItem({
   className = '',
   onClick,
   mouseX,
+  mouseY,
+  vertical,
   spring,
   distance,
   magnification,
@@ -89,12 +95,12 @@ function DockItem({
   const ref = useRef<HTMLDivElement>(null);
   const isHovered = useMotionValue(0);
 
-  const mouseDistance = useTransform(mouseX, val => {
-    const rect = ref.current?.getBoundingClientRect() ?? {
-      x: 0,
-      width: baseItemSize
-    };
-    return val - rect.x - baseItemSize / 2;
+  const mousePos = vertical ? mouseY : mouseX;
+  const mouseDistance = useTransform(mousePos, val => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return vertical ? -distance : distance;
+    const axis = vertical ? rect.y + rect.height / 2 : rect.x + rect.width / 2;
+    return val - axis;
   });
 
   const targetSize = useTransform(mouseDistance, [-distance, 0, distance], [baseItemSize, magnification, baseItemSize]);
@@ -144,7 +150,7 @@ function DockItem({
           </div>
         </PopoverTrigger>
         <PopoverContent
-          side="top"
+          side={vertical ? "right" : "top"}
           align="center"
           sideOffset={12}
           className="w-[min(90vw,400px)] p-0 overflow-hidden rounded-lg border bg-popover"
@@ -174,7 +180,7 @@ function DockItem({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[160px] bg-popover border rounded-md shadow-lg p-1 z-50 backdrop-blur-xl"
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-0 min-w-[160px] bg-popover border rounded-md shadow-lg p-1 z-50 backdrop-blur-xl"
             style={{ transformOrigin: 'bottom center' }}
           >
             {dropdownItems.map((item, idx) => (
@@ -249,9 +255,10 @@ type DockLabelProps = {
   className?: string;
   children: React.ReactNode;
   isHovered?: MotionValue<number>;
+  vertical?: boolean;
 };
 
-function DockLabel({ children, className = '', isHovered }: DockLabelProps) {
+function DockLabel({ children, className = '', isHovered, vertical }: DockLabelProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -266,13 +273,13 @@ function DockLabel({ children, className = '', isHovered }: DockLabelProps) {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          animate={{ opacity: 1, y: -10 }}
+          initial={{ opacity: 0, y: vertical ? 0 : 0 }}
+          animate={{ opacity: 1, y: vertical ? 0 : -10 }}
           exit={{ opacity: 0, y: 0 }}
           transition={{ duration: 0.2 }}
           className={`dock-label ${className}`}
           role="tooltip"
-          style={{ x: '-50%' }}
+          style={vertical ? undefined : { x: '-50%' }}
         >
           {children}
         </motion.div>
@@ -360,25 +367,29 @@ export default function Dock({
   distance = 2000,
   panelHeight = 69,
   dockHeight = 256,
-  baseItemSize = 50
+  baseItemSize = 50,
+  vertical = false
 }: DockProps) {
   const mouseX = useMotionValue(Infinity);
+  const mouseY = useMotionValue(Infinity);
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
     <div 
       ref={containerRef}
-      className="dock-outer"
+      className={`dock-outer ${vertical ? 'dock--vertical' : ''}`}
       onMouseLeave={() => {
         mouseX.set(Infinity);
+        mouseY.set(Infinity);
       }}
     >
       <motion.div
-        onMouseMove={({ pageX }) => {
+        onMouseMove={({ pageX, pageY }) => {
           mouseX.set(pageX);
+          mouseY.set(pageY);
         }}
         className={`dock-panel ${className}`}
-        style={{ height: panelHeight }}
+        style={vertical ? { width: panelHeight, minHeight: 68 } : { height: panelHeight }}
         role="toolbar"
         aria-label="Application dock"
       >
@@ -388,6 +399,8 @@ export default function Dock({
             onClick={item.onClick}
             className={item.className}
             mouseX={mouseX}
+            mouseY={mouseY}
+            vertical={vertical}
             spring={spring}
             distance={distance}
             magnification={magnification}
@@ -406,7 +419,7 @@ export default function Dock({
             >
               {item.icon}
             </DockIcon>
-            <DockLabel>{item.label}</DockLabel>
+            <DockLabel vertical={vertical}>{item.label}</DockLabel>
           </DockItem>
         ))}
       </motion.div>

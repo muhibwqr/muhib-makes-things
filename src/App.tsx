@@ -3,6 +3,7 @@ import Index from "./pages/Index";
 import ProjectsPage from "./pages/Projects";
 import ProjectDetailPage from "./pages/ProjectDetail";
 import ResumePage from "./pages/Resume";
+import WritingArticle from "./pages/WritingArticle";
 import NotFound from "./pages/NotFound";
 // import FaceNav from "./components/face-nav/FaceNav"; // Temporarily disabled
 
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
         <Route path="/resume" element={<ResumePage />} />
+        <Route path="/writing/:slug" element={<WritingArticle />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

@@ -11,6 +11,24 @@
   display: none;
 }
 
+/* Staggered column reveal on load */
+@keyframes fade-in-column {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-column {
+  animation: fade-in-column 0.4s ease-out both;
+}
+.animate-fade-in-column-delay-0 { animation-delay: 0ms; }
+.animate-fade-in-column-delay-100 { animation-delay: 100ms; }
+.animate-fade-in-column-delay-200 { animation-delay: 200ms; }
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */

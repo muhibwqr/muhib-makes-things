@@ -13,6 +13,18 @@
   justify-content: center;
 }
 
+/* Desktop: vertical dock on the left */
+.dock-outer.dock--vertical {
+  bottom: auto;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 12px 0;
+  padding-left: max(12px, env(safe-area-inset-left));
+  align-items: center;
+  justify-content: center;
+}
+
 .dock-panel {
   display: flex;
   align-items: flex-end;
@@ -27,6 +39,14 @@
   pointer-events: auto;
   min-height: 68px;
   width: fit-content;
+}
+
+.dock-outer.dock--vertical .dock-panel {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: fit-content;
+  min-width: 68px;
 }
 
 .dark .dock-panel {
@@ -108,6 +128,15 @@
   white-space: nowrap;
   pointer-events: none;
   z-index: 1000;
+}
+
+.dock-outer.dock--vertical .dock-label {
+  bottom: auto;
+  left: 100%;
+  margin-bottom: 0;
+  margin-left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .dark .dock-label {
