@@ -193,22 +193,22 @@ const Index = () => {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <div className="flex items-baseline gap-1.5 mb-1">
-                  <h1
-                    className="hero-title text-black dark:text-white cursor-default transition-opacity duration-75"
-                    onMouseEnter={() => {
-                      nameCycleRef.current = setInterval(() => {
-                        setNameVariantIndex((i) => (i + 1) % nameVariants.length);
-                      }, 180);
-                    }}
-                    onMouseLeave={() => {
-                      if (nameCycleRef.current) {
-                        clearInterval(nameCycleRef.current);
-                        nameCycleRef.current = null;
-                      }
-                      setNameVariantIndex(0);
-                    }}
-                  >
+                <div
+                  className="flex items-baseline gap-1.5 mb-1"
+                  onMouseEnter={() => {
+                    nameCycleRef.current = setInterval(() => {
+                      setNameVariantIndex((i) => (i + 1) % nameVariants.length);
+                    }, 180);
+                  }}
+                  onMouseLeave={() => {
+                    if (nameCycleRef.current) {
+                      clearInterval(nameCycleRef.current);
+                      nameCycleRef.current = null;
+                    }
+                    setNameVariantIndex(0);
+                  }}
+                >
+                  <h1 className="hero-title text-black dark:text-white cursor-default transition-opacity duration-75">
                     {nameVariants[nameVariantIndex]}
                   </h1>
                   <span className="text-[9px] text-gray-400 dark:text-gray-500 whitespace-nowrap">hover here ←</span>
