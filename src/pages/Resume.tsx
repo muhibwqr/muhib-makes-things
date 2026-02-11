@@ -23,7 +23,7 @@ export default function Resume() {
 
         <div className="bg-white dark:bg-black border border-border/50 rounded-lg overflow-hidden shadow-lg">
           <iframe
-            src="/Muhib_waqar_swe.pdf"
+            src="/muhib_waqar_swe.pdf"
             className="w-full h-[calc(100vh-200px)] min-h-[600px]"
             title="Muhib Waqar Resume"
           />
@@ -31,14 +31,14 @@ export default function Resume() {
 
         <div className="mt-6 flex gap-4 justify-center">
           <a
-            href="/Muhib_waqar_swe.pdf"
-            download="Muhib_waqar_swe.pdf"
+            href="/muhib_waqar_swe.pdf"
+            download="muhib_waqar_swe.pdf"
             className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
           >
             Download PDF
           </a>
           <a
-            href="/Muhib_waqar_swe.pdf"
+            href="/muhib_waqar_swe.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-3 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors font-medium"
