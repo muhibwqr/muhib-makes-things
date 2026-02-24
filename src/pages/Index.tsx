@@ -438,15 +438,6 @@ const Index = () => {
                         <HighlightSpan color="bg-rose-300/40 dark:bg-rose-400/30" />
                       </Link>
                     </li>
-                    <li>
-                      <Link
-                        to="/writing/the-death-of-agency-slop"
-                        className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors block relative group cursor-pointer"
-                      >
-                        the death of &quot;agency slop&quot;: why we chose the hard path to autonomy
-                        <HighlightSpan color="bg-amber-300/40 dark:bg-amber-400/30" />
-                      </Link>
-                    </li>
                   </ul>
                 </div>
 
