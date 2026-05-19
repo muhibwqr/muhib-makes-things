@@ -244,9 +244,10 @@ const Index = () => {
               ))}
             </div>
           </div>
-
-          <h1 className="ag text-base sm:text-lg font-medium leading-[1.4] mb-4 text-black dark:text-white whitespace-nowrap overflow-hidden">
-            <span className="font-medium">assalamualaikum</span>{" "}
+          {/* Body */}
+          <div className="ag text-black dark:text-white">
+            <p className="text-[0.95rem] sm:text-base leading-[1.7] text-justify hyphens-none [word-spacing:-0.05em]">
+                          <span className="font-medium">assalamualaikum</span>{" "}
             <span className="italic opacity-60">
               [may peace be upon you]
             </span>
@@ -270,14 +271,7 @@ const Index = () => {
                 muhib waqar
               </span>
             )}
-            .
-          </h1>
-
-
-          {/* Body */}
-          <div className="ag text-black dark:text-white">
-            <p className="text-[0.95rem] sm:text-base leading-[1.7] text-justify hyphens-none [word-spacing:-0.05em]">
-              {"i am a 19-year-old computational mathematics and business student at the "}
+              {". i am a 19-year-old computational mathematics and business student at the "}
               <a
                 href="https://uwaterloo.ca"
                 target="_blank"
