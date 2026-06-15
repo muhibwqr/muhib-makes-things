@@ -340,7 +340,7 @@ body.maker .landing-prose p { color: rgba(12, 17, 23, 0.8); }
   align-items: flex-start;
   text-align: left;
   gap: 26px;
-  max-width: 780px;
+  max-width: 560px;          /* column shrinks to the content so it sits centred on the page */
 }
 .hero-art { margin: 0; width: 100%; max-width: 280px; align-self: flex-start; }
 
