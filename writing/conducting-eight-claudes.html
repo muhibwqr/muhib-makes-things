@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · conducting eight claudes</title>
+  <meta name="description" content="eleven api endpoints in one hour with eight parallel claude sessions, the decomposition theory, the contracts, the review economics, and where it breaks." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>۞</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="mono dim wordmark">muhib waqar</a>
+    <div class="nav-links mono">
+      <a href="/#writing">&larr; writing</a>
+      <a href="/#work">work</a>
+      <a href="/#inspirations">inspirations</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article">
+    <p class="article-kicker mono dim reveal">writing · systems</p>
+    <h1 class="article-title reveal">conducting eight claudes</h1>
+    <p class="article-meta mono dim reveal">on orchestrating parallel ai agents · $16,500/mo saved · 8 min</p>
+
+    <div class="prose article-prose reveal">
+      <p>at zown i had eleven api endpoints to build and one hour of patience. so i ran eight parallel claude sessions and conducted them like an orchestra, one on routes, one on schemas, one on tests, the rest fanned across the endpoints. the whole thing shipped in an hour and replaced a vendor bill worth $16,500 a month. people hear that story as "ai is fast." that's the wrong lesson. the lesson is that <em>orchestration is the new skill</em>, and it has actual mechanics, decomposition, contracts, and review economics. this essay is those mechanics.</p>
+
+      <h3>decompose along interfaces, not files</h3>
+      <p>the first ten minutes decided the whole hour, and i spent them writing zero code. parallel agents don't fail because they're dumb, they fail because they collide: two sessions inventing two different shapes for the same object, each locally reasonable, jointly worthless. so the cut lines have to fall along <em>interfaces</em>. i wrote the schemas first, request and response types for all eleven endpoints, error conventions, naming, and froze them. only then did the fan-out begin, each session owning endpoints whose surfaces couldn't touch.</p>
+      <p>this is the same theorem that governs human teams (conway's law is not optional just because the workers are language models): <strong>the structure of the work determines the structure of the system.</strong> decompose by interface and the merge is mechanical. decompose by vibes and the merge is the actual project.</p>
+
+      <h3>schemas are treaties, tests are referees</h3>
+      <p>eight contexts drift. it's not a possibility, it's a thermodynamic certainty, each session accumulates its own assumptions, and without an external anchor those assumptions diverge silently. the anchor was the contract document: every session got it verbatim, every session was instructed to treat it as immutable law, and any ambiguity it surfaced got resolved in the contract first, then rebroadcast. one session did nothing but write tests <em>against the contract</em>, not against any implementation, so when implementations landed, the referee already existed and hadn't been biased by seeing any player's work.</p>
+      <p>drift detection by cross-checking agents against each other is a trap, by the way. two drifted agents will happily validate each other's drift. you check against the treaty, never against the other party.</p>
+
+      <h3>review faster than they produce</h3>
+      <p>here's the constraint nobody talks about: with eight parallel producers, <em>you</em> are the bottleneck, and if you review line-by-line you've just reinvented being a slow team. the move is reviewing properties instead of lines. does the diff touch only its assigned surface? do the types match the treaty exactly? do the referee's tests pass? does a spot-execution of the weirdest endpoint behave at the boundaries? property review is o(contracts), not o(tokens generated), that's the only reason the math of one human conducting eight machines closes at all.</p>
+      <p>and the honest rule underneath it: <strong>never ship a line you couldn't defend in review.</strong> speed that outruns your ability to stand behind the work isn't velocity, it's debt with good marketing.</p>
+
+      <h3>where it breaks</h3>
+      <p>i've since run this pattern enough times to know its failure modes by name. <em>context contamination</em>: paste one session's output into another to "help" and you've coupled their assumptions, the whole point was independence. <em>the unowned middle</em>: any surface two sessions both believe the other owns will be built twice or zero times, never once. <em>merge optimism</em>: if the decomposition was sloppy, the merge inherits every collision at once, at the end, when you're tired. and the subtle one, <em>the contract was wrong</em>: eight agents will faithfully build the wrong thing eight times faster. the conductor's real job is being right about the score before the orchestra plays a note.</p>
+
+      <h3>what this means for the next decade</h3>
+      <p>the engineer's unit of leverage used to be the function, then the service, then the team. it's becoming the <em>fleet</em>. the skills that matter at fleet scale are exactly the ones this hour exercised: cutting problems along clean interfaces, writing contracts precise enough for a context that can't read your mind, building referees before players, and reviewing at the level of properties and invariants. notice that none of those are "prompting." they're the oldest skills in software engineering, suddenly compounding at a new exchange rate.</p>
+      <p>ihsan, excellence as if you are seen, scales the same way it always did: one careful decision at a time. the orchestra just makes each decision louder. <span class="dim">الحمد لله</span> for living in the decade where care compounds this fast.</p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/writing/the-anatomy-of-a-second.html">&larr; the anatomy of a second</a>
+      <a class="mono" href="/#writing">all writing --&gt;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

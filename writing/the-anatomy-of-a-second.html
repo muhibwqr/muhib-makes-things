@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · the anatomy of a second</title>
+  <meta name="description" content="where a second actually goes inside a production agent loop, and the discipline, parallel dispatch, speculation, streaming, honest caches, that wins it back." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>۞</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="mono dim wordmark">muhib waqar</a>
+    <div class="nav-links mono">
+      <a href="/#writing">&larr; writing</a>
+      <a href="/#work">work</a>
+      <a href="/#inspirations">inspirations</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article">
+    <p class="article-kicker mono dim reveal">writing · systems</p>
+    <h1 class="article-title reveal">the anatomy of a second</h1>
+    <p class="article-meta mono dim reveal">engineering an agent loop's latency budget · 8 min</p>
+
+    <div class="prose article-prose reveal">
+      <p>every millisecond you ship is a millisecond you take from someone's life, multiplied by every user, every request, forever. at zara's scale that arithmetic stops being abstract: a lazy 800ms in the agent loop is hours of cumulative human waiting per day, taken from people who trusted us with their time. so at zown we treat the latency budget the way you'd treat someone else's money, itemized, audited, defended. this is the anatomy of that budget.</p>
+
+      <h3>where a second actually goes</h3>
+      <p>before you can defend a budget you have to see it spent. a naive agent turn looks innocent in code and brutal in a trace:</p>
+      <pre>intent routing        80ms
+retrieval             140ms
+model ttft            350ms   <em>← the tax you pay every hop</em>
+tool call: listings   180ms
+tool call: enrichment 220ms   <em>← ran AFTER listings. why?</em>
+synthesis ttft        350ms
+─────────────────────────────
+~1.3s before the user sees a single token</pre>
+      <p>the killer isn't any one span, it's the <em>shape</em>. a sequential chain pays time-to-first-token on every model hop and waits politely between tools that never needed each other's output. latency work begins with a confession: your loop is a graph that you've been executing as a line.</p>
+
+      <h3>parallelize the graph, not the code</h3>
+      <p>the listings call and the enrichment call share no data dependency, so they run concurrently, that single change deletes 180ms. generalize it: build the dependency graph of every agent turn, then dispatch everything whose inputs are ready, always. the math here is amdahl's law wearing work clothes, your speedup is bounded by the spans you refuse to parallelize, and in most agent loops the refusal is habit, not necessity.</p>
+      <p>the deeper version is architectural: design tools so they <em>can't</em> depend on each other accidentally. narrow inputs, no shared mutable context, results merged by the orchestrator rather than threaded through each tool. independence isn't discovered, it's designed.</p>
+
+      <h3>speculate like you mean it</h3>
+      <p>by the time a user finishes typing "how are the schools near—" you already know with high probability which neighborhood's enrichment data you'll need. fetch it before the model asks. speculation converts idle network time into answered questions, and the cost of being wrong is a cancelled request, cheap, against the cost of being right, which is 220ms handed back to a human. we speculate on the enrichment path, on likely follow-ups, and on the embedding of the query the user is most of the way through asking.</p>
+
+      <h3>stream first, resolve later</h3>
+      <p>perceived latency is the only latency users experience. the agent streams its first tokens before the full plan resolves, an honest acknowledgment plus the part of the answer retrieval has already secured, while the slower tools land mid-stream. the metric that matters is <strong>time to first meaningful token</strong>: not "how long until done" but "how long until the user knows they've been heard and the answer has begun." sub-second on that metric feels human. two seconds feels like a form submission.</p>
+
+      <h3>caches that don't lie</h3>
+      <p>a cache is a promise that the data hasn't changed, and in real estate that promise expires fast, a stale price isn't a performance optimization, it's a lie with a timestamp. so the rule is honest invalidation: every cached object carries its provenance and its event subscriptions, and when a listing mutates upstream, its derivatives die with it. we'd rather pay a cold read than serve a warm falsehood. the latency budget and the honesty budget are the same budget wearing different clothes.</p>
+
+      <h3>the discipline</h3>
+      <p>none of this survives without ritual. every span in the trace has to justify its existence, in review we ask "what did this 80ms buy the user?" the way you'd ask about a dependency or a database. we watch p99, not p50, because the median user is doing fine and the tail user is deciding whether to trust an ai with their largest purchase. and when someone finds 100ms, it ships with the same ceremony as a feature, because it is one.</p>
+      <p><strong>performance work is adab, good manners toward other people's time.</strong> the prophet ﷺ said that part of the excellence of a person's islam is leaving what doesn't concern them; i've come to read dead spans in a trace the same way. cut what doesn't concern the answer. give the seconds back.</p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/writing/retrieval-that-refuses-to-lie.html">&larr; retrieval that refuses to lie</a>
+      <a class="mono" href="/writing/conducting-eight-claudes.html">conducting eight claudes --&gt;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · retrieval that refuses to lie</title>
+  <meta name="description" content="the full architecture of a retrieval system that would rather decline than improvise: hybrid ranking, relevance floors, constrained generation, and how you measure honesty." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>۞</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="mono dim wordmark">muhib waqar</a>
+    <div class="nav-links mono">
+      <a href="/#writing">&larr; writing</a>
+      <a href="/#work">work</a>
+      <a href="/#inspirations">inspirations</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article">
+    <p class="article-kicker mono dim reveal">writing · systems</p>
+    <h1 class="article-title reveal">retrieval that refuses to lie</h1>
+    <p class="article-meta mono dim reveal">on building citation-bound ai, duaOS → zara · 9 min</p>
+
+    <div class="prose article-prose reveal">
+      <p>most rag systems are built to answer. the better ones are built to <em>decline</em>. that distinction sounds philosophical until you ship one, then it becomes the most concrete engineering decision in the whole stack. i've now built citation-bound retrieval twice: once for duaOS, where the corpus is scripture and a wrong answer is a spiritual harm, and once for zara at zown, where the corpus is real homes and a wrong answer costs a family money. the architecture that survived both is the subject of this essay.</p>
+
+      <h3>the corpus is the covenant</h3>
+      <p>everything downstream inherits the integrity of the corpus, so the corpus comes first and it comes slow. for duaOS that meant the 99 names of Allah, each grounded in graded hadith and qur'anic references, no blog posts, no paraphrases, every entry carrying its isnad like a foreign key. for zara it means listing data with provenance fields on every attribute: where the square footage came from, when it was last verified, which enrichment pass touched it.</p>
+      <p>the rule in both: <strong>an attribute without provenance is not data, it's a rumor.</strong> if you let rumors into the corpus, no amount of clever ranking downstream will launder them back into truth.</p>
+
+      <h3>two rankers, because each one lies differently</h3>
+      <p>dense vectors and lexical search fail in opposite directions, which is exactly why you run both. embeddings think "anxious about my exam" and "fear of failure" are neighbors, that's the magic, but they'll also happily return something <em>vibes-adjacent</em> and call it relevant. keyword search never hallucinates a match, but it thinks "tawakkul" and "trusting Allah's plan" are strangers.</p>
+      <p>so the pipeline runs them in parallel and fuses with reciprocal rank fusion, which is humbler than it sounds:</p>
+      <pre>score(d) = Σ 1 / (k + rank_i(d))     <em>k ≈ 60</em>
+fuse, then apply the floor:
+if best_score &lt; τ → decline, don't improvise</pre>
+      <p>rrf has a property i love: it only rewards documents that <em>multiple rankers</em> believed in, without ever trusting either ranker's raw score, raw scores across different systems aren't comparable, and pretending they are is where a lot of quiet corruption enters retrieval stacks.</p>
+
+      <h3>the relevance floor is a product decision</h3>
+      <p>the threshold τ is the soul of the system and it should not be tuned by a hyperparameter sweep. it's a question for the product, asked plainly: <em>below what confidence would you rather say "i don't have this"?</em> for duaOS the floor is high, the system returns nothing before it returns something doctrinally loose. for zara the floor triggers a different path: decline the generated answer, hand the thread to a human realtor, keep the trust intact.</p>
+      <p>calibrate it with a held-out set of queries where you know the right behavior, including queries whose right behavior is <em>refusal</em>. most teams only test whether the system answers well. you have to also test whether it declines well, because a system that can't decline hasn't earned the right to answer.</p>
+
+      <h3>generation under guard</h3>
+      <p>the generator never speaks without a citation in hand. concretely: the prompt receives only retrieved passages with their references attached, the output schema has citation slots that must be filled from that set, and a validator rejects any response whose claims outrun its sources. the model's job is <em>recombination under constraint</em>, compose, translate register, personalize, never invention. for duaOS that's how a du'a comes out in prophetic style while every phrase traces back to the Name, the hadith, the verse it came from.</p>
+      <p>this is also where the latency war and the honesty war meet: validation is another pass, citations are more tokens. you pay for integrity in milliseconds. pay it.</p>
+
+      <h3>measuring honesty</h3>
+      <p>three numbers, tracked per release: <strong>groundedness</strong> (what fraction of generated claims are entailed by a cited source), <strong>refusal correctness</strong> (when the system declined, should it have), and <strong>citation precision</strong> (do the citations actually support the sentence they're attached to, not just the topic). they trade off against each other, push refusals up and groundedness looks artificially great; push answer-rate up and you start sliding toward improvisation. plotting the curve and <em>choosing a point on it deliberately</em> is the work. hallucination isn't a model problem. it's a design decision you didn't make.</p>
+
+      <h3>why i build this way</h3>
+      <p>at zown, zara answers questions about real homes that real families will borrow real money to buy. at duaOS the stakes were higher in a different register. the same rule holds in both rooms: <strong>a system that can say "i don't know" is the only system you can trust when it says it knows.</strong> scholars used to cross deserts to verify a single hadith. the least my retrieval stack can do is check its sources before it speaks.</p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/#writing">&larr; all writing</a>
+      <a class="mono" href="/writing/the-anatomy-of-a-second.html">the anatomy of a second --&gt;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
