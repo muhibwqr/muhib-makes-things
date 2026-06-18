@@ -19,7 +19,7 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-    body { background: var(--paper); color: var(--ink); font-family: var(--serif); -webkit-font-smoothing: antialiased; transition: background .4s ease, color .4s ease; }
+    body { background: var(--paper); color: var(--ink); font-family: var(--serif); -webkit-font-smoothing: antialiased; transition: background .4s ease, color .4s ease; overflow-x: hidden; }
     a { color: inherit; }
 
     .bar { display: flex; align-items: center; justify-content: space-between; padding: 26px 34px; }
@@ -137,8 +137,20 @@
     @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
     @media (max-width: 640px) {
-      .arch { gap: 16px; } .col { width: 46vw; } .blk { font-size: 12px; }
-      .web-note { flex-direction: column; gap: 12px; }
+      .wrap { padding: 0 18px; }
+      .bar { padding: 18px 16px; }
+      .card { padding: 24px 18px; }
+      h1 { letter-spacing: -0.03em; }
+      .arch { gap: 12px; } .col { width: 46vw; } .blk { font-size: 12px; padding: 10px 6px; }
+      .blk small { font-size: 10px; }
+      .web-note { flex-direction: column; gap: 12px; padding: 20px; }
+      .formula { font-size: 15px; gap: 6px; }
+      table.cx th, table.cx td { padding: 9px 7px; font-size: 13px; }
+      table.cx th { font-size: 11px; }
+      .hero-card { aspect-ratio: 4 / 3; }
+      .tldr { padding: 20px; font-size: 18px; }
+      .code pre { font-size: 11px; padding: 16px 14px; }
+      .step { font-size: 16px; }
     }
   </style>
 </head>
@@ -603,9 +615,9 @@
       let Wd = 0, Hd = 0, DPR = 1, cx = 0, cy = 0, R = 0;
       function size() {
         DPR = Math.min(devicePixelRatio || 1, 2);
-        Wd = cv.clientWidth || 600; Hd = Math.round(Wd * 0.6);
+        Wd = cv.clientWidth || 600; Hd = Math.round(Wd * (Wd < 460 ? 0.92 : 0.6));   // taller on phones so rim words don't clip
         cv.style.height = Hd + "px"; cv.width = Wd * DPR; cv.height = Hd * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-        cx = Wd / 2; cy = Hd / 2; R = Math.min(Wd, Hd) * 0.42;
+        cx = Wd / 2; cy = Hd / 2; R = Math.min(Wd, Hd) * 0.4;
       }
       const ang = (k) => (k / N) * Math.PI * 2 - Math.PI / 2;
       const wpos = (k) => [cx + Math.cos(ang(k)) * R, cy + Math.sin(ang(k)) * R * 0.82];
