@@ -12,6 +12,7 @@ const pages = [
   ...html("writing"),
   ...html("writing/attention"),
   ...html("writing/attention/explore"),
+  ...html("writing/flash-attention"),
 ];
 
 export default defineConfig({

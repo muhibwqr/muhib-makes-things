@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · flash attention</title>
+  <meta name="description" content="the same attention, made fast: why the bottleneck is memory traffic, not math, and how flashattention streams the scores through on-chip memory in tiles with an online softmax. exact, not approximate. by muhib waqar." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #f7f4ec; --ink: #1c1b18; --muted: #6c6a62; --faint: #a6a399; --line: #e4e0d6;
+      --sage: #cdd9cf; --sage-deep: #b9c9bd; --clay: #e7dac8; --sky: #d3e0e6; --lilac: #ddd7e6; --rose: #e0788e;
+      --grotesk: "Hanken Grotesk", system-ui, sans-serif; --serif: "Newsreader", Georgia, serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+    body.dark { --paper: #0e0f13; --ink: rgba(247,248,240,0.9); --muted: rgba(247,248,240,0.52); --faint: rgba(247,248,240,0.32); --line: rgba(247,248,240,0.14); }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { background: var(--paper); color: var(--ink); font-family: var(--serif); -webkit-font-smoothing: antialiased; transition: background .4s ease, color .4s ease; overflow-x: hidden; }
+    a { color: inherit; }
+
+    .bar { display: flex; align-items: center; justify-content: space-between; padding: 26px 34px; }
+    .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo .mark { font-weight: 700; font-size: 22px; color: #9cd5ff; }
+    .logo .wm { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+    .bar-right { display: flex; align-items: center; gap: 20px; }
+    .bar .back { font-family: var(--mono); font-size: 13px; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .bar .back:hover { color: var(--ink); }
+    #theme { background: none; border: none; cursor: pointer; font-size: 17px; color: var(--muted); line-height: 1; transition: color .2s, transform .4s ease; }
+    #theme:hover { color: var(--ink); transform: rotate(35deg); }
+
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    header.hero { text-align: center; padding: 50px 0 0; }
+    .eyebrow { font-family: var(--grotesk); font-weight: 700; font-size: 15px; }
+    h1 { font-family: var(--grotesk); font-weight: 800; font-size: clamp(40px, 7vw, 72px); line-height: 1.02; letter-spacing: -0.035em; margin: 18px 0 16px; }
+    .byline { font-family: var(--serif); font-size: 19px; line-height: 1.5; color: var(--muted); max-width: 540px; margin: 0 auto; }
+    .byline .auth { display: block; font-size: 14px; color: var(--faint); margin-top: 12px; font-family: var(--mono); }
+    .byline .auth a { color: var(--muted); }
+
+    .hero-card { margin: 40px auto 0; border-radius: 26px; background: #16161a; aspect-ratio: 16/9; display: grid; place-items: center; overflow: hidden; }
+
+    section { padding: 18px 0; }
+    .lede { font-size: 23px; line-height: 1.5; margin: 46px 0 10px; color: var(--ink); }
+    p.body { font-size: 20px; line-height: 1.62; margin: 22px 0; color: var(--ink); }
+    p.body a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .kicker { font-family: var(--grotesk); font-weight: 700; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin-top: 64px; }
+    h2 { font-family: var(--grotesk); font-weight: 800; font-size: clamp(28px, 4.5vw, 40px); line-height: 1.08; letter-spacing: -0.03em; margin: 10px 0 8px; color: var(--ink); }
+
+    .card { border-radius: 22px; padding: 34px; margin: 34px 0; }
+    .card.bordered { background: #fbf9f3; border: 1px solid #e4e0d6; }
+    .card.sage { background: var(--sage); }
+    .card.dark { background: #16161a; }
+    .card .card-title { font-family: var(--grotesk); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; margin-bottom: 22px; color: #1c1b18; }
+    .card.dark .card-title { color: #eceadf; }
+    .caption { font-size: 17px; line-height: 1.5; color: #6c6a62; margin-top: 4px; }
+    .card.dark .caption { color: #9a978d; }
+    figure { margin: 34px 0; }
+    figure figcaption { font-size: 17px; line-height: 1.5; color: var(--muted); margin-top: 16px; }
+    .chart { width: 100%; display: block; }
+
+    .formula { font-family: var(--mono); font-size: clamp(14px, 2vw, 18px); text-align: center; color: #1c1b18; line-height: 2.1; }
+    .formula .lbl { color: #6c6a62; }
+
+    .tldr { border-left: 3px solid var(--sage-deep); background: #efebe1; border-radius: 14px; padding: 22px 26px; margin: 36px 0; font-size: 20px; line-height: 1.5; color: #1c1b18; }
+    .tldr b { font-family: var(--grotesk); font-weight: 800; }
+
+    .stat { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin: 30px 0; }
+    .stat .s { background: #fbf9f3; padding: 22px 22px; }
+    .stat .s .k { font-family: var(--mono); font-size: 12px; color: #5d7e8c; letter-spacing: 0.04em; }
+    .stat .s .big { font-family: var(--grotesk); font-weight: 800; font-size: 26px; color: #1c1b18; margin: 6px 0 4px; }
+    .stat .s p { font-size: 14px; color: #6c6a62; line-height: 1.45; }
+
+    .code { border-radius: 16px; background: #16161a; overflow: hidden; margin: 22px 0 14px; }
+    .code .bar { display: flex; align-items: center; gap: 7px; padding: 13px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .code .bar i { width: 11px; height: 11px; border-radius: 50%; background: rgba(255,255,255,0.16); }
+    .code .bar .fname { font-family: var(--mono); font-size: 12px; color: #8b887e; margin-left: 6px; }
+    .code pre { padding: 22px 24px; font-family: var(--mono); font-size: clamp(11.5px, 1.4vw, 14px); line-height: 1.8; overflow-x: auto; color: #e8e6dd; }
+    .code .kw { color: #c98fb0; } .code .fn { color: #9cd5ff; } .code .cmt { color: #7f8b7a; font-style: italic; } .code .num { color: #e8b974; }
+    .tie { font-size: 16px; line-height: 1.5; color: var(--muted); border-left: 2px solid var(--sage-deep); padding-left: 16px; margin: 8px 0 4px; }
+    .tie b { color: var(--ink); font-weight: 600; }
+    .step { font-family: var(--grotesk); font-weight: 800; font-size: 18px; letter-spacing: -0.01em; margin-top: 30px; color: var(--ink); }
+    .step span { color: var(--faint); }
+
+    .endcard { border-radius: 22px; padding: 36px; margin: 40px 0; background: #16161a; }
+    .endcard h2 { color: #f0ede4; margin-top: 0; }
+    .endcard p { color: #c7c5ba; font-size: 19px; line-height: 1.55; margin-top: 12px; }
+    .endcard a { color: #9cd5ff; }
+    .endcard .soon { display: inline-block; margin-top: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #8fb39a; }
+
+    footer { text-align: center; padding: 70px 0 90px; }
+    footer .cta { font-family: var(--grotesk); font-weight: 700; font-size: 17px; text-decoration: none; border-bottom: 2px solid var(--ink); padding-bottom: 2px; }
+    footer p { color: var(--faint); font-family: var(--mono); font-size: 12px; margin-top: 22px; }
+    footer p a { color: var(--faint); }
+
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+    @media (max-width: 640px) {
+      .wrap { padding: 0 18px; } .bar { padding: 18px 16px; }
+      .card { padding: 24px 18px; } .stat { grid-template-columns: 1fr; }
+      .hero-card { aspect-ratio: 4 / 3; } .tldr { padding: 20px; font-size: 18px; }
+      .code pre { font-size: 11px; padding: 16px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bar">
+    <a class="logo" href="/">
+      <span class="mark">∞</span>
+      <span class="wm">muhib waqar</span>
+    </a>
+    <div class="bar-right">
+      <button id="theme" type="button" aria-label="toggle theme" title="theme">☾</button>
+      <a class="back" href="/writing/">← writing</a>
+    </div>
+  </div>
+
+  <header class="hero wrap">
+    <p class="eyebrow reveal">systems · making attention fast</p>
+    <h1 class="reveal">flash attention</h1>
+    <p class="byline reveal">
+      the same attention you already know, made fast. the secret is not new math. it is refusing to write the big matrix to slow memory.
+      <span class="auth">by muhib waqar · 8 min read · reference: <a href="https://arxiv.org/abs/2205.14135" target="_blank" rel="noopener">dao et al., 2022</a></span>
+    </p>
+    <div class="hero-card reveal">
+      <canvas id="flash-hero" style="width:100%; height:100%; display:block;" aria-hidden="true"></canvas>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <p class="body reveal" style="margin-top:40px">in <a href="/writing/attention/">the last piece</a> the spider felt every thread at once. that is the idea. this is the part i skipped: actually computing it on a real chip, where the slow step is not the multiplying. it is the moving.</p>
+
+    <div class="tldr reveal"><b>the gist:</b> attention spends most of its time shuttling a giant n by n table to and from slow memory, not doing math. flashattention computes the <em>exact same</em> answer but never builds that table. it streams the data through fast on-chip memory in small tiles, keeping a running softmax as it goes. same output, a fraction of the memory traffic, several times faster.</div>
+
+    <p class="kicker reveal">the real bottleneck</p>
+    <h2 class="reveal">the math is cheap, the moving is not</h2>
+    <p class="body reveal">a gpu can do far more multiplications per second than it can read numbers from its main memory. attention is the second kind of problem. the work itself is small; the model spends its time waiting on memory. so the thing to count is not multiplies, it is <em>trips to slow memory</em>.</p>
+    <p class="body reveal">a chip has two kinds of memory. a tiny pool of very fast memory that sits right next to the compute (called <strong>SRAM</strong>), and a big pool of slow memory off to the side (called <strong>HBM</strong>). everything starts and ends in the slow pool. every round trip to it is the tax.</p>
+
+    <div class="card bordered reveal">
+      <div class="card-title">two kinds of memory (numbers from an a100 gpu)</div>
+      <svg class="chart" viewBox="0 0 640 240" aria-hidden="true">
+        <rect x="200" y="20" width="240" height="58" rx="10" fill="#cdd9cf" stroke="rgba(28,27,24,.18)"/>
+        <text x="320" y="44" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-weight="800" font-size="17" fill="#1c1b18">SRAM · on-chip</text>
+        <text x="320" y="64" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="#3f5a44">~20 MB · ~19 TB/s · tiny &amp; lightning fast</text>
+        <rect x="90" y="128" width="460" height="86" rx="10" fill="#e7dac8" stroke="rgba(28,27,24,.18)"/>
+        <text x="320" y="160" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-weight="800" font-size="17" fill="#1c1b18">HBM · off-chip main memory</text>
+        <text x="320" y="182" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="#7a5a36">~40 GB · ~2 TB/s · huge &amp; ~10x slower</text>
+        <text x="320" y="202" text-anchor="middle" font-family="Newsreader,serif" font-style="italic" font-size="13" fill="#6c6a62">every trip up and down is the cost that matters</text>
+        <g stroke="#9aa0a6" stroke-width="1.6" fill="none"><path d="M300 78 L300 128" /><path d="M340 128 L340 78" /></g>
+      </svg>
+      <p class="caption">SRAM is about a thousand times smaller than HBM and roughly ten times faster. the whole game is doing your work inside SRAM and touching HBM as little as possible.</p>
+    </div>
+
+    <p class="kicker reveal">where the trips go</p>
+    <h2 class="reveal">standard attention writes the whole table down</h2>
+    <p class="body reveal">recall the steps: score every query against every key (that is <strong>S = QKᵀ</strong>, an <em>n by n</em> table), softmax each row, then multiply by the values. the naive way runs them one after another, and between each step the full n by n table gets written out to slow memory and read back. for a 4,000-token input that table is sixteen million numbers, moved several times. that traffic, not the math, is what you wait on.</p>
+
+    <figure class="reveal">
+      <div class="card dark">
+        <div class="card-title">standard vs flash, the same scores</div>
+        <canvas id="nf-canvas" style="width:100%; display:block;" aria-hidden="true"></canvas>
+      </div>
+      <figcaption>left, the standard way: the entire n by n table is built and pushed to slow memory at once. right, flashattention: the same scores are computed one small tile at a time inside fast memory, and the full table is never stored. watch the memory-traffic counter.</figcaption>
+    </figure>
+
+    <p class="kicker reveal">the fix</p>
+    <h2 class="reveal">tile it, and keep a running softmax</h2>
+    <p class="body reveal">flashattention cuts the input into <strong>tiles</strong> small enough to fit in fast memory: a block of queries, and blocks of keys and values streamed past them. for each tile it computes that little patch of scores, softmaxes it, and folds the result into a running total. the full table never exists anywhere at once.</p>
+    <p class="body reveal">the one catch: softmax needs every score in a row to normalize, but you are only ever holding one tile of that row. the trick is the <strong>online softmax</strong>: carry a running maximum and a running sum, and when a new tile shows up with a bigger value, rescale what you already have so the running answer stays exactly correct.</p>
+
+    <div class="card sage reveal">
+      <div class="formula">
+        <span class="lbl">new max</span> &nbsp; m' = max(m, max(tile))<br/>
+        <span class="lbl">rescale the old</span> &nbsp; by &nbsp; α = e<sup>(m − m')</sup><br/>
+        <span class="lbl">running sum</span> &nbsp; ℓ' = α·ℓ + Σ e<sup>(tile − m')</sup><br/>
+        <span class="lbl">running output</span> &nbsp; o' = α·o + e<sup>(tile − m')</sup>·V<sub>tile</sub>
+      </div>
+      <p class="caption" style="text-align:center;">each new tile bumps the max, you shrink the running total by the same factor, and add the tile in. at the end you divide the output by ℓ. it is bit-for-bit the same softmax, computed without ever seeing the whole row.</p>
+    </div>
+
+    <p class="kicker reveal">build it from scratch</p>
+    <h2 class="reveal">naive, then flash</h2>
+    <p class="body reveal">here they are side by side in numpy. same inputs, same output. the only difference is that the second one never builds the full n by n table.</p>
+
+    <div class="step reveal"><span>01 ·</span> the naive way, one big table</div>
+    <div class="code reveal">
+      <div class="bar"><i></i><i></i><i></i><span class="fname">naive.py</span></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">softmax</span>(x):
+    e = np.exp(x - x.max(-<span class="num">1</span>, keepdims=<span class="kw">True</span>))
+    <span class="kw">return</span> e / e.sum(-<span class="num">1</span>, keepdims=<span class="kw">True</span>)
+
+<span class="kw">def</span> <span class="fn">attention_naive</span>(Q, K, V):
+    d = Q.shape[-<span class="num">1</span>]
+    S = Q @ K.T / np.sqrt(d)       <span class="cmt"># (n, n), the whole table lives in memory</span>
+    <span class="kw">return</span> <span class="fn">softmax</span>(S) @ V              <span class="cmt"># read it back, twice more</span></pre>
+    </div>
+    <p class="tie reveal">↳ correct, simple, and exactly what slows down at long context: <b>S</b> is n by n, and it gets written to slow memory and read back at every step.</p>
+
+    <div class="step reveal"><span>02 ·</span> flash, one tile at a time</div>
+    <div class="code reveal">
+      <div class="bar"><i></i><i></i><i></i><span class="fname">flash.py</span></div>
+<pre><span class="kw">def</span> <span class="fn">flash_attention</span>(Q, K, V, Bq=<span class="num">64</span>, Bk=<span class="num">64</span>):
+    n, d  = Q.shape
+    scale = <span class="num">1.0</span> / np.sqrt(d)
+    O = np.zeros((n, d))
+    <span class="kw">for</span> i <span class="kw">in</span> range(<span class="num">0</span>, n, Bq):                  <span class="cmt"># a block of queries</span>
+        q   = Q[i:i+Bq]
+        m   = np.full((q.shape[<span class="num">0</span>], <span class="num">1</span>), -np.inf)   <span class="cmt"># running max</span>
+        l   = np.zeros((q.shape[<span class="num">0</span>], <span class="num">1</span>))         <span class="cmt"># running sum</span>
+        acc = np.zeros((q.shape[<span class="num">0</span>], d))          <span class="cmt"># running output</span>
+        <span class="kw">for</span> j <span class="kw">in</span> range(<span class="num">0</span>, n, Bk):              <span class="cmt"># stream the keys / values</span>
+            k, v  = K[j:j+Bk], V[j:j+Bk]
+            s     = (q @ k.T) * scale          <span class="cmt"># (Bq, Bk), one tile, fits in SRAM</span>
+            m_new = np.maximum(m, s.max(-<span class="num">1</span>, keepdims=<span class="kw">True</span>))
+            p     = np.exp(s - m_new)          <span class="cmt"># this tile, rescaled to the new max</span>
+            a     = np.exp(m - m_new)          <span class="cmt"># shrink what we had by the same factor</span>
+            l     = a * l + p.sum(-<span class="num">1</span>, keepdims=<span class="kw">True</span>)
+            acc   = a * acc + p @ v
+            m     = m_new
+        O[i:i+Bq] = acc / l                    <span class="cmt"># normalize at the very end</span>
+    <span class="kw">return</span> O                                  <span class="cmt"># identical to attention_naive(Q, K, V)</span></pre>
+    </div>
+    <p class="tie reveal">↳ the biggest thing in memory is now one <b>(Bq, Bk)</b> tile, not the full n by n table. the running max, sum, and output are the online softmax keeping the answer exact. on real hardware this is a fused gpu kernel, but the logic is exactly this.</p>
+
+    <p class="kicker reveal">what it buys</p>
+    <h2 class="reveal">exact, and much faster</h2>
+    <p class="body reveal">this is the part that matters most: flashattention is <em>not</em> an approximation. it is not dropping any scores like sparse attention does. it returns the identical output, just computed in an order that barely touches slow memory.</p>
+
+    <div class="stat reveal">
+      <div class="s"><div class="k">memory it stores</div><div class="big">O(n²) → O(n)</div><p>the full score table never gets written down, only small running totals.</p></div>
+      <div class="s"><div class="k">wall-clock</div><div class="big">2 to 4× faster</div><p>and the gap grows with sequence length, exactly where you need it.</p></div>
+      <div class="s"><div class="k">accuracy</div><div class="big">bit-for-bit exact</div><p>same answer as naive attention, no quality traded away.</p></div>
+      <div class="s"><div class="k">where it runs</div><div class="big">basically everywhere</div><p>flashattention-2 and 3 power the long-context models you use today.</p></div>
+    </div>
+
+    <p class="kicker reveal">why it matters</p>
+    <h2 class="reveal">long context got cheaper without changing the model</h2>
+    <p class="body reveal">attention's cost was the wall in front of longer inputs. flashattention did not move the wall by approximating; it noticed the wall was made of memory traffic and routed around it. same math, smarter movement. that is a recurring lesson in systems: before you change what you compute, look at what you are <em>moving</em>.</p>
+
+    <div class="endcard reveal">
+      <h2>same answer, fewer trips</h2>
+      <p>sparse attention drops threads to go faster and accepts a different answer. flashattention keeps every thread and just stops writing the table down. two very different ways to break the same quadratic wall. start with the web in <a href="/writing/attention/">the first piece</a>.</p>
+      <span class="soon">more, coming soon</span>
+    </div>
+
+  </main>
+
+  <footer>
+    <a class="cta" href="/">← back to muhib waqar</a>
+    <p>“flashattention”, <a href="https://arxiv.org/abs/2205.14135" target="_blank" rel="noopener">arxiv:2205.14135</a> · written by muhib waqar</p>
+  </footer>
+
+  <script type="module">
+    const KEY = "theme", btn = document.getElementById("theme");
+    const setDark = (on) => { document.body.classList.toggle("dark", on); btn.textContent = on ? "☀" : "☾"; try { localStorage.setItem(KEY, on ? "dark" : "light"); } catch {} };
+    try { setDark(localStorage.getItem(KEY) !== "light"); } catch { setDark(true); }
+    btn.addEventListener("click", () => setDark(!document.body.classList.contains("dark")));
+    addEventListener("keydown", (e) => { if (e.key === "l" && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) setDark(!document.body.classList.contains("dark")); });
+
+    const io = new IntersectionObserver((es) => {
+      let i = 0;
+      for (const e of es) if (e.isIntersecting) { const el = e.target; el.style.transitionDelay = Math.min(i++ * 55, 280) + "ms"; el.classList.add("in"); io.unobserve(el); }
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+    // hero: the n x n score grid, computed one tile at a time, never all at once
+    (function heroTiles() {
+      const cv = document.getElementById("flash-hero"); if (!cv) return;
+      const ctx = cv.getContext("2d");
+      let W = 0, H = 0, DPR = 1; const G = 16, B = 4;
+      function size() { DPR = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
+      function frame() {
+        const t = performance.now() * 0.001;
+        const cell = Math.min(W, H) * 0.046, gw = cell * G, ox = (W - gw) / 2, oy = (H - gw) / 2;
+        const tilesPerSide = G / B, total = tilesPerSide * tilesPerSide;
+        const cur = Math.floor(t * 3) % total, cr = Math.floor(cur / tilesPerSide), cc = cur % tilesPerSide;
+        ctx.clearRect(0, 0, W, H);
+        for (let r = 0; r < G; r++) for (let c = 0; c < G; c++) {
+          const tr = Math.floor(r / B), tc = Math.floor(c / B);
+          const order = tr * tilesPerSide + tc;
+          const active = tr === cr && tc === cc;
+          let a = active ? 0.95 : (order < cur ? 0.1 : 0.04);
+          const col = active ? "224,120,142" : "200,212,228";
+          ctx.fillStyle = `rgba(${col},${a})`;
+          ctx.fillRect(ox + c * cell + 1, oy + r * cell + 1, cell - 2, cell - 2);
+        }
+        ctx.font = `${Math.round(cell * 0.9)}px "IBM Plex Mono", monospace`; ctx.fillStyle = "rgba(143,179,154,0.85)"; ctx.textAlign = "center";
+        ctx.fillText("one tile in fast memory at a time", W / 2, oy + gw + cell * 1.8);
+        requestAnimationFrame(frame);
+      }
+      addEventListener("resize", size); size(); requestAnimationFrame(frame);
+    })();
+
+    // standard vs flash side by side, with a memory-traffic counter
+    (function nf() {
+      const cv = document.getElementById("nf-canvas"); if (!cv) return;
+      const ctx = cv.getContext("2d");
+      let W = 0, H = 0, DPR = 1; const G = 12, B = 3;
+      function size() { DPR = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = Math.round(W * 0.5); cv.style.height = H + "px"; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
+      function panel(ox, cell, lit, label, sub, subcol) {
+        const gw = cell * G, oy = 16;
+        lit(ox, oy, cell, gw);
+        ctx.font = '600 14px "Hanken Grotesk", sans-serif'; ctx.fillStyle = "#eceadf"; ctx.textAlign = "center";
+        ctx.fillText(label, ox + gw / 2, oy + gw + 26);
+        ctx.font = '12px "IBM Plex Mono", monospace'; ctx.fillStyle = subcol;
+        ctx.fillText(sub, ox + gw / 2, oy + gw + 46);
+      }
+      function frame() {
+        const t = performance.now() * 0.001;
+        ctx.clearRect(0, 0, W, H);
+        const cell = Math.min((W / 2 - 40) / G, (H - 70) / G);
+        const tps = G / B, total = tps * tps, cur = Math.floor(t * 4) % total, cr = Math.floor(cur / tps), cc = cur % tps;
+        // left: standard, whole grid lit
+        panel(W * 0.25 - cell * G / 2, cell, (ox, oy, c, gw) => {
+          for (let r = 0; r < G; r++) for (let cx = 0; cx < G; cx++) { ctx.fillStyle = `rgba(200,212,228,${0.4 + 0.25 * Math.sin(t * 2 + r * 0.3)})`; ctx.fillRect(ox + cx * c + 1, oy + r * c + 1, c - 2, c - 2); }
+        }, "standard", "memory traffic ~ n²", "#e0788e");
+        // right: flash, one tile
+        panel(W * 0.75 - cell * G / 2, cell, (ox, oy, c, gw) => {
+          for (let r = 0; r < G; r++) for (let cx = 0; cx < G; cx++) { const tr = Math.floor(r / B), tc = Math.floor(cx / B); const on = tr === cr && tc === cc; ctx.fillStyle = on ? "rgba(224,120,142,0.95)" : "rgba(200,212,228,0.05)"; ctx.fillRect(ox + cx * c + 1, oy + r * c + 1, c - 2, c - 2); }
+        }, "flashattention", "memory traffic ~ n", "#8fb39a");
+        requestAnimationFrame(frame);
+      }
+      addEventListener("resize", size); size(); requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
