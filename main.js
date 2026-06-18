@@ -10,7 +10,7 @@ const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function setLights(on) {
   document.documentElement.classList.toggle("maker", on);
   document.body.classList.toggle("maker", on);
-  try { localStorage.setItem("lights", on ? "1" : "0"); } catch {}
+  try { localStorage.setItem("theme", on ? "light" : "dark"); } catch {}
 }
 function toggleLights() {
   setLights(!document.body.classList.contains("maker"));
@@ -18,8 +18,8 @@ function toggleLights() {
 {
   // dark by default — lights stay on only if you chose them
   let stored = null;
-  try { stored = localStorage.getItem("lights"); } catch {}
-  if (location.hash === "#lights" || stored === "1") setLights(true);
+  try { stored = localStorage.getItem("theme"); } catch {}
+  if (location.hash === "#lights" || stored === "light") setLights(true);
 }
 
 // ---------- scroll reveals, staggered within each batch ----------

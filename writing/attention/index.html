@@ -442,7 +442,8 @@
     <div class="endcard reveal">
       <h2>this is one web</h2>
       <p>the orb web is just the famous one. there are other weavers: webs tuned for images, for sound, for proteins, sparse webs that feel only the threads that matter, webs stretched to a million knots. same spider, different silk.</p>
-      <span class="soon">more transformers, coming soon</span>
+      <p>a new piece is on the way.</p>
+      <span class="soon">new article · coming soon</span>
     </div>
 
   </main>
@@ -453,11 +454,22 @@
   </footer>
 
   <script type="module">
-    const KEY = "tf-dark", btn = document.getElementById("theme");
-    const setDark = (on) => { document.body.classList.toggle("dark", on); btn.textContent = on ? "☀" : "☾"; try { localStorage.setItem(KEY, on ? "1" : "0"); } catch {} };
-    try { setDark(localStorage.getItem(KEY) === "1"); } catch {}
+    const KEY = "theme", btn = document.getElementById("theme");
+    const setDark = (on) => { document.body.classList.toggle("dark", on); btn.textContent = on ? "☀" : "☾"; try { localStorage.setItem(KEY, on ? "dark" : "light"); } catch {} };
+    try { setDark(localStorage.getItem(KEY) !== "light"); } catch { setDark(true); }
     btn.addEventListener("click", () => setDark(!document.body.classList.contains("dark")));
     addEventListener("keydown", (e) => { if (e.key === "l" && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) setDark(!document.body.classList.contains("dark")); });
+
+    // keep the spider video playing no matter what
+    const heroVid = document.querySelector(".hero-card video");
+    if (heroVid) {
+      heroVid.muted = true;
+      const playV = () => { const p = heroVid.play(); if (p) p.catch(() => {}); };
+      playV();
+      document.addEventListener("visibilitychange", () => { if (!document.hidden) playV(); });
+      addEventListener("pointerdown", playV, { once: true });
+      heroVid.addEventListener("pause", playV);
+    }
 
     const io = new IntersectionObserver((es) => {
       let i = 0;

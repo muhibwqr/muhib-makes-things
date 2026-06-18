@@ -242,9 +242,9 @@
   </main>
 
   <script type="module">
-    const KEY = "tf-dark", btn = document.getElementById("theme");
-    const setDark = (on) => { document.body.classList.toggle("dark", on); btn.textContent = on ? "☀" : "☾"; try { localStorage.setItem(KEY, on ? "1" : "0"); } catch {} };
-    try { setDark(localStorage.getItem(KEY) === "1"); } catch {}
+    const KEY = "theme", btn = document.getElementById("theme");
+    const setDark = (on) => { document.body.classList.toggle("dark", on); btn.textContent = on ? "☀" : "☾"; try { localStorage.setItem(KEY, on ? "dark" : "light"); } catch {} };
+    try { setDark(localStorage.getItem(KEY) !== "light"); } catch { setDark(true); }
     btn.addEventListener("click", () => setDark(!document.body.classList.contains("dark")));
     addEventListener("keydown", (e) => { if (e.key === "l" && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) setDark(!document.body.classList.contains("dark")); });
   </script>
