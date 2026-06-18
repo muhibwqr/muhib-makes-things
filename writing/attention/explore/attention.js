@@ -55,8 +55,9 @@ const nodes = TOKENS.map((t, i) => {
   return { label: t, i, bx: Math.cos(a) * R, by: Math.sin(a) * R * 0.42, bz: Math.sin(a) * R * 0.62, pdx: 0, pdy: 0, pvx: 0, pvy: 0 };
 });
 
-// ---------- one fixed, flattering camera. no rotation. ----------
+// ---------- camera: a flattering base angle with a slow 3-D sway (no full spin) ----------
 const YAW = 0.5, PITCH = -0.42, FOCAL = 760;
+let camYaw = YAW, camPitch = PITCH;
 let zoom = 1, tgtZoom = 1, cxf = 0.5, cyf = 0.5;
 let cx = 0, cyc = 0, W = 0, H = 0, DPR = 1, inited = false;
 
@@ -71,7 +72,7 @@ function resize() {
 addEventListener("resize", resize); resize();
 
 function project(p) {
-  const cyw = Math.cos(YAW), syw = Math.sin(YAW), cp = Math.cos(PITCH), sp = Math.sin(PITCH);
+  const cyw = Math.cos(camYaw), syw = Math.sin(camYaw), cp = Math.cos(camPitch), sp = Math.sin(camPitch);
   const x1 = p.x * cyw + p.z * syw, z1 = -p.x * syw + p.z * cyw;
   const y1 = p.y * cp - z1 * sp, z2 = p.y * sp + z1 * cp;
   const f = (FOCAL / (FOCAL + z2)) * zoom;
@@ -90,6 +91,8 @@ let grabIdx = -1, cursorX = 0, cursorY = 0, px = 0, py = 0;
 
 function frame() {
   const t = performance.now() * 0.001;
+  camYaw = YAW + 0.28 * Math.sin(t * 0.26);     // slow orbit-sway so depth is obvious
+  camPitch = PITCH + 0.07 * Math.sin(t * 0.19);
   const mob = W < 760;
   cx += ((mob ? 0.5 : cxf) * W - cx) * 0.06;
   cyc += ((mob ? 0.34 : cyf) * H - cyc) * 0.06;
