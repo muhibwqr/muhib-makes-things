@@ -190,10 +190,10 @@
 
     <figure class="reveal">
       <div class="card web">
-        <div class="card-title">the web</div>
-        <canvas id="web-canvas" style="width:100%; display:block;" aria-hidden="true"></canvas>
+        <div class="card-title">the web <span style="color:#8fb39a; font-weight:600; font-size:13px; letter-spacing:0.04em;">· hover a word</span></div>
+        <canvas id="web-canvas" style="width:100%; display:block; touch-action:none;" aria-hidden="true"></canvas>
       </div>
-      <figcaption>the spider at the center is one word, asking a question. a knot on the rim is another word, answering, and the vibration travels home along the threads (the rose path). a brighter, thicker thread means that word matters more. the spider never scans the web. it just feels the loudest lines.</figcaption>
+      <figcaption>the sentence sits on the rim. hover any word to see what it feels: its threads to the others light up, weighted by how much it leans on each. the strongest is rose. watch <em>it</em> reach back and land on <em>cat</em>. a brighter, thicker thread means that word matters more.</figcaption>
     </figure>
 
     <div class="web-note reveal">
@@ -574,49 +574,85 @@
       build(); requestAnimationFrame(draw);
     })();
 
-    // the centerpiece web, rendered in 3d at one fixed, best-viewable angle
-    (function web3d() {
+    // the centerpiece: the sentence on a web. hover a word to see what it feels.
+    (function attnWeb() {
       const cv = document.getElementById("web-canvas"); if (!cv) return;
       const ctx = cv.getContext("2d");
-      let W = 0, H = 0, DPR = 1;
+      const WORDS = ["the", "cat", "sat", "on", "the", "mat", "because", "it", "was", "tired"];
+      const N = WORDS.length;
+      const raw = (a, j) => {
+        if (a === j) return 0;
+        let s = 0.05;
+        if (j === a - 1) s += 2.2;                                   // the previous word
+        if (Math.abs(a - j) === 1) s += 1.0;                         // a close neighbour
+        if ((a === 7 || a === 8 || a === 9) && j === 1) s += 4.2;    // it / was / tired -> cat
+        if (a === 2 && j === 1) s += 3.0;                            // sat -> cat
+        if (a === 6 && j === 1) s += 1.4;                            // because -> cat
+        if (a === 5 && j === 3) s += 2.0;                            // mat -> on
+        return s;
+      };
+      const Wt = [];
+      for (let a = 0; a < N; a++) {
+        const row = []; let mx = -1e9;
+        for (let j = 0; j < N; j++) { row[j] = raw(a, j); mx = Math.max(mx, row[j]); }
+        let sum = 0; const ex = [];
+        for (let j = 0; j < N; j++) { ex[j] = a === j ? 0 : Math.exp((row[j] - mx) / 0.7); sum += ex[j]; }
+        Wt[a] = ex.map((v) => v / sum);
+      }
+      const strongest = Wt.map((r) => r.indexOf(Math.max(...r)));
+      let Wd = 0, Hd = 0, DPR = 1, cx = 0, cy = 0, R = 0;
       function size() {
         DPR = Math.min(devicePixelRatio || 1, 2);
-        W = cv.clientWidth || 600; H = Math.round(W * 0.6);
-        cv.style.height = H + "px"; cv.width = W * DPR; cv.height = H * DPR;
-        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        Wd = cv.clientWidth || 600; Hd = Math.round(Wd * 0.6);
+        cv.style.height = Hd + "px"; cv.width = Wd * DPR; cv.height = Hd * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        cx = Wd / 2; cy = Hd / 2; R = Math.min(Wd, Hd) * 0.42;
       }
-      const spokes = 12, ringR = [0.30, 0.55, 0.80, 1.0];
-      const silk = "#6b7a70", dew = "#9aa79c", rose = "#e0788e", spider = "#f0ede4", kp = 2;
-      const yaw = 0.62, pitch = -0.46;
-      const ang = (k) => (k / spokes) * Math.PI * 2;
-      const dome = (rr, R) => (1 - rr) * R * 0.3;
-      const node = (k, rr, R) => { const a = ang(k); return [Math.cos(a) * rr * R, Math.sin(a) * rr * R, dome(rr, R)]; };
-      function proj(p, R) {
-        const cyaw = Math.cos(yaw), syaw = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
-        let x = p[0] * cyaw + p[2] * syaw, z = -p[0] * syaw + p[2] * cyaw;
-        let y = p[1] * cp - z * sp; z = p[1] * sp + z * cp;
-        const f = (R * 2.4) / (R * 2.4 + z);
-        return [W / 2 + x * f, H / 2 + y * f, f];
-      }
+      const ang = (k) => (k / N) * Math.PI * 2 - Math.PI / 2;
+      const wpos = (k) => [cx + Math.cos(ang(k)) * R, cy + Math.sin(ang(k)) * R * 0.82];
+      let hovered = -1;
       function frame() {
-        const R = Math.min(W, H) * 0.46;
-        ctx.clearRect(0, 0, W, H);
-        const hub = proj([0, 0, dome(0, R)], R);
-        ctx.globalAlpha = 0.85; ctx.strokeStyle = silk; ctx.lineWidth = 1;
-        for (let k = 0; k < spokes; k++) { ctx.beginPath(); ctx.moveTo(hub[0], hub[1]); for (const rr of ringR) { const q = proj(node(k, rr, R), R); ctx.lineTo(q[0], q[1]); } ctx.stroke(); }
-        for (const rr of ringR) { ctx.beginPath(); for (let k = 0; k <= spokes; k++) { const q = proj(node(k % spokes, rr, R), R); k === 0 ? ctx.moveTo(q[0], q[1]) : ctx.lineTo(q[0], q[1]); } ctx.stroke(); }
-        ctx.globalAlpha = 1; ctx.fillStyle = dew;
-        for (let k = 0; k < spokes; k++) for (const rr of ringR) { const q = proj(node(k, rr, R), R); ctx.beginPath(); ctx.arc(q[0], q[1], 1.5 * q[2], 0, 6.3); ctx.fill(); }
-        // vibration home along one spoke
-        ctx.strokeStyle = rose; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(hub[0], hub[1]);
-        for (const rr of ringR) { const q = proj(node(kp, rr, R), R); ctx.lineTo(q[0], q[1]); } ctx.stroke();
-        const prey = proj(node(kp, 1.0, R), R); ctx.beginPath(); ctx.arc(prey[0], prey[1], 6, 0, 6.3); ctx.fillStyle = rose; ctx.fill();
-        // the spider
-        ctx.strokeStyle = spider; ctx.lineWidth = 2;
-        for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(hub[0], hub[1]); ctx.lineTo(hub[0] + Math.cos(a) * 20, hub[1] + Math.sin(a) * 14); ctx.stroke(); }
-        ctx.beginPath(); ctx.arc(hub[0], hub[1], 8, 0, 6.3); ctx.fillStyle = spider; ctx.fill();
+        const t = performance.now() * 0.001;
+        const active = hovered >= 0 ? hovered : (t < 4 ? 7 : Math.floor(t / 2.4) % N);   // start on "it", then cycle
+        ctx.clearRect(0, 0, Wd, Hd);
+        // silk
+        ctx.strokeStyle = "rgba(150,165,150,0.16)"; ctx.lineWidth = 1;
+        for (let k = 0; k < N; k++) { const [x, y] = wpos(k); ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x, y); ctx.stroke(); }
+        for (const f of [0.45, 0.72, 1.0]) { ctx.beginPath(); for (let k = 0; k <= N; k++) { const [x, y] = wpos(k % N); const px = cx + (x - cx) * f, py = cy + (y - cy) * f; k === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py); } ctx.stroke(); }
+        // the active word's attention threads
+        const [ax, ay] = wpos(active);
+        ctx.globalCompositeOperation = "lighter";
+        for (let j = 0; j < N; j++) {
+          const w = Wt[active][j]; if (w < 0.05) continue;
+          const [bx, by] = wpos(j), mx = (ax + bx) / 2, my = (ay + by) / 2;
+          const c = j === strongest[active] ? "224,120,142" : "200,212,228";
+          const shim = 0.85 + 0.15 * Math.sin(t * 2 + j);
+          ctx.beginPath(); ctx.moveTo(ax, ay); ctx.quadraticCurveTo(mx + (cx - mx) * 0.5, my + (cy - my) * 0.5, bx, by);
+          ctx.strokeStyle = `rgba(${c},${(0.3 + w * 0.7) * shim})`; ctx.lineWidth = 1 + w * 4; ctx.stroke();
+        }
+        ctx.globalCompositeOperation = "source-over";
+        // the spider, breathing
+        ctx.strokeStyle = "rgba(247,248,240,0.8)"; ctx.lineWidth = 1.6;
+        for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2, L = 14 + 2 * Math.sin(t * 2.2 + k * 0.5); ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(a) * L, cy + Math.sin(a) * L * 0.78); ctx.stroke(); }
+        ctx.beginPath(); ctx.arc(cx, cy, 6, 0, 6.3); ctx.fillStyle = "rgba(247,248,240,0.95)"; ctx.fill();
+        // the words
+        ctx.font = '15px "Newsreader", Georgia, serif'; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        for (let k = 0; k < N; k++) {
+          const [x, y] = wpos(k), on = k === active;
+          ctx.beginPath(); ctx.arc(x, y, on ? 4.5 : 3, 0, 6.3); ctx.fillStyle = on ? "rgba(224,120,142,1)" : "rgba(247,248,240,0.85)"; ctx.fill();
+          const aa = Math.atan2(y - cy, x - cx);
+          ctx.fillStyle = on ? "rgba(247,248,240,1)" : "rgba(247,248,240,0.5)";
+          ctx.fillText(WORDS[k], x + Math.cos(aa) * 18, y + Math.sin(aa) * 15);
+        }
+        ctx.textBaseline = "alphabetic";
+        requestAnimationFrame(frame);
       }
-      addEventListener("resize", () => { size(); frame(); }); size(); frame();
+      function nearest(mx, my) { let b = -1, bd = 1700; for (let k = 0; k < N; k++) { const [x, y] = wpos(k); const d = (x - mx) ** 2 + (y - my) ** 2; if (d < bd) { bd = d; b = k; } } return b; }
+      function pos(e) { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+      cv.addEventListener("pointermove", (e) => { const [mx, my] = pos(e); hovered = nearest(mx, my); });
+      cv.addEventListener("pointerdown", (e) => { const [mx, my] = pos(e); hovered = nearest(mx, my); });
+      cv.addEventListener("pointerleave", () => { hovered = -1; });
+      cv.style.cursor = "pointer";
+      addEventListener("resize", size); size(); requestAnimationFrame(frame);
     })();
 
     (function heads() {
