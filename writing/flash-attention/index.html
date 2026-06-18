@@ -85,6 +85,16 @@
     .step { font-family: var(--grotesk); font-weight: 800; font-size: 18px; letter-spacing: -0.01em; margin-top: 30px; color: var(--ink); }
     .step span { color: var(--faint); }
 
+    .ctrls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 18px; }
+    .seg { display: inline-flex; gap: 3px; align-items: center; background: rgba(255,255,255,0.05); border-radius: 999px; padding: 4px; }
+    .seg .lbl { color: #8b887e; font-family: var(--mono); font-size: 11px; padding: 0 8px; letter-spacing: 0.04em; }
+    .seg button, .play { font-family: var(--grotesk); font-weight: 700; font-size: 13px; color: #c7c5ba; background: none; border: none; border-radius: 999px; padding: 6px 13px; cursor: pointer; transition: background .2s, color .2s; }
+    .seg button.on { background: #e0788e; color: #16161a; }
+    .play { background: rgba(255,255,255,0.08); padding: 8px 16px; }
+    .play:hover { background: rgba(255,255,255,0.14); }
+    #fa-scrub { flex: 1; min-width: 120px; accent-color: #e0788e; height: 3px; }
+    #fa-readout { color: #9a978d; font-family: var(--mono); font-size: 12px; margin-top: 14px; line-height: 1.6; }
+    #fa-readout b { color: #eceadf; font-weight: 500; }
     .endcard { border-radius: 22px; padding: 36px; margin: 40px 0; background: #16161a; }
     .endcard h2 { color: #f0ede4; margin-top: 0; }
     .endcard p { color: #c7c5ba; font-size: 19px; line-height: 1.55; margin-top: 12px; }
@@ -165,10 +175,17 @@
 
     <figure class="reveal">
       <div class="card dark">
-        <div class="card-title">standard vs flash, the same scores</div>
-        <canvas id="nf-canvas" style="width:100%; display:block;" aria-hidden="true"></canvas>
+        <div class="card-title">the score matrix, tiled <span style="color:#8fb39a; font-weight:600; font-size:13px; letter-spacing:0.04em;">· drag to rotate</span></div>
+        <canvas id="tile3d" style="width:100%; display:block; touch-action:none; cursor:grab;" aria-hidden="true"></canvas>
+        <div class="ctrls">
+          <div class="seg" id="fa-mode"><button data-m="flash" class="on">flash</button><button data-m="standard">standard</button></div>
+          <div class="seg" id="fa-bsize"><span class="lbl">block</span><button data-b="2">2</button><button data-b="4" class="on">4</button><button data-b="8">8</button></div>
+          <button id="fa-play" class="play">⏸ pause</button>
+          <input id="fa-scrub" type="range" min="0" max="100" value="0" aria-label="scrub the tile stream" />
+        </div>
+        <div id="fa-readout"></div>
       </div>
-      <figcaption>left, the standard way: the entire n by n table is built and pushed to slow memory at once. right, flashattention: the same scores are computed one small tile at a time inside fast memory, and the full table is never stored. watch the memory-traffic counter.</figcaption>
+      <figcaption>the n by n score matrix as a tilted grid. in <em>flash</em> mode one tile lifts into fast memory at a time and the rest stay dark, never stored. drag to rotate, change the block size, scrub the stream, or flip to <em>standard</em> to watch the whole table light up and get written down at once.</figcaption>
     </figure>
 
     <p class="kicker reveal">the fix</p>
@@ -301,35 +318,70 @@
       addEventListener("resize", size); size(); requestAnimationFrame(frame);
     })();
 
-    // standard vs flash side by side, with a memory-traffic counter
-    (function nf() {
-      const cv = document.getElementById("nf-canvas"); if (!cv) return;
+    // the score matrix as a tilted 3D grid you can rotate, with flash/standard,
+    // block size, and a play/scrub of the tile stream
+    (function tile3d() {
+      const cv = document.getElementById("tile3d"); if (!cv) return;
       const ctx = cv.getContext("2d");
-      let W = 0, H = 0, DPR = 1; const G = 12, B = 3;
-      function size() { DPR = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = Math.round(W * 0.5); cv.style.height = H + "px"; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
-      function panel(ox, cell, lit, label, sub, subcol) {
-        const gw = cell * G, oy = 16;
-        lit(ox, oy, cell, gw);
-        ctx.font = '600 14px "Hanken Grotesk", sans-serif'; ctx.fillStyle = "#eceadf"; ctx.textAlign = "center";
-        ctx.fillText(label, ox + gw / 2, oy + gw + 26);
-        ctx.font = '12px "IBM Plex Mono", monospace'; ctx.fillStyle = subcol;
-        ctx.fillText(sub, ox + gw / 2, oy + gw + 46);
+      const n = 16;
+      let B = 4, mode = "flash", playing = true, step = 0, lastAdv = 0;
+      let W = 0, H = 0, DPR = 1, yaw = 0, pitch = -0.62, vy = 0, vp = 0, drag = false, lx = 0, ly = 0, idle = 0;
+      function size() { DPR = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = Math.round(W * 0.62); cv.style.height = H + "px"; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
+      const tps = () => n / B;
+      function proj(x, y, z) {
+        const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+        const x1 = x * cy + z * sy, z1 = -x * sy + z * cy;
+        const y1 = y * cp - z1 * sp, z2 = y * sp + z1 * cp;
+        const f = 560 / (560 + z2);
+        return [W / 2 + x1 * f, H * 0.5 + y1 * f, z2];
+      }
+      function readout(cr, cc) {
+        const el = document.getElementById("fa-readout"); if (!el) return;
+        if (mode === "standard") el.innerHTML = `<b>standard</b> · the whole ${n}×${n} score matrix (<b>${n * n}</b> numbers) is written to slow memory, then read back.`;
+        else el.innerHTML = `<b>flash</b> · query block <b>Q${cr}</b> × key block <b>K${cc}</b> held in fast memory · stored in slow memory: only <b>2n = ${2 * n}</b> running numbers · the ${n}×${n} matrix is never written.`;
       }
       function frame() {
         const t = performance.now() * 0.001;
+        if (!drag) { idle++; yaw += vy + 0.0011; pitch += vp + (-0.62 - pitch) * 0.02; vy *= 0.92; vp *= 0.92; }
+        const total = tps() * tps();
+        if (mode === "flash" && playing && t - lastAdv > 0.24) { step = (step + 1) % total; lastAdv = t; const sc = document.getElementById("fa-scrub"); if (sc) sc.value = Math.round(step / (total - 1) * 100); }
+        const cur = step % total, cr = Math.floor(cur / tps()), cc = cur % tps();
         ctx.clearRect(0, 0, W, H);
-        const cell = Math.min((W / 2 - 40) / G, (H - 70) / G);
-        const tps = G / B, total = tps * tps, cur = Math.floor(t * 4) % total, cr = Math.floor(cur / tps), cc = cur % tps;
-        // left: standard, whole grid lit
-        panel(W * 0.25 - cell * G / 2, cell, (ox, oy, c, gw) => {
-          for (let r = 0; r < G; r++) for (let cx = 0; cx < G; cx++) { ctx.fillStyle = `rgba(200,212,228,${0.4 + 0.25 * Math.sin(t * 2 + r * 0.3)})`; ctx.fillRect(ox + cx * c + 1, oy + r * c + 1, c - 2, c - 2); }
-        }, "standard", "memory traffic ~ n²", "#e0788e");
-        // right: flash, one tile
-        panel(W * 0.75 - cell * G / 2, cell, (ox, oy, c, gw) => {
-          for (let r = 0; r < G; r++) for (let cx = 0; cx < G; cx++) { const tr = Math.floor(r / B), tc = Math.floor(cx / B); const on = tr === cr && tc === cc; ctx.fillStyle = on ? "rgba(224,120,142,0.95)" : "rgba(200,212,228,0.05)"; ctx.fillRect(ox + cx * c + 1, oy + r * c + 1, c - 2, c - 2); }
-        }, "flashattention", "memory traffic ~ n", "#8fb39a");
+        const S = Math.min(W, H) * 0.052, half = n / 2;
+        const cells = [];
+        for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+          const tr = Math.floor(r / B), tc = Math.floor(c / B);
+          const active = mode === "flash" ? (tr === cr && tc === cc) : true;
+          const visited = mode === "flash" && (tr * tps() + tc) < cur;
+          const gx = c - half, gy = r - half, z = active ? -S * 3.4 : 0;
+          const cz = proj((gx + 0.5) * S, (gy + 0.5) * S, z)[2];
+          cells.push({ r, c, active, visited, gx, gy, z, cz });
+        }
+        cells.sort((a, b) => b.cz - a.cz);
+        for (const cl of cells) {
+          const p0 = proj(cl.gx * S, cl.gy * S, cl.z), p1 = proj((cl.gx + 1) * S, cl.gy * S, cl.z), p2 = proj((cl.gx + 1) * S, (cl.gy + 1) * S, cl.z), p3 = proj(cl.gx * S, (cl.gy + 1) * S, cl.z);
+          let col, a;
+          if (cl.active) { col = "224,120,142"; a = 0.95; }
+          else if (mode === "standard") { col = "200,212,228"; a = 0.32 + 0.22 * Math.sin(t * 2 + cl.r * 0.25); }
+          else if (cl.visited) { col = "200,212,228"; a = 0.1; }
+          else { col = "200,212,228"; a = 0.045; }
+          ctx.beginPath(); ctx.moveTo(p0[0], p0[1]); ctx.lineTo(p1[0], p1[1]); ctx.lineTo(p2[0], p2[1]); ctx.lineTo(p3[0], p3[1]); ctx.closePath();
+          ctx.fillStyle = `rgba(${col},${a})`; ctx.fill();
+          ctx.strokeStyle = "rgba(125,135,145,0.18)"; ctx.lineWidth = 0.5; ctx.stroke();
+        }
+        readout(cr, cc);
         requestAnimationFrame(frame);
       }
+      document.querySelectorAll("#fa-mode button").forEach((b) => b.addEventListener("click", () => { mode = b.dataset.m; document.querySelectorAll("#fa-mode button").forEach((x) => x.classList.toggle("on", x === b)); }));
+      document.querySelectorAll("#fa-bsize button").forEach((b) => b.addEventListener("click", () => { B = +b.dataset.b; step = 0; document.querySelectorAll("#fa-bsize button").forEach((x) => x.classList.toggle("on", x === b)); }));
+      const playBtn = document.getElementById("fa-play");
+      if (playBtn) playBtn.addEventListener("click", () => { playing = !playing; playBtn.textContent = playing ? "⏸ pause" : "▶ play"; });
+      const scrub = document.getElementById("fa-scrub");
+      if (scrub) scrub.addEventListener("input", () => { playing = false; mode = "flash"; document.querySelectorAll("#fa-mode button").forEach((x) => x.classList.toggle("on", x.dataset.m === "flash")); if (playBtn) playBtn.textContent = "▶ play"; const total = tps() * tps(); step = Math.round(scrub.value / 100 * (total - 1)); });
+      cv.addEventListener("pointerdown", (e) => { drag = true; idle = 0; lx = e.clientX; ly = e.clientY; cv.setPointerCapture(e.pointerId); cv.style.cursor = "grabbing"; });
+      cv.addEventListener("pointermove", (e) => { if (!drag) return; const dx = e.clientX - lx, dy = e.clientY - ly; yaw += dx * 0.006; pitch += dy * 0.006; pitch = Math.max(-1.3, Math.min(-0.08, pitch)); vy = dx * 0.0008; vp = dy * 0.0008; lx = e.clientX; ly = e.clientY; });
+      const up = () => { drag = false; cv.style.cursor = "grab"; };
+      cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
       addEventListener("resize", size); size(); requestAnimationFrame(frame);
     })();
   </script>
