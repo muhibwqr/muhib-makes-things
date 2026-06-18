@@ -135,7 +135,7 @@
     <p class="eyebrow reveal">systems · making attention fast</p>
     <h1 class="reveal">flash attention</h1>
     <p class="byline reveal">
-      the same attention you already know, made fast. the secret is not new math. it is refusing to write the big matrix to slow memory.
+      if you've wondered why long context got cheaper without the models getting any dumber, this is most of the answer. it isn't new math. it's a smarter way to move data around the chip.
       <span class="auth">by muhib waqar · 8 min read · reference: <a href="https://arxiv.org/abs/2205.14135" target="_blank" rel="noopener">dao et al., 2022</a></span>
     </p>
     <div class="hero-card reveal">
@@ -145,14 +145,14 @@
 
   <main class="wrap">
 
-    <p class="body reveal" style="margin-top:40px">in <a href="/writing/attention/">the last piece</a> the spider felt every thread at once. that is the idea. this is the part i skipped: actually computing it on a real chip, where the slow step is not the multiplying. it is the moving.</p>
+    <p class="body reveal" style="margin-top:40px">in <a href="/writing/attention/">the last piece</a> i drew attention as a spider feeling its web. that's the idea. but i glossed over what actually happens when you run it on a real gpu, and it turns out the slow part isn't the feeling. it's the fetching.</p>
 
-    <div class="tldr reveal"><b>the gist:</b> attention spends most of its time shuttling a giant n by n table to and from slow memory, not doing math. flashattention computes the <em>exact same</em> answer but never builds that table. it streams the data through fast on-chip memory in small tiles, keeping a running softmax as it goes. same output, a fraction of the memory traffic, several times faster.</div>
+    <div class="tldr reveal"><b>the gist:</b> most of attention's time goes to shuffling a giant n by n table in and out of slow memory, not to arithmetic. flashattention computes the <em>exact same</em> answer, but it never builds that table. it streams the data through the chip's fast memory in small tiles and keeps a running softmax as it goes. same output, a fraction of the memory traffic, a few times faster.</div>
 
     <p class="kicker reveal">the real bottleneck</p>
     <h2 class="reveal">the math is cheap, the moving is not</h2>
-    <p class="body reveal">a gpu can do far more multiplications per second than it can read numbers from its main memory. attention is the second kind of problem. the work itself is small; the model spends its time waiting on memory. so the thing to count is not multiplies, it is <em>trips to slow memory</em>.</p>
-    <p class="body reveal">a chip has two kinds of memory. a tiny pool of very fast memory that sits right next to the compute (called <strong>SRAM</strong>), and a big pool of slow memory off to the side (called <strong>HBM</strong>). everything starts and ends in the slow pool. every round trip to it is the tax.</p>
+    <p class="body reveal">here's the thing that surprised me when i first dug in. a modern gpu can do far more multiplications per second than it can fetch numbers from its main memory. so for a lot of work the chip is just sitting there, waiting on data. attention is exactly that kind of work. the multiplies are not the problem. how often you walk back to memory is.</p>
+    <p class="body reveal">the way i think about it: there are two places to keep numbers. a tiny workbench right in front of the compute, fast to reach but small (this is <strong>SRAM</strong>), and a warehouse across the lot, huge but slow to walk to (this is <strong>HBM</strong>). everything lives in the warehouse. every trip there and back is the cost that actually shows up in your latency.</p>
 
     <div class="card bordered reveal">
       <div class="card-title">two kinds of memory (numbers from an a100 gpu)</div>
@@ -166,12 +166,12 @@
         <text x="320" y="202" text-anchor="middle" font-family="Newsreader,serif" font-style="italic" font-size="13" fill="#6c6a62">every trip up and down is the cost that matters</text>
         <g stroke="#9aa0a6" stroke-width="1.6" fill="none"><path d="M300 78 L300 128" /><path d="M340 128 L340 78" /></g>
       </svg>
-      <p class="caption">SRAM is about a thousand times smaller than HBM and roughly ten times faster. the whole game is doing your work inside SRAM and touching HBM as little as possible.</p>
+      <p class="caption">SRAM is roughly a thousand times smaller than HBM and about ten times faster to reach. the whole trick of flashattention is to do as much as you can on the workbench and walk to the warehouse as rarely as possible.</p>
     </div>
 
     <p class="kicker reveal">where the trips go</p>
     <h2 class="reveal">standard attention writes the whole table down</h2>
-    <p class="body reveal">recall the steps: score every query against every key (that is <strong>S = QKᵀ</strong>, an <em>n by n</em> table), softmax each row, then multiply by the values. the naive way runs them one after another, and between each step the full n by n table gets written out to slow memory and read back. for a 4,000-token input that table is sixteen million numbers, moved several times. that traffic, not the math, is what you wait on.</p>
+    <p class="body reveal">let's trace the standard version. you score every query against every key, which gives you an <em>n by n</em> table (that's <strong>S = QKᵀ</strong>). you softmax each row, then multiply by the values. the naive implementation does these one at a time, and in between it walks the whole table back to the warehouse and fetches it again. for a 4,000-token prompt that table is sixteen million numbers, carried back and forth several times. that walking, not the math, is what you wait on.</p>
 
     <figure class="reveal">
       <div class="card dark">
@@ -190,8 +190,8 @@
 
     <p class="kicker reveal">the fix</p>
     <h2 class="reveal">tile it, and keep a running softmax</h2>
-    <p class="body reveal">flashattention cuts the input into <strong>tiles</strong> small enough to fit in fast memory: a block of queries, and blocks of keys and values streamed past them. for each tile it computes that little patch of scores, softmaxes it, and folds the result into a running total. the full table never exists anywhere at once.</p>
-    <p class="body reveal">the one catch: softmax needs every score in a row to normalize, but you are only ever holding one tile of that row. the trick is the <strong>online softmax</strong>: carry a running maximum and a running sum, and when a new tile shows up with a bigger value, rescale what you already have so the running answer stays exactly correct.</p>
+    <p class="body reveal">flashattention's move is simple to say: cut everything into <strong>tiles</strong> small enough to live on the workbench. a block of queries, with blocks of keys and values streamed past it. for each tile you compute its little patch of scores, softmax it, and fold the result into a running total. the full table never has to exist all at once.</p>
+    <p class="body reveal">there's one wrinkle, and it's the clever bit. softmax needs every score in a row to normalize, but you're only ever holding one tile of that row at a time. the fix is the <strong>online softmax</strong>: keep a running maximum and a running sum, and whenever a new tile shows up with a bigger value, gently rescale what you've already accumulated so the running answer stays exactly correct. this is the part i'd make sure i could re-derive from scratch.</p>
 
     <div class="card sage reveal">
       <div class="formula">
@@ -200,12 +200,12 @@
         <span class="lbl">running sum</span> &nbsp; ℓ' = α·ℓ + Σ e<sup>(tile − m')</sup><br/>
         <span class="lbl">running output</span> &nbsp; o' = α·o + e<sup>(tile − m')</sup>·V<sub>tile</sub>
       </div>
-      <p class="caption" style="text-align:center;">each new tile bumps the max, you shrink the running total by the same factor, and add the tile in. at the end you divide the output by ℓ. it is bit-for-bit the same softmax, computed without ever seeing the whole row.</p>
+      <p class="caption" style="text-align:center;">every new tile can raise the max. when it does, you shrink everything you'd accumulated by the same factor and add the new tile in. divide once at the very end. it works out bit-for-bit identical to the normal softmax, just computed without ever holding the whole row.</p>
     </div>
 
     <p class="kicker reveal">build it from scratch</p>
     <h2 class="reveal">naive, then flash</h2>
-    <p class="body reveal">here they are side by side in numpy. same inputs, same output. the only difference is that the second one never builds the full n by n table.</p>
+    <p class="body reveal">here they are side by side. same inputs, same output down to floating-point noise. the only real difference is that the second one never builds the full n by n table.</p>
 
     <div class="step reveal"><span>01 ·</span> the naive way, one big table</div>
     <div class="code reveal">
@@ -221,7 +221,7 @@
     S = Q @ K.T / np.sqrt(d)       <span class="cmt"># (n, n), the whole table lives in memory</span>
     <span class="kw">return</span> <span class="fn">softmax</span>(S) @ V              <span class="cmt"># read it back, twice more</span></pre>
     </div>
-    <p class="tie reveal">↳ correct, simple, and exactly what slows down at long context: <b>S</b> is n by n, and it gets written to slow memory and read back at every step.</p>
+    <p class="tie reveal">↳ clean and correct, and exactly what falls over at long context. <b>S</b> is n by n, and it gets walked to the warehouse and back at every step.</p>
 
     <div class="step reveal"><span>02 ·</span> flash, one tile at a time</div>
     <div class="code reveal">
@@ -247,11 +247,11 @@
         O[i:i+Bq] = acc / l                    <span class="cmt"># normalize at the very end</span>
     <span class="kw">return</span> O                                  <span class="cmt"># identical to attention_naive(Q, K, V)</span></pre>
     </div>
-    <p class="tie reveal">↳ the biggest thing in memory is now one <b>(Bq, Bk)</b> tile, not the full n by n table. the running max, sum, and output are the online softmax keeping the answer exact. on real hardware this is a fused gpu kernel, but the logic is exactly this.</p>
+    <p class="tie reveal">↳ the biggest thing on the workbench is now a single <b>(Bq, Bk)</b> tile, not the full n by n table. the running max, sum, and output are the online softmax holding the answer together. on a real gpu this is one fused kernel, but the logic is exactly what you see here.</p>
 
     <p class="kicker reveal">what it buys</p>
     <h2 class="reveal">exact, and much faster</h2>
-    <p class="body reveal">this is the part that matters most: flashattention is <em>not</em> an approximation. it is not dropping any scores like sparse attention does. it returns the identical output, just computed in an order that barely touches slow memory.</p>
+    <p class="body reveal">the part i want to underline: this is not an approximation. it isn't dropping any scores the way sparse attention does. you get the identical output, just computed in an order that barely touches slow memory. that's a rare kind of free lunch in systems, and it's why flashattention went from a paper to the default almost overnight.</p>
 
     <div class="stat reveal">
       <div class="s"><div class="k">memory it stores</div><div class="big">O(n²) → O(n)</div><p>the full score table never gets written down, only small running totals.</p></div>
@@ -262,7 +262,7 @@
 
     <p class="kicker reveal">why it matters</p>
     <h2 class="reveal">long context got cheaper without changing the model</h2>
-    <p class="body reveal">attention's cost was the wall in front of longer inputs. flashattention did not move the wall by approximating; it noticed the wall was made of memory traffic and routed around it. same math, smarter movement. that is a recurring lesson in systems: before you change what you compute, look at what you are <em>moving</em>.</p>
+    <p class="body reveal">attention's cost was the wall in front of longer inputs. flashattention didn't move the wall by making the model approximate. it noticed the wall was mostly memory traffic and walked around it. if you take one thing from this, take this: before you change what you compute, look hard at what you're <em>moving</em>. it's often the cheapest speedup you'll find.</p>
 
     <div class="endcard reveal">
       <h2>same answer, fewer trips</h2>
