@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · attention is all you need</title>
+  <meta name="description" content="the transformer, explained end to end through one image: a spider feeling its web. where it runs, who needs to know it, and how to code it from scratch. by muhib waqar." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #f7f4ec; --ink: #1c1b18; --muted: #6c6a62; --faint: #a6a399; --line: #e4e0d6;
+      --sage: #cdd9cf; --sage-deep: #b9c9bd; --clay: #e7dac8; --sky: #d3e0e6; --lilac: #ddd7e6; --rose: #ecccc9;
+      --grotesk: "Hanken Grotesk", system-ui, sans-serif; --serif: "Newsreader", Georgia, serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+    body.dark { --paper: #0e0f13; --ink: rgba(247,248,240,0.9); --muted: rgba(247,248,240,0.52); --faint: rgba(247,248,240,0.32); --line: rgba(247,248,240,0.14); }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { background: var(--paper); color: var(--ink); font-family: var(--serif); -webkit-font-smoothing: antialiased; transition: background .4s ease, color .4s ease; }
+    a { color: inherit; }
+
+    .bar { display: flex; align-items: center; justify-content: space-between; padding: 26px 34px; }
+    .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo .mark { font-weight: 700; font-size: 22px; color: #9cd5ff; }
+    .logo .wm { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+    .bar-right { display: flex; align-items: center; gap: 20px; }
+    .bar .back { font-family: var(--mono); font-size: 13px; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .bar .back:hover { color: var(--ink); }
+    #theme { background: none; border: none; cursor: pointer; font-size: 17px; color: var(--muted); line-height: 1; transition: color .2s, transform .4s ease; }
+    #theme:hover { color: var(--ink); transform: rotate(35deg); }
+
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    header.hero { text-align: center; padding: 50px 0 0; }
+    .eyebrow { font-family: var(--grotesk); font-weight: 700; font-size: 15px; }
+    h1 { font-family: var(--grotesk); font-weight: 800; font-size: clamp(40px, 7vw, 72px); line-height: 1.02; letter-spacing: -0.035em; margin: 18px 0 16px; }
+    .byline { font-family: var(--serif); font-size: 19px; line-height: 1.5; color: var(--muted); max-width: 540px; margin: 0 auto; }
+    .byline .auth { display: block; font-size: 14px; color: var(--faint); margin-top: 12px; font-family: var(--mono); }
+    .byline .auth a { color: var(--muted); }
+
+    .cta-3d { display: inline-flex; align-items: center; gap: 10px; margin-top: 30px; padding: 13px 22px; border-radius: 999px; background: var(--ink); color: var(--paper); font-family: var(--grotesk); font-weight: 700; font-size: 15px; text-decoration: none; transition: transform .18s ease; }
+    .cta-3d:hover { transform: translateY(-2px); }
+    .cta-3d .orb { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #9cd5ff, #355872 70%); box-shadow: 0 0 10px rgba(156,213,255,0.7); }
+
+    .hero-card { margin: 40px auto 0; border-radius: 26px; background: #20242a; aspect-ratio: 16/9; display: grid; place-items: center; overflow: hidden; }
+    .hero-card svg { width: 70%; height: 80%; }
+
+    section { padding: 18px 0; }
+    .lede { font-size: 23px; line-height: 1.5; margin: 46px 0 10px; color: var(--ink); }
+    p.body { font-size: 20px; line-height: 1.62; margin: 22px 0; color: var(--ink); }
+    p.body a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .kicker { font-family: var(--grotesk); font-weight: 700; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin-top: 64px; }
+    h2 { font-family: var(--grotesk); font-weight: 800; font-size: clamp(28px, 4.5vw, 40px); line-height: 1.08; letter-spacing: -0.03em; margin: 10px 0 8px; color: var(--ink); }
+
+    .card { border-radius: 22px; padding: 34px; margin: 34px 0; }
+    .card.sage { background: var(--sage); }
+    .card.cream { background: #efebe1; }
+    .card.bordered { background: #fbf9f3; border: 1px solid #e4e0d6; }
+    .card.web { background: #20242a; }
+    .card .card-title { font-family: var(--grotesk); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; margin-bottom: 22px; color: #1c1b18; }
+    .card.web .card-title { color: #eceadf; }
+    .caption { font-size: 17px; line-height: 1.5; color: #6c6a62; margin-top: 4px; }
+    figure { margin: 34px 0; }
+    figure figcaption { font-size: 17px; line-height: 1.5; color: var(--muted); margin-top: 16px; }
+    .chart { width: 100%; display: block; }
+
+    .web-note { background: #1d2126; border-radius: 16px; padding: 24px 26px; margin: 30px 0; display: flex; gap: 18px; align-items: flex-start; }
+    .web-note .ic { flex: 0 0 auto; width: 38px; height: 38px; }
+    .web-note .lab { font-family: var(--grotesk); font-weight: 800; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #8fb39a; display: block; margin-bottom: 7px; }
+    .web-note p { font-size: 18px; line-height: 1.55; color: #d9d7cc; margin: 0; }
+    .web-note p b { color: #fff; font-weight: 600; }
+
+    .formula { font-family: var(--mono); font-size: clamp(16px, 2.4vw, 21px); display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; color: #1c1b18; }
+    .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; }
+    .frac .num { padding: 0 8px 3px; }
+    .frac .den { padding: 3px 8px 0; border-top: 1.5px solid #1c1b18; }
+    .sqrt { border-top: 1.5px solid #1c1b18; padding-top: 2px; }
+
+    .arch { display: flex; gap: clamp(20px, 6vw, 70px); justify-content: center; align-items: flex-end; margin: 8px auto; }
+    .col { display: flex; flex-direction: column; align-items: center; gap: 7px; width: 210px; }
+    .col .col-label { font-family: var(--grotesk); font-weight: 700; font-size: 13px; color: var(--muted); }
+    .blk { width: 100%; border-radius: 12px; padding: 12px 10px; text-align: center; font-family: var(--grotesk); font-weight: 600; font-size: 14px; line-height: 1.25; border: 1px solid rgba(28,27,24,0.14); color: #1c1b18; }
+    .blk small { display: block; font-weight: 500; font-size: 11px; color: #6c6a62; margin-top: 3px; }
+    .blk.attn { background: var(--sage); } .blk.attn.mask { background: var(--sage-deep); }
+    .blk.ffn { background: var(--clay); } .blk.emb { background: var(--sky); } .blk.lin { background: var(--clay); } .blk.soft { background: var(--rose); }
+    .pe { display: flex; align-items: center; gap: 8px; font-family: var(--grotesk); font-weight: 600; font-size: 13px; color: var(--muted); }
+    .pe .plus { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--muted); display: grid; place-items: center; background: var(--lilac); color: #1c1b18; }
+    .updot { color: var(--faint); font-size: 13px; line-height: 1; }
+    .frame { width: 100%; border: 1.5px dashed var(--line); border-radius: 16px; padding: 12px 12px 14px; position: relative; display: flex; flex-direction: column; gap: 7px; background: rgba(150,150,150,0.06); }
+    .frame .nx { position: absolute; top: -11px; left: 14px; background: var(--paper); font-family: var(--mono); font-size: 12px; color: var(--muted); padding: 0 7px; }
+    .term { font-family: var(--mono); font-size: 12px; color: var(--faint); margin-top: 2px; }
+
+    table.cx { width: 100%; border-collapse: collapse; font-size: 16px; }
+    table.cx th, table.cx td { text-align: left; padding: 13px 12px; border-bottom: 1px solid #e4e0d6; color: #1c1b18; }
+    table.cx th { font-family: var(--grotesk); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; color: #6c6a62; }
+    table.cx td:first-child { font-family: var(--grotesk); font-weight: 700; }
+    table.cx td.good { color: #2f6a3f; font-family: var(--mono); }
+    table.cx td.mono, table.cx th.mono { font-family: var(--mono); font-size: 14px; }
+    table.cx tr:last-child td { border-bottom: none; }
+
+    .code { border-radius: 16px; background: #16161a; overflow: hidden; margin: 22px 0 14px; }
+    .code .bar { display: flex; align-items: center; gap: 7px; padding: 13px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .code .bar i { width: 11px; height: 11px; border-radius: 50%; background: rgba(255,255,255,0.16); }
+    .code .bar .fname { font-family: var(--mono); font-size: 12px; color: #8b887e; margin-left: 6px; }
+    .code pre { padding: 22px 24px; font-family: var(--mono); font-size: clamp(12px, 1.45vw, 14.5px); line-height: 1.85; overflow-x: auto; color: #e8e6dd; }
+    .code .kw { color: #c98fb0; } .code .fn { color: #9cd5ff; } .code .cmt { color: #7f8b7a; font-style: italic; } .code .num { color: #e8b974; }
+    .tie { font-size: 16px; line-height: 1.5; color: var(--muted); border-left: 2px solid var(--sage-deep); padding-left: 16px; margin: 8px 0 4px; }
+    .tie b { color: var(--ink); font-weight: 600; }
+    .step { font-family: var(--grotesk); font-weight: 800; font-size: 18px; letter-spacing: -0.01em; margin-top: 30px; color: var(--ink); }
+    .step span { color: var(--faint); }
+
+    .tldr { border-left: 3px solid var(--sage-deep); background: #efebe1; border-radius: 14px; padding: 22px 26px; margin: 36px 0; font-size: 20px; line-height: 1.5; color: #1c1b18; }
+    .tldr b { font-family: var(--grotesk); font-weight: 800; }
+    .credit { font-size: 16px; line-height: 1.5; color: var(--muted); margin-top: 26px; }
+    .credit a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+    .tier { border-left: 3px solid var(--line); padding: 4px 0 4px 20px; margin: 24px 0; }
+    .tier.no { border-color: var(--faint); } .tier.build { border-color: var(--sage-deep); } .tier.train { border-color: #c99f72; }
+    .tier .who { font-family: var(--grotesk); font-weight: 800; font-size: 20px; margin-bottom: 6px; color: var(--ink); }
+    .tier p { font-size: 18px; line-height: 1.55; color: var(--ink); margin: 0; }
+
+    .endcard { border-radius: 22px; padding: 36px; margin: 40px 0; background: #20242a; }
+    .endcard h2 { color: #f0ede4; margin-top: 0; }
+    .endcard p { color: #c7c5ba; font-size: 19px; line-height: 1.55; margin-top: 12px; }
+    .endcard .soon { display: inline-block; margin-top: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #8fb39a; }
+
+    footer { text-align: center; padding: 70px 0 90px; }
+    footer .cta { font-family: var(--grotesk); font-weight: 700; font-size: 17px; text-decoration: none; border-bottom: 2px solid var(--ink); padding-bottom: 2px; }
+    footer p { color: var(--faint); font-family: var(--mono); font-size: 12px; margin-top: 22px; }
+    footer p a { color: var(--faint); }
+
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+    @media (max-width: 640px) {
+      .arch { gap: 16px; } .col { width: 46vw; } .blk { font-size: 12px; }
+      .web-note { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bar">
+    <a class="logo" href="/">
+      <span class="mark">∞</span>
+      <span class="wm">muhib waqar</span>
+    </a>
+    <div class="bar-right">
+      <button id="theme" type="button" aria-label="toggle theme" title="theme">☾</button>
+      <a class="back" href="/writing/">← writing</a>
+    </div>
+  </div>
+
+  <header class="hero wrap">
+    <p class="eyebrow reveal">the transformer, through one image</p>
+    <h1 class="reveal">attention is all you need</h1>
+    <p class="byline reveal">
+      the whole thing, explained through a spider feeling its web. where it runs, whether you need to care, and how to build it from scratch.
+      <span class="auth">by muhib waqar · reference: <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">the paper</a></span>
+    </p>
+
+    <a class="cta-3d reveal" href="/writing/attention/explore/">
+      <span class="orb"></span> see it move in 3d
+      <span aria-hidden="true">→</span>
+    </a>
+
+    <div class="hero-card reveal" style="position:relative;">
+      <video autoplay muted loop playsinline aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.5;">
+        <source src="/spider-web.mp4" type="video/mp4" />
+      </video>
+      <canvas id="hero-canvas" style="position:relative; z-index:1; width:100%; height:100%; display:block; touch-action:none; cursor:grab;" aria-hidden="true"></canvas>
+    </div>
+    <p class="reveal" style="margin-top:14px; font-family:var(--mono); font-size:11px; letter-spacing:0.08em; color:var(--faint);">the same sentence, as a web: every word feeling every other. grab one and pull ↑</p>
+  </header>
+
+  <main class="wrap">
+
+    <p class="kicker reveal" style="margin-top:48px">in one sentence</p>
+    <div class="tldr reveal"><b>the gist:</b> a transformer is a spider on a web. every word is a knot of silk, every word feels every other word through the threads, weighs which ones matter, and updates. do that a few times and you understand language. the rest of this page is that one sentence, slowed all the way down.</div>
+
+    <p class="lede reveal">before this paper, a machine read a sentence the way a spider crawls its web, one thread at a time, left to right, half-forgetting the first thread by the time it reaches the last. the transformer throws that out. it lets the spider sit still and feel the whole web at once.</p>
+
+    <p class="kicker reveal">the one idea</p>
+    <h2 class="reveal">the spider doesn't watch, it feels</h2>
+    <p class="body reveal">a spider doesn't watch its web. it sits at the center, legs resting on the silk, and it <em>feels</em>. prey lands, the threads carry a vibration home, and the spider weighs which threads are buzzing, how hard, and from where. that weighing is the entire idea behind the transformer. every word sits on the web and feels every other word pulling on it.</p>
+
+    <figure class="reveal">
+      <div class="card web">
+        <div class="card-title">the web</div>
+        <canvas id="web-canvas" style="width:100%; display:block;" aria-hidden="true"></canvas>
+      </div>
+      <figcaption>the spider at the center is one word, asking a question. a knot on the rim is another word, answering, and the vibration travels home along the threads (the rose path). a brighter, thicker thread means that word matters more. the spider never scans the web. it just feels the loudest lines.</figcaption>
+    </figure>
+
+    <div class="web-note reveal">
+      <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="#8fb39a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="20" cy="20" r="14"/><circle cx="20" cy="20" r="7"/><path d="M20 6 V34 M6 20 H34 M10 10 L30 30 M30 10 L10 30"/>
+      </svg>
+      <div>
+        <span class="lab">on the web</span>
+        <p>the spider is doing one thing: turning every tug into a <b>share of its attention</b>, where all the shares add up to one whole. strong, close threads take most of it; faint, far ones get almost none. that step, turning a pile of scores into shares that sum to one, is the only piece of math with a name here. it is called a <b>softmax</b>.</p>
+      </div>
+    </div>
+
+    <p class="kicker reveal">what every thread carries</p>
+    <h2 class="reveal">a question, an offer, a signal</h2>
+    <p class="body reveal">each word on the web carries three things. a <strong>query</strong>: the question it sends out, <em>who here relates to me?</em> a <strong>key</strong>: what it advertises to everyone else, the tension it holds on its thread. and a <strong>value</strong>: the signal it actually passes along when plucked. attention measures how strongly each word's key answers another word's query, turns that into weights that sum to one, and pulls back a blend of the values, mostly from the threads that sing loudest.</p>
+
+    <div class="card sage reveal">
+      <div class="formula">
+        <span>attention(Q, K, V) = softmax</span>
+        <span>(</span>
+        <span class="frac"><span class="num">Q&#8201;K<sup>T</sup></span><span class="den"><span class="sqrt">&#8201;d<sub>k</sub>&#8201;</span></span></span>
+        <span>)</span>
+        <span>V</span>
+      </div>
+      <p class="caption" style="text-align:center; margin-top:20px;">read it right to left: QKᵀ is every query meeting every key, how hard each thread pulls. shrink those numbers so they stay tame, turn them into shares that add up to one (the softmax), then blend the values by those shares. that is the spider feeling the web, in one line.</p>
+    </div>
+
+    <p class="body reveal">those three aren't handed to you. first, every word gets turned into a long list of numbers, its meaning written out as coordinates. that list is called a <em>vector</em>, and the whole sentence, stacked into rows, is <em>X</em>. then the spider spins the three threads from X by passing it through three grids of numbers it has slowly tuned (a grid of numbers like that is a <em>matrix</em>): one grid makes the query, one the key, one the value. those three grids, written W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>, are the only thing training actually learns.</p>
+
+    <div class="card bordered reveal">
+      <div class="card-title">one word, three threads</div>
+      <svg class="chart" viewBox="0 0 640 200" aria-hidden="true">
+        <rect x="36" y="78" width="118" height="46" rx="9" fill="#d3e0e6" stroke="rgba(28,27,24,.18)"/>
+        <text x="95" y="100" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-weight="800" font-size="20" fill="#1c1b18">X</text>
+        <text x="95" y="116" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#6c6a62">the word</text>
+        <g stroke="rgba(28,27,24,.3)" stroke-width="1.6" fill="none">
+          <path d="M154 96 C 300 40, 360 38, 458 40"/><path d="M154 101 L 458 101"/><path d="M154 106 C 300 162, 360 164, 458 162"/>
+        </g>
+        <text x="300" y="48" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="#6c6a62">× W_Q</text>
+        <text x="300" y="93" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="#6c6a62">× W_K</text>
+        <text x="300" y="182" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="#6c6a62">× W_V</text>
+        <rect x="458" y="22" width="118" height="38" rx="9" fill="#d3e0e6" stroke="rgba(28,27,24,.18)"/>
+        <text x="517" y="46" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-weight="700" font-size="15" fill="#1c1b18">Q · question</text>
+        <rect x="458" y="82" width="118" height="38" rx="9" fill="#cdd9cf" stroke="rgba(28,27,24,.18)"/>
+        <text x="517" y="106" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-weight="700" font-size="15" fill="#1c1b18">K · offer</text>
+        <rect x="458" y="142" width="118" height="38" rx="9" fill="#e7dac8" stroke="rgba(28,27,24,.18)"/>
+        <text x="517" y="166" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-weight="700" font-size="15" fill="#1c1b18">V · signal</text>
+      </svg>
+      <p class="caption">three learned matrices spin a query, a key, and a value out of each word. same word, three threads.</p>
+    </div>
+
+    <p class="kicker reveal">why eight</p>
+    <h2 class="reveal">a spider has eight legs</h2>
+    <p class="body reveal">so far the spider feels the web one way, and one way is thin. a spider doesn't trust a single leg. each one rests on a different part of the web and feels for a different thing: one for distance, one for direction, one for rhythm. the transformer copies this exactly. it runs <strong>h = 8</strong> attentions in parallel, eight independent reads of the same web, each in its own slice of the numbers, then pools them into one decision. the paper really does use eight.</p>
+
+    <div class="web-note reveal">
+      <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="#8fb39a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="20" cy="20" r="6"/><path d="M20 14 V6 M20 26 V34 M14 20 H6 M26 20 H34 M15 15 L9 9 M25 15 L31 9 M15 25 L9 31 M25 25 L31 31"/>
+      </svg>
+      <div>
+        <span class="lab">on the web</span>
+        <p>eight legs, eight reads. one head tracks the word right behind you, one hunts for the subject, one stays local. alone, each is half-blind. pooled, they feel the whole web. real models stack dozens of legs.</p>
+      </div>
+    </div>
+
+    <div class="card bordered reveal">
+      <div class="card-title">eight reads, pooled into one</div>
+      <svg class="chart" viewBox="0 0 640 220" id="heads-svg" aria-hidden="true"></svg>
+      <p class="caption">Q, K and V split into 8 slices. attention runs independently in each, then the eight results are concatenated and mixed by one final matrix.</p>
+    </div>
+
+    <p class="kicker reveal">how it knows order</p>
+    <h2 class="reveal">the shape of the web is the memory</h2>
+    <p class="body reveal">eight legs feel the web from eight angles, but they all assume the web has a shape. on its own, it doesn't. a web with no shape is just tangled silk, and its geometry is what lets the spider tell a near thread from a far one. attention has the same blind spot: on its own it sees a bag of words with no order, and shuffling them changes nothing. so each word gets stamped with its position, a pattern of waves at different speeds, like coordinates woven into the web. now near and far carry meaning.</p>
+
+    <figure class="reveal">
+      <div class="card cream">
+        <div class="card-title">position, as waves of many speeds</div>
+        <svg class="chart" viewBox="0 0 640 240" id="pe-svg" aria-hidden="true"></svg>
+      </div>
+      <figcaption>PE(pos, 2i) = sin(pos / 10000<sup>2i/d</sup>) &nbsp;·&nbsp; PE(pos, 2i+1) = cos(pos / 10000<sup>2i/d</sup>). each word's position is a unique blend of these waves, woven in before the spider ever feels the web.</figcaption>
+    </figure>
+
+    <p class="kicker reveal">why it's fast</p>
+    <h2 class="reveal">feel it all at once, don't crawl it</h2>
+    <p class="body reveal">the spider now feels the web, in eight ways, and tells near from far. the last question is speed. the old networks crawl the web one thread at a time, checking each in turn, slow, and forgetting the start of the sentence by the end. attention feels every thread in a single pulse. <strong>one step, not n steps.</strong> and because any two words touch through the web directly, distance stops mattering. that is the whole reason this trains at internet scale and holds a long thought.</p>
+
+    <div class="card bordered reveal">
+      <div class="card-title">crawling vs feeling (table 1)</div>
+      <table class="cx">
+        <thead><tr><th>layer type</th><th class="mono">work per layer</th><th class="mono">sequential steps</th><th class="mono">longest path</th></tr></thead>
+        <tbody>
+          <tr><td>self-attention (feel)</td><td class="mono">O(n²·d)</td><td class="good">O(1)</td><td class="good">O(1)</td></tr>
+          <tr><td>recurrent (crawl)</td><td class="mono">O(n·d²)</td><td class="mono">O(n)</td><td class="mono">O(n)</td></tr>
+        </tbody>
+      </table>
+      <p class="caption">the column that matters is the middle one: the spider feels the web in a constant number of steps, no matter how big the web. the crawler needs one step per thread.</p>
+    </div>
+
+    <p class="kicker reveal">the whole web</p>
+    <h2 class="reveal">two stacks, one block repeated</h2>
+    <p class="body reveal">stack that one move, layer on layer, and you get the whole model: two towers. the <strong>encoder</strong> (left) feels the input and builds a rich version of it. the <strong>decoder</strong> (right) writes the output one word at a time, allowed to feel what it has already written and to reach across to the encoder. each tower is the same block repeated <strong>N = 6</strong> times, and each block is just two moves: <em>feel</em>, then <em>think</em>. the feel is the attention you already met. the think is every word stepping aside on its own to chew on what it just gathered (that step is the <em>feed forward</em>). wrapped around both is a safety net the diagrams call “add &amp; norm”: keep a copy of what went in so nothing gets lost, and gently rescale the numbers so they never blow up. one rule on the decoder: it can't feel a thread that hasn't been spun yet. no peeking at the future.</p>
+
+    <figure class="reveal">
+      <div class="arch">
+        <div class="col">
+          <div class="col-label">encoder · feels the input</div>
+          <div class="frame">
+            <span class="nx">6×</span>
+            <div class="blk ffn">feed&nbsp;forward<small>+ add &amp; norm</small></div>
+            <div class="updot">▲</div>
+            <div class="blk attn">multi-head attention<small>feel the whole web</small></div>
+          </div>
+          <div class="updot">▲</div>
+          <div class="pe"><span class="plus">+</span> positional encoding</div>
+          <div class="blk emb">input embedding</div>
+          <div class="term">inputs</div>
+        </div>
+        <div class="col">
+          <div class="col-label">decoder · weaves the output</div>
+          <div class="blk soft">softmax<small>→ next word</small></div>
+          <div class="updot">▲</div>
+          <div class="blk lin">linear</div>
+          <div class="updot">▲</div>
+          <div class="frame">
+            <span class="nx">6×</span>
+            <div class="blk ffn">feed&nbsp;forward<small>+ add &amp; norm</small></div>
+            <div class="updot">▲</div>
+            <div class="blk attn">multi-head attention<small>reach across to the encoder</small></div>
+            <div class="updot">▲</div>
+            <div class="blk attn mask">masked multi-head attention<small>can't feel the future</small></div>
+          </div>
+          <div class="updot">▲</div>
+          <div class="pe"><span class="plus">+</span> positional encoding</div>
+          <div class="blk emb">output embedding</div>
+          <div class="term">outputs (shifted right)</div>
+        </div>
+      </div>
+      <figcaption>that “keep a copy” wire has a name, the <em>residual</em>: it holds the original silk taut underneath every pass, so a clumsy read can never snap the meaning you started with. the rescaling step is the <em>layer-norm</em>. together they are the “add &amp; norm” on the boxes above.</figcaption>
+    </figure>
+
+    <p class="kicker reveal" id="build">build it from scratch</p>
+    <h2 class="reveal">the whole web, in numpy</h2>
+    <p class="body reveal">you've now seen every thread of it: feeling the web, in eight ways, with position woven in, stacked six passes deep. so here's my real test for whether it clicked. can you write it with no framework? everything above collapses into one forward pass. read these three blocks and you've read a transformer. no autograd, no magic, just matrix multiplies and the line from the top of this page.</p>
+
+    <div class="step reveal"><span>01 ·</span> the spider feeling one web</div>
+    <div class="code reveal">
+      <div class="bar"><i></i><i></i><i></i><span class="fname">attention.py</span></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">softmax</span>(x):
+    e = np.exp(x - x.max(-<span class="num">1</span>, keepdims=<span class="kw">True</span>))
+    <span class="kw">return</span> e / e.sum(-<span class="num">1</span>, keepdims=<span class="kw">True</span>)
+
+<span class="kw">def</span> <span class="fn">attention</span>(Q, K, V, mask=<span class="kw">None</span>):        <span class="cmt"># Q,K,V: (seq, d_k)</span>
+    d_k     = Q.shape[-<span class="num">1</span>]
+    scores  = Q @ K.T / np.sqrt(d_k)       <span class="cmt"># how hard each thread pulls</span>
+    <span class="kw">if</span> mask <span class="kw">is</span> <span class="kw">not</span> <span class="kw">None</span>:
+        scores = np.where(mask, scores, -<span class="num">1e9</span>)   <span class="cmt"># can't feel the future</span>
+    weights = <span class="fn">softmax</span>(scores)              <span class="cmt"># each row sums to 1</span>
+    <span class="kw">return</span> weights @ V                     <span class="cmt"># the weighted blend</span></pre>
+    </div>
+    <p class="tie reveal">↳ <b>scores</b> is how hard every thread pulls, <b>weights</b> is how loud each vibration comes back. the <b>mask</b> is the decoder's one rule: blank the threads not yet spun, before the softmax.</p>
+
+    <div class="step reveal"><span>02 ·</span> eight legs at once</div>
+    <div class="code reveal">
+      <div class="bar"><i></i><i></i><i></i><span class="fname">attention.py</span></div>
+<pre><span class="kw">def</span> <span class="fn">multi_head</span>(X, Wq, Wk, Wv, Wo, h, mask=<span class="kw">None</span>):   <span class="cmt"># X: (seq, d)</span>
+    seq, d = X.shape
+    d_k    = d // h                        <span class="cmt"># 512 / 8 = 64</span>
+    Q, K, V = X @ Wq, X @ Wk, X @ Wv       <span class="cmt"># spin the three threads</span>
+
+    <span class="kw">def</span> <span class="fn">split</span>(M):                          <span class="cmt"># one read per leg: (h, seq, d_k)</span>
+        <span class="kw">return</span> M.reshape(seq, h, d_k).transpose(<span class="num">1</span>, <span class="num">0</span>, <span class="num">2</span>)
+
+    Q, K, V = <span class="fn">split</span>(Q), <span class="fn">split</span>(K), <span class="fn">split</span>(V)
+    legs = [<span class="fn">attention</span>(Q[i], K[i], V[i], mask) <span class="kw">for</span> i <span class="kw">in</span> range(h)]
+    out  = np.concatenate(legs, axis=-<span class="num">1</span>)   <span class="cmt"># pool the eight reads</span>
+    <span class="kw">return</span> out @ Wo</pre>
+    </div>
+    <p class="tie reveal">↳ eight legs, eight reads of the same web, pooled and mixed by W<sub>o</sub>.</p>
+
+    <div class="step reveal"><span>03 ·</span> stack the web n times</div>
+    <div class="code reveal">
+      <div class="bar"><i></i><i></i><i></i><span class="fname">transformer.py</span></div>
+<pre><span class="kw">def</span> <span class="fn">layer_norm</span>(X, g, b, eps=<span class="num">1e-5</span>):
+    mu  = X.mean(-<span class="num">1</span>, keepdims=<span class="kw">True</span>)
+    var = X.var(-<span class="num">1</span>, keepdims=<span class="kw">True</span>)
+    <span class="kw">return</span> g * (X - mu) / np.sqrt(var + eps) + b
+
+<span class="kw">def</span> <span class="fn">feed_forward</span>(X, W1, b1, W2, b2):       <span class="cmt"># think about each word on its own</span>
+    <span class="kw">return</span> np.maximum(<span class="num">0</span>, X @ W1 + b1) @ W2 + b2
+
+<span class="kw">def</span> <span class="fn">block</span>(X, p, mask=<span class="kw">None</span>):                <span class="cmt"># feel, then think</span>
+    X = X + <span class="fn">multi_head</span>(<span class="fn">layer_norm</span>(X, *p[<span class="cmt">"ln1"</span>]), *p[<span class="cmt">"attn"</span>], p[<span class="cmt">"h"</span>], mask)
+    X = X + <span class="fn">feed_forward</span>(<span class="fn">layer_norm</span>(X, *p[<span class="cmt">"ln2"</span>]))
+    <span class="kw">return</span> X                              <span class="cmt"># the + keeps the original silk taut</span>
+
+<span class="kw">def</span> <span class="fn">transformer</span>(token_ids, P):
+    X = P[<span class="cmt">"emb"</span>][token_ids] + P[<span class="cmt">"pos"</span>][:len(token_ids)]   <span class="cmt"># words + positions</span>
+    <span class="kw">for</span> layer <span class="kw">in</span> P[<span class="cmt">"layers"</span>]:              <span class="cmt"># N = 6 passes</span>
+        X = <span class="fn">block</span>(X, layer)
+    <span class="kw">return</span> X @ P[<span class="cmt">"emb"</span>].T                  <span class="cmt"># scores over the vocabulary</span></pre>
+    </div>
+    <p class="tie reveal">↳ this is the whole web, end to end: words and positions in, six passes of feel-then-think, a final projection to the next word. give those matrices random numbers, train them by guessing the next word a few trillion times, and you have gpt, you have claude.</p>
+
+    <p class="body reveal">that is the entire architecture. give those matrices random numbers, train them by guessing the next word a few trillion times, and the same web becomes gpt, becomes claude. nothing past here changes the shape; it only grows it.</p>
+
+    <p class="kicker reveal">where these webs are</p>
+    <h2 class="reveal">the spider doesn't care what it feels</h2>
+    <p class="body reveal">the paper starts with translation, but the web doesn't care what's on it. words, pixels, sound, the rungs of a protein, turn it into a sequence and the same spider finds the shape. so it ends up under almost everything you touch, usually without saying so.</p>
+
+    <figure class="reveal">
+      <div class="card bordered">
+        <div class="card-title">one web, connected to what it powers</div>
+        <svg class="chart" viewBox="0 0 640 420" id="hub-svg" aria-hidden="true"></svg>
+      </div>
+      <figcaption>one spider, many kinds of prey. each use-case is just a different sequence handed to the same web: text for chat and code, pixels for images, frames for video, signal for speech, residues for proteins.</figcaption>
+    </figure>
+
+    <p class="kicker reveal">do you even need this?</p>
+    <h2 class="reveal">it depends who you are</h2>
+    <p class="body reveal">not everyone has to know the web. here's the honest split.</p>
+
+    <div class="tier no reveal"><div class="who">if you just use it</div><p>honestly, no. drive the car, ignore the engine. you can close this tab with a clear conscience.</p></div>
+    <div class="tier build reveal"><div class="who">if you build with it</div><p>yes, the feel of it, not the math. you need to know why the context window (how much the model can feel at once) is the whole game, why junk in the prompt poisons the answer, why long inputs cost more and run slower. this is most builders, and it is the cheapest leverage in tech right now.</p></div>
+    <div class="tier train reveal"><div class="who">if you train it</div><p>all of it, down to the gradients. but that's a small room, and if you're in it you already know.</p></div>
+
+    <p class="kicker reveal">why it matters</p>
+    <h2 class="reveal">it's the shape of the wave</h2>
+    <p class="body reveal">the deeper point: one architecture quietly became the floor under this entire era. text, images, sound, biology, all of it runs through the same web from the same paper. knowing the transformer is not a party trick.</p>
+    <p class="body reveal">it's knowing the shape of the thing reshaping whatever you do. you don't have to weave the web yourself. you do have to know it's a web, and roughly how it feels. that's the difference between riding this wave and getting caught under it.</p>
+
+    <div class="endcard reveal">
+      <h2>this is one web</h2>
+      <p>the orb web is just the famous one. there are other weavers: webs tuned for images, for sound, for proteins, sparse webs that feel only the threads that matter, webs stretched to a million knots. same spider, different silk.</p>
+      <span class="soon">more transformers, coming soon</span>
+    </div>
+
+  </main>
+
+  <footer>
+    <a class="cta" href="/">← back to muhib waqar</a>
+    <p>“attention is all you need”, <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">arxiv:1706.03762</a> · written by muhib waqar · built with claude · visual style inspired by faizan.ai</p>
+  </footer>
+
+  <script type="module">
+    const KEY = "tf-dark", btn = document.getElementById("theme");
+    const setDark = (on) => { document.body.classList.toggle("dark", on); btn.textContent = on ? "☀" : "☾"; try { localStorage.setItem(KEY, on ? "1" : "0"); } catch {} };
+    try { setDark(localStorage.getItem(KEY) === "1"); } catch {}
+    btn.addEventListener("click", () => setDark(!document.body.classList.contains("dark")));
+    addEventListener("keydown", (e) => { if (e.key === "l" && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) setDark(!document.body.classList.contains("dark")); });
+
+    const io = new IntersectionObserver((es) => {
+      let i = 0;
+      for (const e of es) if (e.isIntersecting) { const el = e.target; el.style.transitionDelay = Math.min(i++ * 55, 280) + "ms"; el.classList.add("in"); io.unobserve(el); }
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+    const T = (x, y, t, s, w = 600, fill = "#1c1b18") => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-weight="${w}" font-size="${s}" fill="${fill}">${t}</text>`;
+
+    function drawWeb(id, opts) {
+      const svg = document.getElementById(id); if (!svg) return;
+      const vb = svg.getAttribute("viewBox").split(" ").map(Number);
+      const W = vb[2], H = vb[3], cx = W / 2, cy = H / 2, yk = 0.82;
+      const spokes = 12, rings = opts.rings;
+      const ang = (k) => (k / spokes) * Math.PI * 2 - Math.PI / 2;
+      const pt = (k, r) => [cx + Math.cos(ang(k)) * r, cy + Math.sin(ang(k)) * r * yk];
+      const line = (x1, y1, x2, y2, c, w, o = 1) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" opacity="${o}" stroke-linecap="round"/>`;
+      let s = "";
+      const outer = rings[rings.length - 1];
+      for (let k = 0; k < spokes; k++) { const [ox, oy] = pt(k, outer); s += line(cx, cy, ox, oy, opts.silk, 1.1, 0.85); }
+      for (const r of rings) { let d = ""; for (let k = 0; k <= spokes; k++) { const [x, y] = pt(k % spokes, r); d += (k === 0 ? "M" : "L") + x.toFixed(1) + " " + y.toFixed(1) + " "; } s += `<path d="${d}" fill="none" stroke="${opts.silk}" stroke-width="1.1" opacity="0.8"/>`; }
+      for (let k = 0; k < spokes; k++) for (const r of rings) { const [x, y] = pt(k, r); s += `<circle cx="${x}" cy="${y}" r="1.6" fill="${opts.dew}"/>`; }
+      const kp = 2, [px, py] = pt(kp, outer);
+      for (let ri = rings.length - 1; ri > 0; ri--) { const [x1, y1] = pt(kp, rings[ri]), [x2, y2] = pt(kp, rings[ri - 1]); s += line(x1, y1, x2, y2, "#e0788e", 2.4 + ri * 0.5, 0.95); }
+      s += line(...pt(kp, rings[0]), cx, cy, "#e0788e", 4, 0.95);
+      s += `<circle cx="${px}" cy="${py}" r="6.5" fill="#e0788e"/>`;
+      if (!opts.hero) s += T(px, py - 13, "prey", 12, 700, "#e0a0ad");
+      s += `<g stroke="${opts.spider}" stroke-width="2" stroke-linecap="round">`;
+      for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2; s += `<line x1="${cx}" y1="${cy}" x2="${cx + Math.cos(a) * 22}" y2="${cy + Math.sin(a) * 15}"/>`; }
+      s += `</g><circle cx="${cx}" cy="${cy}" r="8.5" fill="${opts.spider}"/>`;
+      if (!opts.hero) s += T(cx, cy + 40, "spider = the word, asking", 12.5, 700, "#cfd8d0");
+      svg.innerHTML = s;
+    }
+    // the hero: the actual sentence laid out as a web, every word feeling the others.
+    // grab a word and pull, the threads stretch and snap back.
+    (function heroWeb() {
+      const cv = document.getElementById("hero-canvas"); if (!cv) return;
+      const ctx = cv.getContext("2d");
+      const WORDS = ["the", "cat", "sat", "on", "the", "mat", "because", "it", "was", "tired"];
+      const spokes = WORDS.length, rings = 3, squash = 0.86;
+      // attention threads between words [from, to, weight, colour] - "it" lands on "cat"
+      const ROSE = [224, 120, 142], SKY = [156, 213, 255], GOLD = [232, 185, 116], SAGE = [143, 179, 154];
+      const threads = [
+        [7, 1, 1.0, ROSE], [8, 1, 0.5, ROSE], [9, 1, 0.6, ROSE],
+        [2, 1, 0.7, SKY], [5, 3, 0.5, GOLD], [1, 0, 0.4, SAGE],
+        [3, 2, 0.4, SAGE], [6, 5, 0.45, SKY], [4, 3, 0.4, GOLD],
+      ];
+      let W = 0, H = 0, DPR = 1, cx = 0, cy = 0, R = 0;
+      let nodes = [], edges = [], word = [], hub = null, grabbed = null;
+      function build() {
+        DPR = Math.min(devicePixelRatio || 1, 2);
+        W = cv.clientWidth || 600; H = cv.clientHeight || 340;
+        cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        cx = W / 2; cy = H / 2; R = Math.min(W, H) * 0.4;
+        nodes = []; edges = []; word = [];
+        hub = { x: cx, y: cy, rx: cx, ry: cy, vx: 0, vy: 0, pin: true };
+        const grid = [];
+        for (let r = 0; r < rings; r++) {
+          grid[r] = [];
+          for (let s = 0; s < spokes; s++) {
+            const a = (s / spokes) * Math.PI * 2 - Math.PI / 2, rr = ((r + 1) / rings) * R;
+            const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr * squash;
+            const n = { x, y, rx: x, ry: y, vx: 0, vy: 0, pin: false };
+            nodes.push(n); grid[r][s] = n;
+          }
+        }
+        for (let s = 0; s < spokes; s++) word[s] = grid[rings - 1][s];   // outer ring = the words
+        const edge = (a, b) => edges.push({ a, b, len: Math.hypot(a.rx - b.rx, a.ry - b.ry) });
+        for (let s = 0; s < spokes; s++) { edge(hub, grid[0][s]); for (let r = 0; r < rings - 1; r++) edge(grid[r][s], grid[r + 1][s]); }
+        for (let r = 0; r < rings; r++) for (let s = 0; s < spokes; s++) edge(grid[r][s], grid[r][(s + 1) % spokes]);
+      }
+      const anchorK = 0.05, edgeK = 0.16, damp = 0.84;
+      function step() {
+        for (const e of edges) {
+          const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, d = Math.hypot(dx, dy) || 0.001;
+          const f = (d - e.len) * edgeK, fx = dx / d * f, fy = dy / d * f;
+          if (!e.a.pin && e.a !== grabbed) { e.a.vx += fx; e.a.vy += fy; }
+          if (!e.b.pin && e.b !== grabbed) { e.b.vx -= fx; e.b.vy -= fy; }
+        }
+        for (const n of nodes) {
+          if (n.pin || n === grabbed) continue;
+          n.vx += (n.rx - n.x) * anchorK; n.vy += (n.ry - n.y) * anchorK;
+          n.vx *= damp; n.vy *= damp; n.x += n.vx; n.y += n.vy;
+        }
+      }
+      function draw() {
+        step();
+        ctx.clearRect(0, 0, W, H);
+        // the silk structure
+        ctx.strokeStyle = "rgba(170,182,170,0.26)"; ctx.lineWidth = 1;
+        for (const e of edges) { ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); ctx.stroke(); }
+        // the bright attention threads between words
+        ctx.globalCompositeOperation = "lighter";
+        for (const [i, j, w, c] of threads) {
+          const a = word[i], b = word[j], mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(mx + (cx - mx) * 0.45, my + (cy - my) * 0.45, b.x, b.y);
+          ctx.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},${0.45 + w * 0.45})`; ctx.lineWidth = 1 + w * 2.4; ctx.stroke();
+        }
+        ctx.globalCompositeOperation = "source-over";
+        // dew on the inner structure
+        ctx.fillStyle = "rgba(190,200,190,0.5)";
+        for (const n of nodes) { if (word.indexOf(n) >= 0) continue; ctx.beginPath(); ctx.arc(n.x, n.y, 1.8, 0, 6.3); ctx.fill(); }
+        // the words on the rim
+        ctx.font = '15px "Newsreader", Georgia, serif'; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        for (let s = 0; s < spokes; s++) {
+          const n = word[s];
+          ctx.beginPath(); ctx.arc(n.x, n.y, 3.2, 0, 6.3); ctx.fillStyle = "rgba(247,248,240,0.95)"; ctx.fill();
+          const ang = Math.atan2(n.y - cy, n.x - cx);
+          ctx.fillStyle = "rgba(247,248,240,0.85)";
+          ctx.fillText(WORDS[s], n.x + Math.cos(ang) * 17, n.y + Math.sin(ang) * 14);
+        }
+        ctx.textBaseline = "alphabetic";
+        // the spider
+        ctx.strokeStyle = "rgba(247,248,240,0.85)"; ctx.lineWidth = 2;
+        for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(hub.x, hub.y); ctx.lineTo(hub.x + Math.cos(a) * 16, hub.y + Math.sin(a) * 12); ctx.stroke(); }
+        ctx.beginPath(); ctx.arc(hub.x, hub.y, 6, 0, 6.3); ctx.fillStyle = "rgba(247,248,240,0.95)"; ctx.fill();
+        requestAnimationFrame(draw);
+      }
+      function nearest(mx, my) { let best = null, bd = 2600; for (const n of nodes) { const d = (n.x - mx) ** 2 + (n.y - my) ** 2; if (d < bd) { bd = d; best = n; } } return best; }
+      function pos(e) { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+      cv.addEventListener("pointerdown", (e) => { const [mx, my] = pos(e); grabbed = nearest(mx, my); if (grabbed) { grabbed.x = mx; grabbed.y = my; cv.setPointerCapture(e.pointerId); cv.style.cursor = "grabbing"; } });
+      cv.addEventListener("pointermove", (e) => { if (!grabbed) return; const [mx, my] = pos(e); grabbed.x = mx; grabbed.y = my; });
+      const release = () => { grabbed = null; cv.style.cursor = "grab"; };
+      cv.addEventListener("pointerup", release); cv.addEventListener("pointercancel", release);
+      addEventListener("resize", build);
+      build(); requestAnimationFrame(draw);
+    })();
+
+    // the centerpiece web, rendered in 3d at one fixed, best-viewable angle
+    (function web3d() {
+      const cv = document.getElementById("web-canvas"); if (!cv) return;
+      const ctx = cv.getContext("2d");
+      let W = 0, H = 0, DPR = 1;
+      function size() {
+        DPR = Math.min(devicePixelRatio || 1, 2);
+        W = cv.clientWidth || 600; H = Math.round(W * 0.6);
+        cv.style.height = H + "px"; cv.width = W * DPR; cv.height = H * DPR;
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+      const spokes = 12, ringR = [0.30, 0.55, 0.80, 1.0];
+      const silk = "#6b7a70", dew = "#9aa79c", rose = "#e0788e", spider = "#f0ede4", kp = 2;
+      const yaw = 0.62, pitch = -0.46;
+      const ang = (k) => (k / spokes) * Math.PI * 2;
+      const dome = (rr, R) => (1 - rr) * R * 0.3;
+      const node = (k, rr, R) => { const a = ang(k); return [Math.cos(a) * rr * R, Math.sin(a) * rr * R, dome(rr, R)]; };
+      function proj(p, R) {
+        const cyaw = Math.cos(yaw), syaw = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+        let x = p[0] * cyaw + p[2] * syaw, z = -p[0] * syaw + p[2] * cyaw;
+        let y = p[1] * cp - z * sp; z = p[1] * sp + z * cp;
+        const f = (R * 2.4) / (R * 2.4 + z);
+        return [W / 2 + x * f, H / 2 + y * f, f];
+      }
+      function frame() {
+        const R = Math.min(W, H) * 0.46;
+        ctx.clearRect(0, 0, W, H);
+        const hub = proj([0, 0, dome(0, R)], R);
+        ctx.globalAlpha = 0.85; ctx.strokeStyle = silk; ctx.lineWidth = 1;
+        for (let k = 0; k < spokes; k++) { ctx.beginPath(); ctx.moveTo(hub[0], hub[1]); for (const rr of ringR) { const q = proj(node(k, rr, R), R); ctx.lineTo(q[0], q[1]); } ctx.stroke(); }
+        for (const rr of ringR) { ctx.beginPath(); for (let k = 0; k <= spokes; k++) { const q = proj(node(k % spokes, rr, R), R); k === 0 ? ctx.moveTo(q[0], q[1]) : ctx.lineTo(q[0], q[1]); } ctx.stroke(); }
+        ctx.globalAlpha = 1; ctx.fillStyle = dew;
+        for (let k = 0; k < spokes; k++) for (const rr of ringR) { const q = proj(node(k, rr, R), R); ctx.beginPath(); ctx.arc(q[0], q[1], 1.5 * q[2], 0, 6.3); ctx.fill(); }
+        // vibration home along one spoke
+        ctx.strokeStyle = rose; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(hub[0], hub[1]);
+        for (const rr of ringR) { const q = proj(node(kp, rr, R), R); ctx.lineTo(q[0], q[1]); } ctx.stroke();
+        const prey = proj(node(kp, 1.0, R), R); ctx.beginPath(); ctx.arc(prey[0], prey[1], 6, 0, 6.3); ctx.fillStyle = rose; ctx.fill();
+        // the spider
+        ctx.strokeStyle = spider; ctx.lineWidth = 2;
+        for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(hub[0], hub[1]); ctx.lineTo(hub[0] + Math.cos(a) * 20, hub[1] + Math.sin(a) * 14); ctx.stroke(); }
+        ctx.beginPath(); ctx.arc(hub[0], hub[1], 8, 0, 6.3); ctx.fillStyle = spider; ctx.fill();
+      }
+      addEventListener("resize", () => { size(); frame(); }); size(); frame();
+    })();
+
+    (function heads() {
+      const svg = document.getElementById("heads-svg"); const W = 640, cx = W / 2; let s = "";
+      ["Q", "K", "V"].forEach((l, k) => { const x = cx - 70 + k * 70; s += `<rect x="${x - 26}" y="8" width="52" height="26" rx="7" fill="#d3e0e6" stroke="rgba(28,27,24,.18)"/>` + T(x, 26, l, 13); });
+      const n = 8, gap = (W - 60) / n, y = 90;
+      for (let i = 0; i < n; i++) {
+        const x = 30 + gap * i + gap / 2;
+        s += `<line x1="${cx}" y1="34" x2="${x}" y2="${y}" stroke="#9aa0a6" stroke-width="1.3"/>`;
+        s += `<circle cx="${x}" cy="${y + 13}" r="13" fill="#cdd9cf" stroke="rgba(28,27,24,.18)"/>` + T(x, y + 17, "L" + (i + 1), 10);
+        s += `<line x1="${x}" y1="${y + 26}" x2="${cx}" y2="150" stroke="#9aa0a6" stroke-width="1.3"/>`;
+      }
+      s += `<rect x="${cx - 70}" y="150" width="140" height="26" rx="7" fill="#e7dac8" stroke="rgba(28,27,24,.18)"/>` + T(cx, 167, "pool (concat)", 12);
+      s += `<line x1="${cx}" y1="176" x2="${cx}" y2="184" stroke="#9aa0a6" stroke-width="1.3"/>`;
+      s += `<rect x="${cx - 70}" y="184" width="140" height="26" rx="7" fill="#d3e0e6" stroke="rgba(28,27,24,.18)"/>` + T(cx, 201, "mix · W_o", 12);
+      svg.innerHTML = s;
+    })();
+
+    (function pe() {
+      const svg = document.getElementById("pe-svg"); const W = 640, H = 240, pad = 16, mid = H / 2;
+      const waves = [{ wl: 90, c: "#7aaace" }, { wl: 170, c: "#b48ec0" }, { wl: 320, c: "#c99f72" }, { wl: 600, c: "#8aa890" }];
+      let s = `<line x1="${pad}" y1="${mid}" x2="${W - pad}" y2="${mid}" stroke="#cfcabd" stroke-width="1"/>`;
+      for (const w of waves) {
+        let d = "";
+        for (let x = pad; x <= W - pad; x += 3) { const y = mid - Math.sin((x - pad) / w.wl * Math.PI * 2) * 70; d += (x === pad ? "M" : "L") + x.toFixed(1) + " " + y.toFixed(1) + " "; }
+        s += `<path d="${d}" fill="none" stroke="${w.c}" stroke-width="2.4" stroke-linecap="round" opacity="0.92"/>`;
+      }
+      svg.innerHTML = s;
+    })();
+
+    (function hub() {
+      const svg = document.getElementById("hub-svg"); const W = 640, H = 420, cx = W / 2, cy = H / 2 + 6, R = 158; let s = "";
+      const nodes = [
+        { t: "chat & writing", c: "#cdd9cf" }, { t: "code (cursor)", c: "#d3e0e6" },
+        { t: "search & feeds", c: "#e7dac8" }, { t: "images & video", c: "#ddd7e6" },
+        { t: "speech to text", c: "#ecccc9" }, { t: "recommendation", c: "#cdd9cf" },
+        { t: "protein folding", c: "#d3e0e6" }, { t: "weather & science", c: "#e7dac8" },
+      ];
+      nodes.forEach((n, i) => { const a = (i / nodes.length) * Math.PI * 2 - Math.PI / 2; const x = cx + Math.cos(a) * R, y = cy + Math.sin(a) * R * 0.82; s += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#9aa0a6" stroke-width="1.4" opacity="0.7"/>`; });
+      nodes.forEach((n, i) => { const a = (i / nodes.length) * Math.PI * 2 - Math.PI / 2; const x = cx + Math.cos(a) * R, y = cy + Math.sin(a) * R * 0.82; const w = n.t.length * 7.4 + 24; s += `<rect x="${x - w / 2}" y="${y - 15}" width="${w}" height="30" rx="15" fill="${n.c}" stroke="rgba(28,27,24,.16)"/>` + T(x, y + 5, n.t, 12.5, 700); });
+      s += `<circle cx="${cx}" cy="${cy}" r="46" fill="#16161a"/>` + T(cx, cy - 2, "the", 11, 600, "#9aa0a6") + T(cx, cy + 14, "transformer", 14, 800, "#f0ede4");
+      svg.innerHTML = s;
+    })();
+  </script>
+</body>
+</html>

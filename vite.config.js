@@ -7,7 +7,12 @@ const html = (dir) =>
     .filter((f) => f.isFile() && f.name.endsWith(".html"))
     .map((f) => (dir === "." ? f.name : `${dir}/${f.name}`));
 
-const pages = [...html("."), ...html("writing")];
+const pages = [
+  ...html("."),
+  ...html("writing"),
+  ...html("writing/attention"),
+  ...html("writing/attention/explore"),
+];
 
 export default defineConfig({
   build: {

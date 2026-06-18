@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · attention, in motion</title>
+  <meta name="description" content="A scrolling 3D companion to my transformer article: watch words feel each other across the web, see the eight legs, the temperature, and the four lines of python it reduces to." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #f7f4ec; --ink: #1c1b18; --muted: #6c6a62; --faint: #a6a399; --line: #e4e0d6;
+      --sage: #cdd9cf; --sage-deep: #b9c9bd; --clay: #e7dac8; --sky: #d3e0e6; --lilac: #ddd7e6; --rose: #e0788e;
+      --grotesk: "Hanken Grotesk", system-ui, sans-serif; --serif: "Newsreader", Georgia, serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+    body.dark { --paper: #0e0f13; --ink: rgba(247,248,240,0.9); --muted: rgba(247,248,240,0.52); --faint: rgba(247,248,240,0.32); --line: rgba(247,248,240,0.14); }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: var(--paper); color: var(--ink); font-family: var(--serif); -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background .4s ease, color .4s ease; }
+    a { color: inherit; }
+
+    #stage { position: fixed; inset: 0; z-index: 0; touch-action: none; }
+    .glow {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(46% 46% at 52% 50%, color-mix(in srgb, var(--rose) 9%, transparent), transparent 70%),
+                  radial-gradient(34% 34% at 50% 48%, color-mix(in srgb, var(--sage-deep) 10%, transparent), transparent 72%);
+    }
+
+    .bar { position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 22px 30px; }
+    .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo .mark { font-weight: 700; font-size: 20px; color: #9cd5ff; }
+    .logo .wm { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+    .bar-right { display: flex; align-items: center; gap: 20px; }
+    .bar .back { font-family: var(--mono); font-size: 13px; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .bar .back:hover { color: var(--ink); }
+    #theme { background: none; border: none; cursor: pointer; font-size: 17px; color: var(--muted); line-height: 1; transition: color .2s, transform .4s ease; }
+    #theme:hover { color: var(--ink); transform: rotate(35deg); }
+
+    .progress { position: fixed; top: 0; left: 0; height: 2px; width: 0; z-index: 11; background: var(--rose); transition: width .15s linear; }
+    .rail { position: fixed; right: 22px; top: 50%; transform: translateY(-50%); z-index: 9; display: flex; flex-direction: column; gap: 11px; }
+    .rail button { width: 7px; height: 7px; border-radius: 50%; background: var(--line); border: none; padding: 0; cursor: pointer; transition: all .3s; }
+    .rail button.on { background: var(--rose); transform: scale(1.6); }
+
+    .cue { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 9; color: var(--muted); font-family: var(--mono); font-size: 12px; transition: opacity .5s; }
+    .legend { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); z-index: 9; color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; opacity: 0.85; }
+    .legend b { color: var(--ink); font-weight: 500; }
+    .legend .sw { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--rose); vertical-align: middle; margin-right: 5px; }
+
+    main { position: relative; z-index: 2; }
+    .scene { min-height: 100vh; display: flex; align-items: center; padding: 12vh 6vw; }
+    .scene.left { justify-content: flex-start; }
+    .scene.right { justify-content: flex-end; }
+
+    /* text sits in a frosted panel on one side; the web breathes in the other half */
+    .card {
+      max-width: 440px; padding: 30px 32px; border-radius: 18px;
+      background: color-mix(in srgb, var(--paper) 80%, transparent);
+      backdrop-filter: blur(14px) saturate(1.1);
+      border: 1px solid var(--line);
+    }
+    .scene.wide .card { max-width: 560px; }
+    .kicker { font-family: var(--grotesk); font-weight: 700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+    .scene h1 { font-family: var(--grotesk); font-weight: 800; font-size: clamp(44px, 6vw, 84px); line-height: 0.98; letter-spacing: -0.035em; }
+    .scene h2 { font-family: var(--grotesk); font-weight: 800; font-size: clamp(27px, 3.4vw, 42px); line-height: 1.06; letter-spacing: -0.025em; margin-bottom: 16px; }
+    .scene p { font-size: clamp(15px, 1.4vw, 18px); line-height: 1.6; margin-bottom: 12px; color: var(--muted); }
+    .scene p em { color: var(--ink); font-style: italic; }
+    .scene .lead { font-size: clamp(17px, 1.8vw, 21px); margin-top: 18px; color: var(--ink); }
+
+    .uses { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 22px; }
+    .use { background: color-mix(in srgb, var(--paper) 88%, transparent); padding: 18px; }
+    .use .u-name { font-family: var(--mono); color: var(--rose); margin-bottom: 7px; font-size: 12px; }
+    .use h3 { font-family: var(--grotesk); font-weight: 700; font-size: 17px; margin-bottom: 5px; color: var(--ink); }
+    .use p { font-size: 13px; margin: 0; line-height: 1.45; }
+
+    .why { margin-top: 20px; display: flex; flex-direction: column; gap: 18px; }
+    .why .item { display: flex; gap: 16px; align-items: flex-start; }
+    .why .n { font-family: var(--mono); color: var(--rose); padding-top: 5px; min-width: 24px; }
+    .why .t h3 { font-family: var(--grotesk); font-weight: 700; font-size: 19px; margin-bottom: 4px; color: var(--ink); }
+    .why .t p { margin: 0; font-size: 15px; }
+
+    .code { margin-top: 22px; border-radius: 12px; background: #16161a; overflow: hidden; }
+    .code .topbar { display: flex; gap: 7px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .code .topbar i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.16); }
+    .code pre { padding: 18px 20px; font-family: var(--mono); font-size: clamp(11px, 1.1vw, 13.5px); line-height: 1.85; overflow-x: auto; color: #e8e6dd; }
+    .code .cmt { color: #7f8b7a; font-style: italic; } .code .kw { color: #c98fb0; } .code .fn { color: #9cd5ff; } .code .num { color: #e8b974; }
+
+    .map { margin-top: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .map .m { border-left: 2px solid var(--line); padding-left: 12px; }
+    .map .m .ref { display: block; margin-bottom: 4px; font-size: 12px; font-family: var(--mono); }
+    .map .m p { font-size: 12.5px; margin: 0; line-height: 1.4; }
+    .m.relate { border-color: #9cd5ff; } .m.relate .ref { color: #9cd5ff; }
+    .m.temp   { border-color: #e0788e; } .m.temp .ref { color: #e0788e; }
+    .m.bright { border-color: #e8b974; } .m.bright .ref { color: #e8b974; }
+    .m.gather { border-color: #8fb39a; } .m.gather .ref { color: #8fb39a; }
+
+    .seelink { margin-top: 20px; font-family: var(--grotesk); font-weight: 700; font-size: 15px; }
+    .seelink a { color: var(--ink); border-bottom: 2px solid var(--sage-deep); padding-bottom: 2px; text-decoration: none; }
+
+    @media (max-width: 760px) {
+      .scene, .scene.left, .scene.right { justify-content: center; padding: 16vh 6vw 14vh; align-items: flex-end; }
+      .card { max-width: 100%; background: color-mix(in srgb, var(--paper) 93%, transparent); }
+      .uses, .map { grid-template-columns: 1fr; }
+      .rail, .legend { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="stage"></canvas>
+  <div class="glow"></div>
+  <div class="progress" id="progress"></div>
+
+  <div class="bar">
+    <a class="logo" href="/writing/attention/">
+      <span class="mark">∞</span>
+      <span class="wm">← the article</span>
+    </a>
+    <div class="bar-right">
+      <button id="theme" type="button" aria-label="toggle theme" title="theme">☾</button>
+      <a class="back" href="/writing/">writing</a>
+    </div>
+  </div>
+
+  <div class="rail" id="rail"></div>
+  <div class="legend"><span class="sw"></span><b>dot</b> = a word · <b>thread</b> = softmax(QKᵀ/√d) weight · <b>colour</b> = head · <b>brightness</b> = weight</div>
+  <div class="cue" id="cue">scroll ↓</div>
+
+  <main>
+    <section class="scene left" data-scene="0">
+      <div class="card">
+        <p class="kicker">the mechanism behind modern ai</p>
+        <h1>attention</h1>
+        <p class="lead">claude, the autocomplete in cursor, the translator on your phone, all of them run on one idea: let every word feel every other word, and decide what matters.</p>
+      </div>
+    </section>
+
+    <section class="scene left" data-scene="1">
+      <div class="card">
+        <p class="kicker">what you're seeing</p>
+        <h2>each word reaches for the others</h2>
+        <p>ten words sit on a web. every glowing thread is one word <em>feeling</em> another, pulling in a little of its meaning. brighter and thicker means it leans on that word harder.</p>
+        <p>the model does this for <em>every word at once</em>, in a single pulse. that parallelism is the whole trick.</p>
+      </div>
+    </section>
+
+    <section class="scene right" data-scene="2">
+      <div class="card">
+        <p class="kicker">specialization</p>
+        <h2>a leg learns one kind of feeling</h2>
+        <p>a spider doesn't trust one set of threads. it runs many <em>attention heads</em> in parallel, eight legs. one tracks the previous word, one finds the subject, one stays local.</p>
+        <p>here the colours are different heads, each with its own habit. real models stack dozens.</p>
+      </div>
+    </section>
+
+    <section class="scene left" data-scene="3">
+      <div class="card">
+        <p class="kicker">the payoff</p>
+        <h2>who is &ldquo;it&rdquo;?</h2>
+        <p>watch the rose head from the word <em>it</em>. its strongest thread lands on <em>cat</em>, the model has resolved the pronoun across the whole sentence.</p>
+        <p>nobody wrote a rule for grammar. the pattern is just what attention learned.</p>
+      </div>
+    </section>
+
+    <section class="scene right" data-scene="4">
+      <div class="card">
+        <p class="kicker">one dial</p>
+        <h2>sharp focus, or a soft haze</h2>
+        <p>before the threads are drawn, the scores get divided by a <em>temperature</em>. low temperature collapses attention onto a single word; high temperature spreads it into an even wash.</p>
+        <p>it's the same dial you set on an llm when you turn the temperature up or down.</p>
+      </div>
+    </section>
+
+    <section class="scene left" data-scene="5">
+      <div class="card">
+        <p class="kicker">a concept in nature</p>
+        <h2>a flock has no leader</h2>
+        <p>watch a murmuration of starlings. no bird is in charge. each one simply <em>feels</em> its nearest neighbours, weighting the close ones more, and adjusts.</p>
+        <p>that's attention exactly: simple local rules, run by everyone at once, with the shape of the whole <em>emerging</em> from them. no conductor, no center.</p>
+      </div>
+    </section>
+
+    <section class="scene right wide" data-scene="6">
+      <div class="card">
+        <p class="kicker">in the wild</p>
+        <h2>where this lives today</h2>
+        <p>the same primitive, everywhere you've seen ai work.</p>
+        <div class="uses">
+          <div class="use"><div class="u-name">cursor · copilot</div><h3>code that knows your file</h3><p>attention reaches back across hundreds of lines to reuse something you defined far above.</p></div>
+          <div class="use"><div class="u-name">claude · chatgpt</div><h3>holding a conversation</h3><p>every reply feels the whole chat, how it still knows what &ldquo;it&rdquo; meant ten messages ago.</p></div>
+          <div class="use"><div class="u-name">translation</div><h3>aligning languages</h3><p>the original 2017 use: match words across languages even when the order flips.</p></div>
+          <div class="use"><div class="u-name">vision · biology</div><h3>pixels and proteins</h3><p>image patches feel each other (vit); amino acids feel each other to fold proteins (alphafold).</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene left" data-scene="7">
+      <div class="card">
+        <p class="kicker">why it matters</p>
+        <h2>it's why this era happened</h2>
+        <div class="why">
+          <div class="item"><div class="n">01</div><div class="t"><h3>long-range memory</h3><p>old networks crawl left-to-right and forget. attention connects any two words in <em>one</em> step.</p></div></div>
+          <div class="item"><div class="n">02</div><div class="t"><h3>fully parallel</h3><p>every word at once, not in sequence, which maps perfectly onto gpus, so you can train on the whole internet.</p></div></div>
+          <div class="item"><div class="n">03</div><div class="t"><h3>it just scales</h3><p>the same block works at one layer or a hundred billion parameters. stack it and capability keeps climbing.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene right wide" data-scene="8">
+      <div class="card">
+        <p class="kicker">the whole idea</p>
+        <h2>it's four lines of python</h2>
+        <p>strip away the engineering and self-attention is one short function.</p>
+        <div class="code">
+          <div class="topbar"><i></i><i></i><i></i></div>
+<pre><span class="kw">def</span> <span class="fn">attention</span>(Q, K, V):
+    d       = Q.shape[-<span class="num">1</span>]
+    scores  = Q @ K.T / np.<span class="fn">sqrt</span>(d)   <span class="cmt"># how hard each thread pulls</span>
+    weights = <span class="fn">softmax</span>(scores)        <span class="cmt"># each thread's brightness</span>
+    <span class="kw">return</span> weights @ V               <span class="cmt"># gather along the threads</span></pre>
+        </div>
+        <div class="map">
+          <div class="m relate"><span class="ref">Q @ K.T</span><p>the raw pull of every thread.</p></div>
+          <div class="m temp"><span class="ref">/ np.sqrt(d)</span><p>the temperature dial.</p></div>
+          <div class="m bright"><span class="ref">softmax(scores)</span><p>how bright each thread glows.</p></div>
+          <div class="m gather"><span class="ref">weights @ V</span><p>the signal flows home.</p></div>
+        </div>
+        <p class="seelink"><a href="/writing/attention/#build">see the full model, coded from scratch →</a></p>
+      </div>
+    </section>
+
+    <section class="scene left" data-scene="9">
+      <div class="card">
+        <p class="kicker">that's it</p>
+        <h2>dots, threads, a softmax.</h2>
+        <p class="lead">everything else, the billions of parameters, the layers, the training, is this one move, repeated.</p>
+        <p class="seelink"><a href="/writing/attention/">← back to the article</a></p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    const KEY = "tf-dark", btn = document.getElementById("theme");
+    const setDark = (on) => { document.body.classList.toggle("dark", on); btn.textContent = on ? "☀" : "☾"; try { localStorage.setItem(KEY, on ? "1" : "0"); } catch {} };
+    try { setDark(localStorage.getItem(KEY) === "1"); } catch {}
+    btn.addEventListener("click", () => setDark(!document.body.classList.contains("dark")));
+    addEventListener("keydown", (e) => { if (e.key === "l" && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) setDark(!document.body.classList.contains("dark")); });
+  </script>
+  <script type="module" src="./attention.js"></script>
+</body>
+</html>
