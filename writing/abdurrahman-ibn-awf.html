@@ -4,152 +4,245 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>muhib waqar · what abdurrahman ibn awf knew about money</title>
-  <meta name="description" content="the richest companion of the prophet built an empire from nothing and gave most of it away. a researched look at his charity, and the barakah effect: why giving multiplied his wealth instead of shrinking it." />
+  <meta name="description" content="the richest companion of the prophet built an empire from nothing and gave most of it away. a researched look at the charity principle and the barakah effect: why giving multiplied his wealth instead of shrinking it. by muhib waqar." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    /* researched-essay diagrams, theme-aware via site variables */
-    .led { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin: 30px 0; }
-    .led .s { background: var(--bg); padding: 20px 22px; }
-    .led .s .big { font-family: var(--serif); font-size: 27px; font-weight: 600; color: var(--ink); line-height: 1.1; }
-    .led .s .lbl { color: var(--dim); font-size: 14px; line-height: 1.45; margin-top: 5px; }
-    figure.d { margin: 34px 0; }
-    figure.d figcaption { color: var(--dim); font-size: 14px; line-height: 1.5; margin-top: 12px; text-align: center; }
-    .thirds { display: flex; height: 46px; border-radius: 8px; overflow: hidden; margin: 26px 0 14px; }
+    :root {
+      --paper: #f7f4ec; --ink: #1c1b18; --muted: #6c6a62; --faint: #a6a399; --line: #e4e0d6;
+      --sage: #cdd9cf; --sage-deep: #b9c9bd; --clay: #e7dac8; --sky: #d3e0e6; --lilac: #ddd7e6; --rose: #e0788e;
+      --grotesk: "Hanken Grotesk", system-ui, sans-serif; --serif: "Newsreader", Georgia, serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+    body.dark { --paper: #0e0f13; --ink: rgba(247,248,240,0.9); --muted: rgba(247,248,240,0.52); --faint: rgba(247,248,240,0.32); --line: rgba(247,248,240,0.14); }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { background: var(--paper); color: var(--ink); font-family: var(--serif); -webkit-font-smoothing: antialiased; transition: background .4s ease, color .4s ease; overflow-x: hidden; }
+    a { color: inherit; }
+
+    .bar { display: flex; align-items: center; justify-content: space-between; padding: 26px 34px; }
+    .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo .mark { font-weight: 700; font-size: 22px; color: #9cd5ff; }
+    .logo .wm { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+    .bar-right { display: flex; align-items: center; gap: 20px; }
+    .bar .back { font-family: var(--mono); font-size: 13px; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .bar .back:hover { color: var(--ink); }
+    #theme { background: none; border: none; cursor: pointer; font-size: 17px; color: var(--muted); line-height: 1; transition: color .2s, transform .4s ease; }
+    #theme:hover { color: var(--ink); transform: rotate(35deg); }
+
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    header.hero { text-align: center; padding: 50px 0 0; }
+    .eyebrow { font-family: var(--grotesk); font-weight: 700; font-size: 15px; }
+    h1 { font-family: var(--grotesk); font-weight: 800; font-size: clamp(38px, 6.5vw, 66px); line-height: 1.04; letter-spacing: -0.035em; margin: 18px 0 16px; }
+    .byline { font-family: var(--serif); font-size: 19px; line-height: 1.5; color: var(--muted); max-width: 540px; margin: 0 auto; }
+    .byline .auth { display: block; font-size: 14px; color: var(--faint); margin-top: 12px; font-family: var(--mono); }
+
+    .hero-card { margin: 40px auto 0; border-radius: 26px; background: var(--sage); aspect-ratio: 16/9; display: grid; place-items: center; overflow: hidden; }
+    .hero-card svg { width: 50%; height: 60%; }
+
+    section { padding: 18px 0; }
+    .lede { font-size: 23px; line-height: 1.5; margin: 46px 0 10px; color: var(--ink); }
+    p.body { font-size: 20px; line-height: 1.62; margin: 22px 0; color: var(--ink); }
+    p.body a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .kicker { font-family: var(--grotesk); font-weight: 700; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin-top: 64px; }
+    h2 { font-family: var(--grotesk); font-weight: 800; font-size: clamp(27px, 4.2vw, 38px); line-height: 1.08; letter-spacing: -0.03em; margin: 10px 0 8px; color: var(--ink); }
+
+    .card { border-radius: 22px; padding: 34px; margin: 34px 0; }
+    .card.sage { background: var(--sage); }
+    .card.bordered { background: #fbf9f3; border: 1px solid #e4e0d6; }
+    .card .card-title { font-family: var(--grotesk); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; margin-bottom: 20px; color: #1c1b18; }
+    .caption { font-size: 16px; line-height: 1.5; color: #6c6a62; margin-top: 4px; }
+    figure { margin: 34px 0; }
+    figure figcaption { font-size: 16px; line-height: 1.5; color: var(--muted); margin-top: 14px; }
+
+    .quote { font-family: var(--serif); font-style: italic; font-size: clamp(20px, 3vw, 26px); line-height: 1.4; text-align: center; color: #1c1b18; }
+    .qsrc { text-align: center; font-family: var(--mono); font-size: 12px; color: #6c6a62; margin-top: 12px; }
+
+    .tldr { border-left: 3px solid var(--sage-deep); background: #efebe1; border-radius: 14px; padding: 22px 26px; margin: 36px 0; font-size: 20px; line-height: 1.5; color: #1c1b18; }
+    .tldr b { font-family: var(--grotesk); font-weight: 800; }
+
+    .stat { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin: 30px 0; }
+    .stat .s { background: #fbf9f3; padding: 22px 22px; }
+    .stat .s .big { font-family: var(--grotesk); font-weight: 800; font-size: 23px; color: #1c1b18; line-height: 1.1; }
+    .stat .s p { font-size: 14px; color: #6c6a62; line-height: 1.45; margin-top: 6px; }
+
+    .chart { width: 100%; display: block; }
+    .thirds { display: flex; height: 46px; border-radius: 8px; overflow: hidden; }
     .thirds div { flex: 1; }
-    .thirds .a { background: var(--accent); } .thirds .b { background: var(--copper); } .thirds .c { background: var(--dusk); }
-    .tlegend { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; font-family: var(--mono); font-size: 12px; color: var(--dim); }
+    .thirds .a { background: #b9c9bd; } .thirds .b { background: #d8c4a6; } .thirds .c { background: #5b7a86; }
+    .tlegend { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; font-family: var(--mono); font-size: 12px; color: #6c6a62; margin-top: 14px; }
     .tlegend span { display: inline-flex; align-items: center; gap: 7px; }
     .tlegend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
-    .tlegend .a { background: var(--accent); } .tlegend .b { background: var(--copper); } .tlegend .c { background: var(--dusk); }
-    svg.diag { width: 100%; height: auto; display: block; }
-    svg.diag text { font-family: var(--mono); fill: var(--ink); }
-    svg.diag .dim { fill: var(--dim); }
-    svg.diag .stroke { stroke: var(--accent); fill: none; }
-    svg.diag .line { stroke: var(--line); fill: none; }
-    svg.diag .pill { fill: var(--bg); stroke: var(--line); stroke-width: 1; }
-    svg.diag .give { stroke: var(--accent); fill: none; }
-    svg.diag .hoard { stroke: var(--dim); fill: none; }
-    svg.diag .ahead { fill: var(--accent); }
+    .tlegend .a { background: #b9c9bd; } .tlegend .b { background: #d8c4a6; } .tlegend .c { background: #5b7a86; }
+
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+    @media (max-width: 640px) {
+      .wrap { padding: 0 18px; } .bar { padding: 18px 16px; }
+      .card { padding: 24px 18px; } .stat { grid-template-columns: 1fr; }
+      .hero-card { aspect-ratio: 4 / 3; } .tldr { padding: 20px; font-size: 18px; }
+    }
   </style>
 </head>
 <body>
 
-  <nav>
-    <a href="/" class="mono dim wordmark">muhib waqar</a>
-    <div class="nav-links mono">
-      <a href="/writing/">&larr; writing</a>
-      <a href="/#contact">contact</a>
-      <span class="lights-wrap">
-        <button class="lights-toggle" id="lights-toggle" type="button" aria-label="toggle lights" title="lights">☀</button>
-        <kbd class="lights-key">l</kbd>
-      </span>
+  <div class="bar">
+    <a class="logo" href="/">
+      <span class="mark">∞</span>
+      <span class="wm">muhib waqar</span>
+    </a>
+    <div class="bar-right">
+      <button id="theme" type="button" aria-label="toggle theme" title="theme">☾</button>
+      <a class="back" href="/writing/">← writing</a>
     </div>
-  </nav>
+  </div>
 
-  <article class="page article">
-    <p class="article-kicker mono dim reveal">writing · faith &amp; wealth</p>
-    <h1 class="article-title reveal">what abdurrahman ibn awf knew about money</h1>
-    <p class="article-meta mono dim reveal">the charity principle and the barakah effect · 9 min</p>
+  <header class="hero wrap">
+    <p class="eyebrow reveal">faith &amp; wealth</p>
+    <h1 class="reveal">what abdurrahman ibn awf knew about money</h1>
+    <p class="byline reveal">
+      the richest companion of the prophet built an empire from nothing and gave most of it away. this is the part we understand least: how giving multiplied his wealth instead of shrinking it.
+      <span class="auth">by muhib waqar · 9 min read</span>
+    </p>
+    <div class="hero-card reveal">
+      <svg viewBox="0 0 200 200" fill="none" stroke="#1c1b18" stroke-width="3" aria-hidden="true">
+        <circle cx="100" cy="100" r="14" fill="#1c1b18" stroke="none"/>
+        <circle cx="100" cy="100" r="34" opacity="0.7"/>
+        <circle cx="100" cy="100" r="58" opacity="0.45"/>
+        <circle cx="100" cy="100" r="82" opacity="0.22"/>
+        <circle cx="158" cy="58" r="5" fill="#1c1b18" stroke="none"/>
+        <circle cx="44" cy="150" r="5" fill="#1c1b18" stroke="none"/>
+        <circle cx="150" cy="148" r="4" fill="#1c1b18" stroke="none"/>
+      </svg>
+    </div>
+  </header>
 
-    <div class="prose article-prose reveal">
-      <p>most of us get our money advice from the wrong people. dave ramsey, robert kiyosaki, a tiktoker with a ring light. that is a shame, because we have our own teachers, and one of them ran circles around all of them fourteen hundred years ago.</p>
+  <main class="wrap">
 
-      <p>abdurrahman ibn awf, may allah be pleased with him, was one of the ten companions promised paradise, and one of the wealthiest men of his time. he arrived in madinah with nothing, having left almost everything behind in makkah, and built it all back from the ground. by the end of his life the numbers are hard to even hold in your head. he died in 32 ah, and a single quarter of his estate was valued at eighty-four thousand dinars.</p>
+    <p class="body reveal" style="margin-top:40px">most of us get our money advice from the wrong people. dave ramsey, robert kiyosaki, a tiktoker with a ring light. that is a shame, because we have our own teachers, and one of them ran circles around all of them fourteen hundred years ago.</p>
 
-      <p class="reveal">i want to focus on one thread of his life, because it is the one we understand least: how he gave, and what giving did to his wealth.</p>
+    <div class="tldr reveal"><b>the gist:</b> abdurrahman ibn awf arrived in madinah with nothing and died one of the wealthiest men of his era, having given away fortunes the whole way. the charity was not a tax on the building. it was the engine of it. giving looks like subtraction for exactly one step, and then barakah closes the loop.</div>
 
-      <h3>the ledger</h3>
-      <p>first, the scale. these are not round numbers i am inventing. they come from the early biographers, tabaqat ibn sa'd and dhahabi's siyar.</p>
+    <p class="lede reveal">abdurrahman ibn awf, may allah be pleased with him, was one of the ten companions promised paradise. he left almost everything behind in makkah, rebuilt it all from the ground, and by the end the numbers are hard to even hold in your head. a single quarter of the estate he left was worth eighty-four thousand dinars.</p>
 
-      <div class="led reveal">
-        <div class="s"><div class="big">700 camels</div><div class="lbl">one caravan, loaded with goods, given away in a single afternoon when a hadith moved him.</div></div>
-        <div class="s"><div class="big">50,000 dinars</div><div class="lbl">in gold, given from his own wealth across his life.</div></div>
-        <div class="s"><div class="big">1,500 camels</div><div class="lbl">to equip an army in the path of allah, in one gift.</div></div>
-        <div class="s"><div class="big">400 dinars each</div><div class="lbl">left in his will to every surviving veteran of badr, plus a large legacy to the prophet's widows.</div></div>
-        <div class="s"><div class="big">100 horses · 1,000 camels · 10,000 sheep</div><div class="lbl">grazing on his land at al-baqi, at one point in his life.</div></div>
-        <div class="s"><div class="big">84,000 dinars</div><div class="lbl">the value of just one quarter of the estate he left behind.</div></div>
-      </div>
+    <p class="kicker reveal">the ledger</p>
+    <h2 class="reveal">the scale of it</h2>
+    <p class="body reveal">these are not round numbers i am inventing. they come from the early biographers, tabaqat ibn sa'd and dhahabi's siyar a'lam an-nubala.</p>
 
-      <h3>he asked for the market, not a handout</h3>
-      <p>before any of that, there was a man with nothing. when he reached madinah the prophet, peace be upon him, paired him with sa'd ibn ar-rabi', who offered him half of everything he owned. abdurrahman refused. "just show me the way to the market." he started trading dried yoghurt and butter, from zero, by choice. allah does not change the condition of a people until they change what is in themselves. self-reliance is not pride here. it is the default our deen sets.</p>
+    <div class="stat reveal">
+      <div class="s"><div class="big">700 camels</div><p>one caravan of goods, given away in a single afternoon when a hadith moved him.</p></div>
+      <div class="s"><div class="big">50,000 dinars</div><p>in gold, given from his own wealth across his life.</p></div>
+      <div class="s"><div class="big">1,500 camels</div><p>to equip an army in the path of allah, in one gift.</p></div>
+      <div class="s"><div class="big">400 dinars each</div><p>left in his will to every surviving veteran of badr, plus a legacy to the prophet's widows.</p></div>
+      <div class="s"><div class="big">100 horses · 1,000 camels · 10,000 sheep</div><p>grazing on his land at al-baqi at one point in his life.</p></div>
+      <div class="s"><div class="big">84,000 dinars</div><p>the value of just one quarter of the estate he left behind.</p></div>
+    </div>
 
-      <h3>and he sold with ihsan</h3>
-      <p>he inspected his own goods. if something was flawed he marked it flawed and dropped the price rather than hide it. that is ihsan, excellence when no one is checking, and it built a reputation that made strangers comfortable buying from him. trust is the cheapest marketing there is and the most expensive thing to fake.</p>
+    <p class="kicker reveal">where it began</p>
+    <h2 class="reveal">he asked for the market, not a handout</h2>
+    <p class="body reveal">before any of that, there was a man with nothing. when he reached madinah the prophet, peace be upon him, paired him with sa'd ibn ar-rabi', who offered him half of everything he owned. abdurrahman refused. "just show me the way to the market." he started trading dried yoghurt and butter, from zero, by choice. allah does not change the condition of a people until they change what is in themselves. and he sold with <em>ihsan</em>: he marked his own flawed goods and dropped the price rather than hide the flaw, which built the kind of trust that makes strangers comfortable buying from you.</p>
 
-      <h3>all of madinah lived off him</h3>
-      <p>here is where it gets remarkable. talha, may allah be pleased with him, described the city's reliance on this one man in three parts: a third of madinah carried debts that abdurrahman paid off outright, a third took interest-free loans from him to start and grow their trade, and a third lived on his charity directly. "all of madinah," he said, "lives off abdurrahman."</p>
+    <p class="kicker reveal">the reach</p>
+    <h2 class="reveal">all of madinah lived off him</h2>
+    <p class="body reveal">talha, may allah be pleased with him, described the city's reliance on this one man in three parts: a third of madinah carried debts that abdurrahman paid off outright, a third took interest-free loans from him to start and grow their trade, and a third lived on his charity directly. "all of madinah," he said, "lives off abdurrahman."</p>
 
-      <figure class="d reveal">
+    <figure class="reveal">
+      <div class="card bordered">
+        <div class="card-title">how one man's wealth held up a city</div>
         <div class="thirds"><div class="a"></div><div class="b"></div><div class="c"></div></div>
         <div class="tlegend">
           <span><i class="a"></i> debts he paid off</span>
           <span><i class="b"></i> interest-free loans</span>
           <span><i class="c"></i> direct charity</span>
         </div>
-        <figcaption>talha's account of how one man's wealth held up a whole city. notice the middle third: not handouts, but interest-free capital that let people stand on their own.</figcaption>
-      </figure>
+      </div>
+      <figcaption>notice the middle third: not handouts, but interest-free capital that let people stand on their own two feet.</figcaption>
+    </figure>
 
-      <h3>the charity principle</h3>
-      <p>now the part that sounds like poetry until you watch someone live it. the prophet, peace be upon him, said plainly:</p>
-      <p style="font-style:italic; color:var(--ink);">"charity does not decrease wealth." (sahih muslim 2588)</p>
-      <p>read it once and it sounds like comfort for the giver. read it as abdurrahman did and it is a claim about how the world actually runs. the quran frames the same idea as a transaction with allah himself:</p>
-      <p style="font-style:italic; color:var(--ink);">"who is it that will loan allah a goodly loan, so he may multiply it for him many times over?" (al-baqarah 2:245)</p>
-      <p>a loan, not a loss. and the word we use for the obligatory charity, <em>zakat</em>, carries it in its very root: the arabic z-k-w means both <em>to purify</em> and <em>to grow</em>. the same act cleans the wealth and increases it. that is not a metaphor stacked on top of the word. it is the word.</p>
+    <p class="kicker reveal">the charity principle</p>
+    <h2 class="reveal">a loan, not a loss</h2>
+    <p class="body reveal">here is the part that sounds like poetry until you watch someone live it. the prophet, peace be upon him, said plainly:</p>
 
-      <h3>the barakah effect</h3>
-      <p>so what is actually being promised? not a guaranteed return on investment. the word is <em>barakah</em>: blessing, an increase that runs past what the visible causes can explain. a small thing that stretches further than it should. an amount you gave away that finds its way back larger, through a door you were not watching.</p>
-      <p>abdurrahman lived inside that promise. the famous caravan, seven hundred camels long, was said to enter madinah while its tail had not yet left the far side of the city. when he heard the prophet, peace be upon him, warn about the burden of wealth in the next life, he wept and gave the entire caravan away on the spot, goods and all. to a spreadsheet that is ruin. what actually followed was more provision, again and again, until the numbers in the ledger above were possible. the money chased him precisely because he refused to be owned by it.</p>
-
-      <figure class="d reveal">
-        <svg class="diag" viewBox="0 0 640 200" role="img" aria-label="the barakah loop">
-          <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahead"/></marker></defs>
-          <g>
-            <rect class="pill" x="20" y="40" width="124" height="40" rx="20"/><text x="82" y="64" text-anchor="middle" font-size="13">you give</text>
-            <rect class="pill" x="186" y="40" width="124" height="40" rx="20"/><text x="248" y="64" text-anchor="middle" font-size="12.5">less, on paper</text>
-            <rect class="pill" x="352" y="40" width="124" height="40" rx="20"/><text x="414" y="64" text-anchor="middle" font-size="13">barakah</text>
-            <rect class="pill" x="510" y="40" width="118" height="40" rx="20"/><text x="569" y="64" text-anchor="middle" font-size="12.5">returns, more</text>
-          </g>
-          <g class="stroke" stroke-width="1.6" marker-end="url(#ar)">
-            <path d="M148 60 L182 60"/><path d="M314 60 L348 60"/><path d="M480 60 L506 60"/>
-            <path d="M569 84 C 569 150, 82 150, 82 86"/>
-          </g>
-          <text x="325" y="172" text-anchor="middle" font-size="12" class="dim">and out of gratitude, you give again</text>
-        </svg>
-        <figcaption>the loop abdurrahman trusted. giving looks like subtraction for exactly one step. barakah closes the circle, and gratitude starts it over.</figcaption>
-      </figure>
-
-      <p>this is the hard reframe. hoarding feels like the safe way to grow, a number you guard and watch tick up. giving feels like the number going down. but the promise inverts it: the guarded pile is what stagnates, and the open hand is what compounds, because a different kind of accounting takes over.</p>
-
-      <figure class="d reveal">
-        <svg class="diag" viewBox="0 0 640 240" role="img" aria-label="hoarding versus giving over time">
-          <g class="line" stroke-width="1"><path d="M48 206 L600 206"/><path d="M48 24 L48 206"/></g>
-          <path class="hoard" stroke-width="2" stroke-dasharray="5 5" d="M48 206 L600 168"/>
-          <path class="give" stroke-width="2.6" d="M48 206 C 260 200, 430 150, 600 38"/>
-          <text x="610" y="170" font-size="12" class="dim">hoard</text>
-          <text x="610" y="42" font-size="13">give</text>
-          <text x="324" y="232" text-anchor="middle" font-size="12" class="dim">time, and the giving keeps going</text>
-        </svg>
-        <figcaption>illustrative, not a literal return curve. barakah is not a yield you can underwrite. it is blessing that tends to exceed the visible cause, which is exactly why it asks for trust.</figcaption>
-      </figure>
-
-      <h3>he kept the books on his soul</h3>
-      <p>and still he was afraid of it. a lavish meal was once set in front of him and he wept, remembering a companion who died with almost nothing. "i fear we have been given our reward in this life instead of the next." a man already promised paradise, still auditing his own heart. narrations describe him literally tallying it: how many camels, how much gold, set against how much had gone out in the path of allah. let every soul look to what it has sent ahead for tomorrow. he made gratitude an action and then he checked the balance.</p>
-
-      <h3>none of it was a trade-off</h3>
-      <p>that is the thing that gets me. he did not get rich despite his deen, or stay poor because of it. the wealth and the worship were a single motion. the giving was not a tax on the building; it was the engine of it. you can build something large and keep your heart in the next life. you just have to hold it open-handed, the way he did.</p>
-
-      <p>so before i take money advice from a stranger online, i want to sit with men like this first. that is the wealth i actually want: load-bearing for the people around me, and weightless on my own heart. inshallah.</p>
-
-      <p class="prose-sm">sources: tabaqat ibn sa'd; dhahabi, siyar a'lam an-nubala; sahih muslim 2588; sahih al-bukhari; qur'an 2:245, 13:11, 14:7. i first read a fuller telling of his life on islamicfinanceguru.</p>
+    <div class="card sage reveal">
+      <p class="quote">"charity does not decrease wealth."</p>
+      <p class="qsrc">sahih muslim 2588</p>
     </div>
 
-    <p class="article-meta mono dim" style="margin-top:48px">← <a href="/writing/">more writing</a></p>
-  </article>
+    <p class="body reveal">read it once and it sounds like comfort for the giver. read it as abdurrahman did and it is a claim about how the world actually runs. the quran frames the same idea as a transaction with allah himself: <em>"who is it that will loan allah a goodly loan, so he may multiply it for him many times over?"</em> (al-baqarah 2:245). a loan, not a loss.</p>
+    <p class="body reveal">and the word we use for obligatory charity, <em>zakat</em>, carries it in its very root. the arabic z-k-w means both <em>to purify</em> and <em>to grow</em>. the same act cleans the wealth and increases it. that is not a metaphor stacked on top of the word. it is the word.</p>
 
-  <script type="module" src="/main.js"></script>
+    <p class="kicker reveal">the barakah effect</p>
+    <h2 class="reveal">giving is subtraction for one step</h2>
+    <p class="body reveal">so what is actually promised? not a guaranteed return on investment. the word is <em>barakah</em>: blessing, an increase that runs past what the visible causes can explain. a small thing that stretches further than it should. an amount you gave away that finds its way back larger, through a door you were not watching.</p>
+    <p class="body reveal">abdurrahman lived inside that promise. the famous caravan, seven hundred camels long, was said to be entering madinah while its tail had not yet left the far side of the city. when he heard the prophet, peace be upon him, warn about the burden of wealth in the next life, he wept and gave the entire caravan away on the spot, goods and all. to a spreadsheet that is ruin. what actually followed was more provision, again and again, until the numbers above were possible. the money chased him precisely because he refused to be owned by it.</p>
+
+    <figure class="reveal">
+      <div class="card bordered">
+        <div class="card-title">the barakah loop</div>
+        <svg class="chart" viewBox="0 0 640 200" role="img" aria-label="the barakah loop">
+          <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#e0788e"/></marker></defs>
+          <g font-family="Hanken Grotesk,sans-serif" font-weight="700" font-size="13" fill="#1c1b18" text-anchor="middle">
+            <rect x="20" y="40" width="124" height="40" rx="20" fill="#fff" stroke="#e4e0d6"/><text x="82" y="64">you give</text>
+            <rect x="186" y="40" width="124" height="40" rx="20" fill="#fff" stroke="#e4e0d6"/><text x="248" y="64" font-size="12.5">less, on paper</text>
+            <rect x="352" y="40" width="124" height="40" rx="20" fill="#cdd9cf" stroke="#b9c9bd"/><text x="414" y="64">barakah</text>
+            <rect x="510" y="40" width="118" height="40" rx="20" fill="#fff" stroke="#e4e0d6"/><text x="569" y="64" font-size="12.5">returns, more</text>
+          </g>
+          <g stroke="#e0788e" stroke-width="1.8" fill="none" marker-end="url(#ar)">
+            <path d="M148 60 L182 60"/><path d="M314 60 L348 60"/><path d="M480 60 L506 60"/>
+            <path d="M569 84 C 569 152, 82 152, 82 86"/>
+          </g>
+          <text x="325" y="174" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="#6c6a62">and out of gratitude, you give again</text>
+        </svg>
+      </div>
+      <figcaption>the loop abdurrahman trusted. giving looks like subtraction for exactly one step. barakah closes the circle, and gratitude starts it over.</figcaption>
+    </figure>
+
+    <p class="body reveal">this is the hard reframe. hoarding feels like the safe way to grow, a number you guard and watch tick up. giving feels like the number going down. but the promise inverts it: the guarded pile is what stagnates, and the open hand is what compounds, because a different kind of accounting takes over.</p>
+
+    <figure class="reveal">
+      <div class="card bordered">
+        <div class="card-title">hoard vs give, over time</div>
+        <svg class="chart" viewBox="0 0 640 240" role="img" aria-label="hoarding versus giving over time">
+          <g stroke="#e4e0d6" stroke-width="1" fill="none"><path d="M48 206 L600 206"/><path d="M48 24 L48 206"/></g>
+          <path d="M48 206 L600 168" stroke="#a6a399" stroke-width="2" stroke-dasharray="5 5" fill="none"/>
+          <path d="M48 206 C 260 200, 430 150, 600 38" stroke="#e0788e" stroke-width="2.6" fill="none"/>
+          <text x="556" y="166" font-family="IBM Plex Mono,monospace" font-size="12" fill="#6c6a62">hoard</text>
+          <text x="560" y="42" font-family="Hanken Grotesk,sans-serif" font-weight="700" font-size="13" fill="#1c1b18">give</text>
+          <text x="324" y="232" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="#a6a399">time, and the giving keeps going</text>
+        </svg>
+      </div>
+      <figcaption>illustrative, not a literal return curve. barakah is not a yield you can underwrite. it is blessing that tends to exceed the visible cause, which is exactly why it asks for trust.</figcaption>
+    </figure>
+
+    <p class="kicker reveal">and still he feared it</p>
+    <h2 class="reveal">he kept the books on his soul</h2>
+    <p class="body reveal">a lavish meal was once set in front of him and he wept, remembering a companion who died with almost nothing. "i fear we have been given our reward in this life instead of the next." a man already promised paradise, still auditing his own heart. narrations describe him literally tallying it: how many camels, how much gold, set against how much had gone out in the path of allah. let every soul look to what it has sent ahead for tomorrow. he made gratitude an action and then he checked the balance.</p>
+
+    <p class="kicker reveal">the takeaway</p>
+    <h2 class="reveal">none of it was a trade-off</h2>
+    <p class="body reveal">that is the thing that gets me. he did not get rich despite his deen, or stay poor because of it. the wealth and the worship were a single motion. so before i take money advice from a stranger online, i want to sit with men like this first. that is the wealth i actually want: load-bearing for the people around me, and weightless on my own heart. inshallah.</p>
+
+    <p class="caption reveal" style="margin-top:40px">sources: tabaqat ibn sa'd; dhahabi, siyar a'lam an-nubala; sahih muslim 2588; sahih al-bukhari; qur'an 2:245, 13:11, 14:7. i first read a fuller telling of his life on islamicfinanceguru.</p>
+
+  </main>
+
+  <footer style="text-align:center; padding:70px 0 90px;">
+    <a href="/writing/" style="font-family:var(--grotesk); font-weight:700; font-size:17px; text-decoration:none; border-bottom:2px solid var(--ink); padding-bottom:2px;">← more writing</a>
+  </footer>
+
+  <script type="module">
+    const KEY = "theme", btn = document.getElementById("theme");
+    const setDark = (on) => { document.body.classList.toggle("dark", on); btn.textContent = on ? "☀" : "☾"; try { localStorage.setItem(KEY, on ? "dark" : "light"); } catch {} };
+    try { setDark(localStorage.getItem(KEY) !== "light"); } catch { setDark(true); }
+    btn.addEventListener("click", () => setDark(!document.body.classList.contains("dark")));
+    addEventListener("keydown", (e) => { if (e.key === "l" && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) setDark(!document.body.classList.contains("dark")); });
+    const io = new IntersectionObserver((es) => { let i = 0; for (const e of es) if (e.isIntersecting) { const el = e.target; el.style.transitionDelay = Math.min(i++ * 55, 280) + "ms"; el.classList.add("in"); io.unobserve(el); } }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
 </body>
 </html>
