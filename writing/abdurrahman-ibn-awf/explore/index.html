@@ -44,13 +44,13 @@
   <div class="panel">
     <p class="kicker">the barakah effect · explore</p>
     <h1>give, and watch it return</h1>
-    <p>tap anywhere. a coin leaves your hand, ripples out, and comes back larger through a door you were not watching. that is the loop abdurrahman lived inside.</p>
+    <p>you are the dot in the center. tap anywhere to give: a coin leaves you and travels out. then watch what comes back, always more than you sent. that is the loop abdurrahman lived inside.</p>
     <div class="tally">
       <div>you gave <b id="given">0</b></div>
-      <div class="r">it returned <b id="returned">0</b></div>
+      <div class="r">it came back <b id="returned">0</b></div>
     </div>
   </div>
-  <div class="cue">tap to give</div>
+  <div class="cue">tap anywhere to give</div>
 
   <script type="module">
     const KEY="theme", btn=document.getElementById("theme");
@@ -67,41 +67,35 @@
     const out=[], back=[], ripples=[];
     let given=0, returned=0, glow=0;
     const gEl=document.getElementById("given"), rEl=document.getElementById("returned");
-    function give(tx,ty){
+    function ease(t){ return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
+    function give(){
       given++; gEl.textContent=given;
-      out.push({x:cx,y:cy,tx,ty,t:0});
+      const ang=Math.random()*Math.PI*2, R=Math.max(W,H)*0.62;
+      out.push({x:cx,y:cy,tx:cx+Math.cos(ang)*R,ty:cy+Math.sin(ang)*R,t:0});
+      ripples.push({x:cx,y:cy,r:10,a:0.4,c:ink()});
     }
-    function rand(a,b){ return a+(b-a)*( (Math.sin(performance.now()*0.013+out.length+back.length+ripples.length*1.7)+1)/2 ); }
     function frame(){
-      const I=ink();
+      const I=ink(); glow*=0.92;
       ctx.clearRect(0,0,W,H);
-      // ambient ripples from the hub
-      glow*=0.93;
-      // outgoing coins
-      for(let i=out.length-1;i>=0;i--){ const o=out[i]; o.t+=0.035; const e=o.t<1?o.t:1; const x=cx+(o.tx-cx)*ease(e), y=cy+(o.ty-cy)*ease(e);
-        ctx.beginPath(); ctx.arc(x,y,5,0,6.3); ctx.fillStyle=`rgba(${I},0.9)`; ctx.fill();
-        if(o.t>=1){ ripples.push({x:o.tx,y:o.ty,r:0,a:0.6}); const k=2+Math.floor(rand(0,2.99)); for(let j=0;j<k;j++){ const ang=Math.random()*Math.PI*2, R=Math.max(W,H)*0.6; back.push({x:cx+Math.cos(ang)*R, y:cy+Math.sin(ang)*R, t:0, val: 0.7+Math.random()*0.9}); } out.splice(i,1); }
-      }
-      // returning coins (barakah)
-      for(let i=back.length-1;i>=0;i--){ const b=back[i]; b.t+=0.02; const e=ease(b.t<1?b.t:1); const x=b.x+(cx-b.x)*e, y=b.y+(cy-b.y)*e;
-        ctx.beginPath(); ctx.arc(x,y,4.5,0,6.3); ctx.fillStyle=`rgba(224,120,142,${0.5+0.5*(1-b.t)})`; ctx.fill();
-        if(b.t>=1){ returned+=b.val; rEl.textContent=Math.round(returned); glow=1; back.splice(i,1); }
-      }
+      // a coin you gave, leaving you
+      for(let i=out.length-1;i>=0;i--){ const o=out[i]; o.t+=0.03; const e=ease(Math.min(o.t,1)); const x=cx+(o.tx-cx)*e, y=cy+(o.ty-cy)*e;
+        ctx.beginPath(); ctx.arc(x,y,5,0,6.3); ctx.fillStyle=`rgba(${I},${0.85*(1-o.t*0.5)})`; ctx.fill();
+        if(o.t>=1){ const k=2+Math.floor(Math.random()*2); for(let j=0;j<k;j++){ const a=Math.random()*Math.PI*2, R=Math.max(W,H)*0.58; back.push({x:cx+Math.cos(a)*R,y:cy+Math.sin(a)*R,t:-j*0.18}); } out.splice(i,1); } }
+      // barakah, more coming back to you
+      for(let i=back.length-1;i>=0;i--){ const b=back[i]; b.t+=0.018; if(b.t<0) continue; const e=ease(Math.min(b.t,1)); const x=b.x+(cx-b.x)*e, y=b.y+(cy-b.y)*e;
+        ctx.beginPath(); ctx.arc(x,y,5,0,6.3); ctx.fillStyle=`rgba(224,120,142,${0.55+0.45*(1-b.t)})`; ctx.fill();
+        if(b.t>=1){ returned++; rEl.textContent=returned; glow=1; ripples.push({x:cx,y:cy,r:8,a:0.55,c:"224,120,142"}); back.splice(i,1); } }
       // ripples
-      for(let i=ripples.length-1;i>=0;i--){ const rp=ripples[i]; rp.r+=2.4; rp.a*=0.965; ctx.beginPath(); ctx.arc(rp.x,rp.y,rp.r,0,6.3); ctx.strokeStyle=`rgba(224,120,142,${rp.a})`; ctx.lineWidth=1.4; ctx.stroke(); if(rp.a<0.02) ripples.splice(i,1); }
-      // the hub (you)
-      const pr=18+glow*8;
-      ctx.beginPath(); ctx.arc(cx,cy,pr+10,0,6.3); ctx.strokeStyle=`rgba(${I},0.18)`; ctx.lineWidth=1; ctx.stroke();
-      ctx.beginPath(); ctx.arc(cx,cy,pr+26,0,6.3); ctx.strokeStyle=`rgba(${I},0.1)`; ctx.lineWidth=1; ctx.stroke();
+      for(let i=ripples.length-1;i>=0;i--){ const rp=ripples[i]; rp.r+=2.2; rp.a*=0.96; ctx.beginPath(); ctx.arc(rp.x,rp.y,rp.r,0,6.3); ctx.strokeStyle=`rgba(${rp.c},${rp.a})`; ctx.lineWidth=1.4; ctx.stroke(); if(rp.a<0.02) ripples.splice(i,1); }
+      // you, at the hub
+      const pr=20+glow*10;
+      ctx.beginPath(); ctx.arc(cx,cy,pr,0,6.3); ctx.strokeStyle=`rgba(${I},0.16)`; ctx.lineWidth=1; ctx.stroke();
       ctx.beginPath(); ctx.arc(cx,cy,10,0,6.3); ctx.fillStyle=`rgba(${I},0.95)`; ctx.fill();
-      ctx.font='13px "IBM Plex Mono", monospace'; ctx.fillStyle=`rgba(${I},0.5)`; ctx.textAlign="center"; ctx.fillText("you", cx, cy+34);
+      ctx.font='13px "IBM Plex Mono", monospace'; ctx.fillStyle=`rgba(${I},0.5)`; ctx.textAlign="center"; ctx.fillText("you", cx, cy+32);
       requestAnimationFrame(frame);
     }
-    function ease(t){ return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
-    function pos(e){ const r=cv.getBoundingClientRect(); return [e.clientX-r.left, e.clientY-r.top]; }
-    cv.addEventListener("pointerdown",(e)=>{ const [x,y]=pos(e); give(x,y); });
-    // a couple of ambient gives so it's alive on arrival
-    let amb=0; setInterval(()=>{ if(out.length+back.length<2 && amb<3){ const a=Math.random()*Math.PI*2, R=Math.min(W,H)*0.32; give(cx+Math.cos(a)*R, cy+Math.sin(a)*R); amb++; } }, 1400);
+    cv.addEventListener("pointerdown",()=>give());
+    setInterval(()=>{ if(out.length+back.length===0 && given<2) give(); }, 1800);
     requestAnimationFrame(frame);
   </script>
 </body>
