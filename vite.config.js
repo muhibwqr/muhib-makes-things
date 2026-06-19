@@ -13,6 +13,9 @@ const pages = [
   ...html("writing/attention"),
   ...html("writing/attention/explore"),
   ...html("writing/flash-attention"),
+  ...html("writing/flash-attention/explore"),
+  ...html("writing/abdurrahman-ibn-awf"),
+  ...html("writing/abdurrahman-ibn-awf/explore"),
 ];
 
 export default defineConfig({

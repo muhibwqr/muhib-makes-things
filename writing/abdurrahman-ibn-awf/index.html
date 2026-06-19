@@ -40,6 +40,9 @@
     .byline { font-family: var(--serif); font-size: 19px; line-height: 1.5; color: var(--muted); max-width: 540px; margin: 0 auto; }
     .byline .auth { display: block; font-size: 14px; color: var(--faint); margin-top: 12px; font-family: var(--mono); }
 
+    .cta-3d { display: inline-flex; align-items: center; gap: 10px; margin-top: 30px; padding: 13px 22px; border-radius: 999px; background: var(--ink); color: var(--paper); font-family: var(--grotesk); font-weight: 700; font-size: 15px; text-decoration: none; transition: transform .18s ease; }
+    .cta-3d:hover { transform: translateY(-2px); }
+    .cta-3d .orb { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e0788e, #9a4a5c 70%); box-shadow: 0 0 10px rgba(224,120,142,0.6); }
     .hero-card { margin: 40px auto 0; border-radius: 26px; background: var(--sage); aspect-ratio: 16/9; display: grid; place-items: center; overflow: hidden; }
     .hero-card svg { width: 50%; height: 60%; }
 
@@ -108,6 +111,7 @@
     <p class="byline reveal">
       <span class="auth">by muhib waqar · 9 min read</span>
     </p>
+    <a class="cta-3d reveal" href="/writing/abdurrahman-ibn-awf/explore/"><span class="orb"></span> the barakah loop, interactive <span aria-hidden="true">→</span></a>
     <div class="hero-card reveal">
       <svg viewBox="0 0 200 200" fill="none" stroke="#1c1b18" stroke-width="3" aria-hidden="true">
         <circle cx="100" cy="100" r="14" fill="#1c1b18" stroke="none"/>

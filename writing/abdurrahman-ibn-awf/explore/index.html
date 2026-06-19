@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · the barakah of giving</title>
+  <meta name="description" content="An interactive on the charity principle: give, and watch it ripple out and return larger. the barakah effect, the way abdurrahman ibn awf lived it." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root { --paper:#f7f4ec; --ink:#1c1b18; --muted:#6c6a62; --faint:#a6a399; --line:#e4e0d6; --rose:#e0788e; --sage-deep:#b9c9bd; --grotesk:"Hanken Grotesk",system-ui,sans-serif; --serif:"Newsreader",Georgia,serif; --mono:"IBM Plex Mono",ui-monospace,monospace; }
+    body.dark { --paper:#0e0f13; --ink:rgba(247,248,240,0.9); --muted:rgba(247,248,240,0.52); --faint:rgba(247,248,240,0.32); --line:rgba(247,248,240,0.14); }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--paper); color:var(--ink); font-family:var(--serif); overflow:hidden; -webkit-font-smoothing:antialiased; transition:background .4s; }
+    a { color:inherit; }
+    #stage { position:fixed; inset:0; z-index:0; touch-action:none; cursor:pointer; }
+    .bar { position:fixed; top:0; left:0; right:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:22px 30px; }
+    .logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo .mark { font-weight:700; font-size:20px; color:#9cd5ff; }
+    .logo .wm { font-family:var(--mono); font-size:13px; color:var(--muted); }
+    .bar-right { display:flex; align-items:center; gap:20px; }
+    .bar .back { font-family:var(--mono); font-size:13px; color:var(--muted); text-decoration:none; }
+    .bar .back:hover { color:var(--ink); }
+    #theme { background:none; border:none; cursor:pointer; font-size:17px; color:var(--muted); }
+    .panel { position:fixed; left:30px; top:50%; transform:translateY(-50%); z-index:5; max-width:330px; pointer-events:none; }
+    .panel .kicker { font-family:var(--grotesk); font-weight:700; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+    .panel h1 { font-family:var(--grotesk); font-weight:800; font-size:clamp(30px,4vw,46px); line-height:1.04; letter-spacing:-0.03em; }
+    .panel p { color:var(--muted); font-size:16px; line-height:1.55; margin-top:16px; }
+    .tally { margin-top:24px; font-family:var(--mono); font-size:13px; color:var(--muted); line-height:1.9; }
+    .tally b { color:var(--ink); font-weight:500; font-size:20px; }
+    .tally .r b { color:var(--rose); }
+    .cue { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:5; font-family:var(--mono); font-size:11px; color:var(--faint); }
+    @media (max-width:820px){ .panel { position:static; transform:none; max-width:none; padding:90px 24px 0; } }
+  </style>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <div class="bar">
+    <a class="logo" href="/writing/abdurrahman-ibn-awf/"><span class="mark">∞</span><span class="wm">← the article</span></a>
+    <div class="bar-right"><button id="theme" aria-label="theme">☾</button><a class="back" href="/writing/">writing</a></div>
+  </div>
+  <div class="panel">
+    <p class="kicker">the barakah effect · explore</p>
+    <h1>give, and watch it return</h1>
+    <p>tap anywhere. a coin leaves your hand, ripples out, and comes back larger through a door you were not watching. that is the loop abdurrahman lived inside.</p>
+    <div class="tally">
+      <div>you gave <b id="given">0</b></div>
+      <div class="r">it returned <b id="returned">0</b></div>
+    </div>
+  </div>
+  <div class="cue">tap to give</div>
+
+  <script type="module">
+    const KEY="theme", btn=document.getElementById("theme");
+    const setDark=(on)=>{document.body.classList.toggle("dark",on); btn.textContent=on?"☀":"☾"; try{localStorage.setItem(KEY,on?"dark":"light");}catch{}};
+    try{ setDark(localStorage.getItem(KEY)!=="light"); }catch{ setDark(true); }
+    btn.addEventListener("click",()=>setDark(!document.body.classList.contains("dark")));
+    addEventListener("keydown",(e)=>{ if(e.key==="l"&&!/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) setDark(!document.body.classList.contains("dark")); });
+
+    const cv=document.getElementById("stage"), ctx=cv.getContext("2d");
+    let W=0,H=0,DPR=1,cx=0,cy=0;
+    function size(){ DPR=Math.min(devicePixelRatio||1,2); W=innerWidth; H=innerHeight; cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0); cx=W*0.62; cy=H*0.5; }
+    addEventListener("resize",size); size();
+    function ink(){ return document.body.classList.contains("dark")?"232,235,228":"40,42,46"; }
+    const out=[], back=[], ripples=[];
+    let given=0, returned=0, glow=0;
+    const gEl=document.getElementById("given"), rEl=document.getElementById("returned");
+    function give(tx,ty){
+      given++; gEl.textContent=given;
+      out.push({x:cx,y:cy,tx,ty,t:0});
+    }
+    function rand(a,b){ return a+(b-a)*( (Math.sin(performance.now()*0.013+out.length+back.length+ripples.length*1.7)+1)/2 ); }
+    function frame(){
+      const I=ink();
+      ctx.clearRect(0,0,W,H);
+      // ambient ripples from the hub
+      glow*=0.93;
+      // outgoing coins
+      for(let i=out.length-1;i>=0;i--){ const o=out[i]; o.t+=0.035; const e=o.t<1?o.t:1; const x=cx+(o.tx-cx)*ease(e), y=cy+(o.ty-cy)*ease(e);
+        ctx.beginPath(); ctx.arc(x,y,5,0,6.3); ctx.fillStyle=`rgba(${I},0.9)`; ctx.fill();
+        if(o.t>=1){ ripples.push({x:o.tx,y:o.ty,r:0,a:0.6}); const k=2+Math.floor(rand(0,2.99)); for(let j=0;j<k;j++){ const ang=Math.random()*Math.PI*2, R=Math.max(W,H)*0.6; back.push({x:cx+Math.cos(ang)*R, y:cy+Math.sin(ang)*R, t:0, val: 0.7+Math.random()*0.9}); } out.splice(i,1); }
+      }
+      // returning coins (barakah)
+      for(let i=back.length-1;i>=0;i--){ const b=back[i]; b.t+=0.02; const e=ease(b.t<1?b.t:1); const x=b.x+(cx-b.x)*e, y=b.y+(cy-b.y)*e;
+        ctx.beginPath(); ctx.arc(x,y,4.5,0,6.3); ctx.fillStyle=`rgba(224,120,142,${0.5+0.5*(1-b.t)})`; ctx.fill();
+        if(b.t>=1){ returned+=b.val; rEl.textContent=Math.round(returned); glow=1; back.splice(i,1); }
+      }
+      // ripples
+      for(let i=ripples.length-1;i>=0;i--){ const rp=ripples[i]; rp.r+=2.4; rp.a*=0.965; ctx.beginPath(); ctx.arc(rp.x,rp.y,rp.r,0,6.3); ctx.strokeStyle=`rgba(224,120,142,${rp.a})`; ctx.lineWidth=1.4; ctx.stroke(); if(rp.a<0.02) ripples.splice(i,1); }
+      // the hub (you)
+      const pr=18+glow*8;
+      ctx.beginPath(); ctx.arc(cx,cy,pr+10,0,6.3); ctx.strokeStyle=`rgba(${I},0.18)`; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx,cy,pr+26,0,6.3); ctx.strokeStyle=`rgba(${I},0.1)`; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx,cy,10,0,6.3); ctx.fillStyle=`rgba(${I},0.95)`; ctx.fill();
+      ctx.font='13px "IBM Plex Mono", monospace'; ctx.fillStyle=`rgba(${I},0.5)`; ctx.textAlign="center"; ctx.fillText("you", cx, cy+34);
+      requestAnimationFrame(frame);
+    }
+    function ease(t){ return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
+    function pos(e){ const r=cv.getBoundingClientRect(); return [e.clientX-r.left, e.clientY-r.top]; }
+    cv.addEventListener("pointerdown",(e)=>{ const [x,y]=pos(e); give(x,y); });
+    // a couple of ambient gives so it's alive on arrival
+    let amb=0; setInterval(()=>{ if(out.length+back.length<2 && amb<3){ const a=Math.random()*Math.PI*2, R=Math.min(W,H)*0.32; give(cx+Math.cos(a)*R, cy+Math.sin(a)*R); amb++; } }, 1400);
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

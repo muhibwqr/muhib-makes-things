@@ -41,6 +41,9 @@
     .byline .auth { display: block; font-size: 14px; color: var(--faint); margin-top: 12px; font-family: var(--mono); }
     .byline .auth a { color: var(--muted); }
 
+    .cta-3d { display: inline-flex; align-items: center; gap: 10px; margin-top: 30px; padding: 13px 22px; border-radius: 999px; background: var(--ink); color: var(--paper); font-family: var(--grotesk); font-weight: 700; font-size: 15px; text-decoration: none; transition: transform .18s ease; }
+    .cta-3d:hover { transform: translateY(-2px); }
+    .cta-3d .orb { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #9cd5ff, #355872 70%); box-shadow: 0 0 10px rgba(156,213,255,0.7); }
     .hero-card { margin: 40px auto 0; border-radius: 26px; background: #16161a; aspect-ratio: 16/9; display: grid; place-items: center; overflow: hidden; }
 
     section { padding: 18px 0; }
@@ -138,6 +141,7 @@
       if you've wondered why long context got cheaper without the models getting any dumber, this is most of the answer. it isn't new math. it's a smarter way to move data around the chip.
       <span class="auth">by muhib waqar · 8 min read · reference: <a href="https://arxiv.org/abs/2205.14135" target="_blank" rel="noopener">dao et al., 2022</a></span>
     </p>
+    <a class="cta-3d reveal" href="/writing/flash-attention/explore/"><span class="orb"></span> rotate it in 3d <span aria-hidden="true">→</span></a>
     <div class="hero-card reveal">
       <canvas id="flash-hero" style="width:100%; height:100%; display:block;" aria-hidden="true"></canvas>
     </div>
