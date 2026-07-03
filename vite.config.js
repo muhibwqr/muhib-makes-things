@@ -9,6 +9,7 @@ const html = (dir) =>
 
 const pages = [
   ...html("."),
+  ...html("yusufproject"),
   ...html("writing"),
   ...html("writing/attention"),
   ...html("writing/attention/explore"),

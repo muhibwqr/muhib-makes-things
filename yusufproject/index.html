@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SkillCompass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Nautical chart: cool paper, navy ink, one brass bearing. */
+    --chart: #eef1f4; --paper: #f8fafb; --ink: #14213d;
+    --mist: #5b6b82; --rule: #d3dae2; --brass: #c8873b; --brass-soft: #f0e2cd;
+    --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    --serif: "Fraunces", Georgia, serif;
+    --mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--chart); color: var(--ink);
+    font: 16px/1.6 var(--sans);
+    display: flex; flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header {
+    display: flex; align-items: center; gap: 12px; padding: 18px 28px;
+    border-bottom: 1px solid var(--rule); background: var(--paper);
+  }
+  header .rose { width: 26px; height: 26px; flex: none; }
+  header h1 {
+    font-family: var(--serif); font-weight: 600; font-size: 21px;
+    margin: 0; letter-spacing: -.01em;
+  }
+  header .sub { color: var(--mist); font-size: 13px; margin-left: 2px; }
+
+  .stage { flex: 1; display: flex; min-height: 0; }
+  .left { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  main { flex: 1; overflow-y: auto; padding: 34px 28px 12px; }
+  main .inner, footer .inner { max-width: 640px; margin: 0 auto; }
+
+  .msg { margin: 0 0 22px; display: flex; }
+  .msg .bubble { max-width: 90%; white-space: pre-wrap; word-wrap: break-word; }
+  .bot .bubble { color: var(--ink); }
+  .user { justify-content: flex-end; }
+  .user .bubble {
+    background: var(--paper); border: 1px solid var(--rule); color: var(--ink);
+    padding: 10px 15px; border-radius: 14px 14px 3px 14px;
+  }
+  .bubble h2 {
+    font-family: var(--serif); font-weight: 600; font-size: 19px;
+    margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--brass);
+    display: inline-block; letter-spacing: -.01em;
+  }
+  .bubble strong { font-weight: 600; }
+  .bubble ul { margin: 8px 0; padding-left: 18px; }
+  .bubble li { margin: 4px 0; }
+  .bubble li::marker { color: var(--brass); }
+  .cursor::after { content: "▋"; color: var(--brass); animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  footer { padding: 14px 28px 24px; border-top: 1px solid var(--rule); background: var(--paper); }
+  form { display: flex; gap: 10px; align-items: flex-end; }
+  textarea {
+    flex: 1; resize: none; background: var(--chart); color: var(--ink);
+    border: 1px solid var(--rule); border-radius: 12px; padding: 13px 16px;
+    font: inherit; max-height: 160px;
+  }
+  textarea::placeholder { color: var(--mist); }
+  textarea:focus { outline: none; border-color: var(--brass); background: var(--paper); }
+  button {
+    background: var(--ink); color: var(--paper); border: 0; border-radius: 12px;
+    padding: 13px 22px; font: 600 15px var(--sans); cursor: pointer;
+  }
+  button:hover { background: #1d2f56; }
+  button:disabled { opacity: .4; cursor: default; }
+  :focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+  .hint { color: var(--mist); font-size: 12px; text-align: center; margin: 10px 0 0; }
+
+  aside {
+    width: 328px; border-left: 1px solid var(--rule); padding: 34px 26px;
+    background: var(--paper); display: flex; flex-direction: column; gap: 14px;
+  }
+  aside h2 {
+    font-family: var(--mono); font-size: 12px; font-weight: 500; margin: 0;
+    text-transform: uppercase; letter-spacing: .12em; color: var(--mist);
+  }
+  aside .note { color: var(--mist); font-size: 12.5px; line-height: 1.5; margin: 0; }
+  .chart-card { border: 1px solid var(--rule); border-radius: 10px; background: var(--chart); padding: 8px; }
+  #map { width: 100%; height: auto; display: block; }
+  #north { font-family: var(--mono); font-size: 12px; color: var(--ink); margin: 2px 0 0; }
+  #north span { color: var(--brass); }
+  #empty { color: var(--mist); font-size: 13px; margin: 0; }
+  .pulse { transform-box: fill-box; transform-origin: center; animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: .28; r: 11; } 50% { opacity: .1; r: 14; } }
+
+  @media (max-width: 880px) {
+    .stage { flex-direction: column; }
+    aside { width: auto; border-left: 0; border-top: 1px solid var(--rule); }
+    main { padding: 24px 20px 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pulse, .cursor::after { animation: none; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <svg class="rose" id="rose" viewBox="0 0 100 100" aria-hidden="true"></svg>
+    <h1>SkillCompass</h1>
+    <span class="sub">find the skill you're sleeping on</span>
+  </header>
+
+  <div class="stage">
+    <div class="left">
+      <main><div class="inner" id="chat"></div></main>
+      <footer><div class="inner">
+        <form id="form">
+          <textarea id="input" rows="1" placeholder="Answer honestly" autofocus></textarea>
+          <button id="send" type="submit">Send</button>
+        </form>
+        <p class="hint">One question at a time. Give real answers, it digs.</p>
+      </div></footer>
+    </div>
+
+    <aside>
+      <h2>Bearings</h2>
+      <p class="note">Every signal gets a position. East is how deeply it's <strong style="color:var(--ink)">yours</strong>, north is how much it <strong style="color:var(--ink)">helps others</strong>. The brass mark, top right, is your true north.</p>
+      <div class="chart-card"><svg id="map" viewBox="0 0 300 300"></svg></div>
+      <p id="north" style="display:none"></p>
+      <p id="empty">No bearings yet. Keep answering.</p>
+    </aside>
+  </div>
+
+<script>
+const chat = document.getElementById("chat");
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const send = document.getElementById("send");
+
+const transcript = JSON.parse(localStorage.transcript || "[]");
+const points = new Map(Object.entries(JSON.parse(localStorage.points || "{}"))
+  .filter(([, p]) => typeof p.m === "number" && typeof p.v === "number"));
+function save() {
+  localStorage.transcript = JSON.stringify(transcript);
+  localStorage.points = JSON.stringify(Object.fromEntries(points));
+}
+
+// Compass rose: cardinal spikes (ink) + ordinal spikes (mist) + brass hub. Reused in header and as chart watermark.
+const ROSE = `
+  <polygon points="50,2 55,50 50,98 45,50" fill="var(--ink)"/>
+  <polygon points="2,50 50,45 98,50 50,55" fill="var(--ink)"/>
+  <polygon points="21,21 50,47 79,79 47,50" fill="var(--mist)"/>
+  <polygon points="79,21 53,50 21,79 50,47" fill="var(--mist)"/>
+  <circle cx="50" cy="50" r="5" fill="var(--brass)"/>`;
+document.getElementById("rose").innerHTML = ROSE;
+
+// Minimal markdown to HTML (##, **bold**, - lists).
+function render(text) {
+  const esc = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const lines = esc.split("\n");
+  let html = "", inList = false;
+  for (let raw of lines) {
+    let l = raw.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    if (l.startsWith("## ")) { if (inList){html+="</ul>";inList=false;} html += `<h2>${l.slice(3)}</h2>`; }
+    else if (l.startsWith("- ")) { if(!inList){html+="<ul>";inList=true;} html += `<li>${l.slice(2)}</li>`; }
+    else { if(inList){html+="</ul>";inList=false;} html += l.trim() ? `<div>${l}</div>` : "<br>"; }
+  }
+  if (inList) html += "</ul>";
+  return html;
+}
+
+// Pull <<POINT ...>> tags into the map; return text with tags (and any half-streamed tag) removed.
+const POINT_RE = /<<POINT\s+label="([^"]+)"\s+mastery=([0-9.]+)\s+value=([0-9.]+)\s*>>/g;
+function extractPoints(text) {
+  let m, changed = false;
+  while ((m = POINT_RE.exec(text))) { points.set(m[1], { m: +m[2], v: +m[3] }); changed = true; }
+  if (changed) drawMap();
+  return text.replace(POINT_RE, "").replace(/<<[^>]*$/, "")
+    .replace(/\s*[—–]\s*/g, ", ")   // model ignores the no-dash rule sometimes; enforce it here
+    .replace(/\n{3,}/g, "\n\n").trim();
+}
+
+function drawMap() {
+  const P = 34, W = 232;
+  const x = m => P + m * W, y = v => 300 - P - v * W;
+  let north = null;
+  const dots = [...points.entries()].map(([label, p]) => {
+    const hot = p.m > 0.5 && p.v > 0.5;
+    if (hot && (!north || p.m * p.v > north.s)) north = { label, s: p.m * p.v };
+    const cx = x(p.m), cy = y(p.v), safe = label.replace(/</g, "");
+    if (hot) return `
+      <circle class="pulse" cx="${cx}" cy="${cy}" r="11" fill="var(--brass)" opacity=".2"/>
+      <circle cx="${cx}" cy="${cy}" r="6" fill="var(--brass)"/>
+      <text x="${cx + 10}" y="${cy + 4}" font-family="var(--mono)" font-size="10" font-weight="500" fill="var(--ink)">${safe}</text>`;
+    return `
+      <circle cx="${cx}" cy="${cy}" r="5" fill="var(--paper)" stroke="var(--mist)" stroke-width="1.5"/>
+      <text x="${cx + 9}" y="${cy + 4}" font-family="var(--mono)" font-size="10" fill="var(--mist)">${safe}</text>`;
+  }).join("");
+  document.getElementById("map").innerHTML = `
+    <g transform="translate(84,84) scale(1.32)" opacity="0.06">${ROSE}</g>
+    <rect x="${x(0.5)}" y="${y(1)}" width="${W/2}" height="${W/2}" rx="4" fill="var(--brass)" opacity="0.08"/>
+    <line x1="${P}" y1="${y(0)}" x2="${P+W}" y2="${y(0)}" stroke="var(--rule)"/>
+    <line x1="${P}" y1="${y(0)}" x2="${P}" y2="${y(1)}" stroke="var(--rule)"/>
+    <line x1="${x(0.5)}" y1="${y(0)}" x2="${x(0.5)}" y2="${y(1)}" stroke="var(--rule)" stroke-dasharray="2 3"/>
+    <line x1="${P}" y1="${y(0.5)}" x2="${P+W}" y2="${y(0.5)}" stroke="var(--rule)" stroke-dasharray="2 3"/>
+    <text x="${P+W}" y="${y(0)+15}" font-family="var(--mono)" font-size="9" fill="var(--mist)" text-anchor="end">MASTERY</text>
+    <text x="${P-2}" y="${y(1)-5}" font-family="var(--mono)" font-size="9" fill="var(--mist)">VALUE</text>
+    ${dots}`;
+  const nEl = document.getElementById("north");
+  if (north) { nEl.innerHTML = `N &nbsp; <span>${north.label.replace(/</g,"")}</span>`; nEl.style.display = ""; }
+  else nEl.style.display = "none";
+  document.getElementById("empty").style.display = points.size ? "none" : "";
+}
+
+function addBubble(role, text) {
+  const wrap = document.createElement("div");
+  wrap.className = "msg " + (role === "user" ? "user" : "bot");
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.innerHTML = role === "user" ? text.replace(/</g, "&lt;") : render(text);
+  wrap.appendChild(bubble);
+  chat.appendChild(wrap);
+  chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
+  return bubble;
+}
+
+async function turn() {
+  send.disabled = true;
+  const bubble = addBubble("bot", "");
+  bubble.classList.add("cursor");
+  let acc = "";
+  try {
+    // Send the whole conversation so the (memoryless) server has full context.
+    const messages = transcript.map(m => ({ role: m.role === "bot" ? "assistant" : "user", content: m.text }));
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      acc += dec.decode(value, { stream: true });
+      bubble.innerHTML = render(extractPoints(acc));
+      chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
+    }
+  } catch (e) {
+    acc = "Something broke reaching the coach: " + e.message + ". Check the server and try again.";
+    bubble.innerHTML = render(acc);
+  }
+  bubble.classList.remove("cursor");
+  transcript.push({ role: "bot", text: extractPoints(acc) });
+  save();
+  send.disabled = false;
+  input.focus();
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const text = input.value.trim();
+  if (!text || send.disabled) return;
+  addBubble("user", text);
+  transcript.push({ role: "user", text });
+  save();
+  input.value = ""; input.style.height = "auto";
+  turn();
+});
+
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+});
+input.addEventListener("input", () => {
+  input.style.height = "auto";
+  input.style.height = Math.min(input.scrollHeight, 160) + "px";
+});
+
+// The opening question never changes, so don't spend a model call on it. Show it directly.
+const OPENER = "Before we dig in, one question. Do you already have a skill or area of expertise in mind that you want to build content around, or are you not sure yet? Either answer is fine, it just tells me where to start.";
+
+drawMap();
+if (transcript.length) {
+  for (const m of transcript) addBubble(m.role, m.text);
+} else {
+  addBubble("bot", OPENER);
+  transcript.push({ role: "bot", text: OPENER });
+  save();
+}
+</script>
+</body>
+</html>
