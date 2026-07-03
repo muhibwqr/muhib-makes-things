@@ -93,41 +93,41 @@ const agent = new Agent({
   model: openrouter.chat("google/gemini-2.5-flash"),
 });
 
-// Free OpenRouter models 429 intermittently. Retry a stream that errors before yielding any text.
-function streamWithRetry(messages: unknown, tries = 4) {
-  const enc = new TextEncoder();
-  return new ReadableStream({
-    async start(controller) {
-      for (let attempt = 1; attempt <= tries; attempt++) {
-        let wrote = false;
-        try {
-          const result = await agent.stream(messages as any, {
-            modelSettings: { maxOutputTokens: 2000 }, // default is the model max (65k); caps cost and fits small credit balances
-          });
-          for await (const chunk of result.textStream) {
-            wrote = true;
-            controller.enqueue(enc.encode(chunk));
-          }
-        } catch { /* fall through: a 429 may throw OR just yield nothing */ }
-        if (wrote) { controller.close(); return; }
-        if (attempt === tries) {
-          controller.enqueue(enc.encode("The free model is busy (rate-limited upstream). Wait a few seconds and send that again, or switch to a paid model in server.ts."));
-          controller.close();
-          return;
-        }
-        await new Promise((r) => setTimeout(r, 700 * attempt)); // backoff, free-tier window is short
-      }
-    },
-  });
-}
-
 // Vercel serverless function (Node runtime). The client POSTs the full transcript;
-// we stream the agent's reply back as plain text. No server-side memory needed.
-export default async function handler(req: Request): Promise<Response> {
-  if (req.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
-  if (!KEY) return new Response("Server missing OPENROUTER_API_KEY", { status: 500 });
-  const { messages } = await req.json();
-  return new Response(streamWithRetry(messages), {
-    headers: { "Content-Type": "text/plain; charset=utf-8" },
-  });
+// we stream the agent's reply back as plain text, retrying past the free tier's
+// intermittent 429s. No server-side memory needed.
+export default async function handler(req: any, res: any) {
+  if (req.method !== "POST") { res.statusCode = 405; res.end("Method Not Allowed"); return; }
+  if (!KEY) { res.statusCode = 500; res.end("Server missing OPENROUTER_API_KEY"); return; }
+
+  // Vercel usually pre-parses JSON into req.body; fall back to reading the raw stream.
+  let messages: unknown;
+  if (req.body && typeof req.body === "object") {
+    messages = (req.body as any).messages;
+  } else {
+    let raw = "";
+    for await (const chunk of req) raw += chunk;
+    messages = JSON.parse(raw || "{}").messages;
+  }
+
+  res.setHeader("Content-Type", "text/plain; charset=utf-8");
+  res.setHeader("Cache-Control", "no-cache, no-transform"); // keep proxies from buffering the stream
+  res.flushHeaders?.();
+
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    let wrote = false;
+    try {
+      const result = await agent.stream(messages as any, {
+        modelSettings: { maxOutputTokens: 2000 }, // default is the model max (65k); caps cost and fits small balances
+      });
+      for await (const chunk of result.textStream) { wrote = true; res.write(chunk); }
+    } catch { /* a 429 may throw OR just yield nothing; retry */ }
+    if (wrote) { res.end(); return; }
+    if (attempt === 4) {
+      res.write("The free model is busy (rate-limited upstream). Wait a few seconds and send that again.");
+      res.end();
+      return;
+    }
+    await new Promise((r) => setTimeout(r, 700 * attempt)); // backoff, free-tier window is short
+  }
 }

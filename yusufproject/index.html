@@ -231,7 +231,29 @@ async function turn() {
   send.disabled = true;
   const bubble = addBubble("bot", "");
   bubble.classList.add("cursor");
-  let acc = "";
+  const scroller = chat.parentElement;
+  const nearBottom = () => scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < 80;
+
+  let acc = "";          // raw stream (incl. <<POINT>> tags)
+  let target = "";       // cleaned text the typewriter is catching up to
+  let shown = 0;         // chars revealed so far
+  let streaming = true;
+
+  // Smooth typewriter: the network fills `target`, this loop reveals it a little
+  // each frame. Step scales with how far behind it is, so it keeps pace with a
+  // fast stream yet never dumps text in bursts.
+  function tick() {
+    if (shown < target.length) {
+      const stick = nearBottom();
+      shown = Math.min(target.length, shown + Math.max(1, Math.round((target.length - shown) / 10)));
+      bubble.innerHTML = render(target.slice(0, shown));
+      if (stick) scroller.scrollTop = scroller.scrollHeight;
+    }
+    if (streaming || shown < target.length) requestAnimationFrame(tick);
+    else { bubble.classList.remove("cursor"); bubble.innerHTML = render(target); }
+  }
+  requestAnimationFrame(tick);
+
   try {
     // Send the whole conversation so the (memoryless) server has full context.
     const messages = transcript.map(m => ({ role: m.role === "bot" ? "assistant" : "user", content: m.text }));
@@ -247,14 +269,13 @@ async function turn() {
       const { done, value } = await reader.read();
       if (done) break;
       acc += dec.decode(value, { stream: true });
-      bubble.innerHTML = render(extractPoints(acc));
-      chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
+      target = extractPoints(acc);   // cleaned text + live map update
     }
   } catch (e) {
-    acc = "Something broke reaching the coach: " + e.message + ". Check the server and try again.";
-    bubble.innerHTML = render(acc);
+    acc = "Something broke reaching the coach: " + e.message + ". Try again in a moment.";
+    target = acc;
   }
-  bubble.classList.remove("cursor");
+  streaming = false;               // let the typewriter finish, then tick() finalizes the bubble
   transcript.push({ role: "bot", text: extractPoints(acc) });
   save();
   send.disabled = false;
