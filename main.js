@@ -142,6 +142,39 @@ if (navLinks) {
   navLinks.addEventListener("mouseleave", () => { glide.style.opacity = "0"; });
 }
 
+// ---------- contact: upgrade every plain "contact" nav link into the dropdown ----------
+document.querySelectorAll('.nav-links a[href="/#contact"], .nav-links a[href="#contact"]').forEach((link) => {
+  const menu = document.createElement("div");
+  menu.className = "contact-menu";
+  menu.innerHTML = `
+    <a class="contact-trigger" href="mailto:notesfrommuhib@gmail.com">contact</a>
+    <div class="contact-drop-wrap">
+      <div class="contact-drop">
+        <button type="button" class="cd-item" id="copy-email">
+          <svg class="cd-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <span class="cd-label">email</span>
+        </button>
+        <a class="cd-item" href="https://linkedin.com/in/muhibwaqar" target="_blank" rel="noopener">
+          <svg class="cd-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          <span>linkedin</span>
+        </a>
+        <a class="cd-item" href="https://github.com/muhibwqr" target="_blank" rel="noopener">
+          <svg class="cd-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          <span>github</span>
+        </a>
+        <a class="cd-item" href="https://x.com/muhibwqr" target="_blank" rel="noopener">
+          <svg class="cd-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+          <span>twitter</span>
+        </a>
+      </div>
+    </div>`;
+  link.replaceWith(menu);
+  // click the trigger to pop the dropdown (not just hover); click outside to close
+  const trigger = menu.querySelector(".contact-trigger");
+  trigger.addEventListener("click", (e) => { e.preventDefault(); menu.classList.toggle("open"); });
+  addEventListener("click", (e) => { if (!menu.contains(e.target)) menu.classList.remove("open"); });
+});
+
 // ---------- contact dropdown: click email to copy it ----------
 const copyEmail = document.getElementById("copy-email");
 if (copyEmail) {
@@ -169,8 +202,7 @@ if (sceneCanvas) {
   const DPR = Math.min(2, devicePixelRatio || 1);
   const COLS = 360;                       // sample columns; rows follow the image aspect (finer = more detail)
   // ponytail: O(cells) fillRects per frame (~25k after the white cull). drop COLS if it ever janks.
-  let cells = [], W = 0, H = 0, mx = -9999, my = -9999;
-  const RAMP = " ·˳˷~≈";                    // ascii ripple glyphs, calm → choppy
+  let cells = [], W = 0, H = 0;
 
   const img = new Image();
   img.src = "/scene.jpg";
@@ -215,36 +247,18 @@ if (sceneCanvas) {
     for (const c of cells) {
       let x = cx + (c.gx * W - cx) * OVER;
       let y = cy + (c.gy * H - cy) * OVER;
-      if (!still && c.gy > 0.72) {                     // only open water moves; shoreline/reflections hold still
+      if (!still && c.gy > 0.72) {                     // open water: ripple + swell
         const water = (c.gy - 0.72) / 0.28;            // 0 below the shoreline → 1 at the bottom
-        x += Math.sin(t * 0.8 + c.ph) * cw * 0.3 * water;
-        y += Math.cos(t * 0.6 + c.ph) * cw * 0.24 * water;
-        y += Math.sin(x * 0.010 - t * 1.5 + c.gy * 7) * cw * 1.0 * water;  // coherent swell
+        x += Math.sin(t * 0.85 + c.ph) * cw * 0.5 * water;
+        y += Math.cos(t * 0.6 + c.ph) * cw * 0.4 * water;
+        y += Math.sin(x * 0.010 - t * 1.6 + c.gy * 7) * cw * 1.7 * water;  // coherent swell
+      } else if (!still && c.g > c.r + 6 && c.g > c.b) {   // greenery on the hills sways in the wind
+        const s = Math.sin(t * 1.2 + c.ph);
+        x += s * cw * 0.45;
+        y += Math.abs(s) * cw * 0.12;
       }
       ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${c.a})`;
       ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
-    }
-    if (!still) drawWater(t);
-  }
-
-  // ascii ripple characters shimmering + drifting over the water; they sharpen near the cursor
-  function drawWater(t) {
-    const ch = 15 * DPR;
-    ctx.font = `${ch}px "IBM Plex Mono", ui-monospace, monospace`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    const colStep = ch * 2, rowStep = ch * 1.7, top = H * 0.6, R = 150 * DPR;
-    for (let yy = top; yy < H - ch; yy += rowStep) {
-      for (let xx = colStep * 0.5; xx < W; xx += colStep) {
-        let v = Math.sin(xx * 0.012 - t * 1.8 + yy * 0.02) * 0.5 + 0.5;
-        const dx = xx - mx, dy = yy - my, d2 = dx * dx + dy * dy;
-        if (d2 < R * R) v += (1 - Math.sqrt(d2) / R) * 0.55;   // cursor stirs the water
-        const g = RAMP[Math.max(0, Math.min(RAMP.length - 1, Math.floor(v * RAMP.length)))];
-        if (g === " ") continue;
-        const fade = Math.min(1, (yy - top) / (H - top));
-        ctx.fillStyle = `rgba(74, 94, 82, ${0.16 + 0.26 * fade})`;
-        ctx.fillText(g, xx, yy);
-      }
     }
   }
 
@@ -258,10 +272,6 @@ if (sceneCanvas) {
     else { cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); }
   };
   addEventListener("resize", () => { if (cells.length) resize(); });
-
-  if (!REDUCED_MOTION) {
-    addEventListener("pointermove", (e) => { mx = e.clientX * DPR; my = e.clientY * DPR; });
-  }
 }
 
 // ---------- console signature ----------

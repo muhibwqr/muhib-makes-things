@@ -140,7 +140,8 @@ nav.nav-center { justify-content: center; }
 }
 body.maker .contact-drop { background: #f3f4ec; }
 .contact-menu:hover .contact-drop,
-.contact-menu:focus-within .contact-drop { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.contact-menu:focus-within .contact-drop,
+.contact-menu.open .contact-drop { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
 .cd-item {
   display: flex;
