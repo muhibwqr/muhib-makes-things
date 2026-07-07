@@ -167,7 +167,7 @@ const sceneCanvas = document.querySelector(".scene-canvas");
 if (sceneCanvas) {
   const ctx = sceneCanvas.getContext("2d");
   const DPR = Math.min(2, devicePixelRatio || 1);
-  const COLS = 300;                       // sample columns; rows follow the image aspect
+  const COLS = 360;                       // sample columns; rows follow the image aspect (finer = more detail)
   // ponytail: O(cells) fillRects per frame (~25k after the white cull). drop COLS if it ever janks.
   let cells = [], W = 0, H = 0, mx = -9999, my = -9999;
   const RAMP = " ·˳˷~≈";                    // ascii ripple glyphs, calm → choppy
@@ -193,13 +193,14 @@ if (sceneCanvas) {
         const i = (y * COLS + x) * 4;
         const r = d[i], g = d[i + 1], b = d[i + 2];
         const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-        const a = Math.pow(1 - lum, 1.4) * 0.92;    // dark paint stays, bright mist fades — but keep a whisper
+        const skyW = Math.max(0, 1 - (y / rows) / 0.5);   // 1 at the top sky, fades to 0 by mid
+        let a = Math.pow(1 - lum, 1.4) * 0.97;       // dark paint stays, bright mist fades — but keep a whisper
+        a = Math.min(0.97, a * (1 + skyW * 0.85));   // deepen the sky's presence
         if (a < 0.03) continue;                      // keep faint sky shade, cull only the whitest
-        // pop the color: push each channel away from its own grey
-        const mean = (r + g + b) / 3, sat = 1.34;
-        const rr = Math.max(0, Math.min(255, mean + (r - mean) * sat)) | 0;
-        const gg = Math.max(0, Math.min(255, mean + (g - mean) * sat)) | 0;
-        const bb = Math.max(0, Math.min(255, mean + (b - mean) * sat)) | 0;
+        // pop the color off grey + add contrast — deep everywhere, deeper in the sky
+        const mean = (r + g + b) / 3, sat = 2.1 + skyW * 1.1, con = 1.2 + skyW * 0.3;
+        const ch = (v) => { let o = mean + (v - mean) * sat; o = 128 + (o - 128) * con; return Math.max(0, Math.min(255, o)) | 0; };
+        const rr = ch(r), gg = ch(g), bb = ch(b);
         cells.push({ gx: (x + 0.5) / COLS, gy: (y + 0.5) / rows, r: rr, g: gg, b: bb, a, ph: ((x * 13 + y * 7) % 628) / 100 });
       }
     }
@@ -209,17 +210,16 @@ if (sceneCanvas) {
     ctx.clearRect(0, 0, W, H);
     const cw = W / COLS;
     const still = REDUCED_MOTION;
-    const sz = cw * 1.28;                  // slight overlap so the mosaic reads continuous
+    const sz = cw * 1.16;                  // crisper blocks — more detail, still no gaps under the zoom
     const OVER = 1.05, cx = W / 2, cy = H / 2;   // overscan so motion never bares white edges
     for (const c of cells) {
       let x = cx + (c.gx * W - cx) * OVER;
       let y = cy + (c.gy * H - cy) * OVER;
-      if (!still) {
-        x += Math.sin(t * 0.8 + c.ph) * cw * 0.3;    // faint ambient breath
-        y += Math.cos(t * 0.6 + c.ph) * cw * 0.24;
-        // water swell: coherent crests travel across the lower half
-        const water = Math.max(0, c.gy - 0.42) * 1.8;
-        if (water > 0) y += Math.sin(x * 0.010 - t * 1.5 + c.gy * 7) * cw * 0.9 * water;
+      if (!still && c.gy > 0.72) {                     // only open water moves; shoreline/reflections hold still
+        const water = (c.gy - 0.72) / 0.28;            // 0 below the shoreline → 1 at the bottom
+        x += Math.sin(t * 0.8 + c.ph) * cw * 0.3 * water;
+        y += Math.cos(t * 0.6 + c.ph) * cw * 0.24 * water;
+        y += Math.sin(x * 0.010 - t * 1.5 + c.gy * 7) * cw * 1.0 * water;  // coherent swell
       }
       ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${c.a})`;
       ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
