@@ -25,6 +25,8 @@
     .bar { display: flex; align-items: center; justify-content: space-between; padding: 26px 34px; }
     .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
     .logo .mark { font-weight: 700; font-size: 22px; color: #9cd5ff; }
+    .logo .mark { width:66px; height:26px; container-type:inline-size; display:inline-flex; align-items:center; overflow:hidden; padding:0; }
+    .logo .morph-art { margin:0; font-family:"IBM Plex Mono",monospace; white-space:pre; font-size:2.02cqw; line-height:1.05; color:#9cd5ff; }
     .logo .wm { font-family: var(--mono); font-size: 13px; color: var(--muted); }
     .bar-right { display: flex; align-items: center; gap: 20px; }
     .bar .back { font-family: var(--mono); font-size: 13px; color: var(--muted); text-decoration: none; transition: color .2s; }
@@ -158,7 +160,7 @@
 
   <div class="bar">
     <a class="logo" href="/">
-      <span class="mark">∞</span>
+      <span class="mark morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></span>
       <span class="wm">muhib waqar</span>
     </a>
     <div class="bar-right">
@@ -721,5 +723,6 @@
       svg.innerHTML = s;
     })();
   </script>
+  <script type="module" src="/morph.js"></script>
 </body>
 </html>
