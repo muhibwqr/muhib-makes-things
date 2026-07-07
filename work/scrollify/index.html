@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · scrollify</title>
+  <meta name="description" content="a mindful screen-time ios app that sidesteps apple's screen time entitlement by inverting the dependency: manual logs are the source of truth, deviceactivity is an optional override. a react widget lives inside swiftui through a one-way webview bridge." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
+    <div class="nav-links mono">
+      <a href="/work/">&larr; work</a>
+      <a href="/writing/">writing</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article work-page">
+    <p class="article-kicker mono dim reveal">work · ios</p>
+    <h1 class="article-title reveal">scrollify</h1>
+    <p class="article-meta mono dim reveal">swift · swiftui · wkwebview · ~720 loc · <a href="https://github.com/muhibwqr/scrollify" target="_blank" rel="noopener">github &rarr;</a></p>
+
+    <figure class="demo demo-solo reveal">
+      <video src="/scrollify-demo.m4v" autoplay muted loop playsinline preload="metadata"></video>
+      <figcaption class="mono dim">scrollify · logging usage and the react focus widget, on device</figcaption>
+    </figure>
+
+    <div class="prose article-prose reveal">
+      <p>scrollify is a small swiftui app for scrolling with intention: log your time, see whether the day leaned productive or not, and get nudged hourly to check in. the obvious way to build it is with apple's screen time api, which reads your real app usage. the problem is that api needs a special family-controls entitlement apple does not hand to a free developer account. so the whole app is shaped around a constraint, and that constraint turned out to be the most interesting engineering in it: how do you build a screen-time app without screen-time access?</p>
+
+      <h3>invert the dependency</h3>
+      <p>the answer is to make manual logging the source of truth and treat the real screen time api as an optional override that may or may not exist. there's no entitlements file in the project at all. the whole pipeline hangs on one abstraction seam in <code>refreshUsage</code>, it tries the real api only if the framework can even be imported, and otherwise falls straight to the manual model.</p>
+      <pre><code>func refreshUsage() async {
+    #if canImport(DeviceActivity)
+    if await fetchRealUsage() {      // only if the entitlement exists
+        updateProductivityCopy()
+        return
+    }
+    #endif
+    updateEntriesFromManual()        // the default path
+}</code></pre>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 640 180" role="img" aria-label="manual logging is the default source of usage data feeding a UsageEntry shape and then a react widget in a webview; device activity is an optional dashed override that merges in only if the entitlement exists">
+          <rect class="dg-box dg-dash" x="6" y="22" width="170" height="36" rx="5" style="stroke: var(--copper);"/>
+          <text class="dg-t-copper" x="91" y="44" text-anchor="middle">DeviceActivity · optional</text>
+          <path class="dg-copper dg-dash" d="M176 40 C 210 40, 206 92, 222 100"/>
+          <polygon class="dg-fill-copper" points="224,101 215,98 217,108"/>
+
+          <rect class="dg-box" x="6" y="86" width="170" height="46" rx="6"/>
+          <text class="dg-t" x="91" y="106" text-anchor="middle">manual log</text>
+          <text class="dg-t-dim" x="91" y="121" text-anchor="middle">steppers · the default</text>
+          <path class="dg-flow dg-anim" d="M176 109 H222"/>
+          <polygon class="dg-fill" points="224,109 215,104 215,114"/>
+
+          <rect class="dg-box" x="226" y="86" width="128" height="46" rx="6"/>
+          <text class="dg-t" x="290" y="106" text-anchor="middle">UsageEntry</text>
+          <text class="dg-t-dim" x="290" y="121" text-anchor="middle">one shape</text>
+          <path class="dg-flow dg-anim" d="M354 109 H400"/>
+          <polygon class="dg-fill" points="402,109 393,104 393,114"/>
+
+          <rect class="dg-box-accent dg-fill-soft" x="404" y="82" width="164" height="54" rx="6"/>
+          <text class="dg-t-accent" x="486" y="103" text-anchor="middle">react widget</text>
+          <text class="dg-t-dim" x="486" y="120" text-anchor="middle">in a WKWebView</text>
+          <text class="dg-t-copper" x="486" y="160" text-anchor="middle">Swift → JSON → renderWidget()</text>
+        </svg>
+        <figcaption>the dependency inverted: manual logging is the foundation, the privileged screen-time api is an optional override that only wakes if it's allowed to. both produce the same shape, so everything downstream is identical.</figcaption>
+      </figure>
+      <p>the manual stepper minutes get synthesized into the exact same <code>UsageEntry</code> shape that real data would produce, even down to hardcoding the real bundle ids like <code>com.burbn.instagram</code>, so everything downstream behaves identically whether the numbers came from apple or from your thumb. the app is fully usable with zero entitlements, and the privileged path is dead code that only wakes up if it's allowed to. that's the dependency inverted: the feature you can't guarantee becomes the optional enhancement, not the foundation.</p>
+
+      <blockquote>a constraint you can't remove is often just an architecture you haven't discovered yet.</blockquote>
+
+      <h3>react living inside swiftui</h3>
+      <p>the "focus widget" is a react component, which is a strange thing to find in a native swift app. it isn't react native, it's a real react 18 app loaded from a bundled html file inside a <code>WKWebView</code>, and swift pushes data into it across a one-way bridge: encode the swift model to json, then evaluate a javascript call.</p>
+      <pre><code>guard didFinishLoading, let jsonData = try? JSONEncoder().encode(parent.data),
+      let json = String(data: jsonData, encoding: .utf8) else { return }
+webView.evaluateJavaScript("window.renderWidget(\(json));")</code></pre>
+      <p>there's a load-state guard so data pushed before the page finishes loading isn't dropped, and <code>updateUIView</code> re-pushes on every swiftui state change, so the web widget stays reactive to native <code>@Published</code> updates. the html even detects a failed cdn load and swaps in a plain-dom renderer, so the same swift call works whether or not react actually loaded. two runtimes, one data flow, degrading gracefully at the seam.</p>
+
+      <h3>derived state, and honest limits</h3>
+      <p>"productive" isn't magic, it's a bundle-id heuristic, anything that looks like youtube, instagram, or tiktok counts against you, with an explicit per-entry override. the headline percentage is reduced live from the usage entries against a twenty-minute scroll target, and hourly nudges are a repeating <code>UNTimeIntervalNotificationTrigger</code> on a 3600-second interval. i'll be honest about what this is: a prototype. there's no persistence yet, state resets on relaunch and re-seeds demo numbers, the "streak" is encouraging copy rather than a computed multi-day count, and the real device-activity branch is essentially untested scaffolding. it installs on a free personal team, which means re-signing every seven days.</p>
+
+      <p>the real lesson scrollify taught me is about constraints. i didn't have the entitlement, and instead of waiting on apple, the missing permission forced a cleaner architecture than i'd have written with full access, one where the privileged feature is optional by design and the app stands on its own without it. a river doesn't fight the rock, it goes around and carves the canyon on its way. <span class="dim">إن مع العسر يسرا</span>, indeed, with hardship comes ease.</p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/work/incinerator/">next · incinerator &rarr;</a>
+      <a class="mono" href="/work/">all work &rarr;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

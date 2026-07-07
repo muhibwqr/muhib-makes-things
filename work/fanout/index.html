@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · fanout</title>
+  <meta name="description" content="launch n parallel claude agents in tmux panes from one bash command. an orchestrator decomposes a prose task into n independent prompts; coordination is done with filesystem sentinels, not tmux introspection." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
+    <div class="nav-links mono">
+      <a href="/work/">&larr; work</a>
+      <a href="/writing/">writing</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article work-page">
+    <p class="article-kicker mono dim reveal">work · ai orchestration</p>
+    <h1 class="article-title reveal">fanout</h1>
+    <p class="article-meta mono dim reveal">stdlib python · zero install · <a href="https://github.com/muhibwqr/fanout" target="_blank" rel="noopener">github &rarr;</a></p>
+
+    <figure class="diagram reveal">
+      <svg viewBox="0 0 640 200" role="img" aria-label="one prose task enters an orchestrator that decomposes it into n independent prompts; each runs in its own tmux pane and signals completion by touching a sentinel file">
+        <rect class="dg-box" x="6" y="76" width="92" height="48" rx="5"/>
+        <text class="dg-t-dim" x="52" y="96" text-anchor="middle">prose</text>
+        <text class="dg-t-dim" x="52" y="111" text-anchor="middle">task</text>
+        <path class="dg-flow dg-anim" d="M100 100 H148"/>
+        <polygon class="dg-fill" points="150,100 141,95 141,105"/>
+        <rect class="dg-box-accent dg-fill-soft" x="150" y="72" width="132" height="56" rx="6"/>
+        <text class="dg-t-accent" x="216" y="96" text-anchor="middle">orchestrator</text>
+        <text class="dg-t-dim" x="216" y="113" text-anchor="middle">claude -p → json</text>
+        <path class="dg-flow dg-anim" d="M282 100 C 350 100, 352 35, 418 35"/>
+        <path class="dg-flow dg-anim" d="M282 100 C 350 100, 352 79, 418 79"/>
+        <path class="dg-flow dg-anim" d="M282 100 C 350 100, 352 123, 418 123"/>
+        <path class="dg-flow dg-anim" d="M282 100 C 350 100, 352 167, 418 167"/>
+        <g>
+          <rect class="dg-box" x="420" y="20" width="120" height="30" rx="4"/>
+          <text class="dg-t-dim" x="432" y="39">W1 · agent</text>
+          <circle class="dg-fill-copper" cx="556" cy="35" r="3.5"/>
+          <text class="dg-t-copper" x="566" y="39">.done</text>
+        </g>
+        <g>
+          <rect class="dg-box" x="420" y="64" width="120" height="30" rx="4"/>
+          <text class="dg-t-dim" x="432" y="83">W2 · agent</text>
+          <circle class="dg-fill-copper" cx="556" cy="79" r="3.5"/>
+          <text class="dg-t-copper" x="566" y="83">.done</text>
+        </g>
+        <g>
+          <rect class="dg-box" x="420" y="108" width="120" height="30" rx="4"/>
+          <text class="dg-t-dim" x="432" y="127">W3 · agent</text>
+          <circle class="dg-fill-copper" cx="556" cy="123" r="3.5"/>
+          <text class="dg-t-copper" x="566" y="127">.done</text>
+        </g>
+        <g>
+          <rect class="dg-box" x="420" y="152" width="120" height="30" rx="4"/>
+          <text class="dg-t-dim" x="432" y="171">Wn · agent</text>
+          <circle class="dg-fill-copper" cx="556" cy="167" r="3.5"/>
+          <text class="dg-t-copper" x="566" y="171">.done</text>
+        </g>
+      </svg>
+      <figcaption>one task, decomposed into n independent prompts, each in its own tmux pane. the parent never asks tmux anything, it just watches for the sentinel files to appear.</figcaption>
+    </figure>
+
+    <div class="prose article-prose reveal">
+      <p>i wrote about conducting eight claudes by hand once. fanout is that essay turned into a tool: one bash command spawns n claude agents in n tmux panes, side by side, and either you hand it the splits or an orchestrator decides them for you. the whole thing is a nine-line bash shim around a few hundred lines of standard-library python. no pip installs, no config files, no <code>~/.fanout</code> directory to clean up. that constraint is the design, not a flex, a tool you have to install is a tool you reach for less.</p>
+
+      <h3>the orchestrator is an untrusted planner</h3>
+      <p>the interesting command is <code>fanout plan "task"</code>. you don't know how to split the work, so a single headless claude call reads the task and returns json: how many agents, why, and one self-contained prompt per agent. the prompt contract is strict, each prompt has to read cold with no awareness of the others, because the agents never talk to each other. but here is the part i care about: the code trusts none of it. the model says <code>n</code> and also emits a <code>tasks</code> array, and the two are cross-checked before anything launches.</p>
+      <pre><code>data = _extract_json(out)
+if not isinstance(data, dict) or "tasks" not in data:
+    sys.exit(3)
+if len(data["tasks"]) != data["n"]:   # the model contradicted itself
+    sys.exit(3)</code></pre>
+      <p>a language model is a planner that will occasionally hand you a beautifully formatted lie. so you treat its structured output the way you'd treat a form submitted by a stranger: parse defensively, validate the invariants, refuse on mismatch. the model proposes; the code decides whether the proposal is even internally consistent.</p>
+
+      <h3>pulling json out of prose</h3>
+      <p>models wrap json in apologies and markdown fences. the extractor first tries a plain parse, then scans for the first brace and walks the string balancing depth, but it tracks whether it's inside a string literal so a <code>{</code> sitting inside <code>"use { here"</code> doesn't throw off the count.</p>
+      <pre><code>if in_str:
+    if esc: esc = False
+    elif ch == "\\": esc = True
+    elif ch == '"': in_str = False
+else:
+    if ch == '"': in_str = True
+    elif ch == "{": depth += 1
+    elif ch == "}":
+        depth -= 1
+        if depth == 0: return s[start : j + 1]</code></pre>
+      <p>it's a tiny state machine, maybe fifteen lines, and it's the difference between "the demo works" and "the demo works on the one input you tested." the bracket inside a string is exactly the case a regex gets wrong.</p>
+
+      <blockquote>parallelism only pays while the agents stay strangers. the moment they read each other, you've coupled their assumptions and rebuilt a slow team.</blockquote>
+
+      <h3>coordinate through the filesystem, not through tmux</h3>
+      <p>the move i'm proudest of is how a pane reports that it's done. the obvious approach is to ask tmux, scrape <code>capture-pane</code>, track pids, poll the session. all brittle. instead each pane pipes its output to a file and touches a sentinel when claude exits, and the parent just watches for the sentinel files to appear.</p>
+      <pre><code>claude -p "$(cat W{i}.prompt)" --tools '' \
+  | tee W{i}.out;          # stream output to disk
+touch W{i}.done;           # the only signal the parent needs
+echo '=== W{i} done. ctrl-b d to detach. ===';
+sleep 86400                # keep the pane alive for inspection</code></pre>
+      <p>now the orchestrator never speaks tmux's language. it polls a directory once a second. detach and reattach, resize, close your laptop, the contract is just "a file will exist when the work is finished." this is the unix instinct that ants have, by the way: an ant doesn't broadcast to the colony, it drops a pheromone on the ground and the ground becomes the shared memory. the filesystem is the pheromone trail here. and the <code>sleep 86400</code> is mercy, it holds the pane open so a human can actually read what the agent did.</p>
+
+      <h3>fan-out, honestly, with no fan-in</h3>
+      <p>i want to be precise about what this is and isn't. it's pure fan-out. the orchestrator prompt forbids one agent from referencing another's output, and there's no reduce step that merges results, you get concatenated blocks. that's a deliberate limit, not an oversight: the second you let agents read each other, you've coupled their assumptions and lost the only thing parallelism was buying you, independence. when a task genuinely can't be parallelized the orchestrator is told to return <code>n=1</code> and run it alone. there's also a graceful fallback, if tmux is missing it drops to <code>asyncio.gather</code> and runs the same agents concurrently in one terminal.</p>
+
+      <h3>how this differs from claude's own fan-out</h3>
+      <p>claude code can already run agents in parallel, the task tool spawns subagents and the model orchestrates them for you. fanout is a different shape on purpose. there, the orchestrator is the model and it decides and manages the whole thing inside one runtime; here, <em>you</em> are the conductor, and the orchestrator agent does exactly one job, draft the n prompts, which you read before anything launches. claude's subagents also fold their results back into the parent's context, so the parent re-reads everything and synthesizes; fanout is pure fan-out, the parent never ingests the children at all.</p>
+      <p>the deeper split is isolation and visibility. claude's subagents live inside the harness, managed and mostly opaque, and you get a summary at the end. fanout's agents are separate operating-system processes, each its own <code>claude -p</code> session with its own context window and its own token budget, laid out in tmux panes you can attach to and watch type in real time. and it's just bash around the cli, no sdk, no product, nothing to install or clean up. claude's built-in is more capable when you want synthesis and tool-mediated coordination. fanout wins when you want raw independence, a human in the conductor's seat, and the ability to literally watch eight machines work side by side.</p>
+
+      <p>the lesson that keeps proving itself is the boring one. the leverage was never the model being fast. it was deciding the cut lines before a single agent runs, freezing the contract, and refusing to ship a result you couldn't defend. fanout just makes those decisions cost one bash command instead of an afternoon. <span class="dim">و من جدّ وجد</span>, whoever strives, finds.</p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/work/nanovsm/">next · nanovsm &rarr;</a>
+      <a class="mono" href="/work/">all work &rarr;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>muhib waqar · flash attention, in motion</title>
-  <meta name="description" content="Watch flashattention stream key/value blocks from slow memory through the workbench one tile at a time, keeping a running softmax, never storing the full score matrix." />
+  <title>muhib waqar · flash attention, in 3d</title>
+  <meta name="description" content="A fullscreen, rotatable view of the score matrix being tiled. flip standard vs flash, change the block size, and scrub the stream." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,7 +15,7 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body { background:var(--paper); color:var(--ink); font-family:var(--serif); overflow:hidden; -webkit-font-smoothing:antialiased; transition:background .4s; }
     a { color:inherit; }
-    #stage { position:fixed; inset:0; z-index:0; }
+    #stage { position:fixed; inset:0; z-index:0; touch-action:none; cursor:grab; }
     .bar { position:fixed; top:0; left:0; right:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:22px 30px; }
     .logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
     .logo .mark { font-weight:700; font-size:20px; color:#9cd5ff; }
@@ -24,17 +24,21 @@
     .bar .back { font-family:var(--mono); font-size:13px; color:var(--muted); text-decoration:none; }
     .bar .back:hover { color:var(--ink); }
     #theme { background:none; border:none; cursor:pointer; font-size:17px; color:var(--muted); }
-    .panel { position:fixed; left:30px; top:50%; transform:translateY(-50%); z-index:5; max-width:330px; }
+    .panel { position:fixed; left:30px; top:50%; transform:translateY(-50%); z-index:5; max-width:340px; }
     .panel .kicker { font-family:var(--grotesk); font-weight:700; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
-    .panel h1 { font-family:var(--grotesk); font-weight:800; font-size:clamp(30px,4vw,44px); line-height:1.04; letter-spacing:-0.03em; }
+    .panel h1 { font-family:var(--grotesk); font-weight:800; font-size:clamp(30px,4vw,46px); line-height:1.04; letter-spacing:-0.03em; }
     .panel p { color:var(--muted); font-size:16px; line-height:1.55; margin-top:16px; }
-    .ctrls { display:flex; gap:10px; align-items:center; margin-top:22px; }
-    .play { font-family:var(--grotesk); font-weight:700; font-size:13px; color:var(--ink); background:color-mix(in srgb, var(--ink) 10%, transparent); border:none; border-radius:999px; padding:9px 18px; cursor:pointer; }
-    #scrub { flex:1; accent-color:var(--rose); }
-    #readout { color:var(--muted); font-family:var(--mono); font-size:12px; margin-top:16px; line-height:1.7; }
-    #readout b { color:var(--ink); font-weight:500; }
-    #readout .rose { color:var(--rose); }
-    @media (max-width:860px){ .panel { position:static; transform:none; max-width:none; padding:88px 24px 0; } }
+    .ctrls { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:22px; }
+    .seg { display:inline-flex; gap:3px; align-items:center; background:color-mix(in srgb, var(--ink) 8%, transparent); border-radius:999px; padding:4px; }
+    .seg .lbl { color:var(--faint); font-family:var(--mono); font-size:11px; padding:0 8px; }
+    .seg button, .play { font-family:var(--grotesk); font-weight:700; font-size:13px; color:var(--muted); background:none; border:none; border-radius:999px; padding:6px 13px; cursor:pointer; }
+    .seg button.on { background:var(--rose); color:#fff; }
+    .play { background:color-mix(in srgb, var(--ink) 10%, transparent); padding:8px 15px; }
+    #fa-scrub { width:100%; margin-top:14px; accent-color:var(--rose); }
+    #fa-readout { color:var(--muted); font-family:var(--mono); font-size:12px; margin-top:14px; line-height:1.6; }
+    #fa-readout b { color:var(--ink); font-weight:500; }
+    .cue { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:5; font-family:var(--mono); font-size:11px; color:var(--faint); }
+    @media (max-width:820px){ .panel { position:static; transform:none; max-width:none; padding:90px 24px 0; } #stage{ } .cue{ display:none; } }
   </style>
 </head>
 <body>
@@ -44,15 +48,18 @@
     <div class="bar-right"><button id="theme" aria-label="theme">☾</button><a class="back" href="/writing/">writing</a></div>
   </div>
   <div class="panel">
-    <p class="kicker">flash attention · in motion</p>
-    <h1>stream it, don't store it</h1>
-    <p>the keys and values live in slow memory, the warehouse. flashattention carries them up to the workbench one block at a time, scores a tile against the query, folds it into a running total, and throws the tile away. the full score matrix is never written down.</p>
+    <p class="kicker">flash attention · explore</p>
+    <h1>the score matrix, one tile at a time</h1>
+    <p>this is the n by n table of scores. in <em>flash</em> mode only the active tile lifts into fast memory; the rest stay dark and are never stored. drag to rotate, change the block size, or scrub the stream.</p>
     <div class="ctrls">
-      <button id="play" class="play">⏸ pause</button>
-      <input id="scrub" type="range" min="0" max="100" value="0" aria-label="scrub" />
+      <div class="seg" id="fa-mode"><button data-m="flash" class="on">flash</button><button data-m="standard">standard</button></div>
+      <div class="seg" id="fa-bsize"><span class="lbl">block</span><button data-b="2">2</button><button data-b="4" class="on">4</button><button data-b="8">8</button></div>
+      <button id="fa-play" class="play">⏸ pause</button>
     </div>
-    <div id="readout"></div>
+    <input id="fa-scrub" type="range" min="0" max="100" value="0" aria-label="scrub" />
+    <div id="fa-readout"></div>
   </div>
+  <div class="cue">drag to rotate</div>
 
   <script type="module">
     const KEY="theme", btn=document.getElementById("theme");
@@ -62,82 +69,39 @@
     addEventListener("keydown",(e)=>{ if(e.key==="l"&&!/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) setDark(!document.body.classList.contains("dark")); });
 
     const cv=document.getElementById("stage"), ctx=cv.getContext("2d");
-    const M=8;                     // number of key/value blocks
-    let W=0,H=0,DPR=1, progress=0, playing=true, last=0;
+    const n=20; let B=4, mode="flash", playing=true, step=0, lastAdv=0;
+    let W=0,H=0,DPR=1, yaw=0.0, pitch=-0.6, vy=0, vp=0, drag=false, lx=0, ly=0;
     function size(){ DPR=Math.min(devicePixelRatio||1,2); W=innerWidth; H=innerHeight; cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0); }
     addEventListener("resize",size); size();
-    const I=()=>document.body.classList.contains("dark")?"232,235,228":"40,42,46";
-    const M2=()=>document.body.classList.contains("dark")?"150,152,148":"120,122,118";
-    function rr(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
-    function txt(s,x,y,size,col,w=600,al="center"){ ctx.font=`${w} ${size}px ${/[a-z]/.test(s)&&w>=700?'"Hanken Grotesk",sans-serif':'"IBM Plex Mono",monospace'}`; ctx.fillStyle=col; ctx.textAlign=al; ctx.fillText(s,x,y); }
-
-    function frame(t2){
-      const t=t2*0.001;
-      if(playing){ if(!last) last=t; progress += (t-last)*0.9; last=t; if(progress>M+1.2) progress=0; const s=document.getElementById("scrub"); if(s) s.value=Math.min(100,Math.round(progress/(M+1)*100)); }
-      else last=0;
-      const ink=I(), mut=M2(), ROSE="224,120,142", SAGE="143,179,154";
+    const tps=()=>n/B;
+    function ink(){ return document.body.classList.contains("dark")?"232,235,228":"40,42,46"; }
+    function proj(x,y,z){ const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch); const x1=x*cy+z*sy, z1=-x*sy+z*cy; const y1=y*cp-z1*sp, z2=y*sp+z1*cp; const f=720/(720+z2); return [W*0.58+x1*f, H*0.5+y1*f, z2]; }
+    function readout(cr,cc){ const el=document.getElementById("fa-readout"); if(!el) return; el.innerHTML = mode==="standard" ? `<b>standard</b> · the whole ${n}×${n} matrix (<b>${n*n}</b> numbers) is written to slow memory.` : `<b>flash</b> · tile <b>Q${cr}</b>×<b>K${cc}</b> in fast memory · stored: only <b>2n=${2*n}</b> running numbers.`; }
+    function frame(){
+      const t=performance.now()*0.001;
+      if(!drag){ yaw+=vy+0.0013; pitch+=vp+(-0.6-pitch)*0.02; vy*=0.92; vp*=0.92; }
+      const total=tps()*tps();
+      if(mode==="flash"&&playing&&t-lastAdv>0.26){ step=(step+1)%total; lastAdv=t; const s=document.getElementById("fa-scrub"); if(s) s.value=Math.round(step/(total-1)*100); }
+      const cur=step%total, cr=Math.floor(cur/tps()), cc=cur%tps();
       ctx.clearRect(0,0,W,H);
-      const ox=Math.max(W*0.30, 60), sw=W-ox-50, scx=ox+sw/2;
-
-      // --- the warehouse (HBM): all the K/V blocks, slow memory ---
-      const whY=H*0.66, whH=130, whX=ox+10, whW=sw-20;
-      ctx.strokeStyle=`rgba(${mut},0.5)`; ctx.lineWidth=1.2; rr(whX,whY,whW,whH,14); ctx.stroke();
-      txt("HBM · the warehouse  (slow, holds everything)", whX+14, whY-14, 13, `rgba(${mut},0.9)`, 600, "left");
-      const bw=(whW-40-20)/M, by=whY+44, bh=46;
-      const cur=Math.floor(Math.min(progress,M));
-      for(let j=0;j<M;j++){ const bx=whX+20+j*bw; const done=j<cur, active=j===cur&&progress<M;
-        ctx.globalAlpha = done?0.28:1; rr(bx+3,by,bw-6,bh,7);
-        ctx.fillStyle = active?`rgba(${ROSE},0.95)`:`rgba(${ink},0.10)`; ctx.fill();
-        ctx.strokeStyle=`rgba(${mut},0.4)`; ctx.lineWidth=1; ctx.stroke();
-        txt("K"+(j+1), bx+bw/2, by+bh/2+4, 12, active?"#fff":`rgba(${ink},0.8)`, 700); ctx.globalAlpha=1;
-      }
-      txt("key / value blocks", whX+20, whY+whH-12, 11, `rgba(${mut},0.7)`, 600, "left");
-
-      // --- the workbench (SRAM): query, one tile, running stats ---
-      const wbW=Math.min(sw*0.78,520), wbX=scx-wbW/2, wbY=H*0.13, wbH=150;
-      ctx.strokeStyle=`rgba(${SAGE},0.8)`; ctx.lineWidth=1.4; rr(wbX,wbY,wbW,wbH,14); ctx.stroke();
-      txt("SRAM · the workbench  (fast, tiny)", wbX+14, wbY-14, 13, `rgba(${SAGE},0.95)`, 600, "left");
-      // Q block (fixed)
-      const qx=wbX+24, qy=wbY+40, qs=60;
-      rr(qx,qy,qs,qs,8); ctx.fillStyle=`rgba(${ink},0.12)`; ctx.fill(); ctx.strokeStyle=`rgba(${mut},0.5)`; ctx.stroke();
-      txt("Q", qx+qs/2, qy+qs/2+6, 17, `rgba(${ink},0.85)`, 800);
-      txt("query block", qx+qs/2, qy+qs+18, 11, `rgba(${mut},0.8)`, 600);
-      // the current tile slot
-      const tx=qx+qs+70, ty=qy, ts=60;
-      rr(tx,ty,ts,ts,8);
-      const frac = Math.min(progress - cur, 1);
-      const here = progress<M && frac>0.45;     // the block has arrived on the bench
-      ctx.fillStyle = here?`rgba(${ROSE},0.9)`:`rgba(${ink},0.05)`; ctx.fill();
-      ctx.strokeStyle=`rgba(${mut},0.4)`; ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
-      txt(here?("Q·K"+(cur+1)):"tile", tx+ts/2, ty+ts/2+5, 12, here?"#fff":`rgba(${mut},0.8)`, 700);
-      txt("score a tile, softmax it", tx+ts/2, ty+ts+18, 11, `rgba(${mut},0.8)`, 600);
-      // running output bar
-      const oX=tx+ts+70, oW=wbX+wbW-24-oX, oY=qy+8, oH=qs-16;
-      rr(oX,oY,oW,oH,7); ctx.strokeStyle=`rgba(${mut},0.5)`; ctx.stroke();
-      const fill=Math.min(progress,M)/M;
-      rr(oX,oY+oH*(1-fill),oW,oH*fill,7); ctx.fillStyle=`rgba(${SAGE},0.85)`; ctx.fill();
-      txt("running output O", oX+oW/2, oY+oH+18, 11, `rgba(${mut},0.8)`, 600);
-
-      // --- the block traveling up from warehouse to bench ---
-      if(progress<M){ const [bx0,by0]=[whX+20+cur*bw+bw/2, by]; const e=Math.min(frac/0.45,1); const gx=bx0+(tx+ts/2-bx0)*ease(e), gy=by0+(ty+ts/2-by0)*ease(e);
-        if(e<1){ rr(gx-14,gy-14,28,28,6); ctx.fillStyle=`rgba(${ROSE},0.95)`; ctx.fill(); txt("K"+(cur+1),gx,gy+4,11,"#fff",700); } }
-
-      // --- output written back, once, at the end ---
-      if(progress>=M){ const e=Math.min((progress-M)/1.0,1); const sx=oX+oW/2, sy=oY+oH; const dx=whX+whW-40, dyy=by+bh/2; const gx=sx+(dx-sx)*ease(e), gy=sy+(dyy-sy)*ease(e);
-        rr(gx-16,gy-12,32,24,6); ctx.fillStyle=`rgba(${SAGE},0.95)`; ctx.fill(); txt("O",gx,gy+4,12,"#1c1b18",800);
-        txt("the output is the only thing written back", scx, H*0.5, 13, `rgba(${ink},0.7)`, 600); }
-
-      // readout
-      const el=document.getElementById("readout");
-      if(el){ const j=Math.min(cur,M); el.innerHTML = progress>=M
-        ? `done · <b>O</b> written back once · <span class="rose">score matrix stored: 0 cells</span>`
-        : `streaming block <b>${j+1}/${M}</b> · on the bench: <b>1 tile</b> + running max, sum, output · <span class="rose">matrix cells stored so far: 0</span>`; }
+      const S=Math.min(W,H)*0.034, half=n/2, I=ink();
+      const cells=[];
+      for(let r=0;r<n;r++)for(let c=0;c<n;c++){ const tr=Math.floor(r/B),tc=Math.floor(c/B); const active=mode==="flash"?(tr===cr&&tc===cc):true; const visited=mode==="flash"&&(tr*tps()+tc)<cur; const gx=c-half,gy=r-half,z=active?-S*3.6:0; const cz=proj((gx+0.5)*S,(gy+0.5)*S,z)[2]; cells.push({gx,gy,active,visited,z,cz,r}); }
+      cells.sort((a,b)=>b.cz-a.cz);
+      for(const cl of cells){ const p0=proj(cl.gx*S,cl.gy*S,cl.z),p1=proj((cl.gx+1)*S,cl.gy*S,cl.z),p2=proj((cl.gx+1)*S,(cl.gy+1)*S,cl.z),p3=proj(cl.gx*S,(cl.gy+1)*S,cl.z);
+        let col,a; if(cl.active){col="224,120,142";a=0.95;} else if(mode==="standard"){col=I;a=0.28+0.18*Math.sin(t*2+cl.r*0.2);} else if(cl.visited){col=I;a=0.12;} else {col=I;a=0.05;}
+        ctx.beginPath(); ctx.moveTo(p0[0],p0[1]); ctx.lineTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.lineTo(p3[0],p3[1]); ctx.closePath();
+        ctx.fillStyle=`rgba(${col},${a})`; ctx.fill(); ctx.strokeStyle=`rgba(${I},0.12)`; ctx.lineWidth=0.5; ctx.stroke(); }
+      readout(cr,cc);
       requestAnimationFrame(frame);
     }
-    function ease(t){ return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
-    const playBtn=document.getElementById("play"), scrub=document.getElementById("scrub");
-    playBtn.addEventListener("click",()=>{ playing=!playing; playBtn.textContent=playing?"⏸ pause":"▶ play"; });
-    scrub.addEventListener("input",()=>{ playing=false; playBtn.textContent="▶ play"; progress=scrub.value/100*(M+1); });
+    document.querySelectorAll("#fa-mode button").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.m; document.querySelectorAll("#fa-mode button").forEach(x=>x.classList.toggle("on",x===b));}));
+    document.querySelectorAll("#fa-bsize button").forEach(b=>b.addEventListener("click",()=>{B=+b.dataset.b; step=0; document.querySelectorAll("#fa-bsize button").forEach(x=>x.classList.toggle("on",x===b));}));
+    const playBtn=document.getElementById("fa-play"); playBtn.addEventListener("click",()=>{playing=!playing; playBtn.textContent=playing?"⏸ pause":"▶ play";});
+    const sc=document.getElementById("fa-scrub"); sc.addEventListener("input",()=>{playing=false; mode="flash"; document.querySelectorAll("#fa-mode button").forEach(x=>x.classList.toggle("on",x.dataset.m==="flash")); playBtn.textContent="▶ play"; const total=tps()*tps(); step=Math.round(sc.value/100*(total-1));});
+    cv.addEventListener("pointerdown",(e)=>{drag=true; lx=e.clientX; ly=e.clientY; cv.setPointerCapture(e.pointerId); cv.style.cursor="grabbing";});
+    cv.addEventListener("pointermove",(e)=>{ if(!drag)return; const dx=e.clientX-lx,dy=e.clientY-ly; yaw+=dx*0.006; pitch+=dy*0.006; pitch=Math.max(-1.3,Math.min(-0.06,pitch)); vy=dx*0.0008; vp=dy*0.0008; lx=e.clientX; ly=e.clientY; });
+    const up=()=>{drag=false; cv.style.cursor="grab";}; cv.addEventListener("pointerup",up); cv.addEventListener("pointercancel",up);
     requestAnimationFrame(frame);
   </script>
 </body>

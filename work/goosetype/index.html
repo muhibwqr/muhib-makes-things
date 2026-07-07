@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · goosetype</title>
+  <meta name="description" content="a competitive typing platform where scores aggregate per university. the quiet part is anti-cheat as defense in depth: keystroke biometrics on a monotonic clock, an accuracy denominator that never forgives a correction, and idempotent inserts." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
+    <div class="nav-links mono">
+      <a href="/work/">&larr; work</a>
+      <a href="/writing/">writing</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article work-page">
+    <p class="article-kicker mono dim reveal">work · web app</p>
+    <h1 class="article-title reveal">goosetype</h1>
+    <p class="article-meta mono dim reveal">react · vite · typescript · supabase · vercel edge · <a href="https://github.com/muhibwqr/goosetype" target="_blank" rel="noopener">github &rarr;</a></p>
+
+    <figure class="demo demo-solo reveal">
+      <video src="/goosetype-demo.m4v" poster="/goosetype-poster.jpg" autoplay muted loop playsinline preload="metadata"></video>
+      <figcaption class="mono dim">goosetype · racing a university-themed prompt, live</figcaption>
+    </figure>
+
+    <div class="prose article-prose reveal">
+      <p>goosetype is a monkeytype-style typing race for students, where every result rolls up into a per-university leaderboard. the fun part is the typing. the part i actually built it to learn was the part nobody sees: how do you keep a public leaderboard honest when the only thing standing between a real score and a fake one is a browser you don't control? the answer isn't one clever check. it's defense in depth, several cheap honesty constraints layered so that beating all of them is harder than just typing.</p>
+
+      <h3>an accuracy that never forgives a correction</h3>
+      <p>the first honesty constraint is in the accuracy formula itself. it would be easy to compute accuracy from the final, corrected text, but then backspace-spamming your way to a clean result costs nothing. so the denominator folds in <em>corrected</em> mistakes: once you mistype a character, fixing it still permanently lowers your accuracy.</p>
+      <pre><code>const totalCharsTyped = correctChars + incorrectChars + mistakes;
+const accuracy = totalCharsTyped > 0
+  ? (correctChars / totalCharsTyped) * 100
+  : 100;</code></pre>
+      <p>the metric remembers what happened, not just where you ended up. that single design choice quietly closes the most obvious way to fake a perfect run.</p>
+
+      <h3>a clock that doesn't drift</h3>
+      <p>a naive countdown decrements a counter on a <code>setInterval(…, 1000)</code>, and quietly accumulates drift because intervals are never exactly a second. goosetype computes time left from the wall-clock delta and re-syncs to the next exact second boundary, so the timer stays true over a sixty-second test.</p>
+      <pre><code>const elapsedMs = Date.now() - startTime;
+const msUntilNextSecond = 1000 - (elapsedMs % 1000);
+setTimeout(() =&gt; {
+  updateTimeLeft();
+  setInterval(updateTimeLeft, 1000);   // now aligned to the second
+}, msUntilNextSecond);</code></pre>
+      <p>wpm is words over real elapsed minutes, and the elapsed time is measured, not counted. when the denominator of your score is time, you do not get to be sloppy about time.</p>
+
+      <h3>keystroke biometrics, the part i'm proudest of</h3>
+      <p>the deepest piece is a keystroke tracker that records the timing of every key the way behavioral-biometrics research does. for each keystroke it captures dwell (how long the key is held), flight (the gap from the previous release, which goes <em>negative</em> when you press the next key before releasing the last, the signature of a genuinely fast typist), and digraph latency (the gap between consecutive key-presses). it pairs keydowns to keyups by physical key code through a pending-press map, and it times everything with <code>performance.now()</code>, a monotonic, sub-millisecond clock, not the wall clock.</p>
+      <pre><code>const flight   = lastKeyup   != null ? now - lastKeyup   : null;  // &lt;0 = rollover
+const digraph  = lastKeydown != null ? now - lastKeydown  : null;
+this.pendingKeydowns.set(e.code, ks);   // handle overlapping presses</code></pre>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 640 170" role="img" aria-label="a timing diagram of two overlapping keystrokes showing dwell, digraph and a negative flight time when the next key is pressed before the previous is released">
+          <path class="dg-copper" d="M120 50 V44 H250 V50"/>
+          <text class="dg-t-copper" x="185" y="36" text-anchor="middle">dwell · key held</text>
+
+          <rect class="dg-box-accent dg-fill-soft" x="120" y="56" width="130" height="20" rx="4"/>
+          <text class="dg-t-dim" x="130" y="71">key A</text>
+          <rect class="dg-box" x="210" y="88" width="150" height="20" rx="4"/>
+          <text class="dg-t-dim" x="220" y="103">key B</text>
+
+          <path class="dg-line dg-dash" d="M120 50 V150"/>
+          <path class="dg-line dg-dash" d="M210 82 V150"/>
+          <path class="dg-line dg-dash" d="M250 50 V150"/>
+
+          <path class="dg-copper" d="M120 124 V128 H210 V124"/>
+          <text class="dg-t-copper" x="165" y="143" text-anchor="middle">digraph</text>
+
+          <path class="dg-copper" d="M250 150 H216"/>
+          <polygon class="dg-fill-copper" points="210,150 219,145 219,155"/>
+          <text class="dg-t-copper" x="300" y="154">flight &lt; 0 · rollover</text>
+
+          <text class="dg-t-dim" x="112" y="166">↓A</text>
+          <text class="dg-t-dim" x="202" y="166">↓B</text>
+          <text class="dg-t-dim" x="242" y="166">↑A</text>
+        </svg>
+        <figcaption>dwell, digraph, and flight, timed on a monotonic sub-millisecond clock. when flight goes negative, the next key was pressed before the last was released, the signature of a real fast typist.</figcaption>
+      </figure>
+      <p>a human's typing has a rhythm, and a script's doesn't. this is the raw signal you'd need to tell them apart. it ships to an env-gated endpoint with <code>keepalive</code> so the data survives the page unloading, and it swallows every error so it can never disrupt the actual test. it's collection infrastructure, the substrate for human-vs-bot scoring, not yet the judge.</p>
+
+      <h3>making the database the final authority</h3>
+      <p>client checks are bypassable by anyone who finds the api, so the constraints that truly count live in postgres. every submission carries a client-generated uuid under a <code>UNIQUE</code> constraint, so a retry or a double-click can't double-count, and the duplicate surfaces as error code <code>23505</code>, which the client treats as success.</p>
+      <pre><code>// duplicate request_id -&gt; "already submitted", not an error
+if (error?.code === "23505") return { ok: true, duplicate: true };</code></pre>
+      <p>row-level security pins inserts to <code>auth.uid() = user_id</code>, a vercel edge middleware rate-limits sixty requests a minute per ip, and a trigger keeps running per-university sums so the leaderboard reads pre-computed averages instead of scanning the whole table on every load. and crucially, rank isn't a single hero run, it's an accuracy-weighted average diluted across submissions, so one cheated score barely moves a university's number. the system is built so honesty is the path of least resistance.</p>
+
+      <blockquote>the only check a cheater can't route around is the one the database enforces. everything in the browser is a speed bump, not a wall.</blockquote>
+
+      <p>i'll name the limits plainly: most of the anti-cheat is client-side and bypassable by hitting supabase directly, and the keystroke endpoint is unset in this repo, so the biometrics are collected and discarded for now. but the architecture, cheap honest constraints stacked, with the database as the one authority you can't argue with, is exactly how i'd reason about it again. trust, like a reputation, is built in layers and lost in one shortcut. 一步一个脚印, one step, one footprint.</p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/work/scrollify/">next · scrollify &rarr;</a>
+      <a class="mono" href="/work/">all work &rarr;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

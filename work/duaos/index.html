@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · duaos</title>
+  <meta name="description" content="match an intention to the names of allah, the quran, and hadith by meaning, then refine a du'a in a prophetic style. pgvector cosine search, hyde for short queries, intent-aware reranking, and a hard rule against inventing arabic." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
+    <div class="nav-links mono">
+      <a href="/work/">&larr; work</a>
+      <a href="/writing/">writing</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article work-page">
+    <p class="article-kicker mono dim reveal">work · retrieval</p>
+    <h1 class="article-title reveal">using nlp to filter through prayers</h1>
+    <p class="article-meta mono dim reveal">duaos · next.js · supabase pgvector · mastra · openai · <a href="https://github.com/muhibwqr/duaOS" target="_blank" rel="noopener">github &rarr;</a></p>
+
+    <figure class="diagram reveal">
+      <svg viewBox="0 0 640 200" role="img" aria-label="an intention is embedded into a vector, searched against a pgvector store by cosine distance, matched into names, quran and hadith, then refined into a du'a in a prophetic style">
+        <rect class="dg-box" x="6" y="82" width="80" height="44" rx="5"/>
+        <text class="dg-t-dim" x="46" y="101" text-anchor="middle">intent</text>
+        <text class="dg-t-dim" x="46" y="116" text-anchor="middle">on the heart</text>
+        <path class="dg-flow dg-anim" d="M86 104 H108"/>
+        <polygon class="dg-fill" points="110,104 101,99 101,109"/>
+
+        <rect class="dg-box" x="110" y="82" width="94" height="44" rx="5"/>
+        <text class="dg-t" x="157" y="101" text-anchor="middle">embed</text>
+        <text class="dg-t-dim" x="157" y="116" text-anchor="middle">1536-d</text>
+        <text class="dg-t-copper" x="157" y="142" text-anchor="middle">+ hyde blend</text>
+        <path class="dg-flow dg-anim" d="M204 104 H224"/>
+        <polygon class="dg-fill" points="226,104 217,99 217,109"/>
+
+        <ellipse class="dg-box" cx="274" cy="84" rx="48" ry="9"/>
+        <path class="dg-box" d="M226 84 V124 a48 9 0 0 0 96 0 V84"/>
+        <text class="dg-t" x="274" y="104" text-anchor="middle">pgvector</text>
+        <text class="dg-t-dim" x="274" y="118" text-anchor="middle">cosine</text>
+
+        <path class="dg-flow dg-anim" d="M322 100 C 350 100, 348 49, 372 49"/>
+        <path class="dg-flow dg-anim" d="M322 104 H372"/>
+        <path class="dg-flow dg-anim" d="M322 108 C 350 108, 348 159, 372 159"/>
+
+        <rect class="dg-box dg-dash" x="372" y="36" width="96" height="26" rx="13"/>
+        <text class="dg-t-dim" x="420" y="53" text-anchor="middle">names</text>
+        <rect class="dg-box dg-dash" x="372" y="91" width="96" height="26" rx="13"/>
+        <text class="dg-t-dim" x="420" y="108" text-anchor="middle">quran</text>
+        <rect class="dg-box dg-dash" x="372" y="146" width="96" height="26" rx="13"/>
+        <text class="dg-t-dim" x="420" y="163" text-anchor="middle">hadith</text>
+
+        <path class="dg-flow dg-anim" d="M468 49 C 492 49, 490 100, 514 100"/>
+        <path class="dg-flow dg-anim" d="M468 104 H514"/>
+        <path class="dg-flow dg-anim" d="M468 159 C 492 159, 490 108, 514 108"/>
+        <polygon class="dg-fill" points="516,104 507,99 507,109"/>
+
+        <rect class="dg-box-accent dg-fill-soft" x="516" y="82" width="118" height="44" rx="6"/>
+        <text class="dg-t-accent" x="575" y="101" text-anchor="middle">refine du'a</text>
+        <text class="dg-t-dim" x="575" y="116" text-anchor="middle">prophetic style</text>
+      </svg>
+      <figcaption>matched by meaning, not keywords. a guaranteed one of each category so you're never left empty-handed, and the arabic is only ever quoted from what was retrieved, never invented.</figcaption>
+    </figure>
+
+    <div class="prose article-prose reveal">
+      <p>you carry an intention you can barely name, a worry, a hope, a goal, and somewhere in the ninety-nine names of allah, the quran, and the hadith there is language already shaped for exactly that. duaos is built to close that gap by meaning, not keywords: you describe what's on your heart, it finds the names and verses that match, and then it helps you refine a du'a in a prophetic style. i wanted it to be technically serious precisely <em>because</em> the subject is sacred. retrieval that touches scripture has to refuse to lie.</p>
+
+      <h3>cosine search, in the database</h3>
+      <p>every name, verse, and narration is embedded into a 1536-dimension vector and stored in postgres with pgvector. the match happens in sql, cosine distance via the <code>&lt;=&gt;</code> operator, with the similarity returned as <code>1 - distance</code> and a jsonb containment filter that lets one function serve both the open search and the typed fallbacks.</p>
+      <pre><code>SELECT id, content, metadata,
+       1 - (embedding &lt;=&gt; query_embedding) AS similarity
+FROM spiritual_assets
+WHERE embedding IS NOT NULL
+  AND (filter_metadata = '{}' OR metadata @&gt; filter_metadata)
+  AND (1 - (embedding &lt;=&gt; query_embedding)) &gt;= match_threshold
+ORDER BY embedding &lt;=&gt; query_embedding
+LIMIT match_count;</code></pre>
+      <p>that <code>@&gt;</code> containment operator is the quiet hero, it means a single rpc handles "find anything relevant" and "find me exactly one bukhari hadith" without a second function. if a category comes back empty, three parallel queries with the threshold dropped to zero guarantee you always get at least one name, some verses, and some hadith. the user is never left empty-handed.</p>
+
+      <h3>hyde: hallucinate, then search with it</h3>
+      <p>short queries are the hard case. "i'm anxious" is three words and barely enough signal for a vector to grab. so for any query under twelve words, duaos uses a technique called hyde, hypothetical document embeddings: it asks a model to write a short, made-up du'a-style passage for the query, embeds <em>that</em>, and averages the two vectors element-wise.</p>
+      <pre><code>export function blendEmbeddings(queryEmbedding, hydeEmbedding) {
+  if (queryEmbedding.length !== hydeEmbedding.length) return queryEmbedding;
+  return queryEmbedding.map((q, i) => (q + hydeEmbedding[i]) / 2);
+}</code></pre>
+      <p>you're not searching with the user's three words, you're searching with the richer shape of what they probably mean. the hallucination is a throwaway, never shown, used only to aim the search. if it fails, the code falls straight back to the raw embedding.</p>
+
+      <blockquote>retrieval here is less a speed trick than a discipline: the model may only speak from what it was given, and what it was given is the actual text.</blockquote>
+
+      <h3>reranking for du'a, against jurisprudence</h3>
+      <p>raw similarity has a failure mode here that matters: a legal ruling about marriage scores high on a query about wanting a spouse, but it isn't a du'a, it's fiqh. so a deterministic rerank multiplies the score by lexical signals, boosting supplication language and penalizing rulings and bare narrator fragments.</p>
+      <pre><code>if (hasDuaSignal(m.content))          multiplier *= 1.2;   // "o allah", "grant me"
+if (hasJurisprudenceSignal(m.content)) multiplier *= 0.75;  // "the ruling", "iddah"
+if (isShortNarratorOnly(m.content))    multiplier *= 0.75;
+sim = Math.min(1, sim * multiplier);</code></pre>
+      <p>then a small model does a final relevance pass to drop the tangential, and on any error it returns everything unfiltered. graceful degradation at every llm step, because the worst outcome is a blank page when someone came looking for words to pray.</p>
+
+      <h3>the rule that matters most: never invent arabic</h3>
+      <p>this is the line i care about more than any latency number. the refine agent runs on a strict instruction: arabic script is allowed <em>only</em> when copied verbatim from a provided snippet. it must not generate, reconstruct, or transliterate into arabic on its own. a model confidently producing fake quranic arabic would be worse than useless, it would be a small act of corruption. so the prophetic-style refinement happens in the user's language, grounded in real retrieved text, and the sacred script is quoted, never synthesized. there's even a hardcoded prior: ask about a spouse or provision and the du'a of musa, <em>rabbi inni lima anzalta ilayya min khairin faqir</em> (al-qasas 28:24), gets injected into context, because some matches are too well-established to leave to a vector.</p>
+
+      <p>retrieval-augmented generation is usually sold as a way to make models more accurate. here it's something closer to a discipline: the model may only speak from what was given, and what was given is the actual text. the prophet ﷺ taught that du'a is the very essence of worship. the least i could do was build the tool so it never puts words in god's mouth. <span class="dim">آمين</span>.</p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/work/goosetype/">next · goosetype &rarr;</a>
+      <a class="mono" href="/work/">all work &rarr;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

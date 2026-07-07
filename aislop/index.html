@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · tastemaxxing</title>
+  <meta name="description" content="ai slop, or not? a game for building taste. read a code snippet and call it: human craft from a great repo, or ai-generated slop. then see the tells." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .lpage { max-width: 780px; margin: 0 auto; padding: 7vh 24px 14vh; position: relative; z-index: 1; }
+
+    /* start screen */
+    .l-title { font-size: clamp(34px, 5.4vw, 54px); font-weight: 500; letter-spacing: -0.015em; line-height: 1.02; }
+    .l-title .em { color: var(--accent); }
+    .l-sub { color: var(--dim); font-size: 18px; line-height: 1.55; margin-top: 14px; max-width: 560px; }
+    .pick { margin-top: 40px; }
+    .pick .plabel { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--copper); margin-bottom: 14px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip { font-family: var(--mono); font-size: 13px; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--line); color: var(--dim); background: none; cursor: pointer; transition: all .2s; }
+    .chip:hover { color: var(--ink); border-color: var(--dim); }
+    .chip.on { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+
+    button.act { font-family: var(--mono); font-size: 14px; letter-spacing: 0.03em; padding: 12px 26px; border-radius: 24px; border: 1px solid var(--accent); background: none; color: var(--accent); cursor: pointer; transition: all .2s; }
+    button.act:hover { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+    .start-row { margin-top: 42px; }
+
+    /* game screen */
+    .hidden { display: none !important; }
+    .hud { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 12px; color: var(--dim); letter-spacing: 0.05em; margin-bottom: 18px; }
+    .hud .sc { color: var(--ink); }
+    .cat-tag { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--copper); margin-bottom: 8px; }
+    pre.code { background: color-mix(in srgb, var(--ink) 4%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 20px 20px; overflow-x: auto; font-family: var(--mono); font-size: 13px; line-height: 1.6; color: var(--ink); white-space: pre; tab-size: 2; }
+    body.maker pre.code { background: rgba(12,17,23,0.035); }
+
+    .guess { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 520px) { .guess { grid-template-columns: 1fr; } }
+    .gbtn { font-family: var(--serif); font-size: 19px; padding: 18px; border-radius: 14px; border: 1px solid var(--line); background: none; color: var(--ink); cursor: pointer; transition: all .18s; }
+    .gbtn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .gbtn .k { display: block; font-family: var(--mono); font-size: 11px; color: var(--dim); margin-top: 6px; letter-spacing: 0.05em; }
+
+    /* reveal */
+    .reveal-box { margin-top: 22px; border-radius: 14px; border: 1px solid var(--line); padding: 20px 22px; }
+    .reveal-box .verdict { font-family: var(--mono); font-size: 15px; letter-spacing: 0.03em; margin-bottom: 4px; }
+    .reveal-box.good .verdict { color: var(--accent); }
+    .reveal-box.bad .verdict { color: var(--copper); }
+    .truth { font-family: var(--serif); font-size: 21px; margin-bottom: 12px; }
+    .truth b { color: var(--accent); font-weight: 500; }
+    .src { font-family: var(--mono); font-size: 12.5px; color: var(--dim); line-height: 1.6; }
+    .src .prompt { color: var(--ink); }
+    .tells { margin-top: 14px; padding-left: 0; list-style: none; }
+    .tells li { color: var(--dim); font-size: 15px; line-height: 1.55; padding-left: 18px; position: relative; margin: 5px 0; }
+    .tells li::before { content: "→"; position: absolute; left: 0; color: var(--copper); }
+    .next-row { margin-top: 20px; }
+
+    /* end screen */
+    .tier { font-size: clamp(28px, 4.6vw, 40px); font-weight: 500; margin-top: 10px; color: var(--accent); }
+    .final-score { font-family: var(--mono); font-size: 16px; color: var(--dim); margin-top: 8px; }
+    .tier-note { color: var(--dim); font-size: 17px; line-height: 1.6; margin-top: 16px; max-width: 540px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
+    <div class="nav-links mono">
+      <a href="/learning/">learning</a>
+    </div>
+  </nav>
+
+  <main class="lpage">
+
+    <!-- START -->
+    <section id="start" class="reveal">
+      <p class="mono dim" style="letter-spacing:.08em">learning · tastemaxxing</p>
+      <h1 class="l-title">ai slop, <span class="em">or not?</span></h1>
+      <p class="l-sub">taste is the one thing the models can't hand you. read each snippet and make the call: is it human craft pulled from a great repo, or slop a model coughed up? then see what gave it away. that sharpening of the eye is <b>tastemaxxing</b>.</p>
+
+      <div class="pick">
+        <p class="plabel">choose your poison</p>
+        <div class="chips" id="chips">
+          <button class="chip on" data-cat="all">everything</button>
+          <button class="chip" data-cat="data structures">data structures</button>
+          <button class="chip" data-cat="algorithms">algorithms</button>
+          <button class="chip" data-cat="machine learning">machine learning</button>
+        </div>
+      </div>
+      <div class="start-row"><button class="act" id="start-btn">start game →</button></div>
+    </section>
+
+    <!-- GAME -->
+    <section id="game" class="hidden">
+      <div class="hud">
+        <span id="progress">round 1 / 8</span>
+        <span class="sc" id="score">score 0</span>
+      </div>
+      <p class="cat-tag" id="cat-tag">algorithms</p>
+      <pre class="code" id="code"></pre>
+
+      <div class="guess" id="guess">
+        <button class="gbtn" data-slop="0">✋ human craft<span class="k">from a real repo</span></button>
+        <button class="gbtn" data-slop="1">🤖 ai slop<span class="k">a model wrote this</span></button>
+      </div>
+
+      <div class="reveal-box hidden" id="reveal">
+        <p class="verdict" id="verdict"></p>
+        <p class="truth" id="truth"></p>
+        <p class="src" id="src"></p>
+        <ul class="tells" id="tells"></ul>
+        <div class="next-row"><button class="act" id="next">next →</button></div>
+      </div>
+    </section>
+
+    <!-- END -->
+    <section id="end" class="hidden">
+      <p class="mono dim" style="letter-spacing:.08em">tastemaxxing · result</p>
+      <p class="tier" id="tier"></p>
+      <p class="final-score" id="final-score"></p>
+      <p class="tier-note" id="tier-note"></p>
+      <div class="start-row"><button class="act" id="again">play again →</button></div>
+    </section>
+
+  </main>
+
+  <script type="module" src="/main.js"></script>
+  <script>
+  // ============================================================
+  // tastemaxxing — ai slop or not. curated snippets, no fetch.
+  // human ones are famous, near-verbatim; slop is generated to
+  // order so the tells are real, teachable ai smells.
+  // ============================================================
+  (() => {
+    const R = String.raw; // preserve backslashes in code (C macros etc.)
+
+    const SNIPPETS = [
+      // ---------- algorithms ----------
+      { cat: "algorithms", slop: false,
+        source: "Quake III Arena · id Software (1999)",
+        tells: ["a magic constant no one can explain and the immortal comment to match", "bit-level float hack, zero hand-holding", "it trusts you completely, or dares you to keep up"],
+        code: R`float Q_rsqrt(float number) {
+  long i;
+  float x2, y;
+  const float threehalfs = 1.5F;
+  x2 = number * 0.5F;
+  y  = number;
+  i  = * ( long * ) &y;
+  i  = 0x5f3759df - ( i >> 1 );   // what the fuck?
+  y  = * ( float * ) &i;
+  y  = y * ( threehalfs - ( x2 * y * y ) );
+  return y;
+}` },
+
+      { cat: "algorithms", slop: false,
+        source: "CPython · Lib/bisect.py",
+        tells: ["terse, no defensive noise, no comments because none are needed", "does exactly one thing", "reads like it was written once and never touched again"],
+        code: R`def bisect_right(a, x, lo=0, hi=None):
+    if hi is None:
+        hi = len(a)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if x < a[mid]:
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo` },
+
+      { cat: "algorithms", slop: true,
+        source: "GPT-4, prompt: “write a robust production-ready binary search with error handling”",
+        promptType: "the tell is in the prompt: ask for “robust & production-ready” and you get ceremony, not correctness",
+        tells: ["a class wrapping a pure function that needs no state", "a comment on every single line, each restating the code", "“robust, production-ready” in the docstring — always a smell"],
+        code: R`class BinarySearchEngine:
+    """A robust, production-ready binary search implementation."""
+    def __init__(self, data):
+        # Store the input data for searching
+        self.data = data
+
+    def search(self, target):
+        # Check if the data is valid
+        if self.data is None or len(self.data) == 0:
+            return -1  # Return -1 if data is empty
+        left = 0   # Initialize left pointer
+        right = len(self.data) - 1  # Initialize right pointer
+        while left <= right:   # Loop until pointers cross
+            mid = (left + right) // 2  # Calculate middle index
+            if self.data[mid] == target:  # Found it?
+                return mid  # Return the index
+            elif self.data[mid] < target:
+                left = mid + 1  # Search right half
+            else:
+                right = mid - 1  # Search left half
+        return -1  # Target not found` },
+
+      { cat: "algorithms", slop: true,
+        source: "Claude, prompt: “sort a list of numbers”",
+        promptType: "a basic prompt, but no taste behind it: reinvents sorted() as O(n²) bubble sort",
+        tells: ["reinvents the built-in sorted() from scratch", "narrating comments: 'Get the length', 'Return the sorted list'", "picks bubble sort — the choice itself is the tell"],
+        code: R`def sort_list(numbers):
+    # Create a copy so we don't modify the original
+    result = numbers.copy()
+    n = len(result)  # Get the length of the list
+    # Loop through each element
+    for i in range(n):
+        # Loop through the list again
+        for j in range(0, n - i - 1):
+            # Compare adjacent elements
+            if result[j] > result[j + 1]:
+                # Swap them if they are out of order
+                result[j], result[j + 1] = result[j + 1], result[j]
+    return result  # Return the sorted list` },
+
+      // ---------- data structures ----------
+      { cat: "data structures", slop: false,
+        source: "Linux kernel · include/linux/kernel.h",
+        tells: ["dense macro that assumes deep C knowledge", "typeof + offsetof pointer arithmetic, no explanation", "one of the most-used lines in the kernel, and it shows no mercy"],
+        code: R`#define container_of(ptr, type, member) ({          \
+    const typeof(((type *)0)->member) *__mptr = (ptr); \
+    (char *)__mptr - offsetof(type, member); })` },
+
+      { cat: "data structures", slop: false,
+        source: "competitive-programming idiom (union-find, path compression)",
+        tells: ["path-halving compression folded into four lines", "no class, no ceremony — just the array and the trick", "the kind of terseness that comes from writing it a hundred times"],
+        code: R`def find(parent, x):
+    while parent[x] != x:
+        parent[x] = parent[parent[x]]   # halve the path
+        x = parent[x]
+    return x` },
+
+      { cat: "data structures", slop: true,
+        source: "GPT-4, prompt: “implement a stack in python”",
+        promptType: "basic prompt, no taste: a Python list already IS a stack (append / pop)",
+        tells: ["wraps a list to reinvent append() and pop() — which are already a stack", "a docstring on every trivial one-line method", "size() and is_empty() that len() already gives you"],
+        code: R`class Stack:
+    """A class that implements a stack data structure (LIFO)."""
+    def __init__(self):
+        self.items = []  # The list to store our items
+
+    def push(self, item):
+        """Add an item to the top of the stack."""
+        self.items.append(item)  # Append the item
+
+    def pop(self):
+        """Remove and return the top item."""
+        if not self.is_empty():   # Check if not empty
+            return self.items.pop()
+        return None
+
+    def is_empty(self):
+        """Check whether the stack is empty."""
+        return len(self.items) == 0
+
+    def size(self):
+        """Return the number of items in the stack."""
+        return len(self.items)` },
+
+      // ---------- machine learning ----------
+      { cat: "machine learning", slop: false,
+        source: "idiomatic PyTorch (scaled dot-product attention, nanoGPT-style)",
+        tells: ["the entire mechanism in three lines, no fat", "trusts you to know why the sqrt scaling is there", "matmul, scale, softmax, matmul — nothing you could delete"],
+        code: R`def attention(q, k, v):
+    scores = q @ k.transpose(-2, -1) / math.sqrt(q.size(-1))
+    weights = scores.softmax(dim=-1)
+    return weights @ v` },
+
+      { cat: "machine learning", slop: false,
+        source: "idiomatic NumPy (numerically-stable softmax)",
+        tells: ["the '- x.max()' is the whole point: it quietly prevents overflow", "vectorized, no python loops", "a single expression that shows the author actually understands floats"],
+        code: R`def softmax(x):
+    e = np.exp(x - x.max(axis=-1, keepdims=True))
+    return e / e.sum(axis=-1, keepdims=True)` },
+
+      { cat: "machine learning", slop: true,
+        source: "Claude, prompt: “write a comprehensive training loop”",
+        promptType: "'comprehensive' is the bad-prompt smell: you get a try/except that eats real bugs",
+        tells: ["a bare try/except around the whole step — silently swallows the errors you most need to see", "a comment on every line ('Forward pass', 'Zero the gradients')", "padded Args/Returns docstring for an internal function"],
+        code: R`def train_model(model, dataloader, epochs=10):
+    """
+    Trains the given model on the provided dataloader.
+
+    Args:
+        model: The model to train.
+        dataloader: The data to train on.
+        epochs: The number of epochs.
+    Returns:
+        The trained model.
+    """
+    optimizer = torch.optim.Adam(model.parameters())
+    criterion = torch.nn.CrossEntropyLoss()
+    for epoch in range(epochs):   # Loop over the epochs
+        for data, target in dataloader:
+            try:
+                optimizer.zero_grad()  # Zero the gradients
+                output = model(data)   # Forward pass
+                loss = criterion(output, target)  # Compute loss
+                loss.backward()        # Backpropagate
+                optimizer.step()       # Update the weights
+            except Exception as e:
+                print(f"An error occurred: {e}")  # Handle errors
+                continue
+    return model` },
+
+      { cat: "machine learning", slop: true,
+        source: "GPT-4, prompt: “write a softmax function”",
+        promptType: "basic prompt, no taste: overflows the moment an input is large",
+        tells: ["no max-subtraction, so exp() overflows to inf on large inputs — the real bug", "two python loops where one vectorized line would do", "comment on every line narrating the obvious"],
+        code: R`def calculate_softmax(input_list):
+    # This function calculates the softmax of a list
+    exponentials = []  # List to hold exponential values
+    for value in input_list:   # Iterate over each value
+        exponentials.append(math.exp(value))  # e^value
+    total = sum(exponentials)  # Sum all the exponentials
+    probabilities = []  # List for the probabilities
+    for exp_value in exponentials:   # Loop again
+        probabilities.append(exp_value / total)  # Normalize
+    return probabilities  # Return the distribution` },
+    ];
+
+    const TIERS = [
+      { min: 1.0,  name: "impeccable taste",           note: "you smell slop before you finish the first line. this is the eye the models can't give you — guard it." },
+      { min: 0.75, name: "sharp eye",                  note: "you catch most of it. the misses are where slop hides best: code that looks fine until you ask what it's actually for." },
+      { min: 0.5,  name: "tastemaxxing in progress",   note: "you're building the instinct. the tells repeat — over-commenting, reinventing the stdlib, ceremony around nothing. once you see them you can't unsee them." },
+      { min: 0.0,  name: "the slop is coming from inside the house", note: "the good news: taste is trained, not born. play again and watch the same smells show up every time." },
+    ];
+
+    const $ = (id) => document.getElementById(id);
+    const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+    let cat = "all", deck = [], i = 0, score = 0;
+
+    // category chips
+    $("chips").addEventListener("click", (e) => {
+      const b = e.target.closest(".chip"); if (!b) return;
+      document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("on", c === b));
+      cat = b.dataset.cat;
+    });
+
+    function startGame() {
+      const pool = SNIPPETS.filter((s) => cat === "all" || s.cat === cat);
+      deck = shuffle(pool.slice()).slice(0, 8);
+      i = 0; score = 0;
+      show("game");
+      renderRound();
+    }
+
+    function show(which) {
+      ["start", "game", "end"].forEach((s) => $(s).classList.toggle("hidden", s !== which));
+    }
+
+    function renderRound() {
+      const s = deck[i];
+      $("progress").textContent = `round ${i + 1} / ${deck.length}`;
+      $("score").textContent = `score ${score}`;
+      $("cat-tag").textContent = s.cat;
+      $("code").textContent = s.code;           // textContent = no HTML-escaping headaches
+      $("reveal").classList.add("hidden");
+      $("guess").classList.remove("hidden");
+    }
+
+    function guess(saidSlop) {
+      const s = deck[i];
+      const right = saidSlop === s.slop;
+      if (right) score++;
+      $("guess").classList.add("hidden");
+      const box = $("reveal");
+      box.className = "reveal-box " + (right ? "good" : "bad");
+      $("verdict").textContent = right ? "✓ nailed it" : "✗ fooled you";
+      $("truth").innerHTML = s.slop ? `this is <b>ai slop</b>.` : `this is <b>human craft</b>.`;
+      let src = `source: ${s.source}`;
+      if (s.promptType) src += `<br><span class="prompt">${s.promptType}</span>`;
+      $("src").innerHTML = src;
+      $("tells").innerHTML = s.tells.map((t) => `<li>${t}</li>`).join("");
+      $("score").textContent = `score ${score}`;
+    }
+
+    function nextRound() {
+      i++;
+      if (i >= deck.length) return endGame();
+      renderRound();
+    }
+
+    function endGame() {
+      show("end");
+      const pct = deck.length ? score / deck.length : 0;
+      const tier = TIERS.find((t) => pct >= t.min);
+      $("tier").textContent = tier.name;
+      $("final-score").textContent = `${score} / ${deck.length} correct`;
+      $("tier-note").textContent = tier.note;
+    }
+
+    $("start-btn").addEventListener("click", startGame);
+    $("again").addEventListener("click", () => show("start"));
+    $("next").addEventListener("click", nextRound);
+    $("guess").addEventListener("click", (e) => { const b = e.target.closest(".gbtn"); if (b) guess(b.dataset.slop === "1"); });
+
+    // ---- self-check: data integrity + every category playable ----
+    (function selfCheck() {
+      SNIPPETS.forEach((s, k) => {
+        console.assert(typeof s.slop === "boolean" && s.code && s.source && s.tells.length, `snippet ${k} malformed`);
+        console.assert(s.slop === !!s.promptType || !s.slop, `slop snippet ${k} should carry a prompt`);
+      });
+      ["data structures", "algorithms", "machine learning"].forEach((c) => {
+        const pool = SNIPPETS.filter((s) => s.cat === c);
+        console.assert(pool.some((s) => s.slop) && pool.some((s) => !s.slop), `category "${c}" needs both slop and human`);
+      });
+    })();
+  })();
+  </script>
+</body>
+</html>

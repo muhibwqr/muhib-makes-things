@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · incinerator</title>
+  <meta name="description" content="a macos disk-cleanup app with a fire theme: scan downloads, desktop and documents, rank the junk by a composite score, find duplicates with a three-pass hash cascade, and burn files by dragging them into a floating oven." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
+    <div class="nav-links mono">
+      <a href="/work/">&larr; work</a>
+      <a href="/writing/">writing</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article work-page">
+    <p class="article-kicker mono dim reveal">work · macos</p>
+    <h1 class="article-title reveal">incinerator</h1>
+    <p class="article-meta mono dim reveal">swift · swiftui · appkit · macos · <a href="https://github.com/muhibwqr/incinerator" target="_blank" rel="noopener">github &rarr;</a></p>
+
+    <figure class="diagram reveal">
+      <svg viewBox="0 0 640 200" role="img" aria-label="incinerator scans three folders, scores each file, ranks them, and a duplicate finder feeds the queue; files are moved to trash, which is recoverable, and only the final burn step permanently deletes">
+        <rect class="dg-box" x="6" y="84" width="98" height="44" rx="5"/>
+        <text class="dg-t" x="55" y="103" text-anchor="middle">scan</text>
+        <text class="dg-t-dim" x="55" y="118" text-anchor="middle">3 folders</text>
+        <path class="dg-flow dg-anim" d="M104 106 H122"/>
+        <polygon class="dg-fill" points="124,106 115,101 115,111"/>
+
+        <rect class="dg-box" x="124" y="84" width="104" height="44" rx="5"/>
+        <text class="dg-t" x="176" y="103" text-anchor="middle">composite</text>
+        <text class="dg-t-dim" x="176" y="118" text-anchor="middle">score</text>
+        <path class="dg-flow dg-anim" d="M228 106 H246"/>
+        <polygon class="dg-fill" points="248,106 239,101 239,111"/>
+
+        <rect class="dg-box" x="248" y="84" width="96" height="44" rx="5"/>
+        <text class="dg-t" x="296" y="103" text-anchor="middle">ranked</text>
+        <text class="dg-t-dim" x="296" y="118" text-anchor="middle">queue</text>
+        <path class="dg-flow dg-anim" d="M344 106 H362"/>
+        <polygon class="dg-fill" points="364,106 355,101 355,111"/>
+
+        <rect class="dg-box" x="364" y="84" width="96" height="44" rx="5"/>
+        <text class="dg-t" x="412" y="103" text-anchor="middle">trash</text>
+        <text class="dg-t-dim" x="412" y="118" text-anchor="middle">recoverable</text>
+        <path class="dg-copper" d="M460 106 H478"/>
+        <polygon class="dg-fill-copper" points="480,106 471,101 471,111"/>
+
+        <rect class="dg-box-accent dg-fill-soft" x="480" y="84" width="100" height="44" rx="6" style="stroke: var(--copper);"/>
+        <text class="dg-t-copper" x="530" y="103" text-anchor="middle">burn</text>
+        <text class="dg-t-dim" x="530" y="118" text-anchor="middle">permanent</text>
+
+        <rect class="dg-box dg-dash" x="124" y="158" width="220" height="28" rx="4" style="stroke: var(--copper);"/>
+        <text class="dg-t-copper" x="234" y="176" text-anchor="middle">duplicate finder · size → 8kb → full sha256</text>
+        <path class="dg-copper dg-dash" d="M296 158 V130"/>
+        <polygon class="dg-fill-copper" points="296,128 291,137 301,137"/>
+      </svg>
+      <figcaption>almost every path is recoverable, a move to the trash. only the final burn step actually deletes, and it only ever touches a file you've already thrown away.</figcaption>
+    </figure>
+
+    <div class="prose article-prose reveal">
+      <p>incinerator is a macos app for reclaiming disk space, dressed as a fire. a small animated oven floats above your desktop; you scan the folders where junk actually accumulates, get a ranked queue of what to clear, and you delete a file by dragging it into the flames. the theme is playful on purpose. the part i care about is underneath it: how do you build something whose whole job is destruction, and make it feel safe?</p>
+
+      <h3>rank what's worth clearing, don't just list it</h3>
+      <p>a dumb cleaner shows you your biggest files and leaves the judgment to you. incinerator scores every file on three axes, then sorts. size matters, but so does age, and so does whether you've actually opened the thing.</p>
+      <pre><code>let composite = min(sS * 0.35 + aS * 0.25 + uS * 0.30 + catBonus, 1.0)
+guard composite > 0.2 else { return nil }   // not worth recommending</code></pre>
+      <p>each sub-score is a step function over buckets, and a category bonus nudges installers and archives up (a <code>.dmg</code> is almost always safe to delete after you've installed). the reason string each card shows, "installer, safe to remove after install," "last opened two years ago," is generated from those same signals, so the recommendation can always explain itself. the goal isn't a longer list. it's a shorter, defensible one.</p>
+
+      <h3>the part nobody opens is the "last used" date</h3>
+      <p>macos doesn't hand you a reliable "when did you last open this" through the normal file attributes. so incinerator reaches into the spotlight metadata store for it, the same index that powers search.</p>
+      <pre><code>if let mdItem = MDItemCreateWithURL(nil, fileURL as CFURL) {
+    lastUsed = MDItemCopyAttribute(mdItem, kMDItemLastUsedDate) as? Date
+}</code></pre>
+      <p>that single attribute is what separates "a big file" from "a big file you forgot exists." when spotlight has no record, the score falls back to the creation date, so the absence of data never crashes the judgment, it just softens it.</p>
+
+      <h3>finding duplicates without reading every byte</h3>
+      <p>the obvious way to find duplicate files is to hash all of them and compare. that's also the slowest possible way. incinerator runs a three-pass cascade designed so the expensive work only happens where it could possibly matter: first group by exact byte size, then hash only the first eight kilobytes of each survivor, and only then do a full hash on what still collides.</p>
+      <pre><code>// pass 2: partial hash, first 8kb only
+for file in group {
+    if let hash = hashFile(at: file.url, maxBytes: 8192) {
+        partialBuckets[hash, default: []].append(file)
+    }
+}</code></pre>
+      <p>two files can't be identical if their sizes differ, so most candidates die in pass one for free. the hasher itself streams through an <code>InputStream</code> in sixty-four-kilobyte chunks and exits early at the byte limit, so it never pulls a whole movie into memory to discover it's unique. this is the same instinct as a good interview: cheap disqualifying questions first, the expensive deep dive only for the finalists.</p>
+
+      <h3>trash, then burn, and never lose the file in between</h3>
+      <p>here's the safety design. "delete" is really two stages. the first moves a file to the trash, and crucially it captures where the file <em>landed</em> inside the trash.</p>
+      <pre><code>var resultingURL: NSURL?
+try FileManager.default.trashItem(at: url, resultingItemURL: &amp;resultingURL)
+trashedFileURL = resultingURL as URL?   // now we can find it again</code></pre>
+      <p>most apps lose the handle the moment a file is trashed. by keeping the relocated url, the irreversible step, the actual <code>removeItem</code>, always operates on a known, stable path, and only ever after the file is already safely in the trash. so the dramatic drag-into-the-fire is permanent, but everything leading up to it is recoverable. the violence is real but it's fenced.</p>
+
+      <h3>an oven that floats above everything</h3>
+      <p>the oven isn't a normal window. it's an <code>NSPanel</code> subclass at the floating level, transparent, joining all spaces, non-activating, so it hovers over your work without stealing focus, like a wood stove in the corner of the room. it shows an embers gif when idle and swaps to flames when a file is dragged over it, with the flame variant chosen at random but never repeating the last one, so the fire never looks looped. small touches, but they're what make a utility feel alive instead of clinical.</p>
+
+      <p>i'll be honest about the limits: the scan folders are hardcoded, it runs unsandboxed so it can read your home directory (which means it can't ship on the app store), and "incinerate" unlinks the file, it doesn't shred the bytes. but the spine, score before you list, disqualify cheaply before you hash, and make destruction the only irreversible step while everything before it forgives, is what i'd keep. the prophet ﷺ said <span class="dim">الطّهور شطر الإيمان</span>, cleanliness is half of faith. clearing the clutter, even the digital kind, is a small way of honoring that.</p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/work/fanout/">back to start · fanout &rarr;</a>
+      <a class="mono" href="/work/">all work &rarr;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

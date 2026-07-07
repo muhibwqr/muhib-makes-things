@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · more with less</title>
+  <meta name="description" content="the ambitious muslim is told to hustle. the most successful muslims in history did the opposite. on barakah, the charity principle, and how the young and hungry should actually chase success. by muhib waqar." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper:#f7f4ec; --ink:#1c1b18; --muted:#6c6a62; --faint:#a6a399; --line:#e4e0d6;
+      --sage:#cdd9cf; --sage-deep:#b9c9bd; --clay:#e7dac8; --sky:#d3e0e6; --rose:#e0788e;
+      --grotesk:"Hanken Grotesk",system-ui,sans-serif; --serif:"Newsreader",Georgia,serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+    }
+    body.dark { --paper:#0e0f13; --ink:rgba(247,248,240,0.9); --muted:rgba(247,248,240,0.52); --faint:rgba(247,248,240,0.32); --line:rgba(247,248,240,0.14); }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+    body { background:var(--paper); color:var(--ink); font-family:var(--serif); -webkit-font-smoothing:antialiased; transition:background .4s, color .4s; overflow-x:hidden; }
+    a { color:inherit; }
+    .bar { display:flex; align-items:center; justify-content:space-between; padding:26px 34px; }
+    .logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo .mark { font-weight:700; font-size:22px; color:#9cd5ff; }
+    .logo .wm { font-family:var(--mono); font-size:13px; color:var(--muted); }
+    .bar-right { display:flex; align-items:center; gap:20px; }
+    .bar .back { font-family:var(--mono); font-size:13px; color:var(--muted); text-decoration:none; transition:color .2s; }
+    .bar .back:hover { color:var(--ink); }
+    #theme { background:none; border:none; cursor:pointer; font-size:17px; color:var(--muted); transition:color .2s, transform .4s; }
+    #theme:hover { color:var(--ink); transform:rotate(35deg); }
+    .wrap { max-width:720px; margin:0 auto; padding:0 24px; }
+    header.hero { text-align:center; padding:50px 0 0; }
+    .eyebrow { font-family:var(--grotesk); font-weight:700; font-size:15px; }
+    h1 { font-family:var(--grotesk); font-weight:800; font-size:clamp(40px,7vw,72px); line-height:1.02; letter-spacing:-0.035em; margin:18px 0 16px; }
+    .byline { font-family:var(--serif); font-size:19px; line-height:1.5; color:var(--muted); max-width:540px; margin:0 auto; }
+    .byline .auth { display:block; font-size:14px; color:var(--faint); margin-top:12px; font-family:var(--mono); }
+    .hero-card { margin:40px auto 0; border-radius:26px; background:var(--sage); aspect-ratio:16/9; display:grid; place-items:center; overflow:hidden; }
+    .hero-card svg { width:34%; height:62%; }
+    section { padding:18px 0; }
+    .lede { font-size:23px; line-height:1.5; margin:46px 0 10px; color:var(--ink); }
+    p.body { font-size:20px; line-height:1.62; margin:22px 0; color:var(--ink); }
+    p.body a { color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
+    .kicker { font-family:var(--grotesk); font-weight:700; font-size:14px; letter-spacing:0.04em; text-transform:uppercase; color:var(--muted); margin-top:64px; }
+    h2 { font-family:var(--grotesk); font-weight:800; font-size:clamp(27px,4.4vw,40px); line-height:1.08; letter-spacing:-0.03em; margin:10px 0 8px; color:var(--ink); }
+    .card { border-radius:22px; padding:34px; margin:34px 0; }
+    .card.sage { background:var(--sage); } .card.bordered { background:#fbf9f3; border:1px solid #e4e0d6; }
+    .card .card-title { font-family:var(--grotesk); font-weight:800; font-size:20px; letter-spacing:-0.02em; margin-bottom:20px; color:#1c1b18; }
+    .caption { font-size:16px; line-height:1.5; color:#6c6a62; margin-top:4px; }
+    figure { margin:34px 0; } figure figcaption { font-size:16px; line-height:1.5; color:var(--muted); margin-top:14px; }
+    .quote { font-family:var(--serif); font-style:italic; font-size:clamp(20px,3vw,26px); line-height:1.4; text-align:center; color:#1c1b18; }
+    .qsrc { text-align:center; font-family:var(--mono); font-size:12px; color:#6c6a62; margin-top:12px; }
+    .tldr { border-left:3px solid var(--sage-deep); background:#efebe1; border-radius:14px; padding:22px 26px; margin:36px 0; font-size:20px; line-height:1.5; color:#1c1b18; }
+    .tldr b { font-family:var(--grotesk); font-weight:800; }
+    .vs { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#e4e0d6; border:1px solid #e4e0d6; border-radius:14px; overflow:hidden; }
+    .vs .col { background:#fbf9f3; padding:24px 22px; }
+    .vs .h { font-family:var(--grotesk); font-weight:800; font-size:17px; color:#1c1b18; margin-bottom:14px; }
+    .vs .col.b .h { color:#3f5a44; }
+    .vs ul { list-style:none; display:flex; flex-direction:column; gap:11px; }
+    .vs li { font-size:15px; line-height:1.4; color:#42423c; padding-left:18px; position:relative; }
+    .vs li::before { content:"·"; position:absolute; left:4px; color:#a6a399; }
+    .chart { width:100%; display:block; }
+    .step { font-family:var(--grotesk); font-weight:800; font-size:18px; color:var(--ink); margin-top:30px; }
+    .step span { color:var(--faint); }
+    .reveal { opacity:0; transform:translateY(20px); transition:opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity:1; transform:none; }
+    @media (prefers-reduced-motion: reduce){ .reveal{opacity:1;transform:none;transition:none;} }
+    @media (max-width:640px){ .wrap{padding:0 18px;} .bar{padding:18px 16px;} .card{padding:24px 18px;} .vs{grid-template-columns:1fr;} .hero-card{aspect-ratio:4/3;} .tldr{padding:20px;font-size:18px;} }
+  </style>
+</head>
+<body>
+
+  <div class="bar">
+    <a class="logo" href="/"><span class="mark">∞</span><span class="wm">muhib waqar</span></a>
+    <div class="bar-right"><button id="theme" type="button" aria-label="theme" title="theme">☾</button><a class="back" href="/writing/">← writing</a></div>
+  </div>
+
+  <header class="hero wrap">
+    <p class="eyebrow reveal">faith &amp; ambition</p>
+    <h1 class="reveal">more with less</h1>
+    <p class="byline reveal">
+      the ambitious muslim is told to hustle harder. the most successful muslims in history did almost the opposite. here is what they understood about success that the grindset never will.
+      <span class="auth">by muhib waqar · 11 min read · inspired by <em>the barakah effect</em>, mohammed faris</span>
+    </p>
+    <div class="hero-card reveal">
+      <svg viewBox="0 0 120 160" fill="none" stroke="#1c1b18" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="60" cy="140" r="6" fill="#1c1b18" stroke="none"/>
+        <path d="M60 140 C 60 110 60 80 60 50"/>
+        <path d="M60 92 C 40 84 30 66 34 46 C 54 50 64 70 60 92"/>
+        <path d="M60 80 C 80 72 90 54 86 34 C 66 38 56 58 60 80"/>
+        <path d="M60 50 C 58 40 60 30 60 24"/>
+      </svg>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <p class="body reveal" style="margin-top:40px">i'm nineteen and the whole internet wants to sell me the same thing. wake at 4am. 10x your output. romanticize the grind. the muslim version just swaps the soundtrack for a nasheed and keeps the exact same engine: <em>you</em> are the source, so squeeze yourself harder. i bought it for a while. then i started reading about the people who actually built things that outlived them, and almost none of them were running that engine.</p>
+
+    <div class="tldr reveal"><b>the gist:</b> hustle culture says output comes from you, so push yourself until you break. the muslim model says increase comes from allah, so you do your work with excellence and let him multiply it. that multiplier has a name: <em>barakah</em>. it is how the most successful muslims got more out of less, and it is a better operating system for an ambitious life than anything being sold to us.</p>
+
+    <p class="lede reveal">mohammed faris calls it the barakah effect: more with less. i want to take his framework, run it through the quran and the lives of the people who lived it, and ask a question i actually care about. how should an ambitious, young, muslim chase success?</p>
+
+    <p class="kicker reveal">first, the word</p>
+    <h2 class="reveal">what barakah actually is</h2>
+    <p class="body reveal">barakah is not a vibe. the root means growth, increase, and lasting good. faris defines it as an increase that runs past what the visible causes can explain. a small thing that stretches further than it should. you put in what looks like a normal amount and you get back an amount that does not add up on paper.</p>
+    <p class="body reveal">the cleanest example is a hadith: abu hurairah brought dates to the prophet, peace be upon him, and asked him to pray over them. he told him to keep them in his bag and not scatter them. abu hurairah ate from that bag, and fed others from it, for more than thirty years (tirmidhi). same dates. impossible math. that gap between the input and the output is barakah, and the whole claim of this article is that you can build your life to attract it.</p>
+
+    <p class="kicker reveal">the engine you were sold</p>
+    <h2 class="reveal">hustle culture vs barakah culture</h2>
+    <p class="body reveal">faris draws the contrast sharply, and once you see it you cannot unsee it. hustle culture and barakah culture are two different theories of where results come from.</p>
+
+    <figure class="reveal">
+      <div class="vs">
+        <div class="col a">
+          <div class="h">hustle culture</div>
+          <ul>
+            <li>you are the source. more output means more pressure on you.</li>
+            <li>time is yours to maximize, so optimize every minute or fall behind.</li>
+            <li>more, faster, louder. burnout is a badge.</li>
+            <li>success is the number going up.</li>
+            <li>the result is on you, so anxiety never turns off.</li>
+          </ul>
+        </div>
+        <div class="col b">
+          <div class="h">barakah culture</div>
+          <ul>
+            <li>allah is the source. you align with him and he multiplies.</li>
+            <li>time is a trust, so you fill it with what is beneficial and let it stretch.</li>
+            <li>more with less. rest, prayer, and giving are inputs, not leaks.</li>
+            <li>success is barakah: lasting good, weighed in the next life too.</li>
+            <li>effort is yours, outcome is his, so you can work hard and sleep at night.</li>
+          </ul>
+        </div>
+      </div>
+      <figcaption>same ambition, opposite engine. one says push yourself until you break. the other says do your part with excellence and trust the Source to do his.</figcaption>
+    </figure>
+
+    <p class="body reveal">this is not a permission slip to be lazy. faris is blunt that barakah is not an excuse to skip the work. it is a different relationship with the work. the quran sets the tone: <em>"and that there is nothing for man except what he strives for"</em> (an-najm 53:39). you strive. fully. but the striving is the part that belongs to you, and the harvest is not.</p>
+
+    <p class="kicker reveal">the framework</p>
+    <h2 class="reveal">how to actually attract it</h2>
+    <p class="body reveal">faris lays out a set of principles for a life of barakah. i have pulled the ones that matter most to someone trying to build, and read them through the quran. think of it as a loop you run on every project, not a checklist you do once.</p>
+
+    <figure class="reveal">
+      <div class="card bordered">
+        <div class="card-title">the barakah loop</div>
+        <svg class="chart" viewBox="0 0 640 210" role="img" aria-label="the barakah loop">
+          <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#e0788e"/></marker></defs>
+          <g font-family="Hanken Grotesk,sans-serif" font-weight="700" font-size="12.5" fill="#1c1b18" text-anchor="middle">
+            <rect x="18" y="44" width="132" height="42" rx="21" fill="#fff" stroke="#e4e0d6"/><text x="84" y="63">intention</text><text x="84" y="78" font-size="10" fill="#6c6a62" font-weight="500">bismillah, ask allah</text>
+            <rect x="186" y="44" width="132" height="42" rx="21" fill="#fff" stroke="#e4e0d6"/><text x="252" y="63">work with ihsan</text><text x="252" y="78" font-size="10" fill="#6c6a62" font-weight="500">excellence, and give</text>
+            <rect x="354" y="44" width="132" height="42" rx="21" fill="#cdd9cf" stroke="#b9c9bd"/><text x="420" y="63">trust the result</text><text x="420" y="78" font-size="10" fill="#3f5a44" font-weight="500">be a gardener</text>
+            <rect x="510" y="44" width="118" height="42" rx="21" fill="#fff" stroke="#e4e0d6"/><text x="569" y="68">barakah</text>
+          </g>
+          <g stroke="#e0788e" stroke-width="1.8" fill="none" marker-end="url(#ar)">
+            <path d="M154 65 L182 65"/><path d="M322 65 L350 65"/><path d="M490 65 L506 65"/>
+            <path d="M569 90 C 569 158, 84 158, 84 90"/>
+          </g>
+          <text x="326" y="180" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="#6c6a62">then gratitude, and you begin the next thing</text>
+        </svg>
+      </div>
+      <figcaption>intention sets the direction, excellence and generosity are the work, tawakkul hands over the outcome, and barakah is what comes back. gratitude restarts the loop.</figcaption>
+    </figure>
+
+    <div class="step reveal"><span>01 ·</span> start with intention, and ask</div>
+    <p class="body reveal">every action begins with bismillah and a sincere intention, faris's first principle. the prophet, peace be upon him, said actions are judged by intentions. for a builder this is not a formality. it is the difference between a company that is just a way to get rich and one that is a way to serve, and only one of those carries barakah. so before the work, name who it is for, and ask allah for help with it. you are not too good to ask.</p>
+
+    <div class="step reveal"><span>02 ·</span> serve with excellence, and give while you build</div>
+    <p class="body reveal">faris's framing is that life is not about you, it is about serving your lord with excellence. <em>ihsan</em>. do the work as if he sees it, because he does. and give from it before you feel safe enough to. this is the charity principle i wrote about with <a href="/writing/abdurrahman-ibn-awf/">abdurrahman ibn awf</a>: he gave away fortunes and the wealth kept coming back, because <em>"charity does not decrease wealth"</em> (muslim 2588). al-baik, the chicken chain everyone lines up for at hajj, was built on one rule its founder never broke: a riyal to charity for every order, even when the business was failing. giving is not the tax on the building. it is part of the engine.</p>
+
+    <div class="card sage reveal">
+      <p class="quote">"if you are grateful, i will certainly give you more."</p>
+      <p class="qsrc">ibrahim 14:7</p>
+    </div>
+
+    <div class="step reveal"><span>03 ·</span> be a gardener: work hard, then let go of the harvest</div>
+    <p class="body reveal">this is the principle that reorganized my head. faris says be like a gardener: focused, hardworking, gentle, and then trust allah with the results. a gardener does everything in their power, prepares the soil, plants, waters, protects, and then they cannot pull the plant up to make it grow faster. the growth is not theirs to force. that is <em>tawakkul</em>: max effort, surrendered outcome. it is also the only version of ambition that does not eat you alive, because the part that causes the anxiety, the result, was never your job. <em>"and whoever relies upon allah, then he is sufficient for him"</em> (at-talaq 65:3).</p>
+
+    <div class="step reveal"><span>04 ·</span> plant seeds whose harvest you will not see</div>
+    <p class="body reveal">the most successful muslims optimized for a timeline longer than their own lives. faris calls it planting a seed whose harvest will benefit generations. the prophet, peace be upon him, said if the hour comes while you have a seedling in your hand, plant it. build things that keep giving after you, what we call sadaqah jariyah. for a young founder this flips the question from "how big can i get" to "what will still be serving people when i am gone."</p>
+
+    <div class="step reveal"><span>05 ·</span> pray and persist, and remember death</div>
+    <p class="body reveal">you pray for your goals and you persist toward them until you reach them or allah guides you to something better. that last clause is the relief valve. a closed door is not a failure when you believe the writer of your story is more merciful than you are to yourself. and faris ends on the sharpest focusing tool there is: remember death. nothing cuts the noise of trends and comparison faster than the knowledge that this is short and you will be asked about all of it.</p>
+
+    <p class="kicker reveal">the proof</p>
+    <h2 class="reveal">the most successful muslims ran this engine</h2>
+    <p class="body reveal">look at who we actually point to. abdurrahman ibn awf arrived in madinah with nothing and a single quarter of his estate was later worth eighty-four thousand dinars, and he gave so much that a third of the city lived off him. khadijah, may allah be pleased with her, funded the earliest days of islam with her trade. uthman bought a well and gave it to a thirsty city. none of them treated wealth as the destination. they treated it as a means, gave from it constantly, stayed humble in it, and barakah carried their impact past what the numbers could explain. that is the pattern. that is the whole pattern.</p>
+
+    <p class="kicker reveal">so, how should we chase it</p>
+    <h2 class="reveal">success, for the ambitious muslim</h2>
+    <p class="body reveal">here is what i am taking from all of this, as someone who genuinely wants to build something huge. change the metric. stop measuring success only by the number going up and start measuring it by barakah: is this lasting, is it benefiting people, would it weigh well in the next life. then run the loop. set the intention before the work. do the work with ihsan and give from it early. anchor the whole thing in ritual, because prayer and the quran are the keystone habits that keep you connected to the Source, not breaks from the hustle. work like a gardener and hand the harvest back. and build for a horizon longer than your own life.</p>
+    <p class="body reveal">the grindset promises you more if you just give more of yourself, until there is nothing left. the barakah effect promises you more with less, because the multiplier was never you. i am ambitious, hungry, and not intimidated by big ideas, and i still believe you only get exactly what is written for you. those two things are not in tension. they are the whole point. build with excellence, give while you build, hold the outcome loosely, and let him do the multiplying. i am trying to be remembered, not known. inshallah.</p>
+
+    <p class="caption reveal" style="margin-top:40px">inspired by mohammed faris, <em>the barakah effect: more with less</em> (claritas books, 2024). qur'an 53:39, 14:7, 65:3, 13:11; sahih muslim 2588; jami' at-tirmidhi. the al-baik story is told in faris's introduction.</p>
+
+  </main>
+
+  <footer style="text-align:center; padding:70px 0 90px;">
+    <a href="/writing/" style="font-family:var(--grotesk); font-weight:700; font-size:17px; text-decoration:none; border-bottom:2px solid var(--ink); padding-bottom:2px;">← more writing</a>
+  </footer>
+
+  <script type="module">
+    const KEY="theme", btn=document.getElementById("theme");
+    const setDark=(on)=>{document.body.classList.toggle("dark",on); btn.textContent=on?"☀":"☾"; try{localStorage.setItem(KEY,on?"dark":"light");}catch{}};
+    try{ setDark(localStorage.getItem(KEY)!=="light"); }catch{ setDark(true); }
+    btn.addEventListener("click",()=>setDark(!document.body.classList.contains("dark")));
+    addEventListener("keydown",(e)=>{ if(e.key==="l"&&!/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) setDark(!document.body.classList.contains("dark")); });
+    const io=new IntersectionObserver((es)=>{ let i=0; for(const e of es) if(e.isIntersecting){ const el=e.target; el.style.transitionDelay=Math.min(i++*55,280)+"ms"; el.classList.add("in"); io.unobserve(el); } },{threshold:0.12});
+    document.querySelectorAll(".reveal").forEach((el)=>io.observe(el));
+  </script>
+</body>
+</html>

@@ -6,21 +6,9 @@
 
 const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// ---------- lights (light mode) — remembered across visits ----------
-function setLights(on) {
-  document.documentElement.classList.toggle("maker", on);
-  document.body.classList.toggle("maker", on);
-  try { localStorage.setItem("theme", on ? "light" : "dark"); } catch {}
-}
-function toggleLights() {
-  setLights(!document.body.classList.contains("maker"));
-}
-{
-  // dark by default — lights stay on only if you chose them
-  let stored = null;
-  try { stored = localStorage.getItem("theme"); } catch {}
-  if (location.hash === "#lights" || stored === "light") setLights(true);
-}
+// light only — .maker holds every light-mode override in style.css
+document.documentElement.classList.add("maker");
+document.body.classList.add("maker");
 
 // ---------- scroll reveals, staggered within each batch ----------
 const io = new IntersectionObserver(
@@ -36,7 +24,7 @@ const io = new IntersectionObserver(
       }
     }
   },
-  { threshold: 0.15 }
+  { threshold: 0, rootMargin: "0px 0px -8% 0px" }
 );
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
@@ -174,17 +162,107 @@ if (copyEmail) {
   });
 }
 
-// ---------- lights: the sun in the nav (and the l key) ----------
-const lightsBtn = document.getElementById("lights-toggle");
-function syncLights() { if (lightsBtn) lightsBtn.textContent = document.body.classList.contains("maker") ? "☾" : "☀"; }
-syncLights();
-if (lightsBtn) lightsBtn.addEventListener("click", () => { toggleLights(); syncLights(); });
+// ---------- scene: the painting, sampled pixel-by-pixel into a living mosaic ----------
+const sceneCanvas = document.querySelector(".scene-canvas");
+if (sceneCanvas) {
+  const ctx = sceneCanvas.getContext("2d");
+  const DPR = Math.min(2, devicePixelRatio || 1);
+  const COLS = 300;                       // sample columns; rows follow the image aspect
+  // ponytail: O(cells) fillRects per frame (~25k after the white cull). drop COLS if it ever janks.
+  let cells = [], W = 0, H = 0, mx = -9999, my = -9999;
+  const RAMP = " ·˳˷~≈";                    // ascii ripple glyphs, calm → choppy
 
-addEventListener("keydown", (e) => {
-  const tag = document.activeElement?.tagName;
-  if (tag === "INPUT" || tag === "TEXTAREA" || e.metaKey || e.ctrlKey || e.altKey) return;
-  if (e.key === "l") { toggleLights(); syncLights(); }
-});
+  const img = new Image();
+  img.src = "/scene.jpg";
+
+  function resize() {
+    W = sceneCanvas.width = Math.round(innerWidth * DPR);
+    H = sceneCanvas.height = Math.round(innerHeight * DPR);
+  }
+
+  function sample() {
+    const rows = Math.round(COLS * (img.height / img.width));
+    const off = document.createElement("canvas");
+    off.width = COLS; off.height = rows;
+    const octx = off.getContext("2d", { willReadFrequently: true });
+    octx.drawImage(img, 0, 0, COLS, rows);
+    const d = octx.getImageData(0, 0, COLS, rows).data;
+    cells = [];
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < COLS; x++) {
+        const i = (y * COLS + x) * 4;
+        const r = d[i], g = d[i + 1], b = d[i + 2];
+        const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        const a = Math.pow(1 - lum, 1.4) * 0.92;    // dark paint stays, bright mist fades — but keep a whisper
+        if (a < 0.03) continue;                      // keep faint sky shade, cull only the whitest
+        // pop the color: push each channel away from its own grey
+        const mean = (r + g + b) / 3, sat = 1.34;
+        const rr = Math.max(0, Math.min(255, mean + (r - mean) * sat)) | 0;
+        const gg = Math.max(0, Math.min(255, mean + (g - mean) * sat)) | 0;
+        const bb = Math.max(0, Math.min(255, mean + (b - mean) * sat)) | 0;
+        cells.push({ gx: (x + 0.5) / COLS, gy: (y + 0.5) / rows, r: rr, g: gg, b: bb, a, ph: ((x * 13 + y * 7) % 628) / 100 });
+      }
+    }
+  }
+
+  function paint(t) {
+    ctx.clearRect(0, 0, W, H);
+    const cw = W / COLS;
+    const still = REDUCED_MOTION;
+    const sz = cw * 1.28;                  // slight overlap so the mosaic reads continuous
+    const OVER = 1.05, cx = W / 2, cy = H / 2;   // overscan so motion never bares white edges
+    for (const c of cells) {
+      let x = cx + (c.gx * W - cx) * OVER;
+      let y = cy + (c.gy * H - cy) * OVER;
+      if (!still) {
+        x += Math.sin(t * 0.8 + c.ph) * cw * 0.3;    // faint ambient breath
+        y += Math.cos(t * 0.6 + c.ph) * cw * 0.24;
+        // water swell: coherent crests travel across the lower half
+        const water = Math.max(0, c.gy - 0.42) * 1.8;
+        if (water > 0) y += Math.sin(x * 0.010 - t * 1.5 + c.gy * 7) * cw * 0.9 * water;
+      }
+      ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${c.a})`;
+      ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
+    }
+    if (!still) drawWater(t);
+  }
+
+  // ascii ripple characters shimmering + drifting over the water; they sharpen near the cursor
+  function drawWater(t) {
+    const ch = 15 * DPR;
+    ctx.font = `${ch}px "IBM Plex Mono", ui-monospace, monospace`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const colStep = ch * 2, rowStep = ch * 1.7, top = H * 0.6, R = 150 * DPR;
+    for (let yy = top; yy < H - ch; yy += rowStep) {
+      for (let xx = colStep * 0.5; xx < W; xx += colStep) {
+        let v = Math.sin(xx * 0.012 - t * 1.8 + yy * 0.02) * 0.5 + 0.5;
+        const dx = xx - mx, dy = yy - my, d2 = dx * dx + dy * dy;
+        if (d2 < R * R) v += (1 - Math.sqrt(d2) / R) * 0.55;   // cursor stirs the water
+        const g = RAMP[Math.max(0, Math.min(RAMP.length - 1, Math.floor(v * RAMP.length)))];
+        if (g === " ") continue;
+        const fade = Math.min(1, (yy - top) / (H - top));
+        ctx.fillStyle = `rgba(74, 94, 82, ${0.16 + 0.26 * fade})`;
+        ctx.fillText(g, xx, yy);
+      }
+    }
+  }
+
+  let raf = 0;
+  function loop(now) { paint(now * 0.001); raf = requestAnimationFrame(loop); }
+
+  img.onload = () => {
+    resize();
+    sample();
+    if (REDUCED_MOTION) { paint(0); }
+    else { cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); }
+  };
+  addEventListener("resize", () => { if (cells.length) resize(); });
+
+  if (!REDUCED_MOTION) {
+    addEventListener("pointermove", (e) => { mx = e.clientX * DPR; my = e.clientY * DPR; });
+  }
+}
 
 // ---------- console signature ----------
 console.log("%c﷽", "font-size:22px; color:#7AAACE;");

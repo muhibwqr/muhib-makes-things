@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · learning</title>
+  <meta name="description" content="train a neuron by hand. each day has a known right call; drag the weights until the machine agrees with all of them. a game about the building blocks of machine learning." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .lpage { max-width: 860px; margin: 0 auto; padding: 7vh 24px 14vh; position: relative; z-index: 1; }
+    .l-head { margin-bottom: 6px; }
+    .l-title { font-size: clamp(30px, 4.6vw, 44px); font-weight: 500; letter-spacing: -0.01em; line-height: 1.05; }
+    .l-sub { color: var(--dim); font-size: 17px; line-height: 1.55; margin-top: 12px; max-width: 600px; }
+
+    /* status bar: level, goal, score */
+    .hud { margin-top: 30px; display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--line); padding-top: 20px; }
+    .hud .level { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--copper); }
+    .hud .goal { font-family: var(--serif); font-size: 22px; font-weight: 500; margin-top: 4px; }
+    .hud .goal small { display: block; color: var(--dim); font-size: 14px; font-weight: 400; font-family: var(--serif); margin-top: 3px; }
+    .score { text-align: right; font-family: var(--mono); }
+    .score .big { font-size: 30px; color: var(--ink); }
+    .score .big.win { color: var(--accent); }
+    .score .of { color: var(--dim); font-size: 14px; }
+
+    /* the days */
+    .days { margin-top: 26px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    .day { border: 1px solid var(--line); border-radius: 12px; padding: 13px 14px 15px; transition: border-color .25s, box-shadow .25s, transform .25s; }
+    .day.right { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 8px 22px -14px var(--accent); }
+    .day.wrong { border-color: color-mix(in srgb, var(--copper) 45%, var(--line)); opacity: 0.92; }
+    .day-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .badge { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; border: 1px solid var(--line); color: var(--dim); }
+    .badge.go { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+    .mark { font-family: var(--mono); font-size: 15px; line-height: 1; }
+    .mark.ok { color: var(--accent); }
+    .mark.no { color: var(--copper); opacity: 0.7; }
+    .bar { display: grid; grid-template-columns: 78px 1fr; align-items: center; gap: 8px; margin: 6px 0; }
+    .bar .bl { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.02em; }
+    .bar .bt { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+    .bar .bf { height: 100%; background: var(--accent); opacity: 0.55; }
+    .day .out { margin-top: 11px; font-family: var(--mono); font-size: 10.5px; color: var(--dim); }
+
+    /* controls */
+    .panel { margin-top: 30px; border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+    .panel h4 { font-family: var(--mono); font-size: 12px; letter-spacing: 0.05em; color: var(--dim); font-weight: 400; text-transform: uppercase; margin-bottom: 3px; }
+    .panel .hint { color: var(--dim); font-size: 13px; font-style: italic; opacity: 0.85; margin-bottom: 16px; }
+    .row { margin: 15px 0; }
+    .row .lab { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; margin-bottom: 2px; }
+    .row .lab .name { color: var(--ink); }
+    .row .lab .val { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+    input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; height: 20px; }
+    .thresh-row .name { color: var(--copper); }
+    .thresh-row .val { color: var(--copper); }
+
+    .actions { margin-top: 24px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    button.act { font-family: var(--mono); font-size: 13px; letter-spacing: 0.03em; padding: 9px 18px; border-radius: 22px; border: 1px solid var(--line); background: none; color: var(--dim); cursor: pointer; transition: all .2s; }
+    button.act:hover { color: var(--ink); border-color: var(--dim); }
+    button.act.primary { border-color: var(--accent); color: var(--accent); opacity: 0; pointer-events: none; transform: translateY(4px); }
+    button.act.primary.show { opacity: 1; pointer-events: auto; transform: none; }
+    button.act.primary:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+
+    .msg { margin-top: 22px; font-size: 17px; line-height: 1.6; color: var(--ink); border-left: 2px solid var(--accent); padding-left: 16px; opacity: 0; max-height: 0; overflow: hidden; transition: opacity .4s; }
+    .msg.show { opacity: 1; max-height: 400px; }
+    .msg b { color: var(--accent); font-weight: 500; }
+    .msg .n { color: var(--dim); font-size: 14px; display: block; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
+    <div class="nav-links mono">
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <main class="lpage">
+    <div class="l-head reveal">
+      <p class="mono dim" style="letter-spacing:.08em">learning · struct 01 · the neuron</p>
+      <h1 class="l-title">train the neuron</h1>
+      <p class="l-sub">a neuron takes each reason, multiplies it by how much that reason matters, adds them up, and says <b>go</b> only if the total crosses a line. each day below already has the right call. drag the weights until the machine agrees with all of them. green means it got that day right.</p>
+    </div>
+
+    <div class="hud reveal">
+      <div>
+        <div class="level" id="level-label">level 1 / 4</div>
+        <div class="goal" id="goal">energy is everything<small id="goal-sub"></small></div>
+      </div>
+      <div class="score">
+        <span class="big" id="score-big">0</span><span class="of" id="score-of"> / 6 days</span>
+      </div>
+    </div>
+
+    <div class="days" id="days"></div>
+
+    <div class="panel">
+      <h4>the weights — how much each reason matters</h4>
+      <p class="hint">this is what "learning" tunes. a big weight means that reason pulls hard. zero means the neuron ignores it.</p>
+      <div id="wrows"></div>
+      <div class="row thresh-row">
+        <div class="lab"><span class="name">the line — how big the total must be to say go</span><span class="val" id="t-val">1.50</span></div>
+        <input type="range" id="thresh" min="0" max="3" step="0.05" value="1.5" />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="act" id="reset">reset weights</button>
+      <button class="act" id="hint-btn">why can't I get them all?</button>
+      <button class="act primary" id="next">next level →</button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+  </main>
+
+  <script type="module" src="/main.js"></script>
+  <script>
+  // ============================================================
+  // struct 01 — train the neuron. a hand-played classifier.
+  // you set the weights + line; the neuron classifies each day;
+  // solve a level by matching every known call. no deps.
+  // ============================================================
+  (() => {
+    const REASONS = [
+      { key: "energy",  name: "i have the energy" },
+      { key: "weather", name: "the weather's good" },
+      { key: "streak",  name: "it's been a while i moved" },
+    ];
+
+    // each day: inputs (0..1) + truth (1 = the right call is "go")
+    // levels are built to be linearly separable — except the last, on purpose.
+    const LEVELS = [
+      {
+        goal: "energy is everything",
+        sub: "one reason decides it. find it, ignore the rest.",
+        days: [
+          { x: [0.9, 0.2, 0.3], go: 1 },
+          { x: [0.8, 0.1, 0.2], go: 1 },
+          { x: [0.6, 0.5, 0.5], go: 1 },
+          { x: [0.2, 0.9, 0.8], go: 0 },
+          { x: [0.1, 0.7, 0.6], go: 0 },
+          { x: [0.3, 0.4, 0.4], go: 0 },
+        ],
+        solution: { w: [1, 0, 0], t: 0.5 },
+      },
+      {
+        goal: "two that matter, one that lies",
+        sub: "energy and weather together decide. one reason is pure noise — zero it out.",
+        days: [
+          { x: [0.8, 0.7, 0.2], go: 1 },
+          { x: [0.6, 0.8, 0.1], go: 1 },
+          { x: [0.7, 0.7, 0.9], go: 1 },
+          { x: [0.9, 0.1, 0.9], go: 0 },
+          { x: [0.2, 0.9, 0.5], go: 0 },
+          { x: [0.3, 0.3, 0.9], go: 0 },
+        ],
+        solution: { w: [1, 1, 0], t: 1.2 },
+      },
+      {
+        goal: "the real tradeoff",
+        sub: "all three pull, but not equally. the longer you've sat still, the more it should push.",
+        days: [
+          { x: [0.2, 0.2, 0.9], go: 1 },
+          { x: [0.5, 0.5, 0.7], go: 1 },
+          { x: [0.3, 0.2, 0.95], go: 1 },
+          { x: [0.9, 0.9, 0.1], go: 0 },
+          { x: [0.8, 0.3, 0.3], go: 0 },
+          { x: [0.6, 0.8, 0.4], go: 0 },
+        ],
+        solution: { w: [0.4, 0.3, 0.9], t: 0.9 },
+      },
+      {
+        goal: "the impossible day",
+        sub: "go only when energy and weather disagree — one high, one low. give it a real try.",
+        impossible: true,
+        days: [
+          { x: [0.9, 0.1, 0.5], go: 1 },
+          { x: [0.1, 0.9, 0.5], go: 1 },
+          { x: [0.9, 0.9, 0.5], go: 0 },
+          { x: [0.1, 0.1, 0.5], go: 0 },
+        ],
+      },
+    ];
+
+    let li = 0;                          // current level index
+    let w = [0.5, 0.5, 0.5], t = 1.5;    // player's weights + line
+
+    const $ = (id) => document.getElementById(id);
+    const daysEl = $("days"), wrowsEl = $("wrows");
+
+    const zOf = (x) => w[0] * x[0] + w[1] * x[1] + w[2] * x[2];
+    const fires = (x) => zOf(x) > t;
+
+    // ---- build weight sliders once ----
+    REASONS.forEach((r, i) => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `<div class="lab"><span class="name">${r.name}</span><span class="val" id="w-${i}-v">0.50</span></div>
+        <input type="range" id="w-${i}" min="0" max="1" step="0.01" value="0.5" />`;
+      wrowsEl.appendChild(row);
+      row.querySelector("input").addEventListener("input", (e) => { w[i] = +e.target.value; render(); });
+    });
+    $("thresh").addEventListener("input", (e) => { t = +e.target.value; render(); });
+
+    // ---- build the day cards for the current level ----
+    function buildDays() {
+      const lvl = LEVELS[li];
+      daysEl.innerHTML = "";
+      lvl.days.forEach((d, i) => {
+        const card = document.createElement("div");
+        card.className = "day"; card.id = `day-${i}`;
+        const bars = REASONS.map((r, j) =>
+          `<div class="bar"><span class="bl">${r.key}</span><span class="bt"><span class="bf" style="width:${d.x[j] * 100}%"></span></span></div>`
+        ).join("");
+        card.innerHTML = `<div class="day-top">
+            <span class="badge ${d.go ? "go" : ""}">${d.go ? "should go" : "should stay"}</span>
+            <span class="mark" id="mark-${i}"></span>
+          </div>${bars}<div class="out" id="out-${i}"></div>`;
+        daysEl.appendChild(card);
+      });
+    }
+
+    // ---- render everything from state ----
+    function render() {
+      const lvl = LEVELS[li];
+      let correct = 0;
+      lvl.days.forEach((d, i) => {
+        const got = fires(d.x) ? 1 : 0;
+        const ok = got === d.go;
+        if (ok) correct++;
+        const card = $(`day-${i}`);
+        card.classList.toggle("right", ok);
+        card.classList.toggle("wrong", !ok);
+        $(`mark-${i}`).textContent = ok ? "✓" : "✗";
+        $(`mark-${i}`).className = "mark " + (ok ? "ok" : "no");
+        $(`out-${i}`).textContent = `total ${zOf(d.x).toFixed(2)} ${got ? ">" : "≤"} ${t.toFixed(2)} → neuron says ${got ? "go" : "stay"}`;
+      });
+
+      REASONS.forEach((_, i) => { $(`w-${i}-v`).textContent = w[i].toFixed(2); $(`w-${i}`).value = w[i]; });
+      $("t-val").textContent = t.toFixed(2); $("thresh").value = t;
+
+      const total = lvl.days.length;
+      $("score-big").textContent = correct;
+      $("score-of").textContent = ` / ${total} days`;
+      const solved = correct === total;
+      $("score-big").classList.toggle("win", solved);
+
+      // win handling
+      const isLast = li === LEVELS.length - 1;
+      $("next").classList.toggle("show", solved && !isLast);
+      if (solved && !lvl.impossible) {
+        showMsg(isLast
+          ? `<b>solved.</b> you just did by hand what training does by machine: nudge the weights until the errors vanish.`
+          : `<b>solved.</b> you found weights that satisfy every day. that search — nudging toward fewer mistakes — is the next struct: gradient descent.`);
+      } else {
+        hideMsg();
+      }
+    }
+
+    function showMsg(html) { $("msg").innerHTML = html; $("msg").classList.add("show"); }
+    function hideMsg() { $("msg").classList.remove("show"); }
+
+    function loadLevel(i) {
+      li = i;
+      w = [0.5, 0.5, 0.5]; t = 1.5;
+      const lvl = LEVELS[li];
+      $("level-label").textContent = `level ${i + 1} / ${LEVELS.length}`;
+      $("goal").childNodes[0].nodeValue = lvl.goal;
+      $("goal-sub").textContent = lvl.sub;
+      $("hint-btn").style.display = lvl.impossible ? "" : "none";
+      hideMsg();
+      buildDays();
+      render();
+    }
+
+    $("reset").addEventListener("click", () => { w = [0.5, 0.5, 0.5]; t = 1.5; render(); });
+    $("next").addEventListener("click", () => { if (li < LEVELS.length - 1) loadLevel(li + 1); });
+    $("hint-btn").addEventListener("click", () => {
+      showMsg(`<b>you can't.</b> "go when they disagree" needs a curve, but a single neuron only ever draws one straight line through the days. no line puts both disagree-days on one side and both agree-days on the other.
+        <span class="n">this is the whole reason we stack neurons into layers — each draws a line, and together they bend. that's the next struct: <b>the network</b>.</span>`);
+    });
+
+    // repaint on light/dark toggle (colors come from CSS vars)
+    new MutationObserver(render).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
+    loadLevel(0);
+
+    // ---- self-check: every solvable level must be solvable, the impossible one must not be ----
+    (function selfCheck() {
+      const scoreWith = (lvl, ww, tt) => lvl.days.filter((d) => ((ww[0]*d.x[0]+ww[1]*d.x[1]+ww[2]*d.x[2]) > tt ? 1 : 0) === d.go).length;
+      LEVELS.forEach((lvl, k) => {
+        if (lvl.solution) console.assert(scoreWith(lvl, lvl.solution.w, lvl.solution.t) === lvl.days.length, `level ${k+1} should be solvable by its solution`);
+      });
+      // brute-force confirm the impossible level truly has no perfect (w,t)
+      const imp = LEVELS.find((l) => l.impossible);
+      let best = 0;
+      for (let a = 0; a <= 1.01; a += 0.25) for (let b = 0; b <= 1.01; b += 0.25) for (let c = 0; c <= 1.01; c += 0.25)
+        for (let tt = 0; tt <= 3.01; tt += 0.25) best = Math.max(best, scoreWith(imp, [a, b, c], tt));
+      console.assert(best < imp.days.length, "impossible level should NOT be perfectly solvable");
+    })();
+  })();
+  </script>
+</body>
+</html>

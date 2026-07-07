@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="maker">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&family=Noto+Nastaliq+Urdu:wght@500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <style>
     .article-cta { margin-top: 1.4em !important; }
@@ -16,11 +16,20 @@
     .article-cta a:hover { border-color: var(--accent); }
   </style>
 </head>
-<body>
+<body class="maker scene-on">
+  <div class="scene" aria-hidden="true">
+    <canvas class="scene-canvas"></canvas>
+  </div>
   <!-- redeploy -->
 
-  <nav class="nav-center">
+  <nav>
+    <a href="#top" class="nav-morph-link" aria-label="top">
+      <figure class="morph nav-morph" aria-hidden="true">
+        <div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div>
+      </figure>
+    </a>
     <div class="nav-links mono">
+      <a href="/work/">work</a>
       <a href="/writing/">writing</a>
       <div class="contact-menu">
         <a class="contact-trigger" href="mailto:notesfrommuhib@gmail.com">contact</a>
@@ -45,19 +54,12 @@
           </div>
         </div>
       </div>
-      <span class="lights-wrap">
-        <button class="lights-toggle" id="lights-toggle" type="button" aria-label="toggle lights" title="lights">☀</button>
-        <kbd class="lights-key">l</kbd>
-      </span>
     </div>
   </nav>
 
   <main class="landing centered" id="top">
-    <figure class="morph hero-art" aria-hidden="true">
-      <div class="morph-stage" id="morph-panel">
-        <pre class="morph-art" id="morph-art"></pre>
-      </div>
-    </figure>
+    <h1 class="hero-name">muhib waqar <span class="name-sep" aria-hidden="true">|</span> <span class="name-ur" lang="ur" dir="rtl">محب وقار</span></h1>
+    <hr class="rule" />
 
     <div class="prose landing-prose">
       <p class="salaam-line">assalamu&#8209;alaykum <span class="dim">·</span> <em>peace be upon you</em></p>

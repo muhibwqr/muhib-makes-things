@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · shepherd</title>
+  <meta name="description" content="an ai revenue team, setter / closer / csm, as stateless mastra agents rebuilt every turn from tenant config and routed by pipeline stage. wired to live instagram dms, with burst texting that splits a reply into separate bubbles on a human delay." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
+    <div class="nav-links mono">
+      <a href="/work/">&larr; work</a>
+      <a href="/writing/">writing</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article work-page">
+    <p class="article-kicker mono dim reveal">work · multi-agent</p>
+    <h1 class="article-title reveal">shepherd</h1>
+    <p class="article-meta mono dim reveal">next.js · mastra · gemini · instagram graph api · <a href="https://github.com/muhibwqr/142labs" target="_blank" rel="noopener">github &rarr;</a></p>
+
+    <figure class="diagram reveal">
+      <svg viewBox="0 0 640 200" role="img" aria-label="a lead moves through pipeline stages; the stage decides which of three agents answers, setter then closer then csm, handing off automatically, and each reply is split into separate dm bubbles sent on a human delay">
+        <text class="dg-t-dim" x="320" y="22" text-anchor="middle">one lead · routed by stage</text>
+
+        <rect class="dg-box" x="8" y="38" width="182" height="42" rx="6"/>
+        <text class="dg-t-accent" x="99" y="58" text-anchor="middle">setter</text>
+        <text class="dg-t-dim" x="99" y="73" text-anchor="middle">new · engaged · qualified</text>
+        <path class="dg-flow dg-anim" d="M190 59 H206"/>
+        <polygon class="dg-fill" points="208,59 199,54 199,64"/>
+
+        <rect class="dg-box" x="208" y="38" width="182" height="42" rx="6"/>
+        <text class="dg-t-accent" x="299" y="58" text-anchor="middle">closer</text>
+        <text class="dg-t-dim" x="299" y="73" text-anchor="middle">booked · showed · negotiating</text>
+        <path class="dg-flow dg-anim" d="M390 59 H406"/>
+        <polygon class="dg-fill" points="408,59 399,54 399,64"/>
+
+        <rect class="dg-box" x="408" y="38" width="182" height="42" rx="6"/>
+        <text class="dg-t-accent" x="499" y="58" text-anchor="middle">csm</text>
+        <text class="dg-t-dim" x="499" y="73" text-anchor="middle">closed · retained</text>
+
+        <text class="dg-t-copper" x="20" y="120">burst · one reply, sent as separate texts</text>
+        <rect class="dg-box" x="300" y="108" width="200" height="22" rx="11"/>
+        <text class="dg-t-dim" x="314" y="123">hey, saw you followed</text>
+        <text class="dg-t-copper" x="508" y="123">+0.9s</text>
+        <rect class="dg-box" x="330" y="138" width="200" height="22" rx="11"/>
+        <text class="dg-t-dim" x="344" y="153">what are you building?</text>
+        <text class="dg-t-copper" x="538" y="153">+1.4s</text>
+        <rect class="dg-box-accent dg-fill-soft" x="360" y="168" width="200" height="22" rx="11"/>
+        <text class="dg-t" x="374" y="183">got 15 min tuesday?</text>
+      </svg>
+      <figcaption>the stage is the hand-off: a tool marks a lead booked, and the next turn routes from setter to closer with no human glue. replies land as a human burst, each bubble a beat after the last.</figcaption>
+    </figure>
+
+    <div class="prose article-prose reveal">
+      <p>every creator business eventually makes the same three hires: a setter to work inbound dms and book calls, a closer to handle objections and ask for the sale, and a customer success manager to keep the client alive after. shepherd is one whitelabel app that runs all three as ai agents on instagram. the product framing is sales. the engineering question is more interesting: how do you make three different "people" share one customer's history, hand off cleanly, and text like a human and not a chatbot?</p>
+
+      <h3>one lead, three personalities, routed by stage</h3>
+      <p>there's only ever one entity, a lead, moving through eight pipeline stages. which agent answers is a pure function of the stage:</p>
+      <pre><code>export function roleForStage(stage) {
+  if (stage === "closed") return "csm";
+  if (["booked", "showed", "negotiating"].includes(stage)) return "closer";
+  return "setter";   // new, engaged, qualified
+}</code></pre>
+      <p>the agents mutate their own stage through tools. when the setter's calendly tool marks a lead <code>booked</code>, the <em>next</em> turn routes to the closer automatically. no human glue, no handoff meeting, the state machine is the handoff. a "client" is just a lead with <code>stage = closed</code> and some gamification columns filled in.</p>
+
+      <h3>agents are rebuilt every single turn</h3>
+      <p>i never instantiate an agent at module load. every turn, the agent is constructed fresh from <code>(role, tenant config, lead)</code>, so its prompt always carries the live offer, the current objection playbook, the persona, and this lead's exact stage and notes. it's also handed a role-scoped subset of tools, the setter and closer get calendly and crm tools, the csm swaps those for gamification tools like <code>completeMilestone</code>. statelessness is what makes multi-tenancy safe: every tool resolves its workspace from the request context and throws if it's missing, so an agent can physically never run untenanted, or touch another tenant's data.</p>
+
+      <h3>burst texting, the part that sounds human</h3>
+      <p>a bot sends one long paragraph. a person sends three short texts in a row, each landing a beat after the last. so the engine splits the reply on its own newlines into separate dm bubbles and delays each one by a length-scaled pause before sending.</p>
+      <pre><code>const burstDelay = (text) => Math.min(4500, 700 + text.length * 35);
+
+for (let i = 0; i &lt; bubbles.length; i++) {
+  await addMessage(workspaceId, { leadId, role: "agent", text: bubbles[i] });
+  if (lead.igUserId) {
+    if (i > 0) await sleep(burstDelay(bubbles[i]));   // typing beat
+    await sendInstagramDM(workspaceId, lead.igUserId, bubbles[i]);
+  }
+}</code></pre>
+      <p>longer thoughts take longer to "type," capped so it never feels broken. it's a small thing that does most of the work of not feeling like a machine. the medium is dms, so the cadence of dms <em>is</em> the product.</p>
+
+      <blockquote>the state machine is the hand-off. there's no meeting, no glue, just a lead that crosses a stage and wakes up the next teammate.</blockquote>
+
+      <h3>the two webhook problems nobody warns you about</h3>
+      <p>going live on instagram surfaced two genuinely hard bugs. first, identity: meta's graph api returns a <em>different</em> id for your own account on <code>/me</code> than it does for that same account inside a conversation's participant list. match naively and the business gets mistaken for the lead. the fix falls back from id to username:</p>
+      <pre><code>participants.find((p) => p.id === me.id)
+  ?? participants.find((p) =>
+       p.username?.toLowerCase() === me.username?.toLowerCase())</code></pre>
+      <p>second, trust: the inbound webhook verifies meta's <code>sha256</code> signature with a timing-safe compare, and in production a missing secret <em>rejects</em> rather than allows. fail closed, never open. and because meta demands a fast 200, autopilot fires the agent turn off and returns immediately, the reply happens after the acknowledgment.</p>
+
+      <h3>full parity with no api key</h3>
+      <p>the whole app runs in a demo mode that returns not just a believable reply but a <em>patch</em> of the exact lead-state changes a real agent's tools would have made, so the pipeline and dashboard stay alive with zero keys. that same path is the live-failure fallback. i'm honest about the rough edges, follow-ups need a cron to run, the plan tier is hardcoded, notes overwrite instead of append, this is a real product mid-build, not a finished one. but the spine, stage-routed stateless agents over a clean multi-tenant boundary, texting in human bursts, is solid.</p>
+
+      <p>there's an ethic i hold here too. the agent clones <em>your</em> voice from <em>your</em> sent messages, and autopilot is per-lead and switchable, you can always take over. a tool that speaks for you should sound like you and never trap you. <span class="dim">و تعاونوا على البرّ</span>, help one another upon good. the automation should serve the relationship, not replace the care in it.</p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/work/duaos/">next · duaos &rarr;</a>
+      <a class="mono" href="/work/">all work &rarr;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

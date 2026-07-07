@@ -3,7 +3,7 @@
   --ink: rgba(247, 248, 240, 0.86);   /* mint cream */
   --dim: rgba(247, 248, 240, 0.4);
   --line: rgba(247, 248, 240, 0.12);
-  --accent: #9cd5ff;        /* blue bell — interactive */
+  --accent: #2f5d4a;        /* dark green — interactive accent */
   --dusk: #355872;          /* dusk blue — depth */
   --copper: #7aaace;        /* faded copper — ornament */
   --serif: "EB Garamond", Georgia, serif;
@@ -110,15 +110,6 @@ body.maker nav { background: linear-gradient(to bottom, rgba(247, 248, 240, 0.94
 /* home nav: contact + light centered together */
 nav.nav-center { justify-content: center; }
 
-.lights-wrap { display: inline-flex; align-items: center; gap: 6px; }
-.lights-toggle {
-  font-size: 17px;
-  line-height: 1;
-  color: var(--dim);
-  transition: color 0.25s, transform 0.4s ease;
-}
-.lights-toggle:hover { color: var(--accent); transform: rotate(35deg); }
-.lights-key { color: var(--dim); opacity: 0.7; }
 
 /* ---------- contact: hover dropdown that slides down ---------- */
 .contact-menu { position: relative; }
@@ -293,13 +284,16 @@ h1 .name-part {
 }
 .prose a:hover { color: var(--accent); }
 
-.landing-prose { max-width: 540px; }
+.landing-prose { max-width: 840px; }
 .landing-prose p {
-  font-size: 15px;
-  line-height: 1.62;
+  font-size: 17px;
+  line-height: 1.65;
   color: rgba(247, 248, 240, 0.78);
 }
-body.maker .landing-prose p { color: rgba(12, 17, 23, 0.8); }
+body.maker .landing-prose p { color: rgba(12, 17, 23, 0.82); }
+/* airy paragraph rhythm */
+.landing-prose p + p { margin-top: 1.15em; }
+.landing-prose .salaam-line { margin-top: 0; }
 
 /* the greeting carries its own weight */
 .salaam-line {
@@ -339,8 +333,8 @@ body.maker .landing-prose p { color: rgba(12, 17, 23, 0.8); }
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  gap: 26px;
-  max-width: 560px;          /* column shrinks to the content so it sits centred on the page */
+  gap: 14px;
+  max-width: 880px;          /* wide, so the copy stays short and sits up in the sky */
 }
 .hero-art { margin: 0; width: 100%; max-width: 280px; align-self: flex-start; }
 
@@ -368,7 +362,7 @@ body.maker .landing-prose p { color: rgba(12, 17, 23, 0.8); }
     0 0 7px color-mix(in srgb, var(--mc) 85%, transparent),
     0 0 18px color-mix(in srgb, var(--mc) 45%, transparent);
 }
-body.maker .morph-art { color: #2f6da8; text-shadow: 0 0 8px color-mix(in srgb, var(--mc) 70%, transparent); }
+body.maker .morph-art { color: var(--accent); text-shadow: 0 0 8px color-mix(in srgb, var(--mc) 70%, transparent); }
 
 /* signature + contact share a row, signature on the left */
 .sign-row { display: flex; align-items: center; gap: 22px; align-self: flex-start; margin-top: 6px; }
@@ -614,6 +608,16 @@ body.maker .article-prose p { color: rgba(12, 17, 23, 0.78); }
   font-style: italic;
 }
 
+/* project pages: no illuminated drop cap — first letter matches the body */
+.work-page .article-prose > p:first-of-type::first-letter {
+  font-size: inherit;
+  float: none;
+  line-height: inherit;
+  padding: 0;
+  color: inherit;
+  font-style: normal;
+}
+
 .article-prose h3 {
   font-family: var(--mono);
   font-size: 12px;
@@ -677,6 +681,47 @@ body.maker .article-prose blockquote { color: rgba(12, 17, 23, 0.85); }
 }
 .article-nav a { color: var(--dim); transition: color 0.25s; }
 .article-nav a:hover { color: var(--accent); }
+
+/* ---------- work — schematic diagrams, pull figures, video ---------- */
+.diagram {
+  margin: 10px 0 38px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 26px 24px 16px;
+  background: linear-gradient(180deg, rgba(156, 213, 255, 0.045), transparent 78%);
+  transition: border-color 0.3s, transform 0.3s;
+}
+body.maker .diagram { background: linear-gradient(180deg, rgba(48, 76, 137, 0.05), transparent 78%); }
+.diagram:hover { border-color: var(--accent); transform: translateY(-2px); }
+.diagram svg { display: block; width: 100%; height: auto; overflow: visible; }
+.diagram figcaption {
+  margin-top: 16px; text-align: center;
+  font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: 0.03em;
+}
+/* diagram primitives — theme-aware through the palette vars */
+.dg-box { fill: none; stroke: var(--line); stroke-width: 1.2; }
+.dg-box-accent { fill: none; stroke: var(--accent); stroke-width: 1.4; }
+.dg-fill-soft { fill: rgba(156, 213, 255, 0.06); }
+.dg-line { stroke: var(--line); stroke-width: 1.2; fill: none; }
+.dg-flow { stroke: var(--accent); stroke-width: 1.4; fill: none; }
+.dg-copper { stroke: var(--copper); stroke-width: 1.3; fill: none; }
+.dg-dash { stroke-dasharray: 4 4; }
+.dg-fill { fill: var(--accent); }
+.dg-fill-copper { fill: var(--copper); }
+.dg-fill-line { fill: var(--line); }
+.dg-t { fill: var(--ink); font-family: var(--mono); font-size: 12px; }
+.dg-t-dim { fill: var(--dim); font-family: var(--mono); font-size: 10.5px; }
+.dg-t-accent { fill: var(--accent); font-family: var(--mono); font-size: 11px; }
+.dg-t-copper { fill: var(--copper); font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em; }
+.dg-serif { fill: var(--ink); font-family: var(--serif); font-style: italic; }
+/* directional flow — motion that travels, never spins */
+.dg-flow.dg-anim { stroke-dasharray: 5 6; animation: dgflow 1.15s linear infinite; }
+@keyframes dgflow { to { stroke-dashoffset: -11; } }
+@media (prefers-reduced-motion: reduce) { .dg-flow.dg-anim { animation: none; stroke-dasharray: none; } }
+
+/* a single full-width recorded demo, reusing the .demo figure look */
+.demo-solo { display: block; margin: 10px 0 12px; }
+.demo-solo video { border-radius: 3px; }
 
 /* ---------- inspirations — a two-column court, offset like zellige ---------- */
 .insp-list { display: flex; flex-direction: column; }
@@ -966,4 +1011,86 @@ body.maker #flipbook img { box-shadow: 0 30px 80px rgba(12, 17, 23, 0.25); }
   .demos { grid-template-columns: 1fr; }
   .salaam-actions { align-items: flex-start; }
   #salaam-reply { text-align: left; }
+}
+
+/* scene — the dusk river, vectorized into soft shapes that dissolve into white (home only) */
+body.scene-on { background: transparent; }
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(90% 70% at 42% 20%, rgba(224, 199, 130, 0.18), transparent 60%),
+    linear-gradient(to bottom, #e6eef3 0%, #f3f1ea 38%, #ffffff 82%);
+}
+/* the painting, sampled pixel-by-pixel into a living mosaic (drawn in main.js) */
+.scene-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* refraction light bleeding in from both side edges + a white wash for legibility */
+.scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    /* left edge: green → teal spectral bend */
+    linear-gradient(100deg, rgba(47, 93, 74, 0.26), rgba(122, 170, 206, 0.12) 4%, rgba(216, 189, 131, 0.06) 8%, transparent 15%),
+    /* right edge: mirrored */
+    linear-gradient(260deg, rgba(47, 93, 74, 0.22), rgba(122, 170, 206, 0.10) 4%, rgba(216, 189, 131, 0.06) 8%, transparent 15%),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.2) 45%, rgba(255, 255, 255, 0.52) 100%);
+}
+
+/* hero name — bilingual title, rising in on load */
+.hero-name {
+  font-size: clamp(30px, 5.4vw, 46px);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.22;
+  margin-bottom: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-name { animation: name-in 0.6s ease both; }
+}
+@keyframes name-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.name-ur { font-family: "Noto Nastaliq Urdu", var(--serif); font-size: 0.82em; line-height: 1; letter-spacing: 0; }
+.name-sep { color: var(--copper); font-weight: 300; opacity: 0.55; margin: 0 0.12em; }
+
+/* the ascii mark on the left; menu (work / writing / contact) on the right */
+.nav-morph-link { display: inline-block; width: 116px; line-height: 0; }
+.nav-morph { width: 116px; margin: 0; }
+
+/* thin rule under the name, spanning the column */
+.rule {
+  border: 0;
+  height: 1px;
+  width: 100%;
+  background: rgba(12, 17, 23, 0.32);
+  margin: 4px 0 6px;
+}
+
+/* post list — gray kicker, blue title, plain description (writing + work + anywhere) */
+.postlist { margin-top: 44px; display: flex; flex-direction: column; gap: 40px; }
+.post { display: block; transition: padding-left 0.25s ease; }
+.post:hover { padding-left: 6px; }
+.post-kicker { display: block; font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.05em; color: var(--dim); }
+.post-title {
+  display: block;
+  font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 25px;
+  line-height: 1.2;
+  color: var(--accent);
+  margin-top: 5px;
+  transition: color 0.2s;
+}
+.post:hover .post-title { text-decoration: underline; text-underline-offset: 3px; }
+.post-desc {
+  display: block;
+  font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+  color: rgba(12, 17, 23, 0.9);
+  margin-top: 9px;
 }

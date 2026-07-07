@@ -10,11 +10,23 @@ const html = (dir) =>
 const pages = [
   ...html("."),
   ...html("yusufproject"),
+  ...html("learning"),
+  ...html("aislop"),
+  ...html("slop"),
   ...html("writing"),
   ...html("writing/attention"),
   ...html("writing/attention/explore"),
   ...html("writing/flash-attention"),
   ...html("writing/flash-attention/explore"),
+  ...html("work"),
+  ...html("work/fanout"),
+  ...html("work/nanovsm"),
+  ...html("work/triageo"),
+  ...html("work/shepherd"),
+  ...html("work/duaos"),
+  ...html("work/goosetype"),
+  ...html("work/scrollify"),
+  ...html("work/incinerator"),
 ];
 
 export default defineConfig({
