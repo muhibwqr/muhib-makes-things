@@ -1071,6 +1071,10 @@ body.scene-on { background: transparent; }
   margin: 4px 0 6px;
 }
 
+/* writing/work list pages: one font throughout */
+.wpage { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.wpage .mono { font-family: inherit; letter-spacing: 0.02em; }
+
 /* post list — gray kicker, blue title, plain description (writing + work + anywhere) */
 .postlist { margin-top: 44px; display: flex; flex-direction: column; gap: 40px; }
 .post { display: block; transition: padding-left 0.25s ease; }
