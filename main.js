@@ -200,7 +200,7 @@ const sceneCanvas = document.querySelector(".scene-canvas");
 if (sceneCanvas) {
   const ctx = sceneCanvas.getContext("2d");
   const DPR = Math.min(2, devicePixelRatio || 1);
-  const COLS = 360;                       // sample columns; rows follow the image aspect (finer = more detail)
+  const COLS = innerWidth < 640 ? 190 : 360;   // fewer samples on phones for smooth frames
   // ponytail: O(cells) fillRects per frame (~25k after the white cull). drop COLS if it ever janks.
   let cells = [], W = 0, H = 0;
 

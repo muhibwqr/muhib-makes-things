@@ -1075,10 +1075,6 @@ body.scene-on { background: transparent; }
   margin: 4px 0 6px;
 }
 
-/* writing/work list pages: one font throughout */
-.wpage { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; }
-.wpage .mono { font-family: inherit; letter-spacing: 0.02em; }
-
 /* post list — gray kicker, blue title, plain description (writing + work + anywhere) */
 .postlist { margin-top: 44px; display: flex; flex-direction: column; gap: 40px; }
 .post { display: block; transition: padding-left 0.25s ease; }
@@ -1086,9 +1082,9 @@ body.scene-on { background: transparent; }
 .post-kicker { display: block; font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.05em; color: var(--dim); }
 .post-title {
   display: block;
-  font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 25px;
-  line-height: 1.2;
+  font-family: var(--serif);
+  font-size: 27px;
+  line-height: 1.16;
   color: var(--accent);
   margin-top: 5px;
   transition: color 0.2s;
@@ -1096,9 +1092,30 @@ body.scene-on { background: transparent; }
 .post:hover .post-title { text-decoration: underline; text-underline-offset: 3px; }
 .post-desc {
   display: block;
-  font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--serif);
   font-size: 17px;
   line-height: 1.5;
   color: rgba(12, 17, 23, 0.9);
   margin-top: 9px;
+}
+
+/* ---------- mobile ---------- */
+@media (max-width: 640px) {
+  nav { padding: 14px 16px; }
+  .nav-morph-link, .nav-morph { width: 90px; }
+  .nav-corner .nav-links, .nav-links { gap: 16px; font-size: 12px; }
+
+  .landing.centered { padding: 72px 18px 48px; max-width: 100%; }
+  .hero-name { font-size: clamp(21px, 6.6vw, 30px); letter-spacing: 0; }
+  .landing-prose { max-width: 100%; }
+  .landing-prose p { font-size: 14px; line-height: 1.6; }
+  .salaam-line { font-size: 14px; }
+
+  .wpage { padding: 6vh 18px 12vh !important; max-width: 100% !important; }
+  .wpage .w-title { font-size: clamp(30px, 8vw, 40px); }
+  .postlist { gap: 30px; margin-top: 32px; }
+  .post-title { font-size: 22px; }
+  .post-desc { font-size: 15px; }
+
+  .sign-row { flex-wrap: wrap; gap: 14px; }
 }
