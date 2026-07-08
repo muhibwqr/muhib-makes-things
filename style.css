@@ -1119,3 +1119,48 @@ body.scene-on { background: transparent; }
 
   .sign-row { flex-wrap: wrap; gap: 14px; }
 }
+
+/* home: the "right now" list */
+.now-lead { margin-top: 1.3em; }
+.now {
+  list-style: none;
+  margin-top: 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.now li {
+  position: relative;
+  padding-left: 1.1em;
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(12, 17, 23, 0.82);
+}
+.now li::before {
+  content: "·";
+  position: absolute;
+  left: 0.1em;
+  color: var(--copper);
+}
+.now a { color: var(--accent); border-bottom: 1px solid var(--line); transition: border-color 0.25s; }
+.now a:hover { border-color: var(--accent); }
+.now-close { margin-top: 1.3em; font-style: italic; color: rgba(12, 17, 23, 0.72); }
+
+/* home description: smooth staggered reveal */
+@media (prefers-reduced-motion: no-preference) {
+  .landing-prose > p, .now li {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: prose-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+  .landing-prose .salaam-line { animation-delay: 0.05s; }
+  .landing-prose .now-close   { animation-delay: 0.14s; }
+  .landing-prose .now-lead    { animation-delay: 0.24s; }
+  .now li:nth-child(1) { animation-delay: 0.30s; }
+  .now li:nth-child(2) { animation-delay: 0.36s; }
+  .now li:nth-child(3) { animation-delay: 0.42s; }
+  .now li:nth-child(4) { animation-delay: 0.48s; }
+  .now li:nth-child(5) { animation-delay: 0.54s; }
+  .landing-prose .article-cta { animation-delay: 0.62s; }
+}
+@keyframes prose-in { to { opacity: 1; transform: none; } }
