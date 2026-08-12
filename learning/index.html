@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="maker">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,8 +9,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <style>
+    /* site-wide theme pass: flat white + Inter, matches the landing redesign — leaves /writing/ articles untouched */
+    body.maker { --bg: #fff; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+    body.maker::before { display: none; }
+    body.maker .post-title, body.maker .post-desc { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
     .lpage { max-width: 860px; margin: 0 auto; padding: 7vh 24px 14vh; position: relative; z-index: 1; }
     .l-head { margin-bottom: 6px; }
     .l-title { font-size: clamp(30px, 4.6vw, 44px); font-weight: 500; letter-spacing: -0.01em; line-height: 1.05; }
@@ -68,7 +73,7 @@
     .msg .n { color: var(--dim); font-size: 14px; display: block; margin-top: 10px; }
   </style>
 </head>
-<body>
+<body class="maker">
 
   <nav>
     <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
