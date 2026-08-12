@@ -14,6 +14,7 @@ const pages = [
   ...html("aislop"),
   ...html("slop"),
   ...html("writing"),
+  ...html("memories"),
   ...html("writing/attention"),
   ...html("writing/attention/explore"),
   ...html("writing/flash-attention"),
