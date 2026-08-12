@@ -123,7 +123,11 @@ nav.nav-center { justify-content: center; }
   transform: translateX(-50%);
   padding-top: 9px;              /* invisible bridge so hover doesn't drop */
   z-index: 50;
+  pointer-events: none;          /* closed: don't intercept hover/clicks on content underneath */
 }
+.contact-menu:hover .contact-drop-wrap,
+.contact-menu:focus-within .contact-drop-wrap,
+.contact-menu.open .contact-drop-wrap { pointer-events: auto; }
 .contact-drop {
   display: flex;
   flex-direction: column;
