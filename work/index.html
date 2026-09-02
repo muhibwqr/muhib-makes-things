@@ -1,94 +1,91 @@
-<!doctype html>
-<html lang="en" class="maker">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>muhib waqar · work</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>work · muhib waqar</title>
   <meta name="description" content="things muhib waqar has built: ai orchestration, cybernetic systems, retrieval, agents, and fast interfaces. the technical parts, written down." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css" />
-  <style>
-    /* site-wide theme pass: flat white + Inter, matches the landing redesign — leaves /writing/ articles untouched */
-    body.maker { --bg: #fff; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-    body.maker::before { display: none; }
-    body.maker .post-title, body.maker .post-desc { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-    .wpage { max-width: 820px; margin: 0 auto; padding: 8vh 24px 14vh; }
-    .w-head { max-width: 640px; margin-bottom: 8px; }
-    .w-title { font-size: clamp(34px, 5vw, 48px); font-weight: 500; font-style: normal; letter-spacing: -0.01em; line-height: 1.05; }
-    .w-sub { color: var(--dim); font-size: 18px; line-height: 1.5; margin-top: 14px; }
-  </style>
+  <link rel="stylesheet" href="/qy.css" />
 </head>
-<body class="maker">
+<body>
+  <div class="container">
+    <header class="masthead">
+      <figure class="morph-mini" aria-hidden="true">
+        <div class="morph-mini-stage"><pre class="morph-art" id="morph-art"></pre></div>
+      </figure>
+      <h1 class="masthead-title">
+        <strong><a href="/">muhib waqar</a></strong>
+      </h1>
+      <nav class="masthead-nav" aria-label="primary">
+        <ul>
+          <li><a href="/books/">books</a></li>
+          <li><a href="/writing/">writing</a></li>
+          <li><a class="here" href="/work/">work</a></li>
+          <li><a href="/memories/">photos</a></li>
+          <li><a href="/about/">about</a></li>
+        </ul>
+      </nav>
+    </header>
 
-  <nav>
-    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
-    <div class="nav-links mono">
-      <a href="/work/">work</a>
-      <a href="/writing/">writing</a>
-      <a href="/#contact">contact</a>
-    </div>
-  </nav>
+    <article class="content post">
+      <figure class="home-still">
+        <img src="/work-still.png" alt="What's written for you can't be taken. What was taken was never written." />
+      </figure>
+      <h1 class="page-title">work</h1>
 
-  <main class="wpage">
-    <div class="w-head reveal">
-      <p class="article-kicker mono dim">work</p>
-      <h1 class="w-title">things i've built</h1>
-      <p class="w-sub">i build a lot, and i learn most when i write down how a thing actually works. so each square opens into the one technical decision that made it interesting, the part i'd defend in review.</p>
-    </div>
+      <p>i build a lot, and i learn most when i write down how a thing actually works. so each link opens into the one technical decision that made it interesting, the part i'd defend in review.</p>
 
-    <div class="postlist">
-      <a class="post reveal" href="/work/fanout/">
-        <span class="post-kicker mono">orchestration · fanout · python · cli</span>
-        <span class="post-title">n agents, one command</span>
-        <span class="post-desc">an orchestrator splits a task into independent prompts.</span>
-      </a>
-      <a class="post reveal" href="/work/nanovsm/">
-        <span class="post-kicker mono">cybernetics · nanovsm · python · agents</span>
-        <span class="post-title">cybernetics, made runnable</span>
-        <span class="post-desc">sensors feed a typed judge feed a policy from one file.</span>
-      </a>
-      <a class="post reveal" href="/work/triageo/">
-        <span class="post-kicker mono">security · triageo · python · rag</span>
-        <span class="post-title">triage that lives in slack</span>
-        <span class="post-desc">regex sets the severity, an llm adjusts, owasp grounds it.</span>
-      </a>
-      <a class="post reveal" href="/work/shepherd/">
-        <span class="post-kicker mono">multi-agent · shepherd · next.js · mastra</span>
-        <span class="post-title">an ai revenue team</span>
-        <span class="post-desc">stateless agents routed by stage, texting in human bursts.</span>
-      </a>
-      <a class="post reveal" href="/work/duaos/">
-        <span class="post-kicker mono">retrieval · duaos · next.js · pgvector</span>
-        <span class="post-title">filtering prayers with nlp</span>
-        <span class="post-desc">match an intention to scripture by meaning, not keywords.</span>
-      </a>
-      <a class="post reveal" href="/work/goosetype/">
-        <span class="post-kicker mono">web app · goosetype · typescript · supabase</span>
-        <span class="post-title">typing, anti-cheat in depth</span>
-        <span class="post-desc">keystroke biometrics and an unforgiving accuracy metric.</span>
-      </a>
-      <a class="post reveal" href="/work/scrollify/">
-        <span class="post-kicker mono">ios · scrollify · swift</span>
-        <span class="post-title">screen-time, no entitlement</span>
-        <span class="post-desc">manual logs are the source of truth; the os api is optional.</span>
-      </a>
-      <a class="post reveal" href="/work/incinerator/">
-        <span class="post-kicker mono">macos · incinerator · swift</span>
-        <span class="post-title">clean your mac by burning files</span>
-        <span class="post-desc">scan, rank the junk, and drag it into a floating oven.</span>
-      </a>
-      <a class="post reveal" href="https://github.com/muhibwqr" target="_blank" rel="noopener">
-        <span class="post-kicker mono">more · github →</span>
-        <span class="post-title">the rest</span>
-        <span class="post-desc">smaller experiments and works in progress live on github.</span>
-      </a>
-    </div>
-  </main>
+      <ul class="writing-list">
+        <li class="writing-item">
+          <span class="writing-date">orchestration · fanout · python · cli</span>
+          <a href="/work/fanout/">n agents, one command</a>
+          <p class="writing-desc">an orchestrator splits a task into independent prompts.</p>
+        </li>
+        <li class="writing-item">
+          <span class="writing-date">cybernetics · nanovsm · python · agents</span>
+          <a href="/work/nanovsm/">cybernetics, made runnable</a>
+          <p class="writing-desc">sensors feed a typed judge feed a policy from one file.</p>
+        </li>
+        <li class="writing-item">
+          <span class="writing-date">security · triageo · python · rag</span>
+          <a href="/work/triageo/">triage that lives in slack</a>
+          <p class="writing-desc">regex sets the severity, an llm adjusts, owasp grounds it.</p>
+        </li>
+        <li class="writing-item">
+          <span class="writing-date">multi-agent · shepherd · next.js · mastra</span>
+          <a href="/work/shepherd/">an ai revenue team</a>
+          <p class="writing-desc">stateless agents routed by stage, texting in human bursts.</p>
+        </li>
+        <li class="writing-item">
+          <span class="writing-date">retrieval · duaos · next.js · pgvector</span>
+          <a href="/work/duaos/">filtering prayers with nlp</a>
+          <p class="writing-desc">match an intention to scripture by meaning, not keywords.</p>
+        </li>
+        <li class="writing-item">
+          <span class="writing-date">web app · goosetype · typescript · supabase</span>
+          <a href="/work/goosetype/">typing, anti-cheat in depth</a>
+          <p class="writing-desc">keystroke biometrics and an unforgiving accuracy metric.</p>
+        </li>
+        <li class="writing-item">
+          <span class="writing-date">ios · scrollify · swift</span>
+          <a href="/work/scrollify/">screen-time, no entitlement</a>
+          <p class="writing-desc">manual logs are the source of truth; the os api is optional.</p>
+        </li>
+        <li class="writing-item">
+          <span class="writing-date">macos · incinerator · swift</span>
+          <a href="/work/incinerator/">clean your mac by burning files</a>
+          <p class="writing-desc">scan, rank the junk, and drag it into a floating oven.</p>
+        </li>
+        <li class="writing-item">
+          <span class="writing-date">more · github →</span>
+          <a href="https://github.com/muhibwqr" target="_blank" rel="noopener">the rest</a>
+          <p class="writing-desc">smaller experiments and works in progress live on github.</p>
+        </li>
+      </ul>
+    </article>
+  </div>
 
-  <script type="module" src="/main.js"></script>
+  <script type="module" src="/qy.js"></script>
 </body>
 </html>

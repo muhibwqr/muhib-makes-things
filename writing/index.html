@@ -1,90 +1,53 @@
-<!doctype html>
-<html lang="en" class="maker">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>muhib waqar · writing</title>
-  <meta name="description" content="essays by muhib waqar on transformers, building with ihsan, agency, retrieval, and the craft of fast systems." />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>writing · muhib waqar</title>
+  <meta name="description" content="essays by muhib waqar — transformers, ihsan, systems, and craft." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css" />
-  <style>
-    /* site-wide theme pass: flat white + Inter, matches the landing redesign — leaves /writing/ articles untouched */
-    body.maker { --bg: #fff; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-    body.maker::before { display: none; }
-    body.maker .post-title, body.maker .post-desc { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-    .wpage { max-width: 820px; margin: 0 auto; padding: 8vh 24px 14vh; }
-    .wpage .w-head { margin-bottom: 8px; }
-    .wpage .w-title { font-size: clamp(34px, 5vw, 48px); font-weight: 500; letter-spacing: -0.01em; line-height: 1.05; }
-    .wpage .w-sub { color: var(--dim); font-size: 18px; line-height: 1.5; margin-top: 14px; }
-
-    /* card layout: media on top, title + tag row, description below */
-    .postlist { gap: 44px; }
-    .wpage .post { display: flex; flex-direction: column; }
-    .wpage .post-media {
-      width: 100%; aspect-ratio: 16 / 10; border-radius: 10px; overflow: hidden;
-      margin-bottom: 14px; background: #eee;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .wpage .post-media img, .wpage .post-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .wpage .post-media.is-glyph { font-size: 46px; color: #fff; }
-    .wpage .post-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .wpage .post-title { font-size: 22px; font-weight: 600; }
-    .wpage .post-kicker { color: var(--dim); font-size: 13px; }
-    .wpage .post-desc { display: block; margin-top: 8px; }
-  </style>
+  <link rel="stylesheet" href="/qy.css" />
 </head>
-<body class="maker">
+<body>
+  <div class="container">
+    <header class="masthead">
+      <figure class="morph-mini" aria-hidden="true">
+        <div class="morph-mini-stage"><pre class="morph-art" id="morph-art"></pre></div>
+      </figure>
+      <h1 class="masthead-title">
+        <strong><a href="/">muhib waqar</a></strong>
+      </h1>
+      <nav class="masthead-nav" aria-label="primary">
+        <ul>
+          <li><a href="/books/">books</a></li>
+          <li><a class="here" href="/writing/">writing</a></li>
+          <li><a href="/work/">work</a></li>
+          <li><a href="/memories/">photos</a></li>
+          <li><a href="/about/">about</a></li>
+        </ul>
+      </nav>
+    </header>
 
-  <nav>
-    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
-    <div class="nav-links mono">
-      <a href="/work/">work</a>
-      <a href="/writing/">writing</a>
-      <a href="/#contact">contact</a>
-    </div>
-  </nav>
+    <article class="content post">
+      <h1 class="page-title">Writing</h1>
 
-  <main class="wpage">
-    <div class="w-head reveal">
-      <p class="article-kicker mono dim">writing</p>
-      <h1 class="w-title">notes from muhib</h1>
-      <p class="w-sub">essays on the things i build and the way i try to build them: transformers, fast systems, and the faith underneath all of it.</p>
-    </div>
+      <p>Essays on the things I build and the way I try to build them — transformers, fast systems, and the faith underneath all of it.</p>
 
-    <div class="postlist">
-      <a class="post reveal" href="/writing/attention/">
-        <span class="post-media" aria-hidden="true">
-          <video src="/spider-web.mp4" autoplay muted loop playsinline></video>
-        </span>
-        <span class="post-row">
-          <span class="post-title">attention is all you need, in my words</span>
-          <span class="post-kicker mono">essay · interactive · 9 min</span>
-        </span>
-        <span class="post-desc">the transformer explained end to end through one image, a spider feeling its web. everything defined in plain words before the jargon, and built so you could code it from scratch. comes with a 3d visualization you can pull on.</span>
-      </a>
-      <a class="post reveal" href="/writing/flash-attention/">
-        <span class="post-media" aria-hidden="true"><img src="/flash-attention-tile.png" alt="" /></span>
-        <span class="post-row">
-          <span class="post-title">flash attention</span>
-          <span class="post-kicker mono">essay · interactive · 8 min</span>
-        </span>
-        <span class="post-desc">the same attention, made fast. why the bottleneck is memory traffic not math, and how flashattention streams the scores through on-chip memory in tiles with an online softmax. exact, not approximate, with the numpy to prove it.</span>
-      </a>
-      <a class="post reveal" href="/writing/backpropagation-ambition-and-injustice.html">
-        <span class="post-media is-glyph" style="background: linear-gradient(135deg, #7aaace, #355872);" aria-hidden="true">🎯</span>
-        <span class="post-row">
-          <span class="post-title">backpropagation, ambition, and injustice</span>
-          <span class="post-kicker mono">essay · faith &amp; ambition</span>
-        </span>
-        <span class="post-desc">a basketball shot as gradient descent — loss, adjustment, mastery. then the harder question: what a drawn bow owes the string that never got pulled back. on ambition, provision, and who your success is actually for.</span>
-      </a>
-    </div>
-  </main>
+      <ul class="writing-list">
+        <li class="writing-item">
+          <span class="writing-date">essay · interactive · 9 min</span>
+          <a href="/writing/attention/">attention is all you need, in my words</a>
+          <p class="writing-desc">the transformer explained through a spider feeling its web. built so you could code it from scratch, with a 3d visualization you can pull on.</p>
+        </li>
+        <li class="writing-item">
+          <span class="writing-date">essay · faith &amp; ambition</span>
+          <a href="/writing/backpropagation-ambition-and-injustice.html">backpropagation, ambition, and injustice</a>
+          <p class="writing-desc">a basketball shot as gradient descent — then the harder question of who your success is actually for.</p>
+        </li>
+      </ul>
+    </article>
+  </div>
 
-  <script type="module" src="/main.js"></script>
+  <script type="module" src="/qy.js"></script>
 </body>
 </html>

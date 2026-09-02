@@ -35,6 +35,21 @@
     margin: 0; letter-spacing: -.01em;
   }
   header .sub { color: var(--mist); font-size: 13px; margin-left: 2px; }
+  .inactive-badge {
+    margin-left: auto;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--brass);
+    border: 1px solid var(--brass); border-radius: 999px;
+    padding: 4px 10px; white-space: nowrap;
+  }
+  .inactive-banner {
+    background: var(--brass-soft); color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 28px; font-size: 14px; line-height: 1.45;
+  }
+  .inactive-banner strong { font-weight: 600; }
+  body.inactive footer { opacity: 0.55; pointer-events: none; }
+  body.inactive #input, body.inactive #send { cursor: not-allowed; }
 
   .stage { flex: 1; display: flex; min-height: 0; }
   .left { flex: 1; display: flex; flex-direction: column; min-width: 0; }
@@ -106,22 +121,26 @@
   }
 </style>
 </head>
-<body>
+<body class="inactive">
   <header>
     <svg class="rose" id="rose" viewBox="0 0 100 100" aria-hidden="true"></svg>
     <h1>SkillCompass</h1>
     <span class="sub">find the skill you're sleeping on</span>
+    <span class="inactive-badge">inactive</span>
   </header>
+  <div class="inactive-banner" role="status">
+    <strong>This project is inactive.</strong> SkillCompass is archived — chat is off. You can still look around.
+  </div>
 
   <div class="stage">
     <div class="left">
       <main><div class="inner" id="chat"></div></main>
       <footer><div class="inner">
         <form id="form">
-          <textarea id="input" rows="1" placeholder="Answer honestly" autofocus></textarea>
-          <button id="send" type="submit">Send</button>
+          <textarea id="input" rows="1" placeholder="Project inactive" disabled></textarea>
+          <button id="send" type="submit" disabled>Send</button>
         </form>
-        <p class="hint">One question at a time. Give real answers, it digs.</p>
+        <p class="hint">Archived — no new conversations.</p>
       </div></footer>
     </div>
 
@@ -284,34 +303,21 @@ async function turn() {
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const text = input.value.trim();
-  if (!text || send.disabled) return;
-  addBubble("user", text);
-  transcript.push({ role: "user", text });
-  save();
-  input.value = ""; input.style.height = "auto";
-  turn();
+  return; // inactive
 });
 
 input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+  if (e.key === "Enter" && !e.shiftKey) e.preventDefault();
 });
-input.addEventListener("input", () => {
-  input.style.height = "auto";
-  input.style.height = Math.min(input.scrollHeight, 160) + "px";
-});
-
-// The opening question never changes, so don't spend a model call on it. Show it directly.
-const OPENER = "Before we dig in, one question. Do you already have a skill or area of expertise in mind that you want to build content around, or are you not sure yet? Either answer is fine, it just tells me where to start.";
 
 drawMap();
+const INACTIVE = "SkillCompass is inactive. This build is archived — chat is off, bearings stay as a record of what the coach used to do.";
 if (transcript.length) {
   for (const m of transcript) addBubble(m.role, m.text);
 } else {
-  addBubble("bot", OPENER);
-  transcript.push({ role: "bot", text: OPENER });
-  save();
+  addBubble("bot", INACTIVE);
 }
+send.disabled = true;
 </script>
 </body>
 </html>

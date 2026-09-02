@@ -1,132 +1,108 @@
-<!doctype html>
-<html lang="en" class="maker">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>muhib waqar · memories</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>photos · muhib waqar</title>
   <meta name="description" content="a wall of moments — photos and clips, dropped in as they happen." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css" />
-  <style>
-    body.maker { --bg: #fff; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-    body.maker::before { display: none; }
-
-    .m-wrap { max-width: 1200px; margin: 0 auto; padding: 90px 28px 100px; }
-    .m-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
-    .m-head h1 { font-size: clamp(26px, 4vw, 36px); font-weight: 700; }
-    .m-head .back { font-family: var(--mono); font-size: 13px; color: var(--dim); border-bottom: 1px solid var(--line); transition: color .2s, border-color .2s; }
-    .m-head .back:hover { color: var(--accent); border-color: var(--accent); }
-    .m-count { font-family: var(--mono); font-size: 12px; color: var(--dim); margin-bottom: 40px; }
-
-    /* masonry via CSS multi-column — handles a variable-length wall of photos without
-       fixed rows, and each tile's own aspect ratio does the "creative" work for us. */
-    .board {
-      column-count: 2; column-gap: 16px;
-    }
-    @media (min-width: 640px)  { .board { column-count: 3; } }
-    @media (min-width: 920px)  { .board { column-count: 4; } }
-    @media (min-width: 1200px) { .board { column-count: 5; } }
-
-    /* clean tiles — no card chrome, just the image with a soft corner radius */
-    .polaroid {
-      display: block; width: 100%; break-inside: avoid; margin-bottom: 16px;
-      border: none; border-radius: 6px; overflow: hidden; cursor: zoom-in;
-      position: relative;
-      transition: opacity .2s ease;
-    }
-    .polaroid:hover { opacity: 0.92; }
-
-    .polaroid-media { position: relative; width: 100%; overflow: hidden; background: #ddd; line-height: 0; }
-    .polaroid-media img, .polaroid-media video { width: 100%; display: block; }
-    .polaroid-media.is-video video { aspect-ratio: 9 / 16; object-fit: cover; background: #1b1d22; }
-    .play-badge {
-      position: absolute; inset: 0; margin: auto; width: 46px; height: 46px; border-radius: 50%;
-      background: rgba(0, 0, 0, 0.35); display: flex; align-items: center; justify-content: center;
-      pointer-events: none;
-    }
-    .play-badge::before {
-      content: ""; width: 0; height: 0; margin-left: 3px;
-      border-style: solid; border-width: 10px 0 10px 16px; border-color: transparent transparent transparent #fff;
-    }
-    /* caption only appears as a subtle hover overlay — keeps the wall clean by default */
-    .polaroid-cap {
-      position: absolute; left: 0; right: 0; bottom: 0; margin: 0; padding: 16px 10px 8px;
-      font-family: var(--mono); font-size: 11px; color: #fff; text-align: left;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
-      opacity: 0; transition: opacity .2s ease;
-    }
-    .polaroid:hover .polaroid-cap { opacity: 1; }
-
-    .m-empty { font-family: var(--mono); font-size: 13px; color: var(--dim); padding: 40px 0; }
-
-    /* lightbox */
-    .lightbox {
-      position: fixed; inset: 0; background: rgba(10, 10, 12, 0.9);
-      display: none; align-items: center; justify-content: center; z-index: 100; padding: 32px;
-    }
-    .lightbox.open { display: flex; }
-    .lightbox img, .lightbox video { max-width: min(92vw, 900px); max-height: 88vh; border-radius: 4px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); }
-    .lightbox-close {
-      position: absolute; top: 20px; right: 24px; color: #fff; font-family: var(--mono); font-size: 14px;
-      opacity: .8; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; padding: 6px 14px;
-    }
-    .lightbox-close:hover { opacity: 1; }
-  </style>
+  <link rel="stylesheet" href="/qy.css" />
 </head>
-<body class="maker">
+<body>
+  <div class="container">
+    <header class="masthead">
+      <figure class="morph-mini" aria-hidden="true">
+        <div class="morph-mini-stage"><pre class="morph-art" id="morph-art"></pre></div>
+      </figure>
+      <h1 class="masthead-title">
+        <strong><a href="/">muhib waqar</a></strong>
+      </h1>
+      <nav class="masthead-nav" aria-label="primary">
+        <ul>
+          <li><a href="/books/">books</a></li>
+          <li><a href="/writing/">writing</a></li>
+          <li><a href="/work/">work</a></li>
+          <li><a class="here" href="/memories/">photos</a></li>
+          <li><a href="/about/">about</a></li>
+        </ul>
+      </nav>
+    </header>
 
-  <div class="m-wrap">
-    <div class="m-head">
-      <h1>memories</h1>
-      <a class="back" href="/">← back home</a>
-    </div>
-    <p class="m-count mono" id="count"></p>
-
-    <div class="board" id="board"></div>
+    <article class="content post photos">
+      <h1 class="page-title">photos</h1>
+      <nav class="photo-views" aria-label="photo views">
+        <button type="button" class="photo-view here" data-view="inspiration">inspiration</button>
+        <button type="button" class="photo-view" data-view="memories">memories</button>
+      </nav>
+      <div class="board" id="board"></div>
+    </article>
   </div>
 
   <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" id="lightbox-close" type="button">close ✕</button>
+    <button class="lightbox-close" id="lightbox-close" type="button">close</button>
   </div>
 
-  <script>
+  <script type="module" src="/qy.js"></script>
+  <script type="module">
     const board = document.getElementById("board");
-    const countEl = document.getElementById("count");
     const lightbox = document.getElementById("lightbox");
+    const views = document.querySelector(".photo-views");
+    let items = [];
+    let view = "inspiration";
+
+    const render = () => {
+      const list = items.filter((i) => i.tag === view);
+      board.innerHTML = list.map((item) => {
+        const src = item.thumb || item.src;
+        const cap = item.cap ? `<figcaption class="polaroid-cap">${item.cap}</figcaption>` : "";
+        return `<figure class="polaroid" data-media="${item.type}" data-src="${item.src}">
+          <div class="polaroid-media"><img src="${src}" alt="${item.cap || ""}" loading="lazy" /></div>
+          ${cap}
+        </figure>`;
+      }).join("") || `<p class="photos-empty">no ${view} yet</p>`;
+    };
 
     fetch("/photos/manifest.json")
       .then((r) => r.json())
-      .then((items) => {
-        countEl.textContent = `${items.length} moments`;
-        board.innerHTML = items.map((item) => {
-          const media = item.type === "video"
-            ? `<div class="polaroid-media is-video"><video src="${item.src}#t=0.1" muted playsinline preload="metadata"></video><span class="play-badge" aria-hidden="true"></span></div>`
-            : `<div class="polaroid-media"><img src="${item.thumb}" alt="" loading="lazy" /></div>`;
-          const cap = item.cap ? `<figcaption class="polaroid-cap">${item.cap}</figcaption>` : "";
-          return `<figure class="polaroid" data-media="${item.type}" data-src="${item.src}">${media}${cap}</figure>`;
-        }).join("");
+      .then((data) => {
+        items = data;
+        render();
       })
-      .catch(() => { board.innerHTML = `<p class="m-empty">couldn't load the photo wall — check /photos/manifest.json</p>`; });
+      .catch(() => {
+        board.innerHTML = `<p class="photos-empty">couldn't load the photo wall</p>`;
+      });
+
+    views.addEventListener("click", (e) => {
+      const btn = e.target.closest(".photo-view");
+      if (!btn) return;
+      view = btn.dataset.view;
+      views.querySelectorAll(".photo-view").forEach((b) => b.classList.toggle("here", b === btn));
+      render();
+    });
 
     board.addEventListener("click", (e) => {
       const card = e.target.closest(".polaroid");
       if (!card) return;
       const { media, src } = card.dataset;
       const el = document.createElement(media === "video" ? "video" : "img");
-      if (media === "video") { el.src = src; el.controls = true; el.autoplay = true; el.playsInline = true; }
-      else { el.src = src; el.alt = ""; }
+      if (media === "video") {
+        el.src = src;
+        el.controls = true;
+        el.autoplay = true;
+        el.playsInline = true;
+      } else {
+        el.src = src;
+        el.alt = "";
+      }
       lightbox.querySelectorAll("img, video").forEach((n) => n.remove());
       lightbox.appendChild(el);
       lightbox.classList.add("open");
     });
 
-    function close() {
+    const close = () => {
       lightbox.classList.remove("open");
       lightbox.querySelectorAll("video").forEach((v) => v.pause());
-    }
+    };
     document.getElementById("lightbox-close").addEventListener("click", close);
     lightbox.addEventListener("click", (e) => { if (e.target === lightbox) close(); });
     addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
