@@ -92,7 +92,8 @@ if (document.querySelector(".masthead")) {
   script.setAttribute("data-align", "left");
 
   wrap.appendChild(script);
-  document.body.appendChild(wrap);
+  const signRow = document.querySelector(".sign-row");
+  (signRow || document.body).appendChild(wrap);
 }
 
 const intro = document.getElementById("intro");

@@ -1,5 +1,59 @@
 {
   "functions": {
-    "api/chat.ts": { "maxDuration": 60 }
-  }
+    "api/chat.ts": {
+      "maxDuration": 60
+    }
+  },
+  "redirects": [
+    {
+      "source": "/about",
+      "destination": "/my-purpose/",
+      "permanent": true
+    },
+    {
+      "source": "/about/",
+      "destination": "/my-purpose/",
+      "permanent": true
+    },
+    {
+      "source": "/work",
+      "destination": "/endeavours/",
+      "permanent": true
+    },
+    {
+      "source": "/work/",
+      "destination": "/endeavours/",
+      "permanent": true
+    },
+    {
+      "source": "/writing",
+      "destination": "/endeavours/",
+      "permanent": true
+    },
+    {
+      "source": "/writing/",
+      "destination": "/endeavours/",
+      "permanent": true
+    },
+    {
+      "source": "/reasoning",
+      "destination": "/my-purpose/",
+      "permanent": true
+    },
+    {
+      "source": "/reasoning/",
+      "destination": "/my-purpose/",
+      "permanent": true
+    },
+    {
+      "source": "/memories",
+      "destination": "/stills/",
+      "permanent": true
+    },
+    {
+      "source": "/memories/",
+      "destination": "/stills/",
+      "permanent": true
+    }
+  ]
 }
