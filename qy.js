@@ -82,13 +82,17 @@ if (morphPanel && artEl) {
 }
 
 if (document.querySelector(".masthead")) {
-  const affil = document.createElement("a");
-  affil.className = "site-affil";
-  affil.href = "https://www.uwaterloo.network";
-  affil.target = "_blank";
-  affil.rel = "noopener";
-  affil.textContent = "uwaterloo.network";
-  document.body.appendChild(affil);
+  const wrap = document.createElement("div");
+  wrap.className = "site-webring";
+
+  const script = document.createElement("script");
+  script.src = "https://uwaterloo.network/embed.js";
+  script.setAttribute("data-webring", "");
+  script.setAttribute("data-user", "muhib-waqar");
+  script.setAttribute("data-align", "left");
+
+  wrap.appendChild(script);
+  document.body.appendChild(wrap);
 }
 
 const intro = document.getElementById("intro");
