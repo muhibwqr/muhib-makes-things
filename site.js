@@ -202,7 +202,7 @@ if (!REDUCED_MOTION) {
       const hitEl = isBranch ? branchHit(el) : photo;
       if (!hitEl) return;
       const { x, y, fromY, retractY } = aim(dir, hitEl);
-      const over = dir === "down" ? 10 : -10;
+      const over = dir === "down" ? 14 : -14;
 
       fist.dataset.dir = dir;
       fist.style.transform = tf(x, fromY);
@@ -214,20 +214,19 @@ if (!REDUCED_MOTION) {
           fist.animate(
             [
               { transform: tf(x, fromY), offset: 0 },
-              { transform: tf(x, fromY + (y - fromY) * 0.35), offset: 0.35 },
+              { transform: tf(x, fromY + (y - fromY) * 0.4, 1.02, 0.96), offset: 0.4 },
               { transform: tf(x, y), offset: 1 },
             ],
-            { duration: 220, easing: "cubic-bezier(0.55, 0.05, 0.9, 0.4)", fill: "forwards" }
+            { duration: 220, easing: "cubic-bezier(0.7, 0.0, 0.95, 0.35)", fill: "forwards" }
           )
         );
 
         // impact: momentary photo tug for learn-more; local squash for branch
         if (!isBranch) {
+          photo.dataset.punchDir = dir;
           photo.classList.remove("tugged");
-          if (dir === "down") {
-            void photo.offsetWidth;
-            photo.classList.add("tugged");
-          }
+          void photo.offsetWidth;
+          photo.classList.add("tugged");
         } else {
           hitEl.dataset.punchDir = dir;
           hitEl.classList.remove("punched");
@@ -239,11 +238,11 @@ if (!REDUCED_MOTION) {
           fist.animate(
             [
               { transform: tf(x, y, 1, 1) },
-              { transform: tf(x, y + over, 1.22, 0.68), offset: 0.35 },
-              { transform: tf(x, y - over * 0.35, 0.92, 1.08), offset: 0.7 },
+              { transform: tf(x, y + over, 1.38, 0.55), offset: 0.3 },
+              { transform: tf(x, y - over * 0.4, 0.88, 1.14), offset: 0.65 },
               { transform: tf(x, y, 1, 1) },
             ],
-            { duration: 140, easing: "cubic-bezier(0.2, 0.9, 0.3, 1)", fill: "forwards" }
+            { duration: 140, easing: "cubic-bezier(0.15, 1.1, 0.35, 1)", fill: "forwards" }
           )
         );
 
@@ -252,6 +251,7 @@ if (!REDUCED_MOTION) {
           delete hitEl.dataset.punchDir;
         } else {
           photo.classList.remove("tugged");
+          delete photo.dataset.punchDir;
         }
 
         await wait(40);
@@ -274,6 +274,7 @@ if (!REDUCED_MOTION) {
           delete hitEl.dataset.punchDir;
         } else {
           photo.classList.remove("tugged");
+          delete photo.dataset.punchDir;
         }
       }
     };
