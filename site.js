@@ -81,7 +81,7 @@ if (morphPanel && artEl) {
   if (!REDUCED_MOTION) raf = requestAnimationFrame(loop);
 }
 
-if (document.querySelector(".masthead")) {
+if (document.querySelector(".masthead") && document.querySelector(".home-bio")) {
   const wrap = document.createElement("div");
   wrap.className = "site-webring";
 
@@ -111,4 +111,200 @@ if (intro) {
     addEventListener("keydown", dismiss, { once: true });
     if (!REDUCED_MOTION) setTimeout(dismiss, 4200);
   }
+}
+
+/* pixel punch — learn-more + bio-branch: down from top / up from bottom */
+if (!REDUCED_MOTION) {
+  const more = document.querySelector(".bio-more");
+  const photo = document.querySelector(".landing-photo");
+  if (more && photo) {
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const finish = (anim) => new Promise((r) => { anim.onfinish = r; });
+    const tf = (x, y, sx = 1, sy = 1) =>
+      `translate(${x}px, ${y}px) scale(${sx}, ${sy})`;
+
+    const fist = document.createElement("div");
+    fist.className = "pixel-fist";
+    fist.setAttribute("aria-hidden", "true");
+    // front-on fist: knuckles top, thumb mid, blue cuff — flip on down
+    const fill = {
+      K: "#000000",
+      H: "#F5D9BC",
+      S: "#F0C8A0",
+      D: "#B08860",
+      B: "#4070C8",
+      N: "#1030A8",
+      L: "#98B0E0",
+    };
+    const rows = [
+      "...KK.KK.KK.KK...",
+      "...KHKKHHKKHHK...",
+      "..KHSSKHSSKHSK...",
+      ".KHSSSKSSSKSSHK..",
+      "KHSSSSKSSSKSSSHK.",
+      "KSSSSSKSSSKSSSSDK",
+      "KSSSKKKKKKKKKSSDK",
+      "KSSSSSSSSSSSSSSDK",
+      "KSSSSSSSSSSSSSDDK",
+      "KSSSSDDDDDDDDSDDK",
+      "KSSSSDSSSSSSSSDDK",
+      "KSSSSSSSSSSSSSDDK",
+      "KSSSSSDSSSSSSSSDK",
+      "KSSSSSSSSSSSSSSDK",
+      ".KSSSSSSSSSSSSDK.",
+      ".KSSSSSDSSSSSDK..",
+      "..KSSSSSSSSSSK...",
+      "...KKKKKKKKKK....",
+      "..KBBBBBBBBBBK...",
+      "..KBBBBBBBBBNK...",
+      "..KBBBBBBBBNLK...",
+      "...KKKKKKKKKK....",
+    ];
+    let rects = "";
+    rows.forEach((row, y) => {
+      for (let x = 0; x < row.length; x++) {
+        const c = fill[row[x]];
+        if (c) rects += `<rect x="${x}" y="${y}" width="1" height="1" fill="${c}"/>`;
+      }
+    });
+    fist.innerHTML =
+      `<svg viewBox="0 0 17 22" width="17" height="22" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">${rects}</svg>`;
+    document.body.appendChild(fist);
+
+    let busy = false;
+
+    const aim = (dir, hitEl) => {
+      const r = hitEl.getBoundingClientRect();
+      const h = fist.offsetHeight || 93;
+      const branch = hitEl !== photo;
+      // knuckles kiss photo border, or branch paragraph / drop top edge
+      const x = branch ? r.left + Math.min(28, r.width * 0.35) : r.left + r.width * 0.58;
+      const y = dir === "down" ? r.top - h + 2 : (branch ? r.bottom - h * 0.15 : r.bottom - 2);
+      return { x, y, fromY: dir === "down" ? -h - 24 : innerHeight + 16, retractY: dir === "down" ? -h - 48 : innerHeight + 40 };
+    };
+
+    const branchHit = (el) =>
+      el.querySelector(":scope > .bio-drop > .bio-drop-inner > p") ||
+      el.querySelector(":scope > .bio-drop > .bio-drop-inner") ||
+      el.querySelector(":scope > .bio-drop") ||
+      el;
+
+    const punch = async (dir, el) => {
+      const isBranch = el.classList.contains("bio-branch");
+      const hitEl = isBranch ? branchHit(el) : photo;
+      const { x, y, fromY, retractY } = aim(dir, hitEl);
+      const over = dir === "down" ? 10 : -10;
+
+      fist.dataset.dir = dir;
+      fist.style.transform = tf(x, fromY);
+      fist.classList.add("on");
+
+      // ease in → slam into hit
+      await finish(
+        fist.animate(
+          [
+            { transform: tf(x, fromY), offset: 0 },
+            { transform: tf(x, fromY + (y - fromY) * 0.35), offset: 0.35 },
+            { transform: tf(x, y), offset: 1 },
+          ],
+          { duration: 220, easing: "cubic-bezier(0.55, 0.05, 0.9, 0.4)", fill: "forwards" }
+        )
+      );
+
+      // impact: photo tug for learn-more; local squash for branch
+      if (!isBranch) {
+        if (dir === "down") photo.classList.add("tugged");
+        else photo.classList.remove("tugged");
+      } else {
+        hitEl.dataset.punchDir = dir;
+        hitEl.classList.remove("punched");
+        void hitEl.offsetWidth;
+        hitEl.classList.add("punched");
+      }
+
+      await finish(
+        fist.animate(
+          [
+            { transform: tf(x, y, 1, 1) },
+            { transform: tf(x, y + over, 1.22, 0.68), offset: 0.35 },
+            { transform: tf(x, y - over * 0.35, 0.92, 1.08), offset: 0.7 },
+            { transform: tf(x, y, 1, 1) },
+          ],
+          { duration: 140, easing: "cubic-bezier(0.2, 0.9, 0.3, 1)", fill: "forwards" }
+        )
+      );
+
+      if (isBranch) {
+        hitEl.classList.remove("punched");
+        delete hitEl.dataset.punchDir;
+      }
+
+      await wait(40);
+      await finish(
+        fist.animate(
+          [
+            { transform: tf(x, y), opacity: 1 },
+            { transform: tf(x, retractY), opacity: 0 },
+          ],
+          { duration: 180, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" }
+        )
+      );
+      fist.getAnimations().forEach((a) => a.cancel());
+      fist.classList.remove("on");
+      fist.style.transform = "";
+    };
+
+    const castOpen = (el) => {
+      el.open = true;
+      el.classList.remove("hook-cast");
+      void el.offsetWidth;
+      el.classList.add("hook-cast");
+    };
+
+    const bindPunch = (el) => {
+      el.addEventListener("click", async (e) => {
+        const sum = e.target.closest("summary");
+        if (!sum || sum.parentElement !== el) return;
+        e.preventDefault();
+        if (busy) return;
+        busy = true;
+        try {
+          if (el.open) {
+            // close: punch still-visible paragraph, then collapse
+            await punch("up", el);
+            el.open = false;
+            el.classList.remove("hook-cast");
+          } else if (el.classList.contains("bio-branch")) {
+            // open: expand enough to measure, punch, then hook-cast reveal
+            el.open = true;
+            const drop = el.querySelector(":scope > .bio-drop");
+            if (drop) {
+              drop.style.transition = "none";
+              void drop.offsetHeight;
+              drop.style.transition = "";
+            }
+            await punch("down", el);
+            el.classList.remove("hook-cast");
+            void el.offsetWidth;
+            el.classList.add("hook-cast");
+          } else {
+            await punch("down", el);
+            castOpen(el);
+          }
+        } finally {
+          busy = false;
+        }
+      });
+    };
+
+    bindPunch(more);
+    more.querySelectorAll(".bio-branch").forEach(bindPunch);
+  }
+} else {
+  document.querySelectorAll(".bio-more, .bio-branch").forEach((el) => {
+    el.addEventListener("toggle", () => {
+      if (!el.open) return;
+      el.classList.add("hook-cast");
+    });
+  });
 }

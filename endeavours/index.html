@@ -20,73 +20,91 @@
           <li><a href="/books/">compelling content</a></li>
           <li><a class="here" href="/endeavours/">endeavours</a></li>
           <li><a href="/stills/">stills</a></li>
-          <li><a href="/my-purpose/">my purpose</a></li>
         </ul>
       </nav>
     </header>
 
-    <article class="content post">
-      <figure class="home-still">
-        <img src="/work-still.png" alt="What's written for you can't be taken. What was taken was never written." />
-      </figure>
+    <article class="content post endeavours">
       <h1 class="page-title">Endeavours</h1>
 
-      <p>things i've built and written down — the technical decision i'd defend in review, and the essays underneath the craft.</p>
+      <p class="lede">things i've built and written down — the technical decision i'd defend in review, and the essays underneath the craft.</p>
 
       <ul class="writing-list">
         <li class="writing-item">
-          <span class="writing-date">essay · interactive · 9 min</span>
-          <a href="/writing/attention/">attention is all you need, in my words</a>
-          <p class="writing-desc">the transformer explained through a spider feeling its web. built so you could code it from scratch, with a 3d visualization you can pull on.</p>
+          <div class="writing-head">
+            <a href="/work/fanout/">fanout</a>
+            <span class="writing-date">orchestration · python · cli</span>
+          </div>
+          <p class="writing-desc">launch n parallel claude agents in tmux panes from one bash command.</p>
         </li>
         <li class="writing-item">
-          <span class="writing-date">essay · faith &amp; ambition</span>
-          <a href="/writing/backpropagation-ambition-and-injustice.html">backpropagation, ambition, and injustice</a>
-          <p class="writing-desc">a basketball shot as gradient descent — then the harder question of who your success is actually for.</p>
+          <div class="writing-head">
+            <a href="/work/nanovsm/">nanovsm</a>
+            <span class="writing-date">cybernetics · python · agents</span>
+          </div>
+          <p class="writing-desc">stafford beer's viable system model compiled to python plus an llm judge.</p>
         </li>
         <li class="writing-item">
-          <span class="writing-date">orchestration · fanout · python · cli</span>
-          <a href="/work/fanout/">n agents, one command</a>
-          <p class="writing-desc">an orchestrator splits a task into independent prompts.</p>
+          <div class="writing-head">
+            <a href="/work/triageo/">triageo</a>
+            <span class="writing-date">security · python · rag · htn 2025</span>
+          </div>
+          <p class="writing-desc">a slack-native security triage assistant — regex sets the severity, an llm adjusts, owasp grounds it.</p>
         </li>
         <li class="writing-item">
-          <span class="writing-date">cybernetics · nanovsm · python · agents</span>
-          <a href="/work/nanovsm/">cybernetics, made runnable</a>
-          <p class="writing-desc">sensors feed a typed judge feed a policy from one file.</p>
+          <div class="writing-head">
+            <a href="/work/shepherd/">shepherd</a>
+            <span class="writing-date">multi-agent · next.js · mastra</span>
+          </div>
+          <p class="writing-desc">an ai revenue team — setter / closer / csm as stateless agents routed by pipeline stage.</p>
         </li>
         <li class="writing-item">
-          <span class="writing-date">security · triageo · python · rag</span>
-          <a href="/work/triageo/">triage that lives in slack</a>
-          <p class="writing-desc">regex sets the severity, an llm adjusts, owasp grounds it.</p>
-        </li>
-        <li class="writing-item">
-          <span class="writing-date">multi-agent · shepherd · next.js · mastra</span>
-          <a href="/work/shepherd/">an ai revenue team</a>
-          <p class="writing-desc">stateless agents routed by stage, texting in human bursts.</p>
-        </li>
-        <li class="writing-item">
-          <span class="writing-date">retrieval · duaos · next.js · pgvector</span>
-          <a href="/work/duaos/">filtering prayers with nlp</a>
+          <div class="writing-head">
+            <a href="/work/duaos/">using nlp to filter through prayers</a>
+            <span class="writing-date">retrieval · next.js · pgvector</span>
+          </div>
           <p class="writing-desc">match an intention to scripture by meaning, not keywords.</p>
         </li>
         <li class="writing-item">
-          <span class="writing-date">web app · goosetype · typescript · supabase</span>
-          <a href="/work/goosetype/">typing, anti-cheat in depth</a>
-          <p class="writing-desc">keystroke biometrics and an unforgiving accuracy metric.</p>
+          <div class="writing-head">
+            <a href="/work/goosetype/">goosetype</a>
+            <span class="writing-date">web app · typescript · supabase</span>
+          </div>
+          <p class="writing-desc">a competitive typing platform where scores aggregate per university.</p>
         </li>
         <li class="writing-item">
-          <span class="writing-date">ios · scrollify · swift</span>
-          <a href="/work/scrollify/">screen-time, no entitlement</a>
-          <p class="writing-desc">manual logs are the source of truth; the os api is optional.</p>
+          <div class="writing-head">
+            <a href="/work/scrollify/">scrollify</a>
+            <span class="writing-date">ios · swift</span>
+          </div>
+          <p class="writing-desc">a mindful screen-time app that sidesteps apple's screen time entitlement.</p>
         </li>
         <li class="writing-item">
-          <span class="writing-date">macos · incinerator · swift</span>
-          <a href="/work/incinerator/">clean your mac by burning files</a>
-          <p class="writing-desc">scan, rank the junk, and drag it into a floating oven.</p>
+          <div class="writing-head">
+            <a href="/work/incinerator/">incinerator</a>
+            <span class="writing-date">macos · swift</span>
+          </div>
+          <p class="writing-desc">a macos disk-cleanup app with a fire theme.</p>
         </li>
         <li class="writing-item">
-          <span class="writing-date">more · github →</span>
-          <a href="https://github.com/muhibwqr" target="_blank" rel="noopener">the rest</a>
+          <div class="writing-head">
+            <a href="/writing/attention/">attention is all you need, in my words</a>
+            <span class="writing-date">essay · interactive · 9 min</span>
+          </div>
+          <p class="writing-desc">the transformer explained through a spider feeling its web. built so you could code it from scratch, with a 3d visualization you can pull on.</p>
+        </li>
+        <li class="writing-item">
+          <div class="writing-head">
+            <a href="/writing/backpropagation-ambition-and-injustice.html">backpropagation, ambition, and injustice</a>
+            <span class="writing-date">essay · faith &amp; ambition</span>
+          </div>
+          <p class="writing-desc">a basketball shot as gradient descent — then the harder question of who your success is actually for.</p>
+        </li>
+        <li class="writing-item">
+          <div class="writing-head">
+            <a href="https://github.com/muhibwqr" target="_blank" rel="noopener">the rest</a>
+            <span class="writing-date">more · github →</span>
+          </div>
           <p class="writing-desc">smaller experiments and works in progress live on github.</p>
         </li>
       </ul>

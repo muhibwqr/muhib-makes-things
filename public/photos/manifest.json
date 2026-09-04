@@ -70,6 +70,13 @@
     "cap": "city from above"
   },
   {
+    "src": "/work-still.png",
+    "thumb": "/work-still.png",
+    "type": "image",
+    "tag": "inspiration",
+    "cap": "what's written for you can't be taken"
+  },
+  {
     "src": "/photos/man-alone-mountain.png",
     "thumb": "/photos/man-alone-mountain.png",
     "type": "image",
