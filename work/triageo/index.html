@@ -70,6 +70,11 @@
       <figcaption>a regex sets a severity a machine can defend, the model only adjusts it with context, and retrieval keeps the recommendation grounded. prompt-injection in the log skips straight to critical.</figcaption>
     </figure>
 
+    <figure class="demo demo-solo shot-phone reveal">
+      <img src="/triageo-1.jpg" alt="triageo slack card in #security-alerts with escalate, acknowledge, and lower-severity buttons" />
+      <figcaption class="mono dim">slack · triage card in the channel, with the three action buttons the demo lived on</figcaption>
+    </figure>
+
     <div class="prose article-prose reveal">
       <p>security teams drown in alerts. we built triageo at hack the north 2025 to live where they already work: you @mention it in slack with a log, or upload a file, and it parses, classifies, and prioritizes the incident right there in the channel, then hands you interactive buttons to escalate, acknowledge, or lower the severity. the demo line was "from chaos to clarity, in seconds." the engineering idea underneath it is more specific than that, and it's the part i'd defend.</p>
 
@@ -100,11 +105,16 @@ top = sims.argsort()[::-1][:k]      # k = 3 by default</code></pre>
       <h3>built to not fail on stage</h3>
       <p>a hackathon demo that crashes is a hackathon demo that lost. so triageo degrades at every layer: the real pipeline is wrapped so a failure falls back to a canned card, a failed slack post falls back to plain text, and if there's no api key the embeddings come from a <em>seeded</em> random generator, meaningless but reproducible, so retrieval always returns consistent results instead of throwing. there's even a demo mode flag that swaps the full pipeline for a fast keyword matcher. it's the difference between a system and a thing that only works in the one configuration you rehearsed.</p>
 
+      <figure class="demo demo-solo">
+        <img src="/triageo-2.jpg" alt="triageo web dashboard with severity filters and incident cards" />
+        <figcaption class="mono dim">web · triageo dashboard after a parse — severity filter, pie, and the incident cards</figcaption>
+      </figure>
+
       <p>i'll be straight about what this is: a weekend build, and a lot of the polish is scaffolding for a live demo, not a hardened product. but the spine, deterministic baseline, llm as an adjuster anchored to a prior, retrieval grounding, injection-aware triage, is a pattern i'd reach for again in production. the best lesson hack the north taught me is the old proverb dressed in new clothes: 慢工出細活, careful work yields fine work, even when the clock says forty-eight hours.</p>
     </div>
 
     <div class="article-nav reveal">
-      <a class="mono" href="/work/shepherd/">next · shepherd &rarr;</a>
+      <a class="mono" href="/work/duaos/">next · duaos &rarr;</a>
       <a class="mono" href="/endeavours/">all endeavours &rarr;</a>
     </div>
   </article>

@@ -729,7 +729,10 @@ body.maker .diagram { background: linear-gradient(180deg, rgba(48, 76, 137, 0.05
 
 /* a single full-width recorded demo, reusing the .demo figure look */
 .demo-solo { display: block; margin: 10px 0 12px; }
-.demo-solo video { border-radius: 3px; }
+.demo-solo video,
+.demo-solo img { border-radius: 3px; display: block; width: 100%; }
+.demo-solo img { filter: saturate(0.92); }
+.demo-solo.shot-phone { max-width: 280px; margin-left: auto; margin-right: auto; }
 
 /* ---------- inspirations — a two-column court, offset like zellige ---------- */
 .insp-list { display: flex; flex-direction: column; }

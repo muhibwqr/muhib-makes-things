@@ -54,6 +54,26 @@
       "source": "/memories/",
       "destination": "/stills/",
       "permanent": true
+    },
+    {
+      "source": "/work/nanovsm",
+      "destination": "/endeavours/",
+      "permanent": true
+    },
+    {
+      "source": "/work/nanovsm/",
+      "destination": "/endeavours/",
+      "permanent": true
+    },
+    {
+      "source": "/work/shepherd",
+      "destination": "/endeavours/",
+      "permanent": true
+    },
+    {
+      "source": "/work/shepherd/",
+      "destination": "/endeavours/",
+      "permanent": true
     }
   ],
   "headers": [
