@@ -177,21 +177,30 @@ if (!REDUCED_MOTION) {
       const r = hitEl.getBoundingClientRect();
       const h = fist.offsetHeight || 93;
       const branch = hitEl !== photo;
-      // knuckles kiss photo border, or branch paragraph / drop top edge
-      const x = branch ? r.left + Math.min(28, r.width * 0.35) : r.left + r.width * 0.58;
-      const y = dir === "down" ? r.top - h + 2 : (branch ? r.bottom - h * 0.15 : r.bottom - 2);
+      // branch: always kiss paragraph TOP band — never chase long p.bottom into footer/webring
+      const x = branch ? r.left + Math.min(28, Math.max(r.width * 0.2, 8)) : r.left + r.width * 0.58;
+      let y;
+      if (dir === "down") {
+        y = r.top - h + 2;
+      } else if (branch) {
+        const band = Math.min(40, Math.max(14, r.height * 0.12));
+        y = r.top + band - h * 0.15;
+      } else {
+        y = r.bottom - 2;
+      }
       return { x, y, fromY: dir === "down" ? -h - 24 : innerHeight + 16, retractY: dir === "down" ? -h - 48 : innerHeight + 40 };
     };
 
+    // paragraph / drop content only — never summary / details shell
     const branchHit = (el) =>
       el.querySelector(":scope > .bio-drop > .bio-drop-inner > p") ||
       el.querySelector(":scope > .bio-drop > .bio-drop-inner") ||
-      el.querySelector(":scope > .bio-drop") ||
-      el;
+      el.querySelector(":scope > .bio-drop");
 
     const punch = async (dir, el) => {
       const isBranch = el.classList.contains("bio-branch");
       const hitEl = isBranch ? branchHit(el) : photo;
+      if (!hitEl) return;
       const { x, y, fromY, retractY } = aim(dir, hitEl);
       const over = dir === "down" ? 10 : -10;
 
@@ -199,59 +208,74 @@ if (!REDUCED_MOTION) {
       fist.style.transform = tf(x, fromY);
       fist.classList.add("on");
 
-      // ease in → slam into hit
-      await finish(
-        fist.animate(
-          [
-            { transform: tf(x, fromY), offset: 0 },
-            { transform: tf(x, fromY + (y - fromY) * 0.35), offset: 0.35 },
-            { transform: tf(x, y), offset: 1 },
-          ],
-          { duration: 220, easing: "cubic-bezier(0.55, 0.05, 0.9, 0.4)", fill: "forwards" }
-        )
-      );
+      try {
+        // ease in → slam into hit
+        await finish(
+          fist.animate(
+            [
+              { transform: tf(x, fromY), offset: 0 },
+              { transform: tf(x, fromY + (y - fromY) * 0.35), offset: 0.35 },
+              { transform: tf(x, y), offset: 1 },
+            ],
+            { duration: 220, easing: "cubic-bezier(0.55, 0.05, 0.9, 0.4)", fill: "forwards" }
+          )
+        );
 
-      // impact: photo tug for learn-more; local squash for branch
-      if (!isBranch) {
-        if (dir === "down") photo.classList.add("tugged");
-        else photo.classList.remove("tugged");
-      } else {
-        hitEl.dataset.punchDir = dir;
-        hitEl.classList.remove("punched");
-        void hitEl.offsetWidth;
-        hitEl.classList.add("punched");
+        // impact: momentary photo tug for learn-more; local squash for branch
+        if (!isBranch) {
+          photo.classList.remove("tugged");
+          if (dir === "down") {
+            void photo.offsetWidth;
+            photo.classList.add("tugged");
+          }
+        } else {
+          hitEl.dataset.punchDir = dir;
+          hitEl.classList.remove("punched");
+          void hitEl.offsetWidth;
+          hitEl.classList.add("punched");
+        }
+
+        await finish(
+          fist.animate(
+            [
+              { transform: tf(x, y, 1, 1) },
+              { transform: tf(x, y + over, 1.22, 0.68), offset: 0.35 },
+              { transform: tf(x, y - over * 0.35, 0.92, 1.08), offset: 0.7 },
+              { transform: tf(x, y, 1, 1) },
+            ],
+            { duration: 140, easing: "cubic-bezier(0.2, 0.9, 0.3, 1)", fill: "forwards" }
+          )
+        );
+
+        if (isBranch) {
+          hitEl.classList.remove("punched");
+          delete hitEl.dataset.punchDir;
+        } else {
+          photo.classList.remove("tugged");
+        }
+
+        await wait(40);
+        await finish(
+          fist.animate(
+            [
+              { transform: tf(x, y), opacity: 1 },
+              { transform: tf(x, retractY), opacity: 0 },
+            ],
+            { duration: 180, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" }
+          )
+        );
+      } finally {
+        fist.getAnimations().forEach((a) => a.cancel());
+        fist.classList.remove("on");
+        fist.style.transform = "";
+        delete fist.dataset.dir;
+        if (isBranch) {
+          hitEl.classList.remove("punched");
+          delete hitEl.dataset.punchDir;
+        } else {
+          photo.classList.remove("tugged");
+        }
       }
-
-      await finish(
-        fist.animate(
-          [
-            { transform: tf(x, y, 1, 1) },
-            { transform: tf(x, y + over, 1.22, 0.68), offset: 0.35 },
-            { transform: tf(x, y - over * 0.35, 0.92, 1.08), offset: 0.7 },
-            { transform: tf(x, y, 1, 1) },
-          ],
-          { duration: 140, easing: "cubic-bezier(0.2, 0.9, 0.3, 1)", fill: "forwards" }
-        )
-      );
-
-      if (isBranch) {
-        hitEl.classList.remove("punched");
-        delete hitEl.dataset.punchDir;
-      }
-
-      await wait(40);
-      await finish(
-        fist.animate(
-          [
-            { transform: tf(x, y), opacity: 1 },
-            { transform: tf(x, retractY), opacity: 0 },
-          ],
-          { duration: 180, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" }
-        )
-      );
-      fist.getAnimations().forEach((a) => a.cancel());
-      fist.classList.remove("on");
-      fist.style.transform = "";
     };
 
     const castOpen = (el) => {
@@ -275,7 +299,7 @@ if (!REDUCED_MOTION) {
             el.open = false;
             el.classList.remove("hook-cast");
           } else if (el.classList.contains("bio-branch")) {
-            // open: expand enough to measure, punch, then hook-cast reveal
+            // open: expand enough to measure, punch paragraph top, then hook-cast reveal
             el.open = true;
             const drop = el.querySelector(":scope > .bio-drop");
             if (drop) {
@@ -283,6 +307,9 @@ if (!REDUCED_MOTION) {
               void drop.offsetHeight;
               drop.style.transition = "";
             }
+            // force paragraph layout before aim (opacity 0 until hook-cast is fine)
+            const hit = branchHit(el);
+            if (hit) void hit.offsetHeight;
             await punch("down", el);
             el.classList.remove("hook-cast");
             void el.offsetWidth;
