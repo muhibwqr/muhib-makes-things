@@ -76,6 +76,16 @@
       "permanent": true
     }
   ],
+  "rewrites": [
+    {
+      "source": "/resume",
+      "destination": "/resume.pdf"
+    },
+    {
+      "source": "/resume/",
+      "destination": "/resume.pdf"
+    }
+  ],
   "headers": [
     {
       "source": "/favicon.svg",
@@ -83,6 +93,19 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/resume.pdf",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/pdf"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "inline; filename=\"muhib-waqar-resume.pdf\""
         }
       ]
     }
