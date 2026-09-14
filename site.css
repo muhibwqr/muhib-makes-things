@@ -417,7 +417,7 @@ body:has(.home-bio) .masthead {
 .sign-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-end;
   gap: 1rem 1.4rem;
   margin-top: 1.4rem;
 }
@@ -426,7 +426,7 @@ body:has(.home-bio) .masthead {
   width: 88px;
   height: 32px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-end;
   overflow: visible;
 }
@@ -437,10 +437,17 @@ body:has(.home-bio) .masthead {
 }
 .contact-line {
   margin: 0;
-  font-size: 13px;
+  align-self: flex-end;
+  padding-bottom: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45em 0.9em;
 }
 .contact-line a {
-  color: #515151;
+  color: rgba(81, 81, 81, 0.74);
   text-decoration: none !important;
 }
 .contact-line a:hover { color: #268bd2; }
@@ -692,7 +699,7 @@ body:has(.home-bio) .masthead {
   top: auto;
   z-index: 1;
   transform: scale(0.42);
-  transform-origin: center right;
+  transform-origin: bottom right;
 }
 
 .site-webring script {
@@ -741,6 +748,6 @@ body:has(.intro:not(.out)) { overflow: hidden; }
   .board { column-count: 2; column-gap: 10px; }
   .site-webring {
     transform: scale(0.4);
-    transform-origin: center right;
+    transform-origin: bottom right;
   }
 }
