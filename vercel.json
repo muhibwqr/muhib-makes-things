@@ -2,9 +2,22 @@
   "functions": {
     "api/chat.ts": {
       "maxDuration": 60
+    },
+    "api/fit.ts": {
+      "maxDuration": 60
     }
   },
   "redirects": [
+    {
+      "source": "/endeavours",
+      "destination": "/work/",
+      "permanent": true
+    },
+    {
+      "source": "/endeavours/",
+      "destination": "/work/",
+      "permanent": true
+    },
     {
       "source": "/about",
       "destination": "/my-purpose/",
@@ -16,23 +29,13 @@
       "permanent": true
     },
     {
-      "source": "/work",
-      "destination": "/endeavours/",
-      "permanent": true
-    },
-    {
-      "source": "/work/",
-      "destination": "/endeavours/",
-      "permanent": true
-    },
-    {
       "source": "/writing",
-      "destination": "/endeavours/",
+      "destination": "/work/",
       "permanent": true
     },
     {
       "source": "/writing/",
-      "destination": "/endeavours/",
+      "destination": "/work/",
       "permanent": true
     },
     {
@@ -57,22 +60,22 @@
     },
     {
       "source": "/work/nanovsm",
-      "destination": "/endeavours/",
+      "destination": "/work/",
       "permanent": true
     },
     {
       "source": "/work/nanovsm/",
-      "destination": "/endeavours/",
+      "destination": "/work/",
       "permanent": true
     },
     {
       "source": "/work/shepherd",
-      "destination": "/endeavours/",
+      "destination": "/work/",
       "permanent": true
     },
     {
       "source": "/work/shepherd/",
-      "destination": "/endeavours/",
+      "destination": "/work/",
       "permanent": true
     }
   ],

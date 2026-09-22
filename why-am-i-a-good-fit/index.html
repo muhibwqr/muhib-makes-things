@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>why am i a good fit · muhib waqar</title>
+  <meta name="description" content="a late-night broadcast that answers one question: why hire muhib waqar. pick a channel, tune it to your company, keep watching." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=navy1" />
+  <style>
+    :root {
+      --glow: #7fd7c4;
+      --amber: #f2c77e;
+      --wall: #0d1013;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body {
+      background: var(--wall);
+      color: #cdd6d4;
+      font-family: ui-monospace, Menlo, Monaco, "Courier New", monospace;
+      min-height: 100%;
+      overflow-x: hidden;
+    }
+
+    /* the room: a dark wall lit only by whatever the tv is showing */
+    .room {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 28px 16px 72px;
+      background:
+        radial-gradient(ellipse 70% 55% at 50% 38%, rgba(127, 215, 196, 0.16), transparent 70%),
+        radial-gradient(ellipse 120% 70% at 50% 120%, #14181c 0%, transparent 60%),
+        var(--wall);
+      transition: background 600ms ease;
+    }
+    .room.off { background: radial-gradient(ellipse 120% 70% at 50% 120%, #101316 0%, transparent 60%), #0a0c0e; }
+
+    .topbar {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #55625f;
+      margin-bottom: 18px;
+    }
+    .topbar a { color: #7f8c89; text-decoration: none; }
+    .topbar a:hover { color: var(--glow); }
+    .topbar nav { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* the set */
+    .tv {
+      position: relative;
+      width: min(900px, 100%);
+      border-radius: 26px;
+      padding: 22px 22px 46px;
+      background: linear-gradient(#22262a, #14181b 55%, #0e1113);
+      box-shadow:
+        0 0 0 1px #2c3237,
+        0 40px 90px rgba(0, 0, 0, 0.75),
+        0 0 120px rgba(127, 215, 196, 0.12);
+    }
+    .tv::after { /* light spilling onto the wall behind the set */
+      content: "";
+      position: absolute;
+      inset: 12% -12% -22% -12%;
+      background: radial-gradient(ellipse at 50% 40%, rgba(127, 215, 196, 0.13), transparent 65%);
+      filter: blur(24px);
+      z-index: -1;
+      pointer-events: none;
+      transition: opacity 500ms ease;
+    }
+    .room.off .tv::after { opacity: 0; }
+
+    .screen {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      max-height: 60vh;
+      border-radius: 18px / 26px;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 45%, #0f1a19 0%, #070b0b 70%, #050707 100%);
+      box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 14px rgba(127, 215, 196, 0.18);
+      padding: 26px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: default;
+    }
+    @media (max-width: 640px) { .screen { aspect-ratio: 3 / 4; padding: 18px; } }
+
+    .screen::before { /* scanlines */
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 3px);
+      pointer-events: none;
+      z-index: 4;
+    }
+    .screen::after { /* curvature vignette */
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.75) 100%);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .osd {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(127, 215, 196, 0.62);
+      z-index: 3;
+    }
+    .osd .rec { color: var(--amber); }
+    .osd .rec b { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #e2564d; margin-right: 6px; animation: blink 1.6s steps(1, end) infinite; }
+    @keyframes blink { 0%, 60% { opacity: 1; } 61%, 100% { opacity: 0.15; } }
+
+    .channel-card {
+      font-size: clamp(15px, 2.4vw, 21px);
+      letter-spacing: 0.22em;
+      color: var(--amber);
+      text-shadow: 0 0 18px rgba(242, 199, 126, 0.45);
+      min-height: 1.2em;
+      z-index: 3;
+    }
+
+    .broadcast {
+      flex: 1;
+      overflow-y: auto;
+      font-size: clamp(14px, 1.9vw, 17px);
+      line-height: 1.7;
+      color: #d8ebe5;
+      text-shadow: 0 0 14px rgba(127, 215, 196, 0.35);
+      white-space: pre-wrap;
+      z-index: 3;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(127, 215, 196, 0.3) transparent;
+    }
+    .broadcast.cursor::after { content: "▌"; animation: blink 1s steps(1, end) infinite; color: var(--glow); }
+
+    /* dead-air static, shown while a channel is loading or the set is off */
+    .static {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+      background-color: #0a0d0d;
+      background-image:
+        repeating-linear-gradient(to bottom, rgba(255,255,255,0.12) 0 2px, transparent 2px 4px),
+        repeating-linear-gradient(to right, rgba(255,255,255,0.07) 0 3px, transparent 3px 6px);
+      background-size: 100% 4px, 6px 100%;
+      animation: roll 600ms linear infinite;
+    }
+    .static.on { opacity: 0.92; }
+    @keyframes roll { to { background-position: 0 4px, 6px 0; } }
+
+    .powered-off {
+      position: absolute;
+      inset: 0;
+      z-index: 7;
+      display: grid;
+      place-items: center;
+      background: #060808;
+      transition: opacity 500ms ease;
+    }
+    .powered-off.hidden { opacity: 0; pointer-events: none; }
+    .power-btn {
+      font: inherit;
+      font-size: 13px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--glow);
+      background: transparent;
+      border: 1px solid rgba(127, 215, 196, 0.45);
+      border-radius: 999px;
+      padding: 14px 26px;
+      cursor: pointer;
+      animation: pulse 2.6s ease-in-out infinite;
+    }
+    .power-btn:hover { background: rgba(127, 215, 196, 0.1); }
+    @keyframes pulse { 50% { box-shadow: 0 0 34px rgba(127, 215, 196, 0.35); } }
+
+    .tv-chin {
+      position: absolute;
+      left: 0; right: 0; bottom: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #3d474a;
+    }
+    .tv-chin .led { width: 6px; height: 6px; border-radius: 50%; background: #e2564d; box-shadow: 0 0 10px #e2564d; }
+    .room.off .tv-chin .led { background: #42302e; box-shadow: none; }
+
+    /* the remote */
+    .remote {
+      width: min(900px, 100%);
+      margin-top: 26px;
+      display: grid;
+      gap: 10px;
+    }
+    .remote-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #55625f;
+    }
+    .options { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 640px) { .options { grid-template-columns: 1fr; } }
+    .opt {
+      font: inherit;
+      font-size: 13px;
+      text-align: left;
+      color: #cfe0db;
+      background: linear-gradient(#171c1f, #101416);
+      border: 1px solid #262d31;
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      opacity: 0;
+      transform: translateY(6px);
+      animation: rise 320ms ease forwards;
+      transition: border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+    }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+    .opt:hover:not(:disabled) { border-color: rgba(127, 215, 196, 0.55); color: #fff; box-shadow: 0 0 22px rgba(127, 215, 196, 0.14); }
+    .opt:disabled { opacity: 0.35; cursor: default; }
+    .opt .key { color: var(--amber); font-size: 11px; letter-spacing: 0.1em; }
+
+    .tuner { display: flex; gap: 8px; }
+    .tuner input {
+      flex: 1;
+      font: inherit;
+      font-size: 13px;
+      color: #e6f2ee;
+      background: #0c1012;
+      border: 1px solid #262d31;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .tuner input::placeholder { color: #4d5a57; }
+    .tuner input:focus { outline: none; border-color: rgba(127, 215, 196, 0.55); }
+    .tuner button {
+      font: inherit;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #06110e;
+      background: var(--glow);
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 18px;
+      cursor: pointer;
+    }
+    .tuner button:disabled { opacity: 0.35; cursor: default; }
+    .hint { font-size: 11px; color: #4d5a57; letter-spacing: 0.04em; }
+    .hint a { color: #7f8c89; }
+  </style>
+</head>
+<body>
+  <main class="room off" id="room">
+    <div class="topbar">
+      <span>muhib.tv</span>
+      <nav>
+        <a href="/">home</a>
+        <a href="/work/">work</a>
+        <a href="/resume">resume</a>
+        <a href="mailto:muhib.waqar@uwaterloo.ca">email</a>
+      </nav>
+    </div>
+
+    <section class="tv">
+      <div class="screen" id="screen">
+        <div class="osd">
+          <span id="ch-num">CH 01</span>
+          <span class="rec"><b></b><span id="ch-mode">LIVE</span></span>
+        </div>
+        <div class="channel-card" id="channel">&nbsp;</div>
+        <div class="broadcast" id="broadcast"></div>
+        <div class="static" id="static"></div>
+        <div class="powered-off" id="poweroff">
+          <button class="power-btn" id="power">press power</button>
+        </div>
+      </div>
+      <div class="tv-chin"><span class="led"></span><span>muhib waqar</span></div>
+    </section>
+
+    <div class="remote">
+      <div class="remote-label">remote</div>
+      <div class="options" id="options"></div>
+      <form class="tuner" id="tuner">
+        <input id="company" placeholder="tune to a company (e.g. anthropic, shopify, cohere)" autocomplete="off" maxlength="60" />
+        <button type="submit" id="tune">tune</button>
+      </form>
+      <p class="hint">press 1-4 to change the channel. the channel never runs out. <a href="/work/">see the receipts →</a></p>
+    </div>
+  </main>
+
+  <script type="module">
+    const room = document.getElementById("room");
+    const screenEl = document.getElementById("screen");
+    const broadcast = document.getElementById("broadcast");
+    const channelEl = document.getElementById("channel");
+    const chNum = document.getElementById("ch-num");
+    const chMode = document.getElementById("ch-mode");
+    const staticEl = document.getElementById("static");
+    const poweroff = document.getElementById("poweroff");
+    const optionsEl = document.getElementById("options");
+    const tuner = document.getElementById("tuner");
+    const companyInput = document.getElementById("company");
+    const tuneBtn = document.getElementById("tune");
+
+    const OPENING = "why should i hire muhib?";
+    const transcript = [];   // {role, text}, sent whole each turn (the endpoint is memoryless)
+    let channel = 0;
+    let busy = false;
+
+    // The model ends each reply with hidden tags. Strip them out of what the viewer
+    // reads and collect them as the next set of buttons / the title card.
+    function parse(raw) {
+      const opts = [];
+      let title = null;
+      const text = raw
+        .replace(/<<CH:\s*([^>]*)>>/g, (_, t) => { title = t.trim(); return ""; })
+        .replace(/<<OPT:\s*([^>]*)>>/g, (_, t) => { const v = t.trim(); if (v) opts.push(v); return ""; })
+        .replace(/<<[^>\n]*$/g, "")   // hide a tag that is still mid-stream
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+      return { text, opts, title };
+    }
+
+    function renderOptions(opts) {
+      optionsEl.innerHTML = "";
+      opts.slice(0, 4).forEach((label, i) => {
+        const b = document.createElement("button");
+        b.className = "opt";
+        b.style.animationDelay = `${i * 70}ms`;
+        b.innerHTML = `<span class="key">${i + 1}</span><span></span>`;
+        b.lastChild.textContent = label;
+        b.addEventListener("click", () => pick(label));
+        optionsEl.appendChild(b);
+      });
+    }
+
+    const setBusy = (v) => {
+      busy = v;
+      optionsEl.querySelectorAll("button").forEach((b) => (b.disabled = v));
+      tuneBtn.disabled = v;
+      staticEl.classList.toggle("on", v);
+    };
+
+    async function tuneTo(userText, company) {
+      if (busy) return;
+      setBusy(true);
+      channel += 1;
+      chNum.textContent = "CH " + String(channel).padStart(2, "0");
+      chMode.textContent = company ? "SEARCHING WEB" : "LIVE";
+      channelEl.textContent = company ? `TUNING: ${company.toUpperCase()}` : "TUNING…";
+      broadcast.textContent = "";
+      broadcast.classList.add("cursor");
+      if (userText) transcript.push({ role: "user", text: userText });
+
+      let acc = "";
+      let target = "";
+      let shown = 0;
+      let streaming = true;
+
+      // Typewriter: the network fills `target`, this loop reveals it a little each
+      // frame so a fast stream still reads like a broadcast instead of a paste.
+      function tick() {
+        const { text, title } = parse(acc);
+        target = text;
+        if (title && channelEl.textContent !== title) channelEl.textContent = title;
+        if (shown < target.length) {
+          shown = Math.min(target.length, shown + Math.max(1, Math.round((target.length - shown) / 9)));
+          broadcast.textContent = target.slice(0, shown);
+          broadcast.scrollTop = broadcast.scrollHeight;
+        }
+        if (streaming || shown < target.length) requestAnimationFrame(tick);
+        else {
+          broadcast.classList.remove("cursor");
+          broadcast.textContent = target;
+        }
+      }
+
+      try {
+        const messages = transcript.map((m) => ({ role: m.role === "bot" ? "assistant" : "user", content: m.text }));
+        const res = await fetch("/api/fit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages, company: company || "" }),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        staticEl.classList.remove("on");
+        chMode.textContent = "LIVE";
+        requestAnimationFrame(tick);
+        const reader = res.body.getReader();
+        const dec = new TextDecoder();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          acc += dec.decode(value, { stream: true });
+        }
+      } catch (e) {
+        acc = "Signal lost reaching the broadcast: " + e.message + "\n<<CH: SIGNAL LOST>>\n<<OPT: try that channel again>>\n<<OPT: why should i hire muhib?>>";
+        requestAnimationFrame(tick);
+      }
+      streaming = false;
+
+      const { text, opts, title } = parse(acc);
+      transcript.push({ role: "bot", text });
+      if (transcript.length > 16) transcript.splice(0, transcript.length - 16); // keep the prompt small
+      if (title) channelEl.textContent = title;
+      renderOptions(opts.length ? opts : ["give me the short version", "what is he actually bad at?", "show me something he shipped", "why should i hire muhib?"]);
+      setBusy(false);
+    }
+
+    const pick = (label) => tuneTo(label, "");
+
+    tuner.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = companyInput.value.trim();
+      if (!name || busy) return;
+      companyInput.value = "";
+      tuneTo("", name);
+    });
+
+    addEventListener("keydown", (e) => {
+      if (document.activeElement === companyInput) return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= 4) optionsEl.querySelectorAll("button")[n - 1]?.click();
+    });
+
+    function powerOn() {
+      poweroff.classList.add("hidden");
+      room.classList.remove("off");
+      tuneTo(OPENING, "");
+    }
+    document.getElementById("power").addEventListener("click", powerOn);
+    screenEl.addEventListener("click", () => { if (poweroff.classList.contains("hidden")) return; powerOn(); });
+  </script>
+</body>
+</html>

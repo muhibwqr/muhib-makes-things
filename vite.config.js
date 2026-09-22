@@ -16,7 +16,8 @@ const pages = [
   ...html("stills"),
   ...html("timeline"),
   ...html("my-purpose"),
-  ...html("endeavours"),
+  ...html("work"),
+  ...html("why-am-i-a-good-fit"),
   ...html("books"),
   ...html("writing/attention"),
   ...html("writing/attention/explore"),
@@ -30,7 +31,27 @@ const pages = [
   ...html("work/incinerator"),
 ];
 
+// `vite dev` serves static files only; this runs the Vercel functions in api/ through
+// the same request/response contract so the AI pages work locally too.
+const devApi = () => ({
+  name: "dev-api",
+  configureServer(server) {
+    server.middlewares.use(async (req, res, next) => {
+      const path = (req.url || "").split("?")[0];
+      if (!path.startsWith("/api/")) return next();
+      try {
+        const mod = await server.ssrLoadModule("." + path + ".ts");
+        await mod.default(req, res);
+      } catch (err) {
+        res.statusCode = 500;
+        res.end(String(err));
+      }
+    });
+  },
+});
+
 export default defineConfig({
+  plugins: [devApi()],
   build: {
     rollupOptions: {
       input: Object.fromEntries(
