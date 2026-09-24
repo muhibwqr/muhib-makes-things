@@ -1,3 +1,5 @@
+import "./butterflies.js";
+
 // draft shell: ∞↔m morph
 const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
