@@ -336,3 +336,79 @@ if (!REDUCED_MOTION) {
     });
   });
 }
+
+document.querySelectorAll(".copy-email").forEach((copyEmail) => {
+  copyEmail.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const label = copyEmail.textContent;
+    try {
+      await navigator.clipboard.writeText(copyEmail.dataset.email);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = copyEmail.dataset.email;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch {}
+      ta.remove();
+    }
+    copyEmail.textContent = "copied!";
+    copyEmail.classList.add("is-copied");
+    setTimeout(() => {
+      copyEmail.textContent = label;
+      copyEmail.classList.remove("is-copied");
+    }, 1200);
+  });
+});
+
+// project previews — start muted + collapsed, click expands, unmute toggle, pause offscreen
+document.addEventListener("click", (e) => {
+  const pauseBtn = e.target.closest(".proj-pause");
+  if (pauseBtn) {
+    const v = pauseBtn.closest(".proj-card")?.querySelector("video");
+    if (v) {
+      if (v.paused) v.play().catch(() => {});
+      else v.pause();
+      v.dataset.userPaused = v.paused ? "1" : "";
+      pauseBtn.textContent = v.paused ? "play" : "pause";
+    }
+    return;
+  }
+  const btn = e.target.closest(".proj-mute");
+  if (!btn) return;
+  const v = btn.closest(".proj-preview, .event-card-wrap, .proj-card")?.querySelector("video");
+  if (!v) return;
+  v.muted = !v.muted;
+  if (!v.muted) v.play().catch(() => {});
+  btn.textContent = v.muted ? "unmute" : "mute";
+});
+
+document.addEventListener("click", (e) => {
+  const fig = e.target.closest(".proj-preview");
+  if (!fig || e.target.closest(".proj-mute")) return;
+  fig.classList.toggle("open");
+});
+
+const pvIO = new IntersectionObserver(
+  (entries) => {
+    for (const en of entries) {
+      const v = en.target;
+      if (en.isIntersecting) v.play().catch(() => {});
+      else v.pause();
+    }
+  },
+  { threshold: 0.1 }
+);
+document.querySelectorAll(".proj-preview video, .event-strip video, .proj-card video").forEach((v) => {
+  pvIO.observe(v);
+  v.play().catch(() => {});
+  v.addEventListener("loadeddata", () => v.play().catch(() => {}));
+});
+// safari still shows a paused-overlay if autoplay stalls — kick on first gesture
+const kickVideos = () => {
+  document.querySelectorAll(".proj-card video, .proj-preview video, .wheel-media video").forEach((v) => {
+    if (v.paused && !v.dataset.userPaused) v.play().catch(() => {});
+  });
+};
+["pointerdown", "keydown", "touchstart"].forEach((ev) => addEventListener(ev, kickVideos));

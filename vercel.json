@@ -17,22 +17,22 @@
     },
     {
       "source": "/work",
-      "destination": "/endeavours/",
+      "destination": "/projects/",
       "permanent": true
     },
     {
       "source": "/work/",
-      "destination": "/endeavours/",
+      "destination": "/projects/",
       "permanent": true
     },
     {
       "source": "/writing",
-      "destination": "/endeavours/",
+      "destination": "/projects/",
       "permanent": true
     },
     {
       "source": "/writing/",
-      "destination": "/endeavours/",
+      "destination": "/projects/",
       "permanent": true
     },
     {
@@ -57,26 +57,26 @@
     },
     {
       "source": "/work/nanovsm",
-      "destination": "/endeavours/",
+      "destination": "/projects/",
       "permanent": true
     },
     {
       "source": "/work/nanovsm/",
-      "destination": "/endeavours/",
+      "destination": "/projects/",
       "permanent": true
     },
     {
       "source": "/work/shepherd",
-      "destination": "/endeavours/",
+      "destination": "/projects/",
       "permanent": true
     },
     {
       "source": "/work/shepherd/",
-      "destination": "/endeavours/",
+      "destination": "/projects/",
       "permanent": true
     }
   ],
-  "rewrites": [
+    "rewrites": [
     {
       "source": "/resume",
       "destination": "/resume.pdf"

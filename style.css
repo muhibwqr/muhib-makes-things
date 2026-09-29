@@ -1171,3 +1171,37 @@ body.scene-on { background: transparent; }
   .landing-prose .article-cta { animation-delay: 0.62s; }
 }
 @keyframes prose-in { to { opacity: 1; transform: none; } }
+
+/* ---------- nicholaschen-style article chrome (writing-format.js) ---------- */
+.wfmt-index {
+  font-size: 11px;
+  margin-bottom: 26px;
+}
+.wfmt-index a { color: var(--dim); text-decoration: none; }
+.wfmt-index a:hover { color: var(--accent); }
+/* benji-style headings — a muted # before titles and section heads */
+.article-title::before,
+.hero h1::before {
+  content: "# ";
+  color: var(--dim);
+  font-weight: 400;
+}
+.article-prose h2::before,
+.article-prose h3::before,
+main h2::before {
+  content: "# ";
+  color: var(--dim);
+  font-weight: 400;
+}
+.wfmt-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 11px;
+}
+.wfmt-footer a { color: var(--dim); }
+.wfmt-footer a:hover { color: var(--accent); }
+.hero .wfmt-index { margin-bottom: 12px; }

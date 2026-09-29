@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>community · muhib waqar</title>
+  <meta name="description" content="community gatherings muhib waqar hosts — pillars network, ummahhacks, and more on luma." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=art2" />
+  <link rel="stylesheet" href="/site.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="masthead">
+      <figure class="morph-mini" aria-hidden="true">
+        <div class="morph-mini-stage"><pre class="morph-art" id="morph-art"></pre></div>
+      </figure>
+      <nav class="masthead-nav" aria-label="primary">
+        <h1 class="masthead-title"><a href="/">muhib waqar</a></h1>
+        <ul>
+          <li><a href="/projects/">projects</a></li>
+          <li><a class="here" href="/community/">community</a></li>
+          <li><a href="/books/">compelling content</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <article class="content post">
+      <section class="wheel-section" id="wheel" aria-label="past events wheel"></section>
+    </article>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close" type="button">close</button>
+    <button class="lightbox-nav prev" id="lightbox-prev" type="button" aria-label="previous">←</button>
+    <button class="lightbox-nav next" id="lightbox-next" type="button" aria-label="next">→</button>
+    <div class="lightbox-stage" id="lightbox-stage"></div>
+  </div>
+
+  <div class="collage-overlay" id="collage">
+    <div class="collage-window">
+      <button class="collage-close" id="collage-close" type="button" aria-label="close">✕</button>
+      <div class="collage-body">
+        <div class="collage-media"><div class="collage-grid" id="collage-grid"></div></div>
+        <aside class="collage-side" id="collage-head"></aside>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initWheel } from "/wheel.js";
+
+    const EVENTS = [
+      {
+        name: "reframing your perception of time",
+        date: "sep 8",
+        guests: "~40",
+        url: "https://luma.com/lg8m6jdc",
+        poster: "/events/reframing-time.jpg",
+      },
+      {
+        name: "brothers' basketball run",
+        date: "aug 26",
+        guests: "~12",
+        url: "https://luma.com/z74klokb",
+        poster: "/events/basketball-run.jpg",
+      },
+      {
+        name: "how can muslims build the systems society needs?",
+        date: "aug 5",
+        guests: "~50",
+        url: "https://luma.com/jgfwskfl",
+        poster: "/events/systems-society.jpg",
+      },
+      {
+        name: "brothers' charity basketball run",
+        date: "jul 16",
+        guests: "~15",
+        url: "https://luma.com/nc129qcx",
+        poster: "/events/charity-basketball.jpg",
+      },
+      {
+        name: "how to build a personal brand with intention & impact",
+        date: "jul 4",
+        guests: "~40",
+        url: "https://luma.com/qdbafeld",
+        poster: "/events/personal-brand.jpg",
+        desc: "In a time where everyone is encouraged to \"build in public\", Muslims need to ask a deeper question: how do we build a public presence without losing sight of intention, character and responsibility? A blended workshop with ISNA Canada — Islamic reflections plus a hands-on personal branding session, concluding before Dhuhr with congregational prayer.",
+        photos: [
+          "/events/personal-brand/1.jpg",
+          "/events/personal-brand/2.jpg",
+          "/events/personal-brand/3.jpg",
+          "/events/personal-brand/4.jpg",
+          "/events/personal-brand/5.jpg",
+          "/events/personal-brand/6.jpg",
+          "/events/personal-brand/7.jpg",
+          "/events/personal-brand/8.jpg",
+          "/events/personal-brand/9.jpg",
+        ],
+      },
+      {
+        name: "maghrib & majlis",
+        date: "jun 2",
+        guests: "~80",
+        url: "https://luma.com/ogrdj5uw",
+        poster: "/events/maghrib-majlis.jpg",
+        photos: [
+          "/events/maghrib-majlis/1.jpg",
+          "/events/maghrib-majlis/2.jpg",
+          "/events/maghrib-majlis/3.jpg",
+          "/events/maghrib-majlis/4.jpg",
+          "/events/maghrib-majlis/5.jpg",
+          "/events/maghrib-majlis/6.jpg",
+          "/events/maghrib-majlis/7.jpg",
+          "/events/maghrib-majlis/8.jpg",
+          "/events/maghrib-majlis/9.jpg",
+          "/events/maghrib-majlis/10.jpg",
+          "/events/maghrib-majlis/11.jpg",
+          "/events/maghrib-majlis/12.jpg",
+          "/events/maghrib-majlis/13.jpg",
+          "/events/maghrib-majlis/14.jpg",
+          "/events/maghrib-majlis/15.jpg",
+        ],
+      },
+      {
+        name: "using ai without losing direction",
+        date: "may 21",
+        guests: "87",
+        venue: "zown hq",
+        url: "https://luma.com/o0przvpl",
+        desc: "we know that ai is changing how we work, learn, create and build. but muslims need more than productivity hacks, tool lists and trend predictions — we need to understand how these tools work, how to use them well and how to think clearly about where they belong in a muslim life. 87 attended; 109 more sat on the waitlist.",
+        poster: "/events/using-ai.jpg",
+        photos: [
+          "/events/using-ai/C6911.mp4",
+          "/events/using-ai/C6914.mp4",
+          "/events/using-ai/C6923.mp4",
+          "/events/using-ai/C6930.mp4",
+          "/events/using-ai/C6941.mp4",
+          "/events/using-ai/C6960.mp4",
+          "/events/using-ai/C6961.mp4",
+          "/events/using-ai/C6993.mp4",
+          "/events/using-ai/C7000.mp4",
+          "/events/using-ai/C7006.mp4",
+        ],
+      },
+      {
+        name: "ummahhacks 26",
+        date: "jan 24",
+        guests: "348",
+        url: "https://luma.com/otrho3gh",
+        poster: "/events/ummahhacks.jpg",
+        desc: "a mission-driven hackathon connecting canada's most motivated muslim talent with mentors, companies, and opportunities — where ethical thinking, technical skill, and community-first innovation come together. 348 builders at builders club, kitchener.",
+        photos: [
+          "/events/ummahhacks/recap.mp4",
+          "/events/ummahhacks/C2988.mp4",
+          "/events/ummahhacks/C2997.mp4",
+          "/events/ummahhacks/C3029.mp4",
+          "/events/ummahhacks/C3033.mp4",
+          "/events/ummahhacks/C3048.mp4",
+          "/events/ummahhacks/C3073.mp4",
+        ],
+      },
+    ];
+
+    // lightbox — click a media cell, step through that event's media
+    const lb = document.getElementById("lightbox");
+    const stage = document.getElementById("lightbox-stage");
+    let lbItems = [];
+    let lbIdx = 0;
+    const showMedia = (i) => {
+      lbIdx = (i + lbItems.length) % lbItems.length;
+      const p = lbItems[lbIdx];
+      stage.innerHTML = /\.(mp4|mov|m4v)$/i.test(p)
+        ? `<video src="${p}" controls autoplay muted playsinline id="lb-video"></video>`
+        : `<img src="${p}" alt="" />`;
+      const v = document.getElementById("lb-video");
+      if (v) v.addEventListener("ended", () => showMedia(lbIdx + 1));
+    };
+    const closeLb = () => {
+      lb.classList.remove("open");
+      stage.innerHTML = "";
+    };
+    document.getElementById("lightbox-close").addEventListener("click", closeLb);
+    document.getElementById("lightbox-prev").addEventListener("click", () => showMedia(lbIdx - 1));
+    document.getElementById("lightbox-next").addEventListener("click", () => showMedia(lbIdx + 1));
+    lb.addEventListener("click", (e) => {
+      if (e.target === lb) closeLb();
+    });
+
+    // collage — click a row, all of that event's media in a bento window
+    const collage = document.getElementById("collage");
+    const grid = document.getElementById("collage-grid");
+    const head = document.getElementById("collage-head");
+    const openCollage = (e) => {
+      lbItems = [...(e.photos || [])];
+      head.innerHTML = `
+        <span class="collage-kicker">past event</span>
+        <span class="collage-name">${e.name}</span>
+        <div class="collage-stats">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><strong>${e.date}</strong><span>date</span></div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><strong>${e.guests || "—"}</strong><span>attendees</span></div>
+          ${e.venue ? `<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><strong>${e.venue}</strong><span>hosted at</span></div>` : ""}
+        </div>
+        ${e.desc ? `<p class="collage-desc">${e.desc}</p>` : ""}
+        <div class="collage-actions">
+          <a class="collage-btn primary" href="${e.url}" target="_blank" rel="noopener">open on luma</a>
+          ${lbItems.length ? `<button class="collage-btn" type="button" data-slideshow>view slideshow</button>` : ""}
+        </div>`;
+      head.querySelector("[data-slideshow]")?.addEventListener("click", () => {
+        showMedia(0);
+        lb.classList.add("open");
+      });
+      grid.innerHTML = lbItems.map((p) =>
+        /\.(mp4|mov|m4v)$/i.test(p)
+          ? `<video class="collage-cell" src="${p}" autoplay muted loop playsinline preload="metadata"></video>`
+          : `<img class="collage-cell" src="${p}" alt="" loading="lazy" decoding="async" />`
+      ).join("");
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return;
+          const el = en.target;
+          const reveal = () => el.classList.add("in");
+          if (el.tagName === "IMG") {
+            el.complete && el.naturalWidth ? reveal() : el.addEventListener("load", reveal, { once: true });
+          } else {
+            el.readyState >= 2 ? reveal() : el.addEventListener("loadeddata", reveal, { once: true });
+          }
+          io.unobserve(el);
+        });
+      }, { root: collage.querySelector(".collage-window"), rootMargin: "60px" });
+      grid.querySelectorAll(".collage-cell").forEach((c) => io.observe(c));
+      collage.classList.add("open");
+    };
+    const closeCollage = () => {
+      collage.classList.remove("open");
+      grid.innerHTML = "";
+    };
+    grid.addEventListener("click", (e) => {
+      const cell = e.target.closest(".collage-cell");
+      if (!cell) return;
+      showMedia([...grid.querySelectorAll(".collage-cell")].indexOf(cell));
+      lb.classList.add("open");
+    });
+    document.getElementById("collage-close").addEventListener("click", closeCollage);
+    collage.addEventListener("click", (e) => {
+      if (e.target === collage) closeCollage();
+    });
+
+    // works wheel — ring of posters; scroll turns it into a drum, click the
+    // front card to open that event's collage
+    // /events/<dir>/<file>.jpg -> /events/thumbs/<dir>-<file>.jpg
+    const thumbOf = (p) => /\.(jpe?g|png)$/i.test(p) ? p.replace(/^\/events\/([^/]+)\/(.+)$/i, "/events/thumbs/$1-$2") : p;
+    const wheelItems = EVENTS.map((e, i) => ({
+      title: e.name, date: e.date, image: e.poster, href: e.url,
+      media: e.photos || [], mediaSmall: (e.photos || []).map(thumbOf), i,
+    })).reverse();
+    initWheel(
+      document.getElementById("wheel"),
+      wheelItems,
+      { label: "past events", action: "open photos", onOpen: (item) => openCollage(EVENTS[item.i]) },
+    );
+
+
+    addEventListener("keydown", (e) => {
+      if (lb.classList.contains("open")) {
+        if (e.key === "Escape") closeLb();
+        if (e.key === "ArrowLeft") showMedia(lbIdx - 1);
+        if (e.key === "ArrowRight") showMedia(lbIdx + 1);
+        return;
+      }
+      if (e.key === "Escape" && collage.classList.contains("open")) closeCollage();
+    });
+  </script>
+  <script type="module" src="/site.js"></script>
+</body>
+</html>

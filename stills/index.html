@@ -3,12 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>stills · muhib waqar</title>
-  <meta name="description" content="a wall of moments — stills and clips, dropped in as they happen." />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=navy1" />
+  <title>photos · muhib waqar</title>
+  <meta name="description" content="a wall of moments — photos and clips, dropped in as they happen." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=art2" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/site.css" />
 </head>
-<body>
+<body class="photos-dark">
   <div class="container">
     <header class="masthead">
       <figure class="morph-mini" aria-hidden="true">
@@ -17,19 +20,15 @@
       <nav class="masthead-nav" aria-label="primary">
         <h1 class="masthead-title"><a href="/">muhib waqar</a></h1>
         <ul>
+          <li><a href="/projects/">projects</a></li>
+          <li><a href="/community/">community</a></li>
           <li><a href="/books/">compelling content</a></li>
-          <li><a href="/endeavours/">endeavours</a></li>
-          <li><a class="here" href="/stills/">stills</a></li>
         </ul>
       </nav>
     </header>
 
     <article class="content post photos">
-      <h1 class="page-title">stills</h1>
-      <nav class="photo-views" aria-label="photo views">
-        <button type="button" class="photo-view here" data-view="inspiration">inspiration</button>
-        <button type="button" class="photo-view" data-view="memories">memories</button>
-      </nav>
+      <a class="photos-back" href="/" aria-label="back home">←</a>
       <div class="board" id="board"></div>
     </article>
   </div>
@@ -42,42 +41,26 @@
   <script type="module">
     const board = document.getElementById("board");
     const lightbox = document.getElementById("lightbox");
-    const views = document.querySelector(".photo-views");
-    let items = [];
-    let view = "inspiration";
-
-    const render = () => {
-      const list = items.filter((i) => i.tag === view);
-      board.innerHTML = list.map((item) => {
-        const src = item.thumb || item.src;
-        const cap = item.cap ? `<figcaption class="polaroid-cap">${item.cap}</figcaption>` : "";
-        return `<figure class="polaroid" data-media="${item.type}" data-src="${item.src}">
-          <div class="polaroid-media"><img src="${src}" alt="${item.cap || ""}" loading="lazy" /></div>
-          ${cap}
-        </figure>`;
-      }).join("") || `<p class="photos-empty">no ${view} yet</p>`;
-    };
 
     fetch("/photos/manifest.json")
       .then((r) => r.json())
-      .then((data) => {
-        items = data;
-        render();
+      .then((items) => {
+        const list = items.filter((i) => i.tag === "memories");
+        board.innerHTML = list.map((item) => {
+          const src = item.thumb || item.src;
+          const cap = `<figcaption class="shot-cap"><span>${item.cap || ""}</span><span>${item.cam || ""}</span></figcaption>`;
+          return `<figure class="shot" data-media="${item.type}" data-src="${item.src}">
+            <img src="${src}" alt="${item.cap || ""}" loading="lazy" decoding="async" />
+            ${cap}
+          </figure>`;
+        }).join("") || `<p class="photos-empty">no photos yet</p>`;
       })
       .catch(() => {
         board.innerHTML = `<p class="photos-empty">couldn't load the photo wall</p>`;
       });
 
-    views.addEventListener("click", (e) => {
-      const btn = e.target.closest(".photo-view");
-      if (!btn) return;
-      view = btn.dataset.view;
-      views.querySelectorAll(".photo-view").forEach((b) => b.classList.toggle("here", b === btn));
-      render();
-    });
-
     board.addEventListener("click", (e) => {
-      const card = e.target.closest(".polaroid");
+      const card = e.target.closest(".shot");
       if (!card) return;
       const { media, src } = card.dataset;
       const el = document.createElement(media === "video" ? "video" : "img");

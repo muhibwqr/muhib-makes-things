@@ -1,196 +1,196 @@
 [
   {
     "src": "/photos/blossoms-portrait.png",
-    "thumb": "/photos/blossoms-portrait.png",
+    "thumb": "/photos/thumbs/blossoms-portrait.jpg",
     "type": "image",
     "tag": "memories",
     "cap": "blossoms"
   },
   {
     "src": "/photos/spurs-watch.png",
-    "thumb": "/photos/spurs-watch.png",
+    "thumb": "/photos/thumbs/spurs-watch.jpg",
     "type": "image",
     "tag": "memories",
     "cap": "spurs night"
   },
   {
     "src": "/photos/pizza-spring.png",
-    "thumb": "/photos/pizza-spring.png",
+    "thumb": "/photos/thumbs/pizza-spring.jpg",
     "type": "image",
     "tag": "memories",
     "cap": "pizza under spring"
   },
   {
     "src": "/photos/flight-selfie.png",
-    "thumb": "/photos/flight-selfie.png",
+    "thumb": "/photos/thumbs/flight-selfie.jpg",
     "type": "image",
     "tag": "memories",
     "cap": "in flight"
   },
   {
     "src": "/photos/park-walk.png",
-    "thumb": "/photos/park-walk.png",
+    "thumb": "/photos/thumbs/park-walk.jpg",
     "type": "image",
     "tag": "memories",
     "cap": "park walk"
   },
   {
     "src": "/photos/afghan-tea-room.png",
-    "thumb": "/photos/afghan-tea-room.png",
+    "thumb": "/photos/thumbs/afghan-tea-room.jpg",
     "type": "image",
     "tag": "memories",
     "cap": "afghan tea room"
   },
   {
     "src": "/photos/happiness-cake.png",
-    "thumb": "/photos/happiness-cake.png",
+    "thumb": "/photos/thumbs/happiness-cake.jpg",
     "type": "image",
     "tag": "memories",
     "cap": "happiness is a piece of cake"
   },
   {
     "src": "/photos/thobes-shop.png",
-    "thumb": "/photos/thobes-shop.png",
+    "thumb": "/photos/thumbs/thobes-shop.jpg",
     "type": "image",
     "tag": "memories",
     "cap": "thobes"
   },
   {
     "src": "/photos/community-gathering.png",
-    "thumb": "/photos/community-gathering.png",
+    "thumb": "/photos/thumbs/community-gathering.jpg",
     "type": "image",
     "tag": "memories",
     "cap": "gathering"
   },
   {
     "src": "/photos/city-from-plane.png",
-    "thumb": "/photos/city-from-plane.png",
+    "thumb": "/photos/thumbs/city-from-plane.jpg",
     "type": "image",
     "tag": "memories",
     "cap": "city from above"
   },
   {
     "src": "/work-still.png",
-    "thumb": "/work-still.png",
+    "thumb": "/photos/thumbs/work-still.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "what's written for you can't be taken"
   },
   {
     "src": "/photos/man-alone-mountain.png",
-    "thumb": "/photos/man-alone-mountain.png",
+    "thumb": "/photos/thumbs/man-alone-mountain.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "a man alone is a neighbour of God"
   },
   {
     "src": "/photos/rule-four-experiment.png",
-    "thumb": "/photos/rule-four-experiment.png",
+    "thumb": "/photos/thumbs/rule-four-experiment.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "consider everything an experiment"
   },
   {
     "src": "/photos/shareholder-value.png",
-    "thumb": "/photos/shareholder-value.png",
+    "thumb": "/photos/thumbs/shareholder-value.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "enough value to the shareholders"
   },
   {
     "src": "/photos/ship-in-harbor.png",
-    "thumb": "/photos/ship-in-harbor.png",
+    "thumb": "/photos/thumbs/ship-in-harbor.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "a ship in the harbor is safe"
   },
   {
     "src": "/photos/allah-is-with-me.png",
-    "thumb": "/photos/allah-is-with-me.png",
+    "thumb": "/photos/thumbs/allah-is-with-me.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "Allah is with me. I cant lose."
   },
   {
     "src": "/photos/no-sad-endings.png",
-    "thumb": "/photos/no-sad-endings.png",
+    "thumb": "/photos/thumbs/no-sad-endings.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "no sad endings for those who trust in God"
   },
   {
     "src": "/photos/white-bird.jpg",
-    "thumb": "/photos/white-bird.jpg",
+    "thumb": "/photos/thumbs/white-bird.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "white bird"
   },
   {
     "src": "/photos/lilies-reflection.png",
-    "thumb": "/photos/lilies-reflection.png",
+    "thumb": "/photos/thumbs/lilies-reflection.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "lilies"
   },
   {
     "src": "/photos/bird-over-road.png",
-    "thumb": "/photos/bird-over-road.png",
+    "thumb": "/photos/thumbs/bird-over-road.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "bird over the road"
   },
   {
     "src": "/photos/be-like-a-flower.png",
-    "thumb": "/photos/be-like-a-flower.png",
+    "thumb": "/photos/thumbs/be-like-a-flower.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "be like a flower"
   },
   {
     "src": "/photos/let-god-cook.png",
-    "thumb": "/photos/let-god-cook.png",
+    "thumb": "/photos/thumbs/let-god-cook.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "i let God cook"
   },
   {
     "src": "/photos/liked-from-a-distance.png",
-    "thumb": "/photos/liked-from-a-distance.png",
+    "thumb": "/photos/thumbs/liked-from-a-distance.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "liked each other from a distance"
   },
   {
     "src": "/photos/cant-be-everything.png",
-    "thumb": "/photos/cant-be-everything.png",
+    "thumb": "/photos/thumbs/cant-be-everything.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "you can't be everything to everybody"
   },
   {
     "src": "/photos/whatever-will-be.jpg",
-    "thumb": "/photos/whatever-will-be.jpg",
+    "thumb": "/photos/thumbs/whatever-will-be.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "whatever will be, will be"
   },
   {
     "src": "/photos/halal-circle.png",
-    "thumb": "/photos/halal-circle.png",
+    "thumb": "/photos/thumbs/halal-circle.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "halal circle"
   },
   {
     "src": "/photos/eyes-see-differently.jpg",
-    "thumb": "/photos/eyes-see-differently.jpg",
+    "thumb": "/photos/thumbs/eyes-see-differently.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "eyes are all the same, but they see differently"
   },
   {
     "src": "/photos/no-life-without-prayer.png",
-    "thumb": "/photos/no-life-without-prayer.png",
+    "thumb": "/photos/thumbs/no-life-without-prayer.jpg",
     "type": "image",
     "tag": "inspiration",
     "cap": "there is no life without prayer"

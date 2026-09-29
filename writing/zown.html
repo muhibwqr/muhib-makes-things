@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · zown</title>
+  <meta name="description" content="building the ai realtor at zown — an agent that took real buyers from first message to closed home." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=art2" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    body.maker { --bg: #fff; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+    body.maker::before { display: none; }
+    body.maker .post-title, body.maker .post-desc { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+  </style>
+</head>
+<body class="maker">
+
+  <nav>
+    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
+    <div class="nav-links mono">
+      <a href="/projects/">projects</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article work-page">
+    <p class="article-kicker mono dim reveal">writing · work</p>
+    <h1 class="article-title reveal">zown</h1>
+    <p class="article-meta mono dim reveal">ai realtor · real people, real closings · <a href="https://zown.ca" target="_blank" rel="noopener">zown.ca &rarr;</a></p>
+
+    <figure class="diagram reveal" style="padding:0; overflow:hidden; line-height:0;">
+      <video src="/zown-rent-rewards.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%; display:block;"></video>
+      <figcaption style="padding:0 24px 16px; line-height:1.5;">rent rewards — one of the features that shipped while i was there.</figcaption>
+    </figure>
+
+    <div class="prose article-prose reveal">
+      <p>zown is rebuilding how people buy homes, and i got to build the part that talks to you. the ai realtor isn't a chatbot bolted onto a listings page — it's the agent that walks a real buyer from "i'm just looking" to keys in hand. it answered questions, booked showings, and helped close multiple homes for real people while i was there.</p>
+
+      <h3>an agent with a job, not a demo</h3>
+      <p>the difference between a demo agent and a production agent is that production has a phone number attached to a real person who is about to make the biggest purchase of their life. every answer had to be right enough to act on — pricing, availability, next steps — because a hallucination here isn't embarrassing, it's expensive. that constraint shaped everything: narrow tools, strict grounding, and a personality that knows when to hand off to a human.</p>
+
+      <h3>the boring parts that made it work</h3>
+      <p>the interesting engineering was never the model. it was the plumbing around it — keeping listing data fresh enough to quote, making the handoff to licensed agents seamless instead of a cliff, and watching real conversations to find where the agent lost people's trust. the work that mattered was the hundred small decisions that made a stranger comfortable enough to keep talking.</p>
+
+      <h3>what closing a home taught me</h3>
+      <p>shipping an agent that people trusted with a house rewired how i think about ai products. reliability isn't a metric on a dashboard — it's the difference between a buyer who signs and one who ghosts. the bar isn't "does the demo look good," it's "would you let it talk to your customer unsupervised at 2am." at zown, the answer had to be yes.</p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/projects/">all projects &rarr;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+  <script type="module" src="/writing-format.js"></script>
+</body>
+</html>
