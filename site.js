@@ -4,6 +4,17 @@ const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const hills = document.createElement("div");
 hills.className = "hills-footer";
 hills.setAttribute("aria-hidden", "true");
+const hillsPic = document.createElement("picture");
+const hillsSrc = document.createElement("source");
+hillsSrc.srcset = "/footer.webp";
+hillsSrc.type = "image/webp";
+const hillsImg = document.createElement("img");
+hillsImg.src = "/footer.gif";
+hillsImg.alt = "";
+hillsImg.decoding = "async";
+hillsPic.appendChild(hillsSrc);
+hillsPic.appendChild(hillsImg);
+hills.appendChild(hillsPic);
 document.body.appendChild(hills);
 
 const morphPanel = document.querySelector(".morph-mini-stage");
