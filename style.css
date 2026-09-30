@@ -1205,3 +1205,108 @@ main h2::before {
 .wfmt-footer a { color: var(--dim); }
 .wfmt-footer a:hover { color: var(--accent); }
 .hero .wfmt-index { margin-bottom: 12px; }
+
+/* ---------- benji-clean article layout (light work/writing pages) ---------- */
+html { scroll-behavior: smooth; }
+body.maker .article-kicker { display: none; }
+body.maker .article-title {
+  font-style: normal; font-weight: 500;
+  font-size: clamp(26px, 4vw, 32px);
+  letter-spacing: -0.01em; color: #1a1a1a;
+}
+body.maker .article-title::before { content: none; }
+body.maker .article-meta {
+  font-size: 12px; margin-bottom: 34px;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+body.maker .article-meta a { color: var(--dim); }
+body.maker .article > figure.diagram {
+  border: none; padding: 0; background: none; margin: 0 0 40px;
+}
+body.maker .article > figure.diagram:hover { transform: none; }
+body.maker .article-prose video,
+body.maker .article > figure video { border-radius: 10px; }
+body.maker .article-prose p { font-size: 15px; line-height: 1.75; color: #333; }
+body.maker .article-prose h3 {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px; font-weight: 600; letter-spacing: 0;
+  color: #1a1a1a; margin: 44px 0 10px;
+}
+body.maker .article-prose h3::before { content: none; }
+body.maker .article-prose figure.diagram {
+  border: none; padding: 0; background: none; margin: 34px auto;
+}
+body.maker .article-prose figure.diagram:hover { transform: none; }
+body.maker .article-prose img { border: none; border-radius: 6px; filter: none; }
+body.maker .article-prose img:hover { filter: none; }
+body.maker .article-prose figcaption,
+body.maker .diagram figcaption {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px; color: #999; letter-spacing: 0; text-align: center;
+}
+body.maker .article-prose blockquote {
+  border-left: 2px solid #e5e5e5; font-size: 15px; font-style: normal; color: #555;
+}
+.wfmt-side {
+  position: fixed; left: max(28px, calc(50vw - 610px));
+  top: 120px; width: 170px; z-index: 5;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+}
+.wfmt-side .wfmt-index { font-family: var(--mono); margin-bottom: 24px; }
+.wfmt-toc { list-style: none; margin: 0; padding: 0; }
+.wfmt-toc li { margin: 0 0 11px; }
+.wfmt-toc a { color: #b3b3b3; text-decoration: none; transition: color 0.2s; line-height: 1.45; display: block; }
+.wfmt-toc a:hover { color: #333; }
+.wfmt-toc a.active { color: #1a1a1a; font-weight: 600; }
+.wfmt-vid-ctrls {
+  position: absolute; top: 10px; right: 10px; z-index: 3;
+  display: flex; gap: 6px; opacity: 0; transition: opacity 0.25s;
+}
+article figure:hover .wfmt-vid-ctrls,
+.article figure:hover .wfmt-vid-ctrls,
+.wfmt-vid-ctrls:focus-within { opacity: 1; }
+.wfmt-vbtn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  padding: 5px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(20,20,22,0.35); color: #fff;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  cursor: pointer; transition: background 0.2s;
+}
+.wfmt-vbtn:hover { background: rgba(20,20,22,0.55); }
+@media (hover: none) { .wfmt-vid-ctrls { opacity: 1; } }
+@media (max-width: 1100px) {
+  .wfmt-side {
+    position: static; width: auto;
+    max-width: 620px; margin: 0 auto;
+    padding: 110px 24px 0;
+  }
+  .wfmt-side .wfmt-index { margin-bottom: 0; }
+  .wfmt-toc { display: none; }
+  .page.article, article.page.article { padding-top: 26px; }
+}
+@media (max-width: 640px) {
+  .wfmt-side { padding-top: 90px; }
+  body.maker .article-title { font-size: 26px; }
+  body.maker .article-prose p { font-size: 15px; }
+  body.maker .article-prose figure.diagram { margin: 24px 0; }
+}
+
+/* ---------- site footer — hills band ---------- */
+body:has(> .hills-footer) {
+  background: linear-gradient(to bottom, #c2d8e6 0%, #dbe9f0 55%, #eef4f6 100%);
+}
+.hills-footer {
+  position: relative;
+  aspect-ratio: 5 / 3;
+  margin-top: -50vw;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%);
+  mask-image: linear-gradient(to bottom, transparent, #000 40%);
+}
+.hills-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/coast.jpg") right top / 106% auto no-repeat;
+}

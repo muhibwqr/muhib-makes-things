@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>muhib waqar · zown</title>
-  <meta name="description" content="building the ai realtor at zown — an agent that took real buyers from first message to closed home." />
+  <meta name="description" content="my summer at zown, from an iftaar intro to shipping an ai realtor that closed real homes." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=art2" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -30,24 +30,56 @@
   <article class="page article work-page">
     <p class="article-kicker mono dim reveal">writing · work</p>
     <h1 class="article-title reveal">zown</h1>
-    <p class="article-meta mono dim reveal">ai realtor · real people, real closings · <a href="https://zown.ca" target="_blank" rel="noopener">zown.ca &rarr;</a></p>
+    <p class="article-meta mono dim reveal">applied ai intern · april to september 2026</p>
 
     <figure class="diagram reveal" style="padding:0; overflow:hidden; line-height:0;">
-      <video src="/zown-rent-rewards.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%; display:block;"></video>
-      <figcaption style="padding:0 24px 16px; line-height:1.5;">rent rewards — one of the features that shipped while i was there.</figcaption>
+      <video src="/zown-rent-rewards.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%; display:block; border-radius:10px;"></video>
     </figure>
 
     <div class="prose article-prose reveal">
-      <p>zown is rebuilding how people buy homes, and i got to build the part that talks to you. the ai realtor isn't a chatbot bolted onto a listings page — it's the agent that walks a real buyer from "i'm just looking" to keys in hand. it answered questions, booked showings, and helped close multiple homes for real people while i was there.</p>
 
-      <h3>an agent with a job, not a demo</h3>
-      <p>the difference between a demo agent and a production agent is that production has a phone number attached to a real person who is about to make the biggest purchase of their life. every answer had to be right enough to act on — pricing, availability, next steps — because a hallucination here isn't embarrassing, it's expensive. that constraint shaped everything: narrow tools, strict grounding, and a personality that knows when to hand off to a human.</p>
+      <p>they say you can never find the same person twice (even in the same person!). that's how i felt after my stint at zown, and how i feel writing this now, heading back to school. i spent the last 7 months at zown as the 5th engineer, working on zoro (the ai realtor), an api that serves home data, and hubspot: real-time property search and filtering, photo delivery, property history and analytics, valuations, alerts, webhooks, so anything we built had clean data under it.</p>
 
-      <h3>the boring parts that made it work</h3>
-      <p>the interesting engineering was never the model. it was the plumbing around it — keeping listing data fresh enough to quote, making the handoff to licensed agents seamless instead of a cliff, and watching real conversations to find where the agent lost people's trust. the work that mattered was the hundred small decisions that made a stranger comfortable enough to keep talking.</p>
+      <h3>preface: what is zown</h3>
+      <p>zown is a digital real estate platform in canada aimed at making home buying more accessible by returning part of the commission directly to the buyers.</p>
 
-      <h3>what closing a home taught me</h3>
-      <p>shipping an agent that people trusted with a house rewired how i think about ai products. reliability isn't a metric on a dashboard — it's the difference between a buyer who signs and one who ghosts. the bar isn't "does the demo look good," it's "would you let it talk to your customer unsupervised at 2am." at zown, the answer had to be yes.</p>
+      <h3>how it started</h3>
+      <p>eight months ago i was at an intimate iftaar event. i had the option to leave toronto or stay, and being the oldest from a brown household, my parents were adamant that i spend my first summer of university in toronto (no cali just bust). i met rishard rameez, he asked me what i was up to this summer, i told him i was looking for something, and he asked me, "can you come in tomorrow morning?"</p>
+      <p>and that's how it began.</p>
+
+      <figure class="diagram" style="padding:0; overflow:hidden; line-height:0; max-width:340px;">
+        <img src="/zown/imessage.jpg" alt="imessage thread confirming my first day at zown" style="width:100%; display:block;" />
+
+      </figure>
+
+      <h3>first impressions</h3>
+      <p>first day i came in with the feeling that i might be starting behind, not knowing how the startup operates, not knowing how anything functions. but from day one i was given full autonomy to pick what i wanted to work on, so i started looking for the biggest bottleneck i could find.</p>
+      <p>my experience started with applied ai, and that is what i was hired for, but before i could ever begin working on an autonomous ai realtor, i had to start by figuring out the data situation.</p>
+
+      <h3>zoro</h3>
+      <p>my role was made clear: drive forward the automation for realtors, mainly response times, cma (comparative market analysis) generations, and real estate knowledge. i met asanka pradeep, who had been working on an mvp sales ai tool that listened and answered questions on whatsapp.</p>
+      <p>when talking with rishard, we came to the conclusion that it was important to suit the agent not only according to information, but keep it specific to the stage of the customer. that's when zoro, the ai realtor, really began.</p>
+      <p>i spent the majority of my time building zoro, evolving an internal sales tool developed to assist our account managers with closing homes. we started with a mock version in python using mastra, and after 11 chats we switched over to deploying scalable infra on aws.</p>
+
+      <figure class="diagram" style="padding:0; overflow:hidden; line-height:0;">
+        <video src="/zown/zoro.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%; display:block; border-radius:10px;"></video>
+      </figure>
+
+      <h3>the api</h3>
+      <p>underneath everything sat the data work: an api that serves home data, real-time property search and filtering, photo delivery, property history and analytics, valuations, alerts, webhooks. it was the plumbing that let zoro actually know what it was talking about.</p>
+
+      <h3>hubspot</h3>
+      <p>i think the first time i got access to hubspot at zown i almost shed a tear, and not because it was beautiful.</p>
+      <p>in order for our agent to reference customer stages, the source of data had to be clean enough to actually understand the customer. the challenge: each object was attached to 700+ properties and tangled in multiple workflows. at the time, i was recommended to go through it by hand.</p>
+      <p>dr. awad &amp; i took a bomboclaude of agents and subjugated the processes and properties one by one. the most enjoyable part wasn't unweeding the crm, it was introducing omar to claude, claude code, and watching him in real time fall in love with using mcps. back in april, hubspot was just launching their mcp, so we were using a special app to go through and manage it.</p>
+
+      <figure class="diagram" style="padding:0; overflow:hidden; line-height:0; max-width:520px;">
+        <img src="/zown/hubspot-slack.jpg" alt="slack message: may allah swt guide the creators of hubspot" style="width:100%; display:block;" />
+
+      </figure>
+
+      <h3>well wishes</h3>
+      <p>i'm grateful to rishard for the "come in tomorrow morning", to asanka for the foundation to build on, and to the team for trusting an intern with real customers. the bar at zown was never "does the demo look good." it was "would you let it talk to your customer unsupervised at 2am." the answer had to be yes.</p>
     </div>
 
     <div class="article-nav reveal">

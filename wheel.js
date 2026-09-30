@@ -3,7 +3,7 @@
 const CARD_H = 0.38, CARD_MAX_W = 0.34, CARD_RATIO = 1;
 const STEP = 40, DRUM = 2.22, LENS = 2.7, RING_R = 0.9, BOW = 1.82;
 const TITLE = 0.124, INDEX = 0.04, CULL = 1.6;
-const WHEEL_UNITS = 2400, DRAG_UNITS = 420, SETTLE = 90, EASE = 0.14;
+const WHEEL_UNITS = 1400, DRAG_UNITS = 420, SETTLE = 90, EASE = 0.14;
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -25,7 +25,7 @@ export function initWheel(root, items, { label = "", action = "", onOpen } = {})
         ${items.map((item, i) => `
           <div class="wheel-card" id="wheel-card-${i}" role="option" aria-selected="${i === 0}" data-i="${i}">
             <span class="wheel-card-face">
-              <img src="${item.image}" alt="${item.title}" draggable="false" />
+              <img src="${item.image}" alt="${item.title}" draggable="false" loading="lazy" decoding="async" />
               ${action ? `<span class="wheel-chips">
                 <span class="wheel-chip"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9 9 3M4 3h5v5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>${action}</span>
                 <a class="wheel-chip wheel-chip-link" href="${item.href}" target="_blank" rel="noopener"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9 9 3M4 3h5v5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>open on luma</a>
@@ -103,7 +103,15 @@ export function initWheel(root, items, { label = "", action = "", onOpen } = {})
       mediaTrack.innerHTML = half;
     }
     mediaTrack.innerHTML = half + half;
-    mediaTrack.querySelectorAll("video").forEach((v) => v.play().catch(() => {}));
+    mediaTrack.querySelectorAll("img").forEach((im) => {
+      const mark = () => im.classList.add("on");
+      im.complete ? mark() : im.addEventListener("load", mark, { once: true });
+    });
+    mediaTrack.querySelectorAll("video").forEach((v) => {
+      const mark = () => v.classList.add("on");
+      v.readyState >= 2 ? mark() : v.addEventListener("loadeddata", mark, { once: true });
+      v.play().catch(() => {});
+    });
     cards.forEach((c, j) => c.setAttribute("aria-selected", String(j === i)));
     indexBtns.forEach((b, j) => b.classList.toggle("on", j === i));
   };

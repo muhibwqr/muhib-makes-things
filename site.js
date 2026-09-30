@@ -1,6 +1,11 @@
 // draft shell: ∞↔m morph
 const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const hills = document.createElement("div");
+hills.className = "hills-footer";
+hills.setAttribute("aria-hidden", "true");
+document.body.appendChild(hills);
+
 const morphPanel = document.querySelector(".morph-mini-stage");
 const artEl = document.getElementById("morph-art");
 if (morphPanel && artEl) {
@@ -412,3 +417,20 @@ const kickVideos = () => {
   });
 };
 ["pointerdown", "keydown", "touchstart"].forEach((ev) => addEventListener(ev, kickVideos));
+
+// zown writeup stays local for now — any link to it shows a toast instead
+let soonToast;
+document.addEventListener("click", (e) => {
+  const a = e.target.closest('a[href*="/writing/zown.html"]');
+  if (!a) return;
+  e.preventDefault();
+  if (!soonToast) {
+    soonToast = document.createElement("div");
+    soonToast.className = "soon-toast";
+    soonToast.textContent = "coming soon";
+    document.body.appendChild(soonToast);
+  }
+  soonToast.classList.remove("show");
+  void soonToast.offsetWidth;
+  soonToast.classList.add("show");
+});

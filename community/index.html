@@ -11,11 +11,13 @@
 <body>
   <div class="container">
     <header class="masthead">
-      <figure class="morph-mini" aria-hidden="true">
-        <div class="morph-mini-stage"><pre class="morph-art" id="morph-art"></pre></div>
-      </figure>
       <nav class="masthead-nav" aria-label="primary">
-        <h1 class="masthead-title"><a href="/">muhib waqar</a></h1>
+        <h1 class="masthead-title"><a class="masthead-home" href="/" aria-label="muhib waqar — home">
+        <figure class="morph-mini" aria-hidden="true">
+          <div class="morph-mini-stage"><pre class="morph-art" id="morph-art"></pre></div>
+        </figure>
+          <span class="home-label" aria-hidden="true">home</span>
+        </a></h1>
         <ul>
           <li><a href="/projects/">projects</a></li>
           <li><a class="here" href="/community/">community</a></li>
@@ -40,8 +42,8 @@
     <div class="collage-window">
       <button class="collage-close" id="collage-close" type="button" aria-label="close">✕</button>
       <div class="collage-body">
-        <div class="collage-media"><div class="collage-grid" id="collage-grid"></div></div>
         <aside class="collage-side" id="collage-head"></aside>
+        <div class="collage-media"><div class="collage-grid" id="collage-grid"></div></div>
       </div>
     </div>
   </div>
@@ -212,7 +214,7 @@
       grid.innerHTML = lbItems.map((p) =>
         /\.(mp4|mov|m4v)$/i.test(p)
           ? `<video class="collage-cell" src="${p}" autoplay muted loop playsinline preload="metadata"></video>`
-          : `<img class="collage-cell" src="${p}" alt="" loading="lazy" decoding="async" />`
+          : `<img class="collage-cell" src="${thumbOf(p)}" alt="" loading="lazy" decoding="async" />`
       ).join("");
       const io = new IntersectionObserver((entries) => {
         entries.forEach((en) => {
@@ -240,6 +242,13 @@
       showMedia([...grid.querySelectorAll(".collage-cell")].indexOf(cell));
       lb.classList.add("open");
     });
+    const mediaEl = collage.querySelector(".collage-media");
+    mediaEl.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      mediaEl.scrollLeft += d * 0.3;
+    }, { passive: false });
     document.getElementById("collage-close").addEventListener("click", closeCollage);
     collage.addEventListener("click", (e) => {
       if (e.target === collage) closeCollage();

@@ -6,6 +6,11 @@
 
 const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const hills = document.createElement("div");
+hills.className = "hills-footer";
+hills.setAttribute("aria-hidden", "true");
+document.body.appendChild(hills);
+
 // light only — .maker holds every light-mode override in style.css
 document.documentElement.classList.add("maker");
 document.body.classList.add("maker");
