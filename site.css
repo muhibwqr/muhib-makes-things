@@ -30,6 +30,8 @@ code { font-family:Menlo,Monaco,Courier New,monospace; font-size:.92em; padding:
 .masthead-nav { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.35rem 1rem; width:100% }
 .masthead-home { position:relative; display:inline-flex; align-items:center; text-decoration:none }
 .masthead-home .morph-mini { margin:0 }
+.masthead-home::before { content:""; position:absolute; top:50%; left:50%; width:112px; height:112px; transform:translate(-50%,-50%); z-index:2 }
+@media screen and (max-width:850px) { .masthead-home::before { width:76px; height:76px } }
 .home-label { position:absolute; top:100%; left:50%; transform:translateX(-50%); margin-top:5px; font-size:11px; font-weight:300; color:#1a1a1a; text-transform:lowercase; opacity:0; transition:opacity .2s; pointer-events:none }
 @media (hover:hover) {
   .masthead-home:hover .home-label,.masthead-home:focus-visible .home-label { opacity:1; pointer-events:auto }
@@ -418,7 +420,7 @@ a.wheel-chip-link:hover { background:#fff }
   .wheel,.wheel-label { left:50% }
   .wheel-title,.wheel-index { display:none }
 }
-body:has(>.hills-footer) { background:linear-gradient(to bottom,#c2d8e6,#dbe9f0 55%,#eef4f6) }
+body:has(>.hills-footer) { background:#fff }
 .hills-footer { position:relative; aspect-ratio:5 / 3; margin-top:-34vw; overflow:hidden; -webkit-mask-image:linear-gradient(to bottom,transparent,#000 40%); mask-image:linear-gradient(to bottom,transparent,#000 40%) }
 .hills-footer img { position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%; object-fit:cover; object-position:right top; transform:scale(1.06); transform-origin:right top }
 body::after { content:""; position:fixed; top:0; right:0; bottom:0; left:0; z-index:80; pointer-events:none; opacity:.05; background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="180" height="180" filter="url(%23n)"/></svg>'); background-size:180px 180px; animation:grain .9s steps(3) infinite }
@@ -427,3 +429,6 @@ body::after { content:""; position:fixed; top:0; right:0; bottom:0; left:0; z-in
 .soon-toast { position:fixed; left:50%; bottom:34px; transform:translate(-50%,10px); background:#1a1a1a; color:#fff; font-size:12px; font-weight:400; letter-spacing:.04em; padding:8px 16px; border-radius:999px; opacity:0; pointer-events:none; transition:opacity .25s ease,transform .25s ease; z-index:999 }
 .soon-toast.show { opacity:1; transform:translate(-50%,0); animation:soon-hide 2.2s forwards }
 @keyframes soon-hide { 0%,70% { opacity:1; transform:translate(-50%,0) } 100% { opacity:0; transform:translate(-50%,6px) } }
+.proj-pause,.proj-mute { display:inline-grid; place-items:center; width:22px; height:22px; padding:0 }
+.event-card-wrap .proj-mute { width:20px; height:20px; padding:0 }
+.proj-pause svg,.proj-mute svg { display:block; width:10px; height:10px }

@@ -2,6 +2,8 @@
 // minimal: [ Index ] back-link top-left, title + meta, # section headings,
 // footer socials. no TOC, no breadcrumb trail, no byline.
 
+import { videoControls } from "./components.js";
+
 const SOCIALS = `
   <a href="mailto:muhib.waqar@uwaterloo.ca">email</a>
   <a href="https://linkedin.com/in/muhibwaqar" target="_blank" rel="noopener">linkedin</a>
@@ -33,7 +35,6 @@ if (flat && flatTitle) {
     // benji-style left rail: [ Index ] + section list
     const side = document.createElement("div");
     side.className = "wfmt-side";
-    side.appendChild(index);
     const heads = flat.querySelectorAll("h2, h3");
     if (heads.length) {
       const ul = document.createElement("ul");
@@ -44,6 +45,7 @@ if (flat && flatTitle) {
             .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
         }
         const li = document.createElement("li");
+        if (h.tagName === "H3") li.className = "sub";
         li.innerHTML = `<a href="#${h.id}">${h.textContent}</a>`;
         ul.appendChild(li);
       });
@@ -62,35 +64,20 @@ if (flat && flatTitle) {
     }
     document.body.insertBefore(side, article);
 
+    // top bar: home pill left, external site link right
+    const top = document.createElement("div");
+    top.className = "wfmt-top";
+    top.innerHTML = `<a class="wfmt-home" href="/"><span class="wfmt-home-arrow" aria-hidden="true">&larr;</span>muhib</a>` +
+      (article.dataset.site ? `<a href="${article.dataset.site}" target="_blank" rel="noopener">website &#8599;</a>` : "");
+    document.body.insertBefore(top, side);
+
     // benji pages have no top nav — the rail carries [ Index ]
     const topNav = document.querySelector("body > nav");
     if (topNav) topNav.style.display = "none";
 
     // glass pause/mute pills on article videos (same feel as project cards)
     document.querySelectorAll("article video, .article video").forEach((v) => {
-      const fig = v.closest("figure") || v.parentElement;
-      fig.style.position = "relative";
-      const ctrls = document.createElement("div");
-      ctrls.className = "wfmt-vid-ctrls";
-      ctrls.innerHTML = `<button class="wfmt-vbtn" data-act="pause">pause</button><button class="wfmt-vbtn" data-act="mute">unmute</button>`;
-      fig.appendChild(ctrls);
-      v.muted = true;
-      v.play().catch(() => {});
-      v.addEventListener("loadeddata", () => v.play().catch(() => {}));
-      ctrls.addEventListener("click", (e) => {
-        const b = e.target.closest("[data-act]");
-        if (!b) return;
-        if (b.dataset.act === "pause") {
-          if (v.paused) v.play().catch(() => {});
-          else v.pause();
-          v.dataset.userPaused = v.paused ? "1" : "";
-          b.textContent = v.paused ? "play" : "pause";
-        } else {
-          v.muted = !v.muted;
-          if (!v.muted) v.play().catch(() => {});
-          b.textContent = v.muted ? "unmute" : "mute";
-        }
-      });
+      videoControls(v, { ctrlClass: "wfmt-vid-ctrls", btnClass: "wfmt-vbtn" });
     });
   } else {
     article.insertBefore(index, article.firstChild);

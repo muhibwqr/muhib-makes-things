@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>muhib waqar · zown</title>
-  <meta name="description" content="my summer at zown, from an iftaar intro to shipping an ai realtor that closed real homes." />
+  <meta name="description" content="connecting the ai to rules zown already ran on: building zoro, the ai realtor, and the data plumbing underneath." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=art2" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <style>
     body.maker { --bg: #fff; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
@@ -27,59 +28,117 @@
     </div>
   </nav>
 
-  <article class="page article work-page">
+  <article class="page article work-page" data-site="https://zown.ca">
     <p class="article-kicker mono dim reveal">writing · work</p>
     <h1 class="article-title reveal">zown</h1>
-    <p class="article-meta mono dim reveal">applied ai intern · april to september 2026</p>
+    <p class="article-meta mono dim reveal">september 30th, 2026</p>
 
-    <figure class="diagram reveal" style="padding:0; overflow:hidden; line-height:0;">
-      <video src="/zown-rent-rewards.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%; display:block; border-radius:10px;"></video>
-    </figure>
+    <div class="fig-noted wide hero-noted">
+      <figure class="diagram reveal" style="padding:0; overflow:hidden; line-height:0;">
+        <video src="/zown-rent-rewards.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%; display:block; border-radius:10px;"></video>
+      </figure>
+      <aside class="fig-note"><span class="fig-note-bracket" aria-hidden="true"></span>banger launch by <br /><a href="https://www.linkedin.com/in/mahadaamir/" target="_blank" rel="noopener">mahad</a>, <a href="https://www.linkedin.com/in/jibraan-kadri/" target="_blank" rel="noopener">jibraan</a> <br />&amp; <a href="https://www.linkedin.com/in/rizwan--ahmed/" target="_blank" rel="noopener">rizwan</a></aside>
+    </div>
+
+    <div class="wfmt-facts">
+      <div>
+        <h4>Preface</h4>
+        <p>zown is a digital real estate platform in canada aimed at making home buying more accessible by returning part of the commission to buyers.</p>
+      </div>
+      <div>
+        <h4>Overview</h4>
+        <p>i spent my time at zown as the fifth engineer, working on zoro (the ai realtor), an api that serves home data, and hubspot.</p>
+      </div>
+    </div>
 
     <div class="prose article-prose reveal">
 
-      <p>they say you can never find the same person twice (even in the same person!). that's how i felt after my stint at zown, and how i feel writing this now, heading back to school. i spent the last 7 months at zown as the 5th engineer, working on zoro (the ai realtor), an api that serves home data, and hubspot: real-time property search and filtering, photo delivery, property history and analytics, valuations, alerts, webhooks, so anything we built had clean data under it.</p>
+      <p>they say you can never find the same person twice (even in the same person). that's how i felt after my stint at zown, and how i feel writing this now, heading back to school.</p>
+      <p>i spent my time at zown as the fifth engineer, working on zoro (the ai realtor), an api that serves home data, and hubspot.</p>
 
-      <h3>preface: what is zown</h3>
-      <p>zown is a digital real estate platform in canada aimed at making home buying more accessible by returning part of the commission directly to the buyers.</p>
+      <h2>first impressions</h2>
+      <p>on my first day, i didn't really know what to expect. i had been around friends who worked full time around the world, who told me about the culture they dealt with and experience. however, in my mind, i had one goal, result oriented engineering. i knew from past experiences that i didn't want to get caught in the "barbwire" of busywork, so i immediately started asking about bottlenecks and tried identifying which giant i could take down. my role was never concretely defined by an outcome, however, the accountability was. in the first week, i had already started debating and questioning the way the processes were being used right now. obviously, i don't know everything, but it is imperative that i assume i can do anything. that led to some fun and interesting arguments i took part in.</p>
+      <p>out of the several problems and decisions i had in my time at zown, there are three big ones that i'll be covering in this piece.</p>
 
-      <h3>how it started</h3>
-      <p>eight months ago i was at an intimate iftaar event. i had the option to leave toronto or stay, and being the oldest from a brown household, my parents were adamant that i spend my first summer of university in toronto (no cali just bust). i met rishard rameez, he asked me what i was up to this summer, i told him i was looking for something, and he asked me, "can you come in tomorrow morning?"</p>
-      <p>and that's how it began.</p>
+      <div class="fig-noted">
+        <figure class="diagram" style="padding:0; overflow:hidden; line-height:0;">
+          <img src="/zown/whiteboard.jpg" alt="ibrahim awad and me sketching out the agent flow on paper at the zown office" loading="lazy" decoding="async" style="width:100%; display:block;" />
+        </figure>
+        <aside class="fig-note"><span class="fig-note-bracket" aria-hidden="true"></span>me &amp; <a href="https://www.linkedin.com/in/ibrahimaawad/" target="_blank" rel="noopener">ibrahim awad</a> <br />locked in</aside>
+      </div>
 
-      <figure class="diagram" style="padding:0; overflow:hidden; line-height:0; max-width:340px;">
-        <img src="/zown/imessage.jpg" alt="imessage thread confirming my first day at zown" style="width:100%; display:block;" />
+      <h2>focus 1: zoro</h2>
+      <p>I think the most interesting philosophy and problem I got to take on at Zown was when <a href="https://www.linkedin.com/in/ibrahimaawad/" target="_blank" rel="noopener">Ibrahim Awad</a> and I were first coming up with the idea of how the AI realtor would actually come to fruition. In a world where everyone is slowly but steadily becoming more and more obsessed with agents and automated experiences, buying a home is a delicate equation because of how significant a part of someone's life it is. The approach we took was taking tasks from realtors one by one: the CMA, response times, follow-ups, listing alerts, the real estate questions that come in at 2am. Not replacing the realtor, but covering the gaps so nothing slipped, and handing the person back to a licensed human the moment it mattered. <mark>We were not inventing rules so much as connecting the AI to rules Zown already ran on.</mark></p>
 
-      </figure>
+      <h3>from a sales tool to something that had to ship</h3>
+      <p>Zoro did not start as a consumer chatbot with a mascot. It started as an internal sales tool: something to help account managers close homes. The real work of the brokerage still lived in WhatsApp groups, HubSpot, and licensed humans. The bot’s job was coverage, so nothing slipped, not impersonation. When someone asked who she was, she said she was an AI. The name on the chat was still the human she covered for.</p>
+      <p>We started with a mock version. Fixtures instead of the full GTA inventory. Simulators instead of production WhatsApp. Then we moved it onto AWS: a container on Fargate, object storage for knowledge and CMA PDFs, scheduled jobs for follow-ups and listing alerts. The Python service stayed on EC2 for a long time beside the TypeScript one. Cutover is a pointer change, not a press release. Until Maytapi pointed at the new host, both were real.</p>
+      <p>We built the agent in Python first, then shifted it to TypeScript. The brain moved onto Mastra: one orchestrator, a tool loop, validators on the way in and the way out. The Python files are still visible as ghosts in the comments (<code>Migrates: backend/agents/orchestrator.py</code>) because a rewrite is a conversation with the last version of yourself.</p>
+      <div class="fig-noted wide">
+        <div class="zd" data-zd="cutover"></div>
+        <aside class="fig-note"><span class="fig-note-bracket" aria-hidden="true"></span>thanks to <a href="https://www.linkedin.com/in/hamzav/" target="_blank" rel="noopener">hamza</a> &amp; <a href="https://www.linkedin.com/in/asanka-pradeep-28318588/" target="_blank" rel="noopener">asanka</a> <br />for patiently explaining <br />&amp; helping me with infra</aside>
+      </div>
+      <p>We gave it tools to talk to listing data. Getting access to that data was not simple. The Toronto boards are not an SDK. TRREB and ITSO arrive as OData feeds, media as a second pipeline, photos as a publishing problem (a listing with no published image is not a listing you show). Repliers could see the live MLS. That was necessary. It was not sufficient.</p>
+      <p>The persona had a name change while we were in it. She was Zara, then Zoro. Openly AI, all lowercase, no “as a language model.” The voice was the easy part. Knowing what she was allowed to do was not.</p>
 
-      <h3>first impressions</h3>
-      <p>first day i came in with the feeling that i might be starting behind, not knowing how the startup operates, not knowing how anything functions. but from day one i was given full autonomy to pick what i wanted to work on, so i started looking for the biggest bottleneck i could find.</p>
-      <p>my experience started with applied ai, and that is what i was hired for, but before i could ever begin working on an autonomous ai realtor, i had to start by figuring out the data situation.</p>
+      <p>Some of the last things I did at Zown lived on the phone: designing the mobile chat, getting the vibration feedback to feel right as messages came in, and chasing down the SSE streaming problems between the agent and the app.</p>
+      <div class="fig-noted wide">
+        <figure class="diagram" style="padding:0; overflow:hidden; line-height:0;">
+          <video src="/zown/zoro.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%; display:block; border-radius:10px;"></video>
+        </figure>
+        <aside class="fig-note"><span class="fig-note-bracket" aria-hidden="true"></span>i worked on the mobile app with <br /><a href="https://www.linkedin.com/in/soadmoayer/" target="_blank" rel="noopener">soad</a>, <a href="https://www.linkedin.com/in/folarin-farinto/" target="_blank" rel="noopener">folarin</a>, <a href="https://www.linkedin.com/in/ali-nauf/" target="_blank" rel="noopener">ali</a>, <br /><a href="https://www.linkedin.com/in/asanka-pradeep-28318588/" target="_blank" rel="noopener">asanka</a> &amp; <a href="https://www.linkedin.com/in/bhagya-weerarathne-746b21165/" target="_blank" rel="noopener">bhagya</a> <span class="fig-note-ps">p.s. the whole app was shipped &amp; deployed in only 11 sprints!</span></aside>
+      </div>
 
-      <h3>zoro</h3>
-      <p>my role was made clear: drive forward the automation for realtors, mainly response times, cma (comparative market analysis) generations, and real estate knowledge. i met asanka pradeep, who had been working on an mvp sales ai tool that listened and answered questions on whatsapp.</p>
-      <p>when talking with rishard, we came to the conclusion that it was important to suit the agent not only according to information, but keep it specific to the stage of the customer. that's when zoro, the ai realtor, really began.</p>
-      <p>i spent the majority of my time building zoro, evolving an internal sales tool developed to assist our account managers with closing homes. we started with a mock version in python using mastra, and after 11 chats we switched over to deploying scalable infra on aws.</p>
+      <h3>having the listing was one thing</h3>
+      <p>One of the most complex problems was the logic behind the realtor. Having the listing data was one thing. Knowing what to do with it was another.</p>
+      <p>In the market we were working in, we kept seeing two different approaches. Some people would list a home at a ridiculously cheap price, then come back with “I have five offers” and try to get a higher price. Others would list it at what they wanted and wait.</p>
+      <p>The agent needed to understand that difference. The price on the listing was not enough on its own.</p>
+      <p>We never actually encoded a seller playbook for “how you should list.” What we encoded was the buyer-side of that game, which is the side Zoro was allowed to play. In a hot market, the listing agent holds offers until a set date instead of reviewing them as they come. The list price is bait, a starting point, and the home typically sells above asking. “Offers welcome anytime” is the opposite signal. A false warning is worse than silence.</p>
+      <p>So the logic had to get more information than <code>listPrice</code>. Public remarks, parsed for a deferred offer date. Comparable sales, enough to notice when the CMA midpoint sits a hundred thousand dollars or more above ask. When those two things arrived together, we did not leave it to the model’s vibe. We appended a heads-up in her voice and flagged the human. The ask was a signal. The combination was the fact.</p>
+      <div class="zd" data-zd="signal"></div>
+      <p class="noted" data-note="the key insight">That is the pattern that kept repeating: <mark>do not ask the language model to invent policy. Give it the extra inputs, then make the dangerous sentence deterministic.</mark></p>
 
-      <figure class="diagram" style="padding:0; overflow:hidden; line-height:0;">
-        <video src="/zown/zoro.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%; display:block; border-radius:10px;"></video>
-      </figure>
+      <h3>stage is a permission, not a vibe</h3>
+      <p>Rishard’s point was the same pattern one layer up. A buyer who never filled the qualification form is not a buyer whose score came up short. Someone with a deal already has an agent. Someone under contract should not be volunteered a new search. Someone on hold should be nurtured, not treated as a fresh lead.</p>
+      <p>Zown already had those distinctions. The mobile app used a qualification status to gate sale showings. HubSpot already had a deal pipeline. The first version of the AI analysis looked at a field that only ever moved from contact to lead in production, concluded the later stages were unreachable, and was wrong. The live stage was on the deal, mirrored into our own database as the HubSpot label, not classified into a frozen enum that would rot the first time someone renamed a pipeline stage.</p>
+      <p>We described every buyer with two independent facts: the score from the form, and the journey position from HubSpot. Seven operating states. Journey outranked the score, because a deal means an agent, whatever the form said. An unrecognized stage label still meant “they have an agent.” Guessing the other direction, treating a WhatsApp number as a stranger who never qualified, was the mistake we were told not to make.</p>
+      <p class="noted" data-note="omar's call">The rules themselves became a table: eleven actions, seven states, every cell filled or the build breaks. Omar Awad reviewed it. Our defaults did not all survive. A failed score had been treated like a missing form; he reversed that. <mark>Completing the form is the gate. Passing it is not.</mark> That change had teeth outside the bot: more people could book showings in the app. Showing capacity is a real cost. It deserved a product nod, not a silent ride-along on an AI ticket.</p>
+      <p>The delicate part was money. Review one: never imply the buyer is not qualified. Review two: highlight that lenders are not likely to approve this purchase. Those only contradict if you collapse a person and a price into one insult. We rewrote the hard limit to draw the line. No tier names, no “you don’t qualify,” no MQB out loud. What a lender is likely to do about a specific number is a different sentence, and sometimes required.</p>
+      <p>Four hard limits sat above the table. The bot never submits, counters, or negotiates. Past a firm deal, it nudges them to their account manager. Internal language never reaches a client. It never passes a verdict on the buyer.</p>
+      <div class="zd" data-zd="stage"></div>
+      <p class="noted" data-note="fail closed">We enforced that the way you enforce anything you do not trust a prompt to remember: inbound guard on the never-cells, the table rendered into the prompt as “this client: what applies right now,” and a judge on the way out that a confident self-tag could not waive. HubSpot stages the AI was theoretically allowed to move stayed propose-only. The dwell times were never supplied. <mark>Failing closed is what compliance looks like when you have not been told the rule.</mark></p>
+      <p>Cadence, asking every three months not every chat, we encoded and did not fully wire. That is also part of the story. Connecting the AI to existing rules is a lot of plumbing. Some of the pipes are still capped.</p>
 
-      <h3>the api</h3>
-      <p>underneath everything sat the data work: an api that serves home data, real-time property search and filtering, photo delivery, property history and analytics, valuations, alerts, webhooks. it was the plumbing that let zoro actually know what it was talking about.</p>
+      <h2>focus 2: api</h2>
+      <p>Underneath everything sat the data work: an API that serves home data. Real-time property search and filtering. Photo delivery. Property history. Analytics. Valuations. Alerts. Webhooks.</p>
+      <p>We were using Repliers. We needed more information than that alone could give us. That is when we started creating our own API.</p>
+      <p>Repliers remained the live MLS. For a conversational search, freshness matters, and sold history and photo search still go there. The buyer-facing inventory (the map, the filters, the published photos) became ours: board feeds in, normalized rows in Postgres, a listings API that does not import Repliers at all. One HTTP client on the agent side so the day you swap MLS providers it is a one-file change. Discovery queries Repliers first and tops up from our database when the live source is sparse. The old order is an environment flag, because cutovers should be reversible.</p>
+      <p>I used Apple Maps to understand the proximity of things around a home: geocoding on ingest, then a sweep that, together with OpenStreetMap, filled a points-of-interest catalog. Listing insights do not call Apple on every request. They ask PostGIS what is within a kilometre of a point we already stored.</p>
+      <p>For school ratings I went looking for test scores. Ontario lists, EQAO results, Fraser rankings, catchment polygons. We used to lean on a third party for “what is this neighbourhood like.” We replaced that with a batch of local logic: census, climate, walk and transit scores, market stats, schools. It accumulates on a schedule, under a lock so two crons do not scrape the province twice.</p>
+      <p class="noted" data-note="why the plumbing">The agent does not eat that pile. It gets one query against a materialized view: the home, and what is around it, in a shape a tool can return and a model can speak. That was the point of the plumbing. <mark>Zoro could only know what she was talking about if the sentence arrived pre-chewed.</mark></p>
+      <p>Valuations split the same way. An AVM on the API for a listing page. A CMA in the chat from live comps plus our own math. Alerts from saved searches and from price changes the ingest pipeline actually observed. History as a tool, not a dump of every MLS row into the prompt.</p>
+      <p>A lot of local logic. One interface for the brain. That is the unglamorous half of “we gave it tools to connect to the real estate board.”</p>
+      <div class="zd" data-zd="api"></div>
 
-      <h3>hubspot</h3>
-      <p>i think the first time i got access to hubspot at zown i almost shed a tear, and not because it was beautiful.</p>
-      <p>in order for our agent to reference customer stages, the source of data had to be clean enough to actually understand the customer. the challenge: each object was attached to 700+ properties and tangled in multiple workflows. at the time, i was recommended to go through it by hand.</p>
-      <p>dr. awad &amp; i took a bomboclaude of agents and subjugated the processes and properties one by one. the most enjoyable part wasn't unweeding the crm, it was introducing omar to claude, claude code, and watching him in real time fall in love with using mcps. back in april, hubspot was just launching their mcp, so we were using a special app to go through and manage it.</p>
+      <h2>focus 3: hubspot</h2>
+      <p>I think the first time I got access to HubSpot at Zown, I almost shed a tear. Not because it was beautiful.</p>
+      <p>For the agent to reference customer stages, the source of data had to be clean enough to actually understand the customer. The challenge was that each object was attached to 700+ properties and tangled in multiple workflows. At the time, I was recommended to go through it by hand.</p>
+      <p>Dr. Awad and I took a bomboclaude of agents and went through the processes and properties one by one.</p>
+      <p>The most enjoyable part was not unweeding the CRM. It was introducing Omar to Claude and Claude Code, and watching him fall in love with using MCPs in real time. Back in April, we were using a special app to go through and manage HubSpot.</p>
 
       <figure class="diagram" style="padding:0; overflow:hidden; line-height:0; max-width:520px;">
         <img src="/zown/hubspot-slack.jpg" alt="slack message: may allah swt guide the creators of hubspot" style="width:100%; display:block;" />
 
       </figure>
 
-      <h3>well wishes</h3>
-      <p>i'm grateful to rishard for the "come in tomorrow morning", to asanka for the foundation to build on, and to the team for trusting an intern with real customers. the bar at zown was never "does the demo look good." it was "would you let it talk to your customer unsupervised at 2am." the answer had to be yes.</p>
+      <p>What we did not do, after that, was sync the swamp into Postgres. HubSpot stayed the system of record for sales. We wrote an allowlist of properties so the website qualification flow and the mobile API would send the same bytes. We aliased the same field when forms called it <code>cid</code> or <code>zcid</code>, because HubSpot will happily 409 you for a duplicate. We put outbound work on an outbox so a flaky request did not become two leads. One qualification lead per user; account managers own the pipeline after that. Form edits got different note titles than first submissions, so a workflow that calls someone on “Form Submission” would not fire again because they fixed a typo.</p>
+      <p>Inbound, we listened to deal stage changes and stored the label verbatim. We ignored the echo of deals we had just created ourselves. We did not let the chat client claim a stage. If you can send <code>HIGHLY_QUALIFIED</code> in metadata, you can talk the bot past every rule in the table.</p>
+      <div class="zd" data-zd="hubspot"></div>
+      <p>Admin CRM, the ops tool, does not talk to HubSpot at all. Two systems, side by side, on purpose. Reconciliation was a problem we declined.</p>
+      <p>The unweeding was miserable. The part I would do again is sitting with Omar while the tools clicked. The playbook he later reviewed is the same person, looking at the same customer, from the other side of the wall: what may the bot do, right now, for this buyer.</p>
+
+      <h2>farewell</h2>
+      <p>i honestly had a wonderful summer in toronto. i felt like i was able to really work hard, and solve as far as i could think forward to.</p>
     </div>
 
     <div class="article-nav reveal">
@@ -89,5 +148,6 @@
 
   <script type="module" src="/main.js"></script>
   <script type="module" src="/writing-format.js"></script>
+  <script type="module" src="/writing/zown-diagrams.js"></script>
 </body>
 </html>

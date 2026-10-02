@@ -1,21 +1,9 @@
 // draft shell: ∞↔m morph
+import { mountMasthead, ICONS, setVidIcon } from "./components.js";
+
 const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const hills = document.createElement("div");
-hills.className = "hills-footer";
-hills.setAttribute("aria-hidden", "true");
-const hillsPic = document.createElement("picture");
-const hillsSrc = document.createElement("source");
-hillsSrc.srcset = "/footer.webp";
-hillsSrc.type = "image/webp";
-const hillsImg = document.createElement("img");
-hillsImg.src = "/footer.gif";
-hillsImg.alt = "";
-hillsImg.decoding = "async";
-hillsPic.appendChild(hillsSrc);
-hillsPic.appendChild(hillsImg);
-hills.appendChild(hillsPic);
-document.body.appendChild(hills);
+mountMasthead();
 
 const morphPanel = document.querySelector(".morph-mini-stage");
 const artEl = document.getElementById("morph-art");
@@ -387,7 +375,7 @@ document.addEventListener("click", (e) => {
       if (v.paused) v.play().catch(() => {});
       else v.pause();
       v.dataset.userPaused = v.paused ? "1" : "";
-      pauseBtn.textContent = v.paused ? "play" : "pause";
+      setVidIcon(pauseBtn, v);
     }
     return;
   }
@@ -397,8 +385,10 @@ document.addEventListener("click", (e) => {
   if (!v) return;
   v.muted = !v.muted;
   if (!v.muted) v.play().catch(() => {});
-  btn.textContent = v.muted ? "unmute" : "mute";
+  setVidIcon(btn, v);
 });
+document.querySelectorAll(".proj-pause").forEach((b) => { b.innerHTML = ICONS.pause; b.setAttribute("aria-label", "pause"); });
+document.querySelectorAll(".proj-mute").forEach((b) => { b.innerHTML = ICONS.muted; b.setAttribute("aria-label", "unmute"); });
 
 document.addEventListener("click", (e) => {
   const fig = e.target.closest(".proj-preview");
@@ -429,19 +419,4 @@ const kickVideos = () => {
 };
 ["pointerdown", "keydown", "touchstart"].forEach((ev) => addEventListener(ev, kickVideos));
 
-// zown writeup stays local for now — any link to it shows a toast instead
-let soonToast;
-document.addEventListener("click", (e) => {
-  const a = e.target.closest('a[href*="/writing/zown.html"]');
-  if (!a) return;
-  e.preventDefault();
-  if (!soonToast) {
-    soonToast = document.createElement("div");
-    soonToast.className = "soon-toast";
-    soonToast.textContent = "coming soon";
-    document.body.appendChild(soonToast);
-  }
-  soonToast.classList.remove("show");
-  void soonToast.offsetWidth;
-  soonToast.classList.add("show");
-});
+
