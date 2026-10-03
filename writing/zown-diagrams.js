@@ -19,18 +19,38 @@ const HOUSE = `<svg class="zd-house" viewBox="0 0 16 16" width="11" height="11" 
 
 const D = {
   cutover(el) {
-    const wheel = (x, y, r) =>
-      `<g class="zd-wheel"><circle cx="${x}" cy="${y}" r="${r}"/><circle cx="${x}" cy="${y}" r="${r * 0.3}"/><path d="M${x - r * 0.8} ${y}h${r * 1.6}M${x} ${y - r * 0.8}v${r * 1.6}"/></g>`;
-    const OLD = `<svg viewBox="0 0 120 50" aria-hidden="true">
-      <path d="M8 37V29q2-5 12-6l14-1 6-10q2-2 6-2h26q4 0 6 3l6 9 20 1q8 1 8 7v7z"/>
-      <path d="M44 13l-2 8h16v-8zM62 13v8h18l-4-8z"/><path d="M8 33h104"/><circle cx="109" cy="27" r="1.6"/>
-      <g class="zd-puff"><circle cx="3" cy="33" r="2"/><circle cx="-3" cy="29" r="2.8"/></g>
-      ${wheel(28, 39, 7)}${wheel(92, 39, 7)}</svg>`;
-    const RACE = `<svg viewBox="0 0 120 50" aria-hidden="true">
-      <path d="M4 37l2-7 24-2 20-6q6-3 14-2l10 2q6 0 12 4l24 4q6 1 6 5v2z"/>
-      <path d="M54 22q6-8 16-1"/><path d="M8 30V19h14M10 19l4 9"/><circle cx="84" cy="31" r="3.5"/><path d="M30 33h70"/>
-      <g class="zd-speed"><path d="M-14 24h10M-18 30h12M-12 36h8"/></g>
-      ${wheel(24, 38, 8)}${wheel(98, 38, 8)}</svg>`;
+    const tire = (x, y, w, h) =>
+      `<rect class="zd-tire" x="${x}" y="${y}" width="${w}" height="${h}" rx="2"/><path class="zd-tread" d="M${x + 1} ${y + h / 2}H${x + w - 1}"/>`;
+    const W = `fill="#fff"`;
+    const OLD = `<svg viewBox="0 0 160 70" aria-hidden="true">
+      <g class="zd-puff"><circle cx="-2" cy="44" r="3"/><circle cx="-9" cy="46" r="4"/><circle cx="-17" cy="43" r="3"/></g>
+      ${tire(30, 7, 18, 9)}${tire(30, 54, 18, 9)}${tire(110, 7, 18, 9)}${tire(110, 54, 18, 9)}
+      <ellipse ${W} cx="39" cy="17" rx="15" ry="5.5"/><ellipse ${W} cx="39" cy="53" rx="15" ry="5.5"/>
+      <ellipse ${W} cx="119" cy="17" rx="15" ry="5.5"/><ellipse ${W} cx="119" cy="53" rx="15" ry="5.5"/>
+      <rect ${W} x="16" y="18" width="128" height="34" rx="10"/>
+      <path d="M13 23q-2 12 0 24M147 22q2 13 0 26" stroke-width="2"/>
+      <circle ${W} cx="9" cy="35" r="6"/><circle cx="9" cy="35" r="2.2"/>
+      <circle ${W} cx="140" cy="18" r="2.6"/><circle ${W} cx="140" cy="52" r="2.6"/>
+      <path d="M114 35h28M118 24h6M118 27h6M118 43h6M118 46h6M128 24h6M128 27h6M128 43h6M128 46h6"/>
+      <path ${W} d="M101 21l8 3v22l-8 3z"/><path d="M103 24v22" stroke-width=".7"/>
+      <rect ${W} x="58" y="21" width="43" height="28" rx="4"/><path d="M66 22v26M93 22v26" stroke-width=".7"/>
+      <path ${W} d="M58 21l-8 3v22l8 3z"/>
+      <path d="M80 18v3M80 49v3M72 19.5h4M84 19.5h4M72 50.5h4M84 50.5h4M22 28v14M28 35h18"/>
+      <ellipse ${W} cx="105" cy="16" rx="3" ry="1.6"/><ellipse ${W} cx="105" cy="54" rx="3" ry="1.6"/>
+    </svg>`;
+    const RACE = `<svg viewBox="0 0 160 70" aria-hidden="true">
+      <g class="zd-speed"><path d="M-20 22h14M-24 35h18M-18 48h12"/></g>
+      <path d="M46 26L34 17M46 44L34 53M40 30L34 17M40 40L34 53M104 31L119 18M104 39L119 52M110 32L119 18M110 38L119 52" stroke-width="1"/>
+      ${tire(23, 5, 22, 13)}${tire(23, 52, 22, 13)}${tire(111, 8, 17, 11)}${tire(111, 51, 17, 11)}
+      <rect ${W} x="9" y="14" width="9" height="42" rx="1.5"/><path d="M13.5 15v40M9 22h9M9 48h9" stroke-width=".7"/>
+      <path ${W} d="M18 29L50 22L68 15L94 17L104 28L138 31Q150 35 138 39L104 42L94 53L68 55L50 48L18 41Z"/>
+      <path d="M68 15l-6 7M68 55l-6-7M94 17l-4 6M94 53l-4-6M40 35h34M104 35h40" stroke-width=".8"/>
+      <path ${W} d="M139 12h9v46h-9z"/><path d="M142 13v44M145 13v44" stroke-width=".7"/>
+      <ellipse ${W} cx="84" cy="35" rx="11" ry="6.5"/><circle cx="82" cy="35" r="4" fill="#1a1a1a"/>
+      <path d="M74 29.5q20-1 20 5.5t-20 5.5" stroke-width="1.8"/>
+      <rect ${W} x="94" y="24" width="4" height="2.5" rx="1"/><rect ${W} x="94" y="43.5" width="4" height="2.5" rx="1"/>
+      <circle ${W} cx="124" cy="35" r="3.2"/>
+    </svg>`;
     const car = (k, art, name, rows) => `
       <div class="zd-car" data-host="${k}"><span class="zd-tag"></span><strong>${name}</strong>
         <div class="zd-car-art">${art}<div class="zd-road"></div></div>
