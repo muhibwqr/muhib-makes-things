@@ -22,10 +22,11 @@ const D = {
     const CH = `stroke="#c9ccd1"`, GL = `fill="#16181c"`;
     const OLD = `<svg viewBox="0 0 160 70" aria-hidden="true">
       <g class="zd-puff"><circle cx="2" cy="44" r="3"/><circle cx="-5" cy="47" r="4"/><circle cx="-13" cy="44" r="3"/></g>
-      <path fill="#8b1e1e" stroke="#4a0f0f" d="M16 16Q12 35 16 54Q20 61 40 61H120Q144 61 148 50Q151 35 148 20Q144 9 120 9H40Q20 9 16 16Z"/>
-      <path fill="none" stroke="#b03a3a" stroke-width="1" d="M146 29Q122 27 100 31M146 41Q122 43 100 39M140 13Q130 18 128 12M140 57Q130 52 128 58"/>
+      <path fill="#3776ab" stroke="#1f4f7a" d="M16 16Q12 35 16 54Q20 61 40 61H120Q144 61 148 50Q151 35 148 20Q144 9 120 9H40Q20 9 16 16Z"/>
+      <path fill="none" stroke="#ffd43b" stroke-width="1" d="M146 29Q122 27 100 31M146 41Q122 43 100 39M140 13Q130 18 128 12M140 57Q130 52 128 58"/>
       <path fill="none" ${CH} stroke-width="1" d="M22 11.5H122M22 58.5H122"/>
-      <rect fill="none" stroke="#5a1414" stroke-width="1" x="20" y="16" width="32" height="38" rx="5"/>
+      <image href="/zown/python.webp" x="24" y="23" width="24" height="24"/>
+      <rect fill="none" stroke="#24577f" stroke-width="1" x="20" y="16" width="32" height="38" rx="5"/>
       <rect ${GL} ${CH} stroke-width="1.6" x="56" y="14" width="40" height="42" rx="7"/>
       <rect fill="#2a2c31" stroke="#3d4047" stroke-width=".8" x="62" y="17" width="24" height="16" rx="4"/>
       <rect fill="#2a2c31" stroke="#3d4047" stroke-width=".8" x="62" y="37" width="24" height="16" rx="4"/>
@@ -39,18 +40,19 @@ const D = {
     </svg>`;
     const RACE = `<svg viewBox="0 0 160 70" aria-hidden="true">
       <g class="zd-speed"><path d="M-18 20h14M-22 35h18M-16 50h12"/></g>
-      <path fill="#d7262b" stroke="#8a1216" d="M14 20Q12 35 14 50Q16 61 34 62L60 61Q67 64 77 62L118 60Q140 58 148 48Q152 35 148 22Q140 12 118 10L77 8Q67 6 60 9L34 8Q16 9 14 20Z"/>
-      <path fill="none" stroke="#f0585c" stroke-width=".9" d="M146 35H112M116 14Q134 18 146 26M116 56Q134 52 146 44M20 22Q40 18 60 14M20 48Q40 52 60 56"/>
+      <path fill="#3178c6" stroke="#1d4f8a" d="M14 20Q12 35 14 50Q16 61 34 62L60 61Q67 64 77 62L118 60Q140 58 148 48Q152 35 148 22Q140 12 118 10L77 8Q67 6 60 9L34 8Q16 9 14 20Z"/>
+      <path fill="none" stroke="#7fb2ea" stroke-width=".9" d="M146 35H112M116 14Q134 18 146 26M116 56Q134 52 146 44M20 22Q40 18 60 14M20 48Q40 52 60 56"/>
       <path ${GL} d="M139 13Q146 16 148.5 23L145 22Q142 17 137 15ZM139 57Q146 54 148.5 47L145 48Q142 53 137 55Z"/>
       <path ${GL} d="M126 20l8 2-2 4-7-2zM126 50l8-2-2-4-7 2z"/>
       <path ${GL} d="M108 15Q114 35 108 55L86 53Q82 35 86 17Z"/>
       <path ${GL} d="M84 13.5L60 15L60 17L84 16.5ZM84 56.5L60 55L60 53L84 53.5Z"/>
       <path ${GL} d="M94 9l6-4 3 1-4 5zM94 61l6 4 3-1-4-5z"/>
       <rect ${GL} x="24" y="22" width="32" height="26" rx="6"/>
-      <path fill="none" stroke="#7a2a2c" stroke-width=".7" d="M29 24v22M34 24v22M39 24v22M44 24v22M49 24v22M26 35h28"/>
+      <path fill="none" stroke="#1d4f8a" stroke-width=".7" d="M29 24v22M34 24v22M39 24v22M44 24v22M49 24v22M26 35h28"/>
       <path fill="none" stroke="#16181c" stroke-width="1.1" d="M18 14l8 2M17 18l8 2M18 56l8-2M17 52l8-2"/>
       <circle fill="#d9dce0" stroke="#9aa0a8" stroke-width=".7" cx="36" cy="57" r="2.4"/>
       <rect fill="#e8c43a" x="148" y="34" width="1.6" height="2.2" rx=".4"/><circle fill="#e8c43a" cx="113" cy="12" r=".9"/><circle fill="#e8c43a" cx="113" cy="58" r=".9"/>
+      <image href="/zown/typescript.webp" x="113" y="27" width="16" height="16"/>
     </svg>`;
     const inner = (svg) => svg.replace(/^<svg[^>]*>|<\/svg>$/g, "");
     const WHY = {
@@ -69,7 +71,7 @@ const D = {
         ${carG("old", OLD)}${carG("new", RACE)}
       </svg>
       <div class="zd-over" aria-live="polite"><div class="zd-over-head"><img alt="" width="28" height="28"/><strong></strong></div><ul></ul><button type="button" class="zd-out">← zoom out</button></div></div>
-      <p class="zd-hint">click a car to look closer</p>`;
+      <p class="zd-hint">click a car to look closer <button type="button" class="zd-pick" data-pick="old">${OLD}python</button><button type="button" class="zd-pick" data-pick="new">${RACE}typescript</button></p>`;
     const svg = el.querySelector(".zd-track");
     el.querySelectorAll(".zd-paint > g").forEach((q) => {
       const ts = [...q.querySelectorAll("text")];
@@ -101,6 +103,7 @@ const D = {
       n.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), n.click()));
     });
     svg.addEventListener("click", () => ((zoomed = null), hl()));
+    el.querySelectorAll("[data-pick]").forEach((b) => b.addEventListener("click", () => el.querySelector(`[data-car="${b.dataset.pick}"]`).dispatchEvent(new MouseEvent("click", { bubbles: true }))));
     over.querySelector(".zd-out").addEventListener("click", () => ((zoomed = null), hl()));
     document.addEventListener("keydown", (e) => e.key === "Escape" && zoomed && ((zoomed = null), hl()));
     const SPEED = { old: 70, new: 210 }, Y = { old: 42, new: 102 }, START = { old: 120, new: 40 }, SPAN = 680;
