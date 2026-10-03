@@ -110,11 +110,12 @@ const D = {
     const SPEED = { old: 70, new: 210 }, Y = { old: 42, new: 102 }, START = { old: 120, new: 40 }, SPAN = 680;
     const g = { old: el.querySelector('[data-car="old"]'), new: el.querySelector('[data-car="new"]') };
     const xs = {};
-    const off = { old: 0, new: 0 }, drag = { old: null, new: null };
+    const off = { old: 0, new: 0 }, drag = { old: null, new: null }, extra = { old: 0, new: 0 };
     let lastMs = 0;
     Object.entries(g).forEach(([k, n]) => {
-      let x0 = 0, p0 = 0;
+      let x0 = 0, p0 = 0, v = 0, pt = 0, px = 0;
       n.addEventListener("pointerdown", (e) => {
+        v = 0; pt = e.timeStamp; px = e.clientX; extra[k] = 0;
         n.setPointerCapture(e.pointerId);
         x0 = xs[k];
         p0 = e.clientX;
@@ -126,19 +127,31 @@ const D = {
         const dx = (e.clientX - p0) / svg.getScreenCTM().a;
         if (Math.abs(dx) > 3) dragged = true;
         drag[k] = Math.min(640, Math.max(-40, x0 + dx));
+        const dt = (e.timeStamp - pt) / 1000;
+        if (dt > 0) v = 0.6 * v + 0.4 * ((e.clientX - px) / svg.getScreenCTM().a / dt);
+        pt = e.timeStamp; px = e.clientX;
         if (!animated) place(lastMs);
       });
       const drop = () => {
         if (drag[k] == null) return;
         off[k] = drag[k] + 40 - START[k] - (SPEED[k] * lastMs) / 1000;
         drag[k] = null;
+        const fling = performance.now() - pt > 90 ? 0 : Math.max(-1200, Math.min(1200, v));
+        if (dragged && animated) extra[k] = fling - SPEED[k];
       };
       n.addEventListener("pointerup", drop);
       n.addEventListener("pointercancel", drop);
     });
     let z = 0, last = null;
     const place = (ms) => {
+      const dt = Math.max(0, Math.min(0.05, (ms - lastMs) / 1000));
       lastMs = ms;
+      ["old", "new"].forEach((k) => {
+        if (!extra[k] || drag[k] != null) return;
+        off[k] += extra[k] * dt;
+        extra[k] *= Math.exp(-2.5 * dt);
+        if (Math.abs(extra[k]) < 1) extra[k] = 0;
+      });
       ["old", "new"].forEach((k) => {
         xs[k] = drag[k] != null ? drag[k] : ((((START[k] + off[k] + (SPEED[k] * ms) / 1000) % SPAN) + SPAN) % SPAN) - 40;
         g[k].setAttribute("transform", `translate(${xs[k].toFixed(1)} ${Y[k]})`);
