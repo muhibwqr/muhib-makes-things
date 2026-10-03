@@ -1464,7 +1464,11 @@ button.zd-node:hover { transform: translateY(-1px); border-color: #c9c9c5; }
 .zd-track .zd-lane-tag { font-size: 10px; fill: #999; letter-spacing: .08em; text-transform: uppercase; }
 .zd-ticks { stroke: #d9d9d4; stroke-width: 1; }
 .zd-paint text { font-size: 1px; font-weight: 700; fill: #a9a9a3; letter-spacing: .02em; }
-.zd-racer { cursor: zoom-in; outline: none; }
+.zd-racer { cursor: grab; outline: none; touch-action: none; }
+.zd-racer:active { cursor: grabbing; }
+.zd[data-zd="cutover"] { margin-top: 0; }
+.zd[data-zd="cutover"]::before { display: none; }
+.fig-noted:has(> .zd[data-zd="cutover"]) { margin-top: 28px !important; }
 .zd-stage { position: relative; }
 .zd-zoomed .zd-track { cursor: zoom-out; }
 .zd-over { position: absolute; top: 0; right: 0; bottom: 0; width: 52%; padding: 12px 18px 12px 40px; display: flex; flex-direction: column; justify-content: center; border-radius: 0 10px 10px 0; background: linear-gradient(90deg, rgba(233,233,229,0), rgba(255,255,255,.94) 22%); opacity: 0; transform: translateX(16px); pointer-events: none; transition: opacity .35s .15s, transform .35s .15s; }

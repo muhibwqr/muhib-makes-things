@@ -65,13 +65,13 @@ const D = {
         <rect x="-400" y="10" width="1400" height="120" fill="#e9e9e5"/>
         <path d="M-400 10H1000M-400 130H1000" stroke="#d6d6d1" stroke-width="1.5"/>
         <path d="M-400 70H1000" stroke="#fff" stroke-width="1.5" stroke-dasharray="14 10"/>
-        <text class="zd-lane-tag" x="8" y="26">python</text><text class="zd-lane-tag" x="8" y="86">typescript</text>
+        <text class="zd-lane-tag" x="8" y="26">python v0</text><text class="zd-lane-tag" x="8" y="86">typescript v1</text>
         <path class="zd-ticks" d="${Array.from({ length: 36 }, (_, i) => `M${-400 + i * 40} 10V130`).join("")}"/>
         <g class="zd-paint">${[["can you get me a cma", "on this home?"], ["what’s the difference", "between In-fill or", "Over-improved?"], ["is this in my budget?"]].map((ls, i) => `<g transform="translate(${150 + i * 165} 70) rotate(90)">${ls.map((l) => `<text text-anchor="middle">${l}</text>`).join("")}</g>`).join("")}</g>
         ${carG("old", OLD)}${carG("new", RACE)}
       </svg>
       <div class="zd-over" aria-live="polite"><div class="zd-over-head"><img alt="" width="28" height="28"/><strong></strong></div><ul></ul><button type="button" class="zd-out">← zoom out</button></div></div>
-      <p class="zd-hint">click a car to look closer <button type="button" class="zd-pick" data-pick="old">${OLD}python</button><button type="button" class="zd-pick" data-pick="new">${RACE}typescript</button></p>`;
+      <p class="zd-hint">click a car to look closer <button type="button" class="zd-pick" data-pick="old">${OLD}python v0</button><button type="button" class="zd-pick" data-pick="new">${RACE}typescript v1</button></p>`;
     const svg = el.querySelector(".zd-track");
     el.querySelectorAll(".zd-paint > g").forEach((q) => {
       const ts = [...q.querySelectorAll("text")];
@@ -81,13 +81,13 @@ const D = {
         t.setAttribute("y", ((i - (ts.length - 1) / 2) * fs * 1.15 + fs * 0.35).toFixed(1));
       });
     });
-    let zoomed = null;
+    let zoomed = null, dragged = false;
     const over = el.querySelector(".zd-over");
     const hl = () => {
       el.querySelectorAll("[data-car]").forEach((n) => n.classList.toggle("live", n.dataset.car === zoomed));
       el.classList.toggle("zd-zoomed", !!zoomed);
       if (zoomed) {
-        over.querySelector("strong").textContent = WHY[zoomed][0];
+        over.querySelector("strong").textContent = `${WHY[zoomed][0]} ${zoomed === "old" ? "v0" : "v1"}`;
         over.dataset.lang = WHY[zoomed][0];
         over.querySelector("img").src = `/zown/${WHY[zoomed][0]}.webp`;
         over.querySelector("ul").innerHTML = WHY[zoomed][1].map((w) => `<li>${w}</li>`).join("");
@@ -97,6 +97,7 @@ const D = {
       const k = n.dataset.car;
       n.addEventListener("click", (e) => {
         e.stopPropagation();
+        if (dragged) return void (dragged = false);
         zoomed = zoomed === k ? null : k;
         hl();
       });
@@ -109,10 +110,37 @@ const D = {
     const SPEED = { old: 70, new: 210 }, Y = { old: 42, new: 102 }, START = { old: 120, new: 40 }, SPAN = 680;
     const g = { old: el.querySelector('[data-car="old"]'), new: el.querySelector('[data-car="new"]') };
     const xs = {};
+    const off = { old: 0, new: 0 }, drag = { old: null, new: null };
+    let lastMs = 0;
+    Object.entries(g).forEach(([k, n]) => {
+      let x0 = 0, p0 = 0;
+      n.addEventListener("pointerdown", (e) => {
+        n.setPointerCapture(e.pointerId);
+        x0 = xs[k];
+        p0 = e.clientX;
+        drag[k] = x0;
+        dragged = false;
+      });
+      n.addEventListener("pointermove", (e) => {
+        if (drag[k] == null) return;
+        const dx = (e.clientX - p0) / svg.getScreenCTM().a;
+        if (Math.abs(dx) > 3) dragged = true;
+        drag[k] = Math.min(640, Math.max(-40, x0 + dx));
+        if (!animated) place(lastMs);
+      });
+      const drop = () => {
+        if (drag[k] == null) return;
+        off[k] = drag[k] + 40 - START[k] - (SPEED[k] * lastMs) / 1000;
+        drag[k] = null;
+      };
+      n.addEventListener("pointerup", drop);
+      n.addEventListener("pointercancel", drop);
+    });
     let z = 0, last = null;
     const place = (ms) => {
+      lastMs = ms;
       ["old", "new"].forEach((k) => {
-        xs[k] = ((START[k] + (SPEED[k] * ms) / 1000) % SPAN) - 40;
+        xs[k] = drag[k] != null ? drag[k] : ((((START[k] + off[k] + (SPEED[k] * ms) / 1000) % SPAN) + SPAN) % SPAN) - 40;
         g[k].setAttribute("transform", `translate(${xs[k].toFixed(1)} ${Y[k]})`);
       });
       if (zoomed) last = zoomed;
@@ -125,7 +153,8 @@ const D = {
       const cy = Math.min(130 - h / 2, Math.max(10 + h / 2, last ? 70 + (Y[last] - 70) * z : 70));
       svg.setAttribute("viewBox", `${(cx - w / 2).toFixed(1)} ${(cy - h / 2).toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
     };
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const animated = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!animated) {
       place(1500);
       el.querySelectorAll("[data-car]").forEach((n) => n.addEventListener("click", () => { z = zoomed ? 0.99 : 0.01; place(1500); }));
     } else {
