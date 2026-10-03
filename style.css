@@ -1686,3 +1686,30 @@ body.maker .article-prose .zd-packet img {
   .article-prose p > .tip::after { left: calc(100% + 58px); top: 0; width: 220px; max-width: none; transform: translateX(-4px) rotate(-2deg); }
   .article-prose p > .tip:hover::after, .article-prose p > .tip:focus::after { transform: rotate(-2deg); }
 }
+
+/* conveyor belt + press */
+.zd-press-stage { position: relative; }
+.zd-press { display: block; width: 100%; height: auto; }
+.zd-press path, .zd-press rect, .zd-press line, .zd-press circle { vector-effect: non-scaling-stroke; }
+.zd-p-frame { fill: #d9d9d4; stroke: #2a2a2a; stroke-width: 1.2; }
+.zd-p-cyl { fill: #bfbfb8; stroke: #2a2a2a; stroke-width: 1.2; }
+.zd-p-rod { fill: #e9e9e5; stroke: #2a2a2a; stroke-width: 1; }
+.zd-p-plate { fill: #3d3d3a; stroke: #2a2a2a; }
+.zd-p-scan { stroke: #e5484d; stroke-width: 1.5; transition: opacity .2s; }
+.zd-belt { fill: #3a3a38; }
+.zd-belt-top { stroke: #8a8a85; stroke-width: 2; stroke-dasharray: 6 6; }
+.zd-roll circle { fill: #bfbfb8; stroke: #2a2a2a; }
+.zd-roll line { stroke: #2a2a2a; }
+.zd-h-body { fill: #fff; stroke: #2a2a2a; stroke-width: 1.3; }
+.zd-h-roof { fill: #c9573f; stroke: #2a2a2a; stroke-width: 1.3; }
+.zd-h-door { fill: #6b4a33; }
+.zd-h-win { fill: #bfe0f5; stroke: #2a2a2a; stroke-width: 1; }
+.zd-ghost { transition: opacity .3s; }
+.zd-ghost * { fill: none; stroke: #e5484d; stroke-width: 1.2; stroke-dasharray: 4 3; }
+.zd-p-real { font: 600 12px var(--mono); fill: #e5484d; transition: opacity .3s; }
+.zd-p-addr { font: 12px var(--mono); fill: #666; }
+.zd-screen { position: absolute; top: 5%; right: 2%; width: 40%; min-height: 4.6em; box-sizing: border-box; padding: 8px 12px; border: 3px solid #3a3a38; border-radius: 8px; background: #14171a; box-shadow: inset 0 0 14px rgba(0,0,0,.6); color: #cfe8d6; font: 11.5px/1.5 var(--mono); white-space: pre; overflow: hidden; }
+.zd-screen.idle, .zd-screen.check { color: #9fb3a6; }
+.zd-screen.warn [data-l="0"] { color: #ff8a7a; }
+.zd-screen.ok [data-l="0"] { color: #7ee08f; }
+@media (max-width: 640px) { .zd-screen { position: static; width: auto; margin-top: 10px; } }

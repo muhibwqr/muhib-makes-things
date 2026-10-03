@@ -220,41 +220,95 @@ const D = {
   },
 
   signal(el) {
-    const ASK = 799900;
+    const EX = [[649000, 835000, "semi · leslieville"], [1199000, 1180000, "detached · etobicoke"], [499900, 699000, "condo · liberty village"], [875000, 910000, "town · markham"], [999000, 1390000, "detached · north york"]];
+    const k = (v) => (v >= 1e6 ? `$${(v / 1e6).toFixed(2).replace(/0$/, "")}M` : `$${Math.round(v / 1000)}k`);
+    const PX = 210, FL = 186, REST = 52, H = 50, T = 8.4;
+    const PH = `<path d="M-30 0V-32H30V0Z" class="zd-h-body"/><path d="M-35 -31L0 -50L35 -31Z" class="zd-h-roof"/><rect x="-6" y="-16" width="12" height="16" class="zd-h-door"/><rect x="-23" y="-26" width="10" height="9" class="zd-h-win"/><rect x="13" y="-26" width="10" height="9" class="zd-h-win"/>`;
+    const roll = (x) => `<g class="zd-roll" data-roll transform="translate(${x} ${FL + 9})"><circle r="6"/><line x1="-6" x2="6"/></g>`;
     el.innerHTML = `
       <div class="zd-head"><span class="zd-title">is this price a lure?</span></div>
-      <div class="zd-listing">
-        <div class="zd-listing-img"><img src="${SAMPLE}" alt="aerial photo of a sample toronto listing" loading="lazy" decoding="async" /><span class="zd-badge">likely sells over asking</span></div>
-        <div class="zd-listing-info"><small>sample listing</small><strong>${money(ASK)}</strong><span>remarks: “<em data-remark></em>”</span></div>
-      </div>
-      <div class="zd-row zd-col"><span>what similar homes sold for (cma) <strong data-cma></strong></span>
-        <input type="range" min="700000" max="1000000" step="5000" value="850000" aria-label="cma midpoint" /></div>
-      <div class="zd-row"><span>public remarks</span>${seg("remarks", [["anytime", "offers welcome anytime"], ["held", "offers held until a set date"]], "anytime")}</div>
-      <div class="zd-checks"><div data-c="gap"></div><div data-c="date"></div></div>
-      <div class="zd-out"></div>`;
-    const range = el.querySelector("input");
-    let held = false;
-    const render = () => {
-      const cma = +range.value, gap = cma - ASK, gapHit = gap >= 100000;
-      el.querySelector("[data-cma]").textContent = `${money(cma)} (${gap >= 0 ? "+" : "−"}${money(Math.abs(gap))} vs ask)`;
-      const chk = (k, ok, text) => {
-        const c = el.querySelector(`[data-c="${k}"]`);
-        c.className = ok ? "zd-ok" : "zd-no";
-        c.textContent = (ok ? "✓ " : "✗ ") + text;
-      };
-      chk("gap", gapHit, "similar homes sold for $100k+ more than the ask");
-      chk("date", held, "the listing holds offers until a set date");
-      const out = el.querySelector(".zd-out");
-      out.classList.toggle("warn", gapHit && held);
-      el.querySelector(".zd-listing").classList.toggle("warn", gapHit && held);
-      el.querySelector("[data-remark]").textContent = held ? "offers reviewed on a set date" : "offers welcome anytime";
-      out.textContent = gapHit && held
-        ? "both are true, so zoro adds a fixed heads-up, not a guess: this home is likely priced to draw offers and may sell above asking. a human on the team is flagged too."
-        : "no warning. one clue on its own isn't proof, and a false alarm is worse than saying nothing.";
+      <div class="zd-press-stage">
+        <svg viewBox="0 0 600 222" class="zd-press" role="img" aria-label="homes ride a conveyor belt into a press that checks the list price against what similar homes sold for">
+          <rect x="${PX - 78}" y="8" width="14" height="${FL - 6}" class="zd-p-frame"/>
+          <rect x="${PX + 64}" y="8" width="14" height="${FL - 6}" class="zd-p-frame"/>
+          <rect x="${PX - 78}" y="8" width="156" height="18" rx="3" class="zd-p-frame"/>
+          <rect x="${PX - 14}" y="24" width="28" height="18" class="zd-p-cyl"/>
+          <rect data-rod x="${PX - 6}" y="40" width="12" height="0" class="zd-p-rod"/>
+          <rect data-plate x="${PX - 58}" y="${REST - 12}" width="116" height="12" rx="2" class="zd-p-plate"/>
+          <rect x="10" y="${FL + 2}" width="580" height="14" rx="7" class="zd-belt"/>
+          <line data-belt x1="18" x2="582" y1="${FL + 3}" y2="${FL + 3}" class="zd-belt-top"/>
+          ${roll(17)}${roll(583)}
+          <line data-scan x1="${PX - 60}" x2="${PX + 60}" class="zd-p-scan"/>
+          <g data-ghost class="zd-ghost">${PH}</g>
+          <g data-house>${PH}</g>
+          <text data-real class="zd-p-real" text-anchor="middle"></text>
+          <text data-addr class="zd-p-addr" text-anchor="middle" y="${FL + 30}"></text>
+        </svg>
+        <div class="zd-screen"><div data-l="0"></div><div data-l="1"></div><div data-l="2"></div></div>
+      </div>`;
+    const $ = (s) => el.querySelector(s);
+    const house = $("[data-house]"), ghost = $("[data-ghost]"), plate = $("[data-plate]"), rod = $("[data-rod]"), scan = $("[data-scan]"), belt = $("[data-belt]"), real = $("[data-real]"), addrT = $("[data-addr]"), screen = $(".zd-screen"), rolls = el.querySelectorAll("[data-roll]");
+    const ease = (a) => (a <= 0 ? 0 : a >= 1 ? 1 : a * a * (3 - 2 * a));
+    let off = 0, lastX = null, lastKey = "";
+    const render = (t) => {
+      const i = Math.floor(t / T) % EX.length, u = t % T, [list, cma, addr] = EX[i], lure = list < 0.85 * cma, hS = H * Math.min(2, 1 + (cma / list - 1) * 2.5);
+      const sg = (a, b) => ease((u - a) / (b - a));
+      const x = u < 2.2 ? -50 + (PX + 50) * sg(0, 2.2) : u < 6.4 ? PX : PX + (660 - PX) * sg(6.4, 8.4);
+      let h = H, ram = REST;
+      if (lure) {
+        if (u >= 3 && u < 3.8) h = H + (hS - H) * sg(3, 3.8);
+        if (u >= 3.8 && u < 4.4) ram = REST + (FL - H * 0.8 - REST) * sg(3.8, 4.4);
+        else if (u >= 4.4 && u < 4.7) ram = FL - H * (0.8 + 0.2 * sg(4.4, 4.7));
+        else if (u >= 4.7 && u < 5.6) ram = FL - H;
+        else if (u >= 5.6 && u < 6.4) ram = FL - H + (REST - FL + H) * sg(5.6, 6.4);
+        if (u >= 3.8 && u < 4.7) h = Math.min(hS, FL - ram);
+      }
+      const sx = 1 + Math.max(0, (H - h) / H) * 1.5;
+      house.setAttribute("transform", `translate(${x.toFixed(1)} ${FL}) scale(${sx.toFixed(3)} ${(h / H).toFixed(3)})`);
+      const g = lure && u >= 3;
+      ghost.style.opacity = g ? 1 : 0;
+      ghost.setAttribute("transform", `translate(${x.toFixed(1)} ${FL}) scale(1 ${(hS / H).toFixed(3)})`);
+      real.style.opacity = g ? 1 : 0;
+      real.setAttribute("x", x.toFixed(1));
+      real.setAttribute("y", (FL - hS - 6).toFixed(1));
+      real.textContent = `real value ~${k(cma)}`;
+      addrT.setAttribute("x", x.toFixed(1));
+      addrT.textContent = `${addr} · list ${k(list)}`;
+      plate.setAttribute("y", (ram - 12).toFixed(1));
+      rod.setAttribute("height", Math.max(0, ram - 52).toFixed(1));
+      const sc = u > 2.2 && u < 3;
+      scan.style.opacity = sc ? 1 : 0;
+      const sy = FL - 25 + Math.sin(u * 14) * 22;
+      scan.setAttribute("y1", sy.toFixed(1));
+      scan.setAttribute("y2", sy.toFixed(1));
+      if (lastX != null && x >= lastX) off += x - lastX;
+      lastX = x;
+      belt.style.strokeDashoffset = (-off).toFixed(1);
+      rolls.forEach((r, j) => r.setAttribute("transform", `translate(${j ? 583 : 17} ${FL + 9}) rotate(${((off * 180) / (Math.PI * 6)) % 360})`));
+      const st = u < 2.2 ? "idle" : u < 3 || (lure && u < 4.4) ? "check" : lure ? "warn" : "ok";
+      const key = st + i;
+      if (key === lastKey) return;
+      lastKey = key;
+      const L = {
+        idle: [`next: ${addr}`, "waiting on the belt…", ""],
+        check: ["checking the price…", `list    ${k(list)}`, `similar ${k(cma)}`],
+        warn: [`⚠ ${Math.round((1 - list / cma) * 100)}% under similar homes`, `real value ~${k(cma)}`, "expect bids over asking"],
+        ok: ["✓ priced near similar homes", `list ${k(list)} · sold ~${k(cma)}`, "no warning needed"],
+      }[st];
+      screen.className = `zd-screen ${st}`;
+      screen.querySelectorAll("[data-l]").forEach((d, j) => (d.textContent = L[j]));
     };
-    range.addEventListener("input", render);
-    bindSeg(el, "remarks", (v) => { held = v === "held"; render(); });
-    render();
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return render(5);
+    let visible = false, t = 0, prev = 0;
+    new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(el);
+    const loop = (ms) => {
+      const dt = Math.min(0.05, (ms - prev) / 1000);
+      prev = ms;
+      if (visible) render((t += dt));
+      requestAnimationFrame(loop);
+    };
+    render(0);
+    requestAnimationFrame(loop);
   },
 
   api(el) {
@@ -464,7 +518,7 @@ const D = {
 };
 
 const TLDR = {
-  signal: "a low price alone means nothing. a price well under what similar homes sold for, plus “offers held until a date”, means it will likely sell over asking. so zoro warns the buyer with a fixed sentence instead of guessing.",
+  signal: "zoro checks each list price against what similar homes sold for. if it’s ridiculously under, the home is probably priced low to start a bidding war, so he tells the buyer to plan on going over asking.",
   api: "three lanes. listings flow into our own database, live searches hit the mls, and neighbourhood facts are prepared ahead of time. zoro asks once and gets one clean answer.",
   hubspot: "hubspot and our app each own their own data. every event lands on exactly one side, and anything that would blur the line is ignored.",
 };
