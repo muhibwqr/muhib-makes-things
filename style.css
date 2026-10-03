@@ -1467,7 +1467,7 @@ button.zd-node:hover { transform: translateY(-1px); border-color: #c9c9c5; }
 .zd-racer { cursor: grab; outline: none; touch-action: none; }
 .zd-racer:active { cursor: grabbing; }
 .zd[data-zd="cutover"] { margin-top: 0; }
-.zd[data-zd="cutover"]::before { display: none; }
+.zd[data-zd="cutover"]::before, .zd[data-zd="signal"]::before { display: none; }
 .fig-noted:has(> .zd[data-zd="cutover"]) { margin-top: 28px !important; }
 .zd-stage { position: relative; }
 .zd-zoomed .zd-track { cursor: zoom-out; }
@@ -1687,37 +1687,48 @@ body.maker .article-prose .zd-packet img {
   .article-prose p > .tip:hover::after, .article-prose p > .tip:focus::after { transform: rotate(-2deg); }
 }
 
-/* bidding game */
-.zd-bid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 16px; margin-top: 14px; }
-.zd-bid-card, .zd-bid-room { border: 1px solid #e3e3de; border-radius: 12px; background: #fff; padding: 14px 16px; }
-.zd-bid-card small { display: block; color: #777; font: 12px var(--mono); }
-.zd-bid-card strong { display: block; margin: 2px 0 10px; font-size: 22px; }
-.zd-bid-hist { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font: 12px var(--mono); color: #888; }
-.zd-bid-hist span { padding: 2px 7px; border-radius: 6px; background: #f1f1ee; }
-.zd-bid-hist span:not(.now) { text-decoration: line-through; }
-.zd-bid-hist span.now { background: #fde7e3; color: #b23a2a; }
-.zd-bid-hist i { font-style: normal; }
-.zd-bid-btns p { margin: 16px 0 8px; font-size: 13px; color: #555; }
-.zd-bid-btns { display: flex; flex-wrap: wrap; gap: 6px; }
-.zd-bid-btns p { flex-basis: 100%; }
-.zd-bid-btns button { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; padding: 7px 11px; border: 1px solid #ddd; border-radius: 9px; background: #fafaf8; font: 500 13px inherit; font-family: inherit; cursor: pointer; transition: transform .12s, border-color .12s; }
-.zd-bid-btns button em { font: normal 11px var(--mono); color: #888; }
-.zd-bid-btns button:hover:not(:disabled) { transform: translateY(-1px); border-color: #2a2a2a; }
-.zd-bid-btns button:disabled { opacity: .45; cursor: default; }
-.zd-bid-btns button.on { opacity: 1; border-color: #2a2a2a; background: #2a2a2a; color: #fff; }
-.zd-bid-btns button.on em { color: #ccc; }
-.zd-bid-feed { display: flex; flex-direction: column; gap: 6px; min-height: 120px; }
-.zd-bid-msg { align-self: flex-start; max-width: 92%; padding: 6px 10px; border-radius: 10px; background: #f1f1ee; font-size: 13px; animation: zdPop .25s ease-out; }
-.zd-bid-msg.idle { background: none; color: #999; padding-left: 0; }
-.zd-bid-msg.me { align-self: flex-end; background: #2a2a2a; color: #fff; }
-.zd-bid-msg.agent { background: #fff4d6; }
-.zd-bid-msg.rival { font-family: var(--mono); font-size: 12px; padding: 3px 9px; }
-.zd-bid-msg.win { background: #e3f6e7; color: #1d6b31; font-weight: 600; }
-.zd-bid-msg.lose { background: #fde7e3; color: #b23a2a; font-weight: 600; }
-.zd-bid-zoro { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: #14171a; color: #cfe8d6; font: 12px/1.6 var(--mono); animation: zdPop .3s ease-out; }
-.zd-bid-zoro small { display: block; color: #8aa093; margin-bottom: 4px; }
-.zd-bid-zoro div:last-of-type { color: #fff; font-weight: 600; }
-.zd-bid-zoro button { margin-top: 8px; padding: 3px 9px; border: 1px solid #3d4a42; border-radius: 6px; background: none; color: #cfe8d6; font: inherit; cursor: pointer; }
+/* imessage bidding game */
+.zd-im { position: relative; display: flex; flex-direction: column; max-width: 400px; height: 580px; margin: 16px auto 0; overflow: hidden; border: 1px solid #e3e3de; border-radius: 32px; background: #fff; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif; }
+.zd-im-top { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 0 10px; border-bottom: 1px solid #f0f0f0; background: #fafafa; }
+.zd-im-back { position: absolute; left: 10px; top: 14px; padding: 0 8px; border: 0; background: none; color: #222; font: 300 36px/1 inherit; font-family: inherit; cursor: pointer; }
+.zd-im-av { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(#a8aebb, #868b97); color: #fff; font-size: 19px; font-weight: 600; }
+.zd-im-name { font-size: 13px; font-weight: 600; }
+.zd-im-name i { color: #aaa; font-style: normal; }
+.zd-im-thread { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 16px; overflow-y: auto; scroll-behavior: smooth; }
+.zd-im-msg { max-width: 82%; color: #111; font-size: 16px; line-height: 1.35; animation: zdPop .25s ease-out; }
+.zd-im-msg.them { align-self: flex-start; }
+.zd-im-msg.me { align-self: flex-end; padding: 8px 14px; border-radius: 20px; background: #1a8cff; color: #fff; }
+.zd-im-msg.status { align-self: flex-end; margin-top: -6px; color: #999; font-size: 11px; }
+.zd-im-msg.time { align-self: center; color: #999; font-size: 11px; }
+.zd-im-msg.win b { color: #1d8a3a; }
+.zd-im-msg.lose b { color: #c0392b; }
+.zd-im-msg.typing { display: flex; gap: 4px; padding: 11px 13px; border-radius: 18px; background: #e9e9eb; }
+.zd-im-msg.typing span { width: 7px; height: 7px; border-radius: 50%; background: #999; animation: zdDot 1s infinite; }
+.zd-im-msg.typing span:nth-child(2) { animation-delay: .15s; }
+.zd-im-msg.typing span:nth-child(3) { animation-delay: .3s; }
+.zd-im-card { display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px; border-radius: 16px; background: #f1f1f3; }
+.zd-im-card img { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; }
+.zd-im-card small { display: block; color: #888; font: 11px var(--mono); }
+.zd-im-card b { display: block; font-size: 16px; }
+.zd-im-card span { color: #999; font: 11px var(--mono); }
+.zd-im-card em { font-style: normal; text-decoration: line-through; }
+.zd-im-card em.now { color: #c0392b; text-decoration: none; }
+.zd-im-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 8px 12px 0; }
+.zd-im-chips button { padding: 5px 12px; border: 1px solid #1a8cff; border-radius: 16px; background: #fff; color: #1a8cff; font: 500 13px inherit; font-family: inherit; cursor: pointer; transition: background .12s, color .12s; }
+.zd-im-chips button em { color: #7fb8ff; font: normal 11px var(--mono); }
+.zd-im-chips button:hover { background: #1a8cff; color: #fff; }
+.zd-im-chips button:hover em { color: #d6e9ff; }
+.zd-im-bar { margin: 8px 12px 14px; padding: 7px 14px; border: 1px solid #ddd; border-radius: 18px; color: #bbb; font-size: 14px; }
+.zd-im-banner { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 2; padding: 10px 14px 12px; border-radius: 16px; background: rgba(255, 255, 255, .97); box-shadow: 0 8px 28px rgba(0, 0, 0, .18); backdrop-filter: blur(12px); font-size: 14px; line-height: 1.35; cursor: pointer; animation: zdDrop .45s cubic-bezier(.2, .9, .3, 1.2); }
+.zd-im-banner[hidden] { display: none; }
+.zd-im-nhead { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; color: #777; font-size: 12px; letter-spacing: .04em; }
+.zd-im-nhead small { margin-left: auto; font-size: 12px; letter-spacing: 0; }
+.zd-im-ico { position: relative; width: 20px; height: 20px; border-radius: 5px; background: linear-gradient(#6be27f, #2fbf4a); }
+.zd-im-ico::after { content: ""; position: absolute; left: 4px; top: 5px; width: 12px; height: 9px; border-radius: 50%; background: #fff; }
+.zd-im-banner b { display: block; color: #111; }
+.zd-im-banner p { margin: 1px 0 0; color: #111; }
 @keyframes zdPop { from { opacity: 0; transform: translateY(4px); } }
-@media (prefers-reduced-motion: reduce) { .zd-bid-msg, .zd-bid-zoro { animation: none; } }
-@media (max-width: 640px) { .zd-bid { grid-template-columns: 1fr; } }
+@keyframes zdDrop { from { opacity: 0; transform: translateY(-120%); } }
+@keyframes zdDot { 0%, 60%, 100% { opacity: .3; transform: none; } 30% { opacity: 1; transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) { .zd-im-msg, .zd-im-banner, .zd-im-msg.typing span { animation: none; } }
+@media (max-width: 640px) { .zd-im { height: 540px; } }

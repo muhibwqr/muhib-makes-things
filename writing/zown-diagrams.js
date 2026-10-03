@@ -223,82 +223,93 @@ const D = {
     const k = (v) => (v >= 1e6 ? `$${(v / 1e6).toFixed(2).replace(/0$/, "")}M` : `$${Math.round(v / 1000)}k`);
     const S = {
       driver: {
-        label: "bid driver", list: 649000, cma: 835000, addr: "semi · leslieville",
-        hist: [["mar", 849000], ["may", 799000], ["now", 649000]],
+        list: 649000, addr: "semi · leslieville", hist: [["mar", 849000], ["may", 799000], ["now", 649000]],
         rivals: [661000, 690000, 712000, 745000, 778000, 805000, 842000],
+        open: "offers welcome! what are you thinking?",
         agent: "we have 7 offers, but for you we'd close asap",
-        zoro: ["listed 3× in 4 months", "price cut 24% to $649k", "similar homes sold ~$835k", "→ bid driver. plan near $835k, not $649k."],
+        zoro: "listed 3× in 4 months, price cut 24%. similar homes sold ~$835k. this is a bid driver: plan near $835k, not $649k.",
       },
       still: {
-        label: "stagnant", list: 829000, cma: 835000, addr: "semi · riverdale",
-        hist: [["now", 829000]],
+        list: 829000, addr: "semi · riverdale", hist: [["now", 829000]],
         rivals: [805000, 815000],
-        agent: "we're reviewing offers as they come in",
-        zoro: ["listed once, price unchanged", "close to what similar homes sold for (~$835k)", "→ no war expected. offer near asking."],
+        open: "we review offers as they come in. what are you thinking?",
+        agent: "we have a couple of offers in",
+        zoro: "listed once, price unchanged, close to what similar homes sold for (~$835k). no war expected: offer near asking.",
       },
     };
     const OFFERS = [["at asking", 0], ["+5%", 0.05], ["+15%", 0.15], ["+30%", 0.3]];
-    let mode = "driver", timers = [];
     const fast = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let mode = "driver", timers = [];
     el.innerHTML = `
       <div class="zd-head"><span class="zd-title">is this price a lure?</span></div>
       <div class="zd-row">${seg("seller", [["driver", "seller a"], ["still", "seller b"]], "driver")}</div>
-      <div class="zd-bid">
-        <div class="zd-bid-card">
-          <small data-addr></small>
-          <strong data-list></strong>
-          <div class="zd-bid-hist" data-hist></div>
-          <div class="zd-bid-btns" data-btns></div>
-        </div>
-        <div class="zd-bid-room" aria-live="polite">
-          <div class="zd-bid-feed" data-feed></div>
-          <div class="zd-bid-zoro" data-zoro hidden></div>
-        </div>
+      <div class="zd-im">
+        <div class="zd-im-top"><button type="button" class="zd-im-back" aria-label="back">‹</button><span class="zd-im-av" aria-hidden="true">LA</span><span class="zd-im-name">listing agent <i>›</i></span></div>
+        <div class="zd-im-banner" hidden></div>
+        <div class="zd-im-thread" aria-live="polite"></div>
+        <div class="zd-im-chips"></div>
+        <div class="zd-im-bar" aria-hidden="true">iMessage</div>
       </div>`;
-    const $ = (s) => el.querySelector(s);
+    const thread = el.querySelector(".zd-im-thread"), chips = el.querySelector(".zd-im-chips"), banner = el.querySelector(".zd-im-banner");
     const later = (ms, fn) => timers.push(setTimeout(fn, fast ? 0 : ms));
-    const line = (cls, html) => {
+    const notif = (name, text) => `<div class="zd-im-nhead"><span class="zd-im-ico" aria-hidden="true"></span>MESSAGES<small>now</small></div><b>${name}</b><p>${text}</p>`;
+    const add = (cls, html) => {
       const d = document.createElement("div");
-      d.className = `zd-bid-msg ${cls}`;
+      d.className = `zd-im-msg ${cls}`;
       d.innerHTML = html;
-      $("[data-feed]").append(d);
+      thread.append(d);
+      thread.scrollTop = thread.scrollHeight;
+      return d;
+    };
+    const say = (t, html, cls = "") => {
+      let dots;
+      later(t, () => (dots = add("typing", "<span></span><span></span><span></span>")));
+      later(t + 800, () => { dots?.remove(); add(`them ${cls}`, html); });
+      return t + 800;
+    };
+    const setChips = (html) => {
+      chips.innerHTML = html;
+      chips.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => play(+b.dataset.p)));
+      chips.querySelector("[data-again]")?.addEventListener("click", reset);
     };
     const reset = () => {
       timers.forEach(clearTimeout);
       timers = [];
       const s = S[mode];
-      $("[data-addr]").textContent = s.addr;
-      $("[data-list]").textContent = `listed at ${k(s.list)}`;
-      $("[data-hist]").innerHTML = s.hist.map(([m, p], i) => `${i ? "<i>→</i>" : ""}<span class="${i === s.hist.length - 1 ? "now" : ""}">${m} ${k(p)}</span>`).join("");
-      $("[data-btns]").innerHTML = `<p>you're the buyer. what do you offer?</p>` +
-        OFFERS.map(([t, p]) => `<button type="button" data-p="${p}">${t}<em>${k(s.list * (1 + p))}</em></button>`).join("");
-      $("[data-feed]").innerHTML = `<div class="zd-bid-msg idle">pick an offer to start the bidding</div>`;
-      $("[data-zoro]").hidden = true;
-      el.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => play(+b.dataset.p)));
+      banner.hidden = true;
+      thread.innerHTML = "";
+      add("them", `<div class="zd-im-card"><img src="${SAMPLE}" alt="" loading="lazy" decoding="async" /><div><small>${s.addr}</small><b>listed at ${k(s.list)}</b><span>${s.hist.map(([m, p], i) => `<em class="${i === s.hist.length - 1 ? "now" : ""}">${m} ${k(p)}</em>`).join(" → ")}</span></div></div>`);
+      add("them", s.open);
+      setChips(OFFERS.map(([t, p]) => `<button type="button" data-p="${p}">${t} <em>${k(s.list * (1 + p))}</em></button>`).join(""));
     };
     const play = (p) => {
-      const s = S[mode], mine = Math.round(s.list * (1 + p)), top = Math.max(...s.rivals);
-      el.querySelectorAll("[data-p]").forEach((b) => { b.disabled = true; b.classList.toggle("on", +b.dataset.p === p); });
-      $("[data-feed]").innerHTML = "";
-      line("me", `you offer <b>${k(mine)}</b>`);
-      let t = 500;
-      later(t, () => line("agent", `listing agent: “${s.agent}”`));
-      s.rivals.forEach((r, i) => later((t += 450), () => line("rival", `offer ${i + 2} <b>${k(r)}</b>`)));
-      const won = mine > top;
-      later((t += 700), () => {
-        const sold = won ? mine : top, over = sold - s.list;
-        line(won ? "win" : "lose", won
-          ? `you won at <b>${k(sold)}</b>${over > 0 ? `, ${k(over)} over asking` : ""}`
-          : `outbid. sold for <b>${k(sold)}</b>, ${k(over)} over asking`);
-      });
-      later((t += 600), () => {
-        const z = $("[data-zoro]");
-        z.innerHTML = `<small>what zoro told you before you bid</small>` + s.zoro.map((x) => `<div>${x}</div>`).join("") +
-          `<button type="button" data-again>↺ try again</button>`;
-        z.hidden = false;
-        z.querySelector("[data-again]").addEventListener("click", reset);
+      const s = S[mode], mine = Math.round(s.list * (1 + p)), top = Math.max(...s.rivals), won = mine > top;
+      setChips("");
+      add("me", `I'll offer ${k(mine)}`);
+      later(300, () => add("status", "Delivered"));
+      let t = say(600, s.agent);
+      later((t += 900), () => add("time", "a few days later"));
+      const sold = won ? mine : top, over = sold - s.list;
+      t = say(t + 600, won
+        ? `congrats, it's yours at <b>${k(sold)}</b>${over > 0 ? ` (${k(over)} over asking)` : ""}`
+        : `sorry, the seller went with another offer. it sold for <b>${k(sold)}</b>, ${k(over)} over asking.`, won ? "win" : "lose");
+      later(t + 700, () => {
+        banner.innerHTML = notif("zoro", s.zoro);
+        banner.hidden = false;
+        setChips(`<button type="button" data-again>↺ try again</button>`);
       });
     };
+    banner.addEventListener("click", () => (banner.hidden = true));
+    let peek;
+    el.querySelector(".zd-im-back").addEventListener("click", () => {
+      banner.hidden = true;
+      requestAnimationFrame(() => {
+        banner.innerHTML = notif("listing agent", "stop tryna see my messages lol");
+        banner.hidden = false;
+      });
+      clearTimeout(peek);
+      peek = setTimeout(() => (banner.hidden = true), 3000);
+    });
     bindSeg(el, "seller", (v) => { mode = v; reset(); });
     reset();
   },
