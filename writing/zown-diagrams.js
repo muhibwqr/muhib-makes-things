@@ -126,7 +126,7 @@ const D = {
         if (drag[k] == null) return;
         const dx = (e.clientX - p0) / svg.getScreenCTM().a;
         if (Math.abs(dx) > 3) dragged = true;
-        drag[k] = Math.min(570, Math.max(30, x0 + dx));
+        drag[k] = ((((x0 + dx + 40) % SPAN) + SPAN) % SPAN) - 40;
         const dt = (e.timeStamp - pt) / 1000;
         if (dt > 0) v = 0.6 * v + 0.4 * ((e.clientX - px) / svg.getScreenCTM().a / dt);
         pt = e.timeStamp; px = e.clientX;
@@ -154,12 +154,6 @@ const D = {
       });
       ["old", "new"].forEach((k) => {
         xs[k] = drag[k] != null ? drag[k] : ((((START[k] + off[k] + (SPEED[k] * ms) / 1000) % SPAN) + SPAN) % SPAN) - 40;
-        if (extra[k] && ((xs[k] < 30 && extra[k] + SPEED[k] < 0) || (xs[k] > 570 && extra[k] + SPEED[k] > 0))) {
-          const edge = xs[k] < 30 ? 30 : 570;
-          off[k] += edge - xs[k];
-          xs[k] = edge;
-          extra[k] = -0.5 * (extra[k] + SPEED[k]) - SPEED[k];
-        }
         g[k].setAttribute("transform", `translate(${xs[k].toFixed(1)} ${Y[k]})`);
       });
       if (zoomed) last = zoomed;
