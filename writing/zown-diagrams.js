@@ -64,12 +64,23 @@ const D = {
         <path d="M-400 70H1000" stroke="#fff" stroke-width="1.5" stroke-dasharray="14 10"/>
         <text class="zd-lane-tag" x="8" y="26">python</text><text class="zd-lane-tag" x="8" y="86">typescript</text>
         ${carG("old", OLD)}${carG("new", RACE)}
+        <g class="zd-bubbles">${["can you get me a cma on this home?", "what’s the difference between In-fill or Over-improved?", "is this in my budget?"].map((q) => `<g class="zd-bubble"><rect rx="7" height="15" y="62.5"/><text y="72.6">${q}</text></g>`).join("")}</g>
       </svg>
       <div class="zd-cars">
         ${card("old", "python", ["built fast on langchain to prove the idea worked", "the model wrote every answer itself, so each one needed quality checks and a confidence score", "ran on aws ec2, a machine we had to look after"])}
         ${card("new", "typescript", ["i redesigned the whole structure, on mastra", "deterministic tools do the work: fewer llm calls, more tool calls", "answers come from tools, so most of the extra checks went away", "runs on aws fargate, so aws keeps the container up"])}
       </div>`;
     const svg = el.querySelector(".zd-track");
+    const bs = [...el.querySelectorAll(".zd-bubble")];
+    const ws = bs.map((b) => b.querySelector("text").getComputedTextLength() + 14);
+    const gap = (600 - ws.reduce((a, b) => a + b, 0)) / (bs.length + 1);
+    bs.reduce((x, b, i) => {
+      b.querySelector("rect").setAttribute("x", x.toFixed(1));
+      b.querySelector("rect").setAttribute("width", ws[i].toFixed(1));
+      b.querySelector("text").setAttribute("x", (x + 7).toFixed(1));
+      b.style.animationDelay = `${i * 0.6}s`;
+      return x + ws[i] + gap;
+    }, gap);
     let hover = null, zoomed = null;
     const hl = () => {
       const k = zoomed || hover;
