@@ -432,3 +432,15 @@ body::after { content:""; position:fixed; top:0; right:0; bottom:0; left:0; z-in
 .proj-pause,.proj-mute { display:inline-grid; place-items:center; width:22px; height:22px; padding:0 }
 .event-card-wrap .proj-mute { width:20px; height:20px; padding:0 }
 .proj-pause svg,.proj-mute svg { display:block; width:10px; height:10px }
+.zd-tally { display: inline-flex; align-items: center; color: #777; font-size: 11.5px; }
+.zd-tally .zd-lamp { width: 8px; height: 8px; margin: 0 6px 0 12px; box-shadow: none; }
+
+/* ---------- site footer — hand-hatched clouds ---------- */
+.clouds-footer {
+  height: clamp(140px, 22vw, 340px);
+  margin-top: 64px;
+  background: url("/clouds.svg") center bottom / cover no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%);
+  mask-image: linear-gradient(to bottom, transparent, #000 45%);
+  pointer-events: none;
+}

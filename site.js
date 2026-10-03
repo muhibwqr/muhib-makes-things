@@ -1,9 +1,10 @@
 // draft shell: ∞↔m morph
-import { mountMasthead, ICONS, setVidIcon } from "./components.js";
+import { mountMasthead, mountClouds, ICONS, setVidIcon } from "./components.js";
 
 const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 mountMasthead();
+mountClouds();
 
 const morphPanel = document.querySelector(".morph-mini-stage");
 const artEl = document.getElementById("morph-art");

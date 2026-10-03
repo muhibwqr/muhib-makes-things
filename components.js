@@ -25,6 +25,14 @@ export function mountMasthead() {
     </nav>`;
 }
 
+export function mountClouds() {
+  if (document.querySelector(".clouds-footer")) return;
+  const el = document.createElement("div");
+  el.className = "clouds-footer";
+  el.setAttribute("aria-hidden", "true");
+  document.body.appendChild(el);
+}
+
 export function mountFooter(src = "/meadow.jpg") {
   const hills = document.createElement("div");
   hills.className = "hills-footer";

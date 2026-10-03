@@ -1606,3 +1606,13 @@ body.maker .article-prose .zd-packet img {
 .zd-state small { color: #777; font-size: 11.5px; }
 .zd-tally { display: inline-flex; align-items: center; color: #777; font-size: 11.5px; }
 .zd-tally .zd-lamp { width: 8px; height: 8px; margin: 0 6px 0 12px; box-shadow: none; }
+
+/* ---------- site footer — hand-hatched clouds ---------- */
+.clouds-footer {
+  height: clamp(140px, 22vw, 340px);
+  margin-top: 64px;
+  background: url("/clouds.svg") center bottom / cover no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%);
+  mask-image: linear-gradient(to bottom, transparent, #000 45%);
+  pointer-events: none;
+}

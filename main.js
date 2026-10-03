@@ -1,3 +1,5 @@
+import { mountClouds } from "./components.js";
+mountClouds();
 // ============================================================
 // muhib waqar — shared site script (every page loads this)
 // palette: #080705 black · #39A0ED blue bell · #304C89 dusk blue
