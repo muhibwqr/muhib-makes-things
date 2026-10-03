@@ -2,9 +2,8 @@
 // minimal: [ Index ] back-link top-left, title + meta, # section headings,
 // footer socials. no TOC, no breadcrumb trail, no byline.
 
-import { videoControls, mountClouds } from "./components.js";
+import { videoControls } from "./components.js";
 
-mountClouds();
 
 const SOCIALS = `
   <a href="mailto:muhib.waqar@uwaterloo.ca">email</a>
