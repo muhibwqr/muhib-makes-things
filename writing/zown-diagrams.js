@@ -1,3 +1,35 @@
+let actx;
+const sfx = (zoomIn) => {
+  try {
+    actx ||= new (window.AudioContext || window.webkitAudioContext)();
+    const a = actx, t = a.currentTime;
+    if (a.state === "suspended") a.resume();
+    const blip = a.createOscillator(), bg = a.createGain();
+    blip.type = "square";
+    blip.frequency.setValueAtTime(1800, t);
+    blip.frequency.exponentialRampToValueAtTime(600, t + 0.03);
+    bg.gain.setValueAtTime(0.08, t);
+    bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
+    blip.connect(bg).connect(a.destination);
+    blip.start(t);
+    blip.stop(t + 0.05);
+    const len = 0.45, buf = a.createBuffer(1, a.sampleRate * len, a.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const n = a.createBufferSource(), f = a.createBiquadFilter(), ng = a.createGain(), t0 = t + 0.04;
+    n.buffer = buf;
+    f.type = "bandpass";
+    f.Q.value = 1.2;
+    f.frequency.setValueAtTime(zoomIn ? 300 : 2400, t0);
+    f.frequency.exponentialRampToValueAtTime(zoomIn ? 2400 : 300, t0 + len);
+    ng.gain.setValueAtTime(0.0001, t0);
+    ng.gain.exponentialRampToValueAtTime(0.12, t0 + len * 0.6);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t0 + len);
+    n.connect(f).connect(ng).connect(a.destination);
+    n.start(t0);
+    n.stop(t0 + len);
+  } catch {}
+};
+
 // interactive diagrams for the zown writeup — each mounts into <div class="zd" data-zd="name">
 const money = (n) => "$" + n.toLocaleString("en-CA");
 const seg = (name, opts, on) =>
@@ -81,9 +113,11 @@ const D = {
         t.setAttribute("y", ((i - (ts.length - 1) / 2) * fs * 1.15 + fs * 0.35).toFixed(1));
       });
     });
-    let zoomed = null, dragged = false;
+    let zoomed = null, dragged = false, was = null;
     const over = el.querySelector(".zd-over");
     const hl = () => {
+      if (zoomed !== was) sfx(!!zoomed);
+      was = zoomed;
       el.querySelectorAll("[data-car]").forEach((n) => n.classList.toggle("live", n.dataset.car === zoomed));
       el.classList.toggle("zd-zoomed", !!zoomed);
       if (zoomed) {
