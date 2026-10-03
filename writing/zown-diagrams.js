@@ -257,101 +257,6 @@ const D = {
     render();
   },
 
-  stage(el) {
-    el.innerHTML = `
-      <div class="zd-head"><span class="zd-title">what can zoro do for this buyer, right now?</span></div>
-      <div class="zd-row zd-col"><span>did they fill the qualification form?</span>
-        ${seg("form", [["none", "never filled"], ["fail", "filled · score short"], ["pass", "filled · passed"]], "none")}</div>
-      <div class="zd-row zd-col"><span>where are they in the sales pipeline (hubspot)?</span>
-        ${seg("journey", [["none", "no deal"], ["deal", "deal · has an agent"], ["contract", "under contract"], ["hold", "on hold"], ["unknown", "unknown stage"]], "none")}</div>
-      <div class="zd-out zd-state"><div data-state></div><small data-why></small></div>
-      <div class="zd-rules"></div>
-      <div class="zd-controls">
-        <div class="zd-player">
-          <button type="button" data-p="prev" aria-label="previous case">&lsaquo;</button>
-          <button type="button" data-p="play" aria-label="play">&#9654;</button>
-          <button type="button" data-p="next" aria-label="next case">&rsaquo;</button>
-          <span class="zd-count"></span>
-        </div>
-        <span class="zd-tally"></span>
-      </div>
-      <div class="zd-limits"><span>never submits, counters, or negotiates</span><span>no internal jargon to clients</span><span>never passes a verdict on the buyer</span><span>never says “you don’t qualify”, but can say what a lender may think of a specific price</span></div>
-      <div class="zd-note">a simplified slice of the real rulebook: eleven actions × seven buyer types. if any cell is left empty, the code won't build.</div>`;
-    // [form, journey, why]
-    const CASES = [
-      ["none", "none", "never filled the form, no deal: no showing until the form is done."],
-      ["fail", "none", "filled but scored short: omar's call. completing the form is the gate, so showings unlock."],
-      ["pass", "none", "filled and passed: a qualified lead."],
-      ["pass", "deal", "passed, but there's a deal: journey outranks the score. they have an agent."],
-      ["fail", "contract", "under contract: no new searches volunteered, hand them to their account manager."],
-      ["none", "hold", "on hold: nurture them, don't treat them as a fresh lead."],
-      ["none", "unknown", "a stage we don't recognize? assume they have an agent. when unsure, do less."],
-    ];
-    const ACTIONS = ["encourage a sale showing", "volunteer a new search", "treat as a fresh lead", "nudge to their account manager"];
-    el.querySelector(".zd-rules").innerHTML = ACTIONS
-      .map((a, n) => `<div class="zd-row zd-rule" data-r="${n}"><span><i class="zd-lamp"></i><span class="zd-act">${a}</span></span><small></small></div>`).join("");
-    const rows = [...el.querySelectorAll(".zd-rule")];
-    const playBtn = el.querySelector('[data-p="play"]'), count = el.querySelector(".zd-count");
-    let form = "none", journey = "none", c = 0, timer = null, why = CASES[0][2];
-
-    const syncSeg = (name, v) => el.querySelectorAll(`[data-seg="${name}"] button`).forEach((b) => b.classList.toggle("on", b.dataset.v === v));
-    const render = () => {
-      const j = journey === "unknown" ? "deal" : journey;
-      const formDone = form !== "none";
-      const state = {
-        none: formDone ? (form === "pass" ? "qualified lead" : "lead · form completed") : "lead · no form yet",
-        deal: "has an agent",
-        contract: "under contract",
-        hold: "on hold",
-      }[j];
-      el.querySelector("[data-state]").innerHTML = `this buyer is: <strong>${state}</strong>`;
-      el.querySelector("[data-why]").textContent = why;
-      const agent = j === "deal" || j === "contract";
-      const verdicts = [
-        [formDone, formDone ? "completing the form is the gate, passing it is not" : "the app would refuse it, so zoro won't offer it"],
-        [j !== "contract", j === "contract" ? "not while under contract" : "fine"],
-        [j === "none", j === "hold" ? "nurture instead" : agent ? "past the lead stage, they have an agent" : "fine"],
-        [agent, agent ? "they already have a human" : "not yet"],
-      ];
-      let green = 0;
-      verdicts.forEach(([ok, note], n) => {
-        const row = rows[n], lamp = row.querySelector(".zd-lamp");
-        if (ok) green++;
-        if (lamp.classList.contains("ok") !== ok || !lamp.className.includes(" ")) {
-          lamp.className = `zd-lamp ${ok ? "ok" : "no"}`;
-          void lamp.offsetWidth; lamp.classList.add("flip");
-        }
-        row.classList.toggle("is-ok", ok);
-        row.querySelector("small").textContent = note;
-      });
-      el.querySelector(".zd-tally").innerHTML = `<i class="zd-lamp ok"></i>${green} allowed <i class="zd-lamp no"></i>${4 - green} blocked`;
-    };
-    const goCase = (to) => {
-      c = (to + CASES.length) % CASES.length;
-      [form, journey, why] = CASES[c];
-      syncSeg("form", form); syncSeg("journey", journey);
-      count.textContent = `case ${c + 1} / ${CASES.length}`;
-      render();
-    };
-    const stop = () => { clearInterval(timer); timer = null; playBtn.innerHTML = "&#9654;"; playBtn.setAttribute("aria-label", "play"); };
-    const play = () => {
-      playBtn.innerHTML = "&#10073;&#10073;"; playBtn.setAttribute("aria-label", "pause");
-      timer = setInterval(() => goCase(c + 1), 2800);
-    };
-    const manual = () => { stop(); why = "your pick."; count.textContent = "custom"; render(); };
-    bindSeg(el, "form", (v) => { form = v; manual(); });
-    bindSeg(el, "journey", (v) => { journey = v; manual(); });
-    el.addEventListener("click", (e) => {
-      const p = e.target.closest("[data-p]");
-      if (!p) return;
-      if (p.dataset.p === "play") return timer ? stop() : play();
-      stop();
-      goCase(c + (p.dataset.p === "next" ? 1 : -1));
-    });
-    goCase(0);
-    new IntersectionObserver((en, io) => { if (en[0].isIntersecting) { play(); io.disconnect(); } }, { threshold: 0.5 }).observe(el);
-  },
-
   api(el) {
     const N = {
       feeds: ["board feeds", "the real estate boards (trreb, itso) send us their listings."],
@@ -560,7 +465,6 @@ const D = {
 
 const TLDR = {
   signal: "a low price alone means nothing. a price well under what similar homes sold for, plus “offers held until a date”, means it will likely sell over asking. so zoro warns the buyer with a fixed sentence instead of guessing.",
-  stage: "two facts decide it: did they fill the form, and where are they in the sales pipeline. the pipeline wins, because a buyer with a deal already has a human agent.",
   api: "three lanes. listings flow into our own database, live searches hit the mls, and neighbourhood facts are prepared ahead of time. zoro asks once and gets one clean answer.",
   hubspot: "hubspot and our app each own their own data. every event lands on exactly one side, and anything that would blur the line is ignored.",
 };
