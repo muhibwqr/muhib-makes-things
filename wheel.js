@@ -59,14 +59,14 @@ export function initWheel(root, items, { label = "", action = "", onOpen } = {})
 
   const measure = () => {
     const w = stage.clientWidth, h = stage.clientHeight;
-    const cardW = Math.min(h * CARD_H * CARD_RATIO, w * CARD_MAX_W);
+    const cardW = Math.min(h * CARD_H * CARD_RATIO, w * (w < 640 ? 0.62 : CARD_MAX_W));
     const cardH = cardW / CARD_RATIO;
     const ringR = cardH * RING_R;
     metrics = {
       cardW, cardH, ringR,
       ringScale: count ? clamp((((2 * Math.PI * ringR) / count) * 0.7) / (cardW || 1), 0.16, 1) : 1,
       drumR: cardH * DRUM,
-      bow: cardH * BOW,
+      bow: cardH * BOW * (w < 640 ? 0.3 : 1),
       title: cardH * TITLE,
       index: cardH * INDEX,
     };
@@ -139,7 +139,9 @@ export function initWheel(root, items, { label = "", action = "", onOpen } = {})
       const d = i - pos;
       const card = cards[i];
       card.style.transform = place(d * (360 / count), d * STEP, ringR, drumR, bow, m);
-      card.style.opacity = m > 0.5 && Math.abs(d) > CULL ? "0" : "1";
+      const op = m > 0.5 ? (Math.abs(d) > CULL ? 0 : d < 0 ? clamp(1 + 2 * d, 0, 1) : 1) : 1;
+      card.style.opacity = String(op);
+      card.style.visibility = op < 0.05 ? "hidden" : "";
       card.style.zIndex = String(Math.round(100 - Math.abs(d) * 2));
       card.firstElementChild.style.transform = `scale(${lerp(ringScale, 1, m)})`;
     }
@@ -160,11 +162,14 @@ export function initWheel(root, items, { label = "", action = "", onOpen } = {})
     settling = setTimeout(() => to(Math.round(target)), SETTLE);
   }, { passive: false });
 
-  let drag = null, dragged = false, downI = -1;
+  let drag = null, dragged = false, downI = -1, units = DRAG_UNITS, vel = 0, lastT = 0;
   stage.addEventListener("pointerdown", (e) => {
-    if (e.target.closest(".wheel-chip-link")) return;
+    if (e.pointerType !== "touch" && e.target.closest(".wheel-chip-link")) return;
     drag = e.clientY;
     dragged = false;
+    units = e.pointerType === "touch" ? Math.max(180, stage.clientHeight * 0.4) : DRAG_UNITS;
+    vel = 0;
+    lastT = e.timeStamp;
     const card = e.target.closest(".wheel-card");
     downI = card ? +card.dataset.i : -1;
     stage.setPointerCapture(e.pointerId);
@@ -172,15 +177,22 @@ export function initWheel(root, items, { label = "", action = "", onOpen } = {})
   stage.addEventListener("pointermove", (e) => {
     if (drag === null) return;
     if (Math.abs(drag - e.clientY) > 4) dragged = true;
-    to(target + (drag - e.clientY) / DRAG_UNITS);
+    const step = (drag - e.clientY) / units, dt = Math.max(1, e.timeStamp - lastT);
+    vel = lerp(vel, step / dt, 0.4);
+    lastT = e.timeStamp;
+    to(target + step);
     drag = e.clientY;
   });
-  stage.addEventListener("pointerup", () => {
-    if (drag !== null && !dragged && downI >= 0) onOpen?.(items[downI]);
+  const release = (open) => {
+    if (drag === null) return;
+    if (open && !dragged && downI >= 0) onOpen?.(items[downI]);
+    const fling = performance.now() - lastT < 80 ? clamp(vel * 140, -1.5, 1.5) : 0;
     drag = null;
     downI = -1;
-    if (target > 1) to(Math.round(target));
-  });
+    to(Math.round(target + fling));
+  };
+  stage.addEventListener("pointerup", () => release(true));
+  stage.addEventListener("pointercancel", () => release(false));
   stage.addEventListener("keydown", (e) => {
     if (e.key === "ArrowDown") to(Math.round(target) + 1);
     else if (e.key === "ArrowUp") to(Math.round(target) - 1);

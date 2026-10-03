@@ -390,7 +390,7 @@ video.collage-cell { background:#101114;border-color:#2a2a2e }
   .collage-cell { height:120px }
 }
 .wheel-section { position:relative; width:100vw; margin-left:calc(50% - 50vw); height:calc(100vh - 150px); margin-top:6px; overflow:hidden; -webkit-user-select:none; user-select:none }
-.wheel-stage { position:absolute; top:0; right:0; bottom:0; left:0; z-index:1; cursor:grab; touch-action:pan-x; outline:none }
+.wheel-stage { position:absolute; top:0; right:0; bottom:0; left:0; z-index:1; cursor:grab; touch-action:none; overscroll-behavior:contain; outline:none }
 .wheel-stage:active { cursor:grabbing }
 .wheel-stage:focus-visible { outline:2px solid #1a1a1a; outline-offset:-4px }
 .wheel { position:absolute; top:50%; left:50%; transform-style:preserve-3d }
@@ -402,6 +402,7 @@ video.collage-cell { background:#101114;border-color:#2a2a2e }
 .wheel-chip { display:flex; align-items:center; gap:4px; padding:4px 10px; border-radius:999px; background:#fafaf899; backdrop-filter:blur(12px) saturate(1.4); -webkit-backdrop-filter:blur(12px) saturate(1.4); border:1px solid rgba(0,0,0,0.28); font-size:.7rem; color:#1a1a1a; white-space:nowrap }
 a.wheel-chip-link { text-decoration:none; pointer-events:auto }
 a.wheel-chip-link:hover { background:#fff }
+@media(hover:none) { .wheel-chips { display:none } }
 .wheel-chip svg { width:10px; height:10px }
 .wheel-label { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; letter-spacing:-.02em; color:#1a1a1a }
 .wheel-title { position:absolute; top:50%; left:8%; transform:translateY(-50%); pointer-events:none; letter-spacing:-.02em; opacity:0; color:#1a1a1a; max-width:30% }
@@ -419,7 +420,8 @@ a.wheel-chip-link:hover { background:#fff }
 .wheel-media img.on,.wheel-media video.on { opacity:.6 }
 @media(max-width:720px) {
   .wheel,.wheel-label { left:50% }
-  .wheel-title,.wheel-index { display:none }
+  .wheel-index { display:none }
+  .wheel-title { top:calc(50% + min(31vw, 19vh) + 14px); left:50%; transform:translateX(-50%); width:86%; max-width:none; text-align:center; font-size:17px !important; line-height:1.25 }
 }
 body:has(>.hills-footer) { background:#fff }
 .hills-footer { position:relative; aspect-ratio:5 / 3; margin-top:-34vw; overflow:hidden; -webkit-mask-image:linear-gradient(to bottom,transparent,#000 40%); mask-image:linear-gradient(to bottom,transparent,#000 40%) }
