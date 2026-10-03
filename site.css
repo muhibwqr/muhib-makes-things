@@ -245,6 +245,7 @@ body:has(.home-bio) .masthead { max-width:560px; margin-left:auto; margin-right:
 .home-writings a { color:#1a1a1a; text-decoration:none; transition:color .18s }
 .home-writings a:hover { color:#1a1a1a; text-decoration:none }
 .home-writings span { flex:0 0 auto; font-size:11px; color:#1a1a1a }
+.home-writings .hw-tag { font-style:normal; font-size:11px; color:#888 }
 .writing-item .writeup-link:hover { color:#1a1a1a }
 .mem-open { color:#1a1a1a; text-decoration:underline; text-underline-offset:2px; text-decoration-color:#fff9 }
 .mem-open:hover { text-decoration-color:#1a1a1a }
