@@ -104,6 +104,7 @@
       <h3>mobile enhancements</h3>
       <p>A couple of weeks before the launch, my priorities shifted heavily: not only serving the AI reliably through the app, but also making the experience an <span class="tip" tabindex="0" data-by="— brian chesky" data-tip="a 5-star experience is just what you expected. picture the 6-, 7-, all the way to the absurd 11-star version, then work back to something you can actually ship that still feels magical.">eleven star</span> one.</p>
       <p>One thing I noticed was how our output was structured. Each answer had two parts: listings processed through our app, and a reply to the user’s question. At first we waited for both to finish before sending anything. That took almost 28 seconds, which was annoying, because the LLM’s reply was already done. So I enabled SSE (server-sent events) and split the response in two. The reply arrives first, the listing cards show a blank state, and the cards fill in shortly after.</p>
+      <p>I also created assets that redirected from the chat to the actual homes. Messing around with micro-interactions in the chat was enjoyable too, like being able to drag a suggested listing and drop it into the chat.</p>
 
       <h2>focus 2: api</h2>
       <p>Underneath everything was the data: an API that serves home data. Live search and filters, photos, property history, analytics, price estimates, alerts, and webhooks.</p>
