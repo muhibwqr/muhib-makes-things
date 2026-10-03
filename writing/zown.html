@@ -93,12 +93,11 @@
         <aside class="fig-note"><span class="fig-note-bracket" aria-hidden="true"></span>i worked on the mobile app with <br /><a href="https://www.linkedin.com/in/soadmoayer/" target="_blank" rel="noopener">soad</a>, <a href="https://www.linkedin.com/in/folarin-farinto/" target="_blank" rel="noopener">folarin</a>, <a href="https://www.linkedin.com/in/ali-nauf/" target="_blank" rel="noopener">ali</a>, <br /><a href="https://www.linkedin.com/in/asanka-pradeep-28318588/" target="_blank" rel="noopener">asanka</a> &amp; <a href="https://www.linkedin.com/in/bhagya-weerarathne-746b21165/" target="_blank" rel="noopener">bhagya</a> <span class="fig-note-ps">p.s. the whole app was shipped &amp; deployed in only 11 sprints!</span></aside>
       </div>
 
-      <h3>having the listing was one thing</h3>
-      <p>One of the hardest problems was the logic. Having the listing data was one thing. Knowing what to do with it was another.</p>
-      <p>In the market we worked in, sellers played one of two games. Some listed a home way too cheap, then came back with “I have five offers” to push the price up. Others listed at what they wanted and waited.</p>
-      <p>Zoro needed to tell those apart, and the price on its own wasn’t enough.</p>
-      <p>We never wrote a playbook for how sellers should list. We wrote the buyer’s side, because that’s the side Zoro plays. In a hot market, the listing agent holds every offer until a set date instead of reviewing them as they arrive. The list price is bait, and the home usually sells over asking. “Offers welcome anytime” means the opposite. And a false warning is worse than saying nothing.</p>
-      <p>So Zoro needed more than <code>listPrice</code>. We read the listing’s public remarks for an offer date, and pulled comparable sales to see whether similar homes went for $100k or more above the ask. When both showed up together, we didn’t leave it to the model’s judgement. Zoro added a fixed heads-up in his own voice and flagged a human. The price was a hint. The combination was the fact.</p>
+      <h3>market strategies and common tactics</h3>
+      <p>One of the most annoying problems wasn’t the logic. It was picking up on the strategies people tend to use when they list.</p>
+      <p>The first was driving a bid. A lot of sellers list a home ridiculously lower than it’s actually worth, so they get lots of offers. Then they drive the price up by telling one buyer they have seven offers, but for them they’ll close ASAP.</p>
+      <p>The second was stagnant. They would just list and wait until they got what they wanted.</p>
+      <p>There were a lot more of the first. The solution we found was to look at the history of how many times a property was listed. If it was listed more than once, we compared the pricing and ran an LLM call on the changes, with the different strategies as context.</p>
       <div class="zd" data-zd="signal"></div>
       <p class="noted" data-note="the key insight">That’s the pattern that kept coming back: <mark>don’t ask the language model to make up policy. Give it the extra inputs, then hard-code the dangerous sentence.</mark></p>
 
@@ -112,6 +111,8 @@
       <div class="zd" data-zd="stage"></div>
       <p class="noted" data-note="fail closed">We didn’t trust a prompt to remember any of this, so we enforced it in code. A check on incoming messages catches the never-allowed cases. The prompt only shows the rules that apply to this buyer right now. A second check reviews every reply before it goes out, and the model can’t talk its way past it. Even the HubSpot stages Zoro was allowed to change, he could only propose. We were never told how long buyers should sit in each stage, so we didn’t guess. <mark>Failing closed is what compliance looks like when you haven’t been told the rule.</mark></p>
       <p>Cadence (asking every three months, not every chat) we wrote down but never fully wired up. That’s part of the story too. Connecting AI to existing rules is a lot of plumbing, and some of the pipes are still capped.</p>
+
+      <p>A couple of weeks before the launch, my priorities shifted heavily: not only serving the AI reliably through the app, but also making the experience a <span class="tip" tabindex="0" data-tip="a term coined by rishard lol">ten star</span> one.</p>
 
       <h2>focus 2: api</h2>
       <p>Underneath everything was the data: an API that serves home data. Live search and filters, photos, property history, analytics, price estimates, alerts, and webhooks.</p>
