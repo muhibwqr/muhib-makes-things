@@ -423,82 +423,11 @@ const D = {
     cap.textContent = "pick a trip, or watch them run.";
     new IntersectionObserver((en, io) => { if (en[0].isIntersecting) { run("listing"); io.disconnect(); } }, { threshold: 0.4 }).observe(el);
   },
-
-  hubspot(el) {
-    // [label, side that owns the write ("app" | "hs" | null = stays level), weight, steps, result]
-    const E = {
-      submit: ["form submitted", "hs", "qualification lead", ["only approved fields, same from web and mobile", "<code>cid</code> and <code>zcid</code> treated as one field", "queued, so a retry can't send it twice"], "one lead per buyer in hubspot. after that, account managers own it. a glitchy retry never creates a duplicate."],
-      edit: ["form edited", "hs", "edit note", ["only approved fields", "queued, so a retry can't send it twice"], "saved with a different note title than a first submission, so fixing a typo doesn't trigger another sales call."],
-      stage: ["deal stage changed", "app", "deal stage", ["hubspot tells us", "we copy the stage name exactly"], "zoro now knows where the buyer is, straight from the deal."],
-      echo: ["hubspot echoes our own deal", null, "echo", ["hubspot tells us", "we recognize it as our own change"], "ignored, so nothing loops."],
-      claim: ["chat claims “highly qualified”", null, "HIGHLY_QUALIFIED", ["the chat app says the buyer is highly qualified"], "rejected. if the chat could set its own stage, it could talk the bot past every rule."],
-      admin: ["ops tool saves data", "app", "ops data", ["never talks to hubspot"], "two separate systems, on purpose. we chose not to sync them."],
-    };
-    el.innerHTML = `
-      <div class="zd-head"><span class="zd-title">who owns which data?</span><button type="button" class="zd-chip" data-reset>reset</button></div>
-      <div class="zd-chips">${Object.entries(E).map(([k, [label]]) => `<button type="button" class="zd-chip" data-e="${k}">${label}</button>`).join("")}</div>
-      <div class="zd-seesaw">
-        <span class="zd-bounce"></span>
-        <div class="zd-beam">
-          <div class="zd-pan" data-side="app"><span class="zd-weights"></span><span class="zd-pan-name">our app · our database</span></div>
-          <div class="zd-pan" data-side="hs"><span class="zd-weights"></span><span class="zd-pan-name">hubspot · the sales record</span></div>
-        </div>
-        <div class="zd-fulcrum" aria-hidden="true"></div>
-      </div>
-      <div class="zd-flow zd-steps"></div>
-      <div class="zd-out"></div>`;
-    const beam = el.querySelector(".zd-beam"), bounce = el.querySelector(".zd-bounce");
-    const active = new Set();
-    const show = (k) => {
-      const [, , , steps, result] = E[k] || [, , , [], "tap an event. it lands on whichever system owns that data."];
-      el.querySelector(".zd-steps").innerHTML = steps.map((s) => `<div class="zd-node">${s}</div>`).join(arrow);
-      el.querySelector(".zd-out").innerHTML = result;
-    };
-    const tilt = () => {
-      let d = 0;
-      active.forEach((k) => (d += E[k][1] === "hs" ? 1 : -1));
-      beam.style.transform = `rotate(${Math.max(-12, Math.min(12, d * 5))}deg)`;
-    };
-    const toggle = (k) => {
-      const [, side, weight] = E[k];
-      const chip = el.querySelector(`[data-e="${k}"]`);
-      if (!side) {
-        bounce.textContent = weight;
-        bounce.classList.remove("in"); void bounce.offsetWidth; bounce.classList.add("in");
-        chip.classList.add("on"); setTimeout(() => chip.classList.remove("on"), 900);
-        return show(k);
-      }
-      if (active.has(k)) {
-        active.delete(k);
-        el.querySelector(`[data-w="${k}"]`)?.remove();
-        chip.classList.remove("on");
-        show([...active].pop());
-      } else {
-        active.add(k);
-        const w = document.createElement("span");
-        w.className = "zd-weight in"; w.dataset.w = k; w.textContent = weight;
-        el.querySelector(`.zd-pan[data-side="${side}"] .zd-weights`).appendChild(w);
-        chip.classList.add("on");
-        show(k);
-      }
-      tilt();
-    };
-    el.addEventListener("click", (e) => {
-      if (e.target.closest("[data-reset]")) {
-        [...active].forEach(toggle);
-        return show();
-      }
-      const b = e.target.closest("[data-e]");
-      if (b) toggle(b.dataset.e);
-    });
-    toggle("submit");
-  },
 };
 
 const TLDR = {
   signal: "sellers play one of two games: list low and start a bidding war, or list at the real price and wait. zoro reads the listing history to tell them apart before the buyer bids.",
   api: "three subway lines. listings flow into our own database, live searches go out to the mls, and neighbourhood facts are prepared ahead of time. they all meet at zoro.",
-  hubspot: "hubspot and our app each own their own data. every event lands on exactly one side, and anything that would blur the line is ignored.",
 };
 
 document.querySelectorAll(".zd[data-zd]").forEach((el) => {
