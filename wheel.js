@@ -86,11 +86,20 @@ export function initWheel(root, items, { label = "", action = "", onOpen } = {})
 
   const to = (next) => { target = clamp(next, 0, last + 1); };
 
+  let shown = -1;
   const setActive = (i) => {
     if (i === active) return;
     active = i;
     titleName.textContent = items[i]?.title || "";
     titleDate.textContent = items[i]?.date || "";
+    cards.forEach((c, j) => c.setAttribute("aria-selected", String(j === i)));
+    indexBtns.forEach((b, j) => b.classList.toggle("on", j === i));
+  };
+
+  // media strip is only visible once the drum is open — don't fetch it before
+  const showMedia = (i) => {
+    if (i === shown) return;
+    shown = i;
     const html = (items[i].mediaSmall || items[i].media || []).map((p) =>
       /\.(mp4|mov|m4v)$/i.test(p)
         ? `<video src="${p}" autoplay muted loop playsinline preload="metadata"></video>`
@@ -112,8 +121,6 @@ export function initWheel(root, items, { label = "", action = "", onOpen } = {})
       v.readyState >= 2 ? mark() : v.addEventListener("loadeddata", mark, { once: true });
       v.play().catch(() => {});
     });
-    cards.forEach((c, j) => c.setAttribute("aria-selected", String(j === i)));
-    indexBtns.forEach((b, j) => b.classList.toggle("on", j === i));
   };
   setActive(0);
 
@@ -140,6 +147,7 @@ export function initWheel(root, items, { label = "", action = "", onOpen } = {})
     titleEl.style.opacity = String(m);
     mediaEl.style.opacity = String(m);
     setActive(clamp(Math.round(pos), 0, last));
+    if (m > 0.5 && Math.abs(target - turn) < 0.02) showMedia(active);
   };
   requestAnimationFrame(draw);
 

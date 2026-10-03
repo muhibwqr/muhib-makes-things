@@ -43,35 +43,35 @@
         date: "sep 8",
         guests: "~40",
         url: "https://luma.com/lg8m6jdc",
-        poster: "/events/reframing-time.jpg",
+        poster: "/events/reframing-time.webp",
       },
       {
         name: "brothers' basketball run",
         date: "aug 26",
         guests: "~12",
         url: "https://luma.com/z74klokb",
-        poster: "/events/basketball-run.jpg",
+        poster: "/events/basketball-run.webp",
       },
       {
         name: "how can muslims build the systems society needs?",
         date: "aug 5",
         guests: "~50",
         url: "https://luma.com/jgfwskfl",
-        poster: "/events/systems-society.jpg",
+        poster: "/events/systems-society.webp",
       },
       {
         name: "brothers' charity basketball run",
         date: "jul 16",
         guests: "~15",
         url: "https://luma.com/nc129qcx",
-        poster: "/events/charity-basketball.jpg",
+        poster: "/events/charity-basketball.webp",
       },
       {
         name: "how to build a personal brand with intention & impact",
         date: "jul 4",
         guests: "~40",
         url: "https://luma.com/qdbafeld",
-        poster: "/events/personal-brand.jpg",
+        poster: "/events/personal-brand.webp",
         desc: "In a time where everyone is encouraged to \"build in public\", Muslims need to ask a deeper question: how do we build a public presence without losing sight of intention, character and responsibility? A blended workshop with ISNA Canada — Islamic reflections plus a hands-on personal branding session, concluding before Dhuhr with congregational prayer.",
         photos: [
           "/events/personal-brand/1.jpg",
@@ -90,7 +90,7 @@
         date: "jun 2",
         guests: "~80",
         url: "https://luma.com/ogrdj5uw",
-        poster: "/events/maghrib-majlis.jpg",
+        poster: "/events/maghrib-majlis.webp",
         photos: [
           "/events/maghrib-majlis/1.jpg",
           "/events/maghrib-majlis/2.jpg",
@@ -116,7 +116,7 @@
         venue: "zown hq",
         url: "https://luma.com/o0przvpl",
         desc: "we know that ai is changing how we work, learn, create and build. but muslims need more than productivity hacks, tool lists and trend predictions — we need to understand how these tools work, how to use them well and how to think clearly about where they belong in a muslim life. 87 attended; 109 more sat on the waitlist.",
-        poster: "/events/using-ai.jpg",
+        poster: "/events/using-ai.webp",
         photos: [
           "/events/using-ai/C6911.mp4",
           "/events/using-ai/C6914.mp4",
@@ -135,7 +135,7 @@
         date: "jan 24",
         guests: "348",
         url: "https://luma.com/otrho3gh",
-        poster: "/events/ummahhacks.jpg",
+        poster: "/events/ummahhacks.webp",
         desc: "a mission-driven hackathon connecting canada's most motivated muslim talent with mentors, companies, and opportunities — where ethical thinking, technical skill, and community-first innovation come together. 348 builders at builders club, kitchener.",
         photos: [
           "/events/ummahhacks/recap.mp4",
@@ -199,7 +199,7 @@
       });
       grid.innerHTML = lbItems.map((p) =>
         /\.(mp4|mov|m4v)$/i.test(p)
-          ? `<video class="collage-cell" src="${p}" autoplay muted loop playsinline preload="metadata"></video>`
+          ? `<video class="collage-cell" src="${thumbOf(p)}" autoplay muted loop playsinline preload="metadata"></video>`
           : `<img class="collage-cell" src="${thumbOf(p)}" alt="" loading="lazy" decoding="async" />`
       ).join("");
       const io = new IntersectionObserver((entries) => {
@@ -243,10 +243,10 @@
     // works wheel — ring of posters; scroll turns it into a drum, click the
     // front card to open that event's collage
     // /events/<dir>/<file>.jpg -> /events/thumbs/<dir>-<file>.jpg
-    const thumbOf = (p) => /\.(jpe?g|png)$/i.test(p) ? p.replace(/^\/events\/([^/]+)\/(.+)$/i, "/events/thumbs/$1-$2") : p;
+    const thumbOf = (p) => /\.(jpe?g|png|mp4)$/i.test(p) ? p.replace(/^\/events\/([^/]+)\/(.+)$/i, "/events/thumbs/$1-$2") : p;
     const wheelItems = EVENTS.map((e, i) => ({
       title: e.name, date: e.date, image: e.poster, href: e.url,
-      media: e.photos || [], mediaSmall: (e.photos || []).map(thumbOf), i,
+      media: e.photos || [], mediaSmall: (e.photos || []).filter((p) => !/recap/.test(p)).map(thumbOf), i,
     })).reverse();
     initWheel(
       document.getElementById("wheel"),
