@@ -227,14 +227,14 @@ const D = {
         rivals: [661000, 690000, 712000, 745000, 778000, 805000, 842000],
         open: "offers welcome! what are you thinking?",
         agent: "we have 7 offers, but for you we'd close asap",
-        zoro: "listed 3× in 4 months, price cut 24%. similar homes sold ~$835k. this is a bid driver: plan near $835k, not $649k.",
+        zoro: "the seller listed low on purpose to start a bidding war, then pushes buyers with “7 offers”. listed 3× in 4 months, price cut 24%, similar homes sold ~$835k. plan near $835k, not $649k.",
       },
       still: {
         list: 829000, addr: "semi · riverdale", hist: [["now", 829000]],
         rivals: [805000, 815000],
         open: "we review offers as they come in. what are you thinking?",
         agent: "we have a couple of offers in",
-        zoro: "listed once, price unchanged, close to what similar homes sold for (~$835k). no war expected: offer near asking.",
+        zoro: "the seller priced at what they want and is waiting for it. listed once, price unchanged, close to similar sales (~$835k). no war expected: offer near asking.",
       },
     };
     const OFFERS = [["at asking", 0], ["+5%", 0.05], ["+15%", 0.15], ["+30%", 0.3]];
@@ -249,8 +249,8 @@ const D = {
         <div class="zd-im-thread" aria-live="polite"></div>
         <div class="zd-im-chips"></div>
         <div class="zd-im-bar" aria-hidden="true">iMessage</div>
-      </div>
-      <p class="zd-im-note">zown didn't officially launch on imessage. this is from a file i was just messing around with.</p>`;
+      </div>`;
+    el.insertAdjacentHTML("afterend", `<p class="zd-im-note">* zown didn't officially launch on imessage. this is from a file i was just messing around with.</p>`);
     const thread = el.querySelector(".zd-im-thread"), chips = el.querySelector(".zd-im-chips"), banner = el.querySelector(".zd-im-banner");
     const later = (ms, fn) => timers.push(setTimeout(fn, fast ? 0 : ms));
     const notif = (name, text) => `<div class="zd-im-nhead"><span class="zd-im-ico" aria-hidden="true"></span>MESSAGES<small>now</small></div><b>${name}</b><p>${text}</p>`;
@@ -322,133 +322,106 @@ const D = {
       media: ["photos", "photos arrive separately. no published photo, no listing on the app."],
       ingest: ["clean-up", "puts every listing in the same format and pins the address on a map."],
       pg: ["database", "postgres. every listing in one shape. price changes spotted here trigger alerts."],
-      listapi: ["listings api", "what the app reads from. it only talks to our database, and gives each listing page a price estimate."],
+      listapi: ["listings api", "what the app reads from. it only talks to our database."],
       app: ["buyer app", "the map, the filters, the published photos."],
       zoro: ["zoro", "the agent, mid whatsapp turn."],
-      client: ["one connector", "zoro's only door to an mls. switching providers means changing one file."],
-      repliers: ["live mls", "repliers: up-to-the-minute listings. in a chat, fresh matters, so sold history and photo search come from here."],
+      client: ["connector", "zoro's only door to an mls. switching providers means changing one file."],
+      repliers: ["live mls", "repliers: up-to-the-minute listings, because in a chat, fresh matters."],
       apple: ["apple maps", "turns an address into a point on the map."],
       osm: ["openstreetmap", "fills in what's nearby: parks, transit, shops."],
-      poi: ["nearby places", "a catalog of what's around every home, stored once (postgis). “what's within 1 km?” is a quick lookup, not a live call."],
-      local: ["area stats", "schools (eqao, fraser, catchments), census, climate, walk + transit scores, market stats. refreshed on a schedule, with a lock so two jobs never scrape the province twice."],
-      mv: ["summary table", "a materialized view: the home plus everything around it, pre-joined, in a shape zoro can read out loud."],
+      poi: ["nearby places", "a catalog of what's around every home, stored once (postgis)."],
+      local: ["area stats", "schools, census, climate, walk + transit scores, refreshed on a schedule."],
+      mv: ["summary table", "the home plus everything around it, pre-joined, in a shape zoro can read out loud."],
     };
-    const n = (k) => `<button type="button" class="zd-node" data-k="${k}">${N[k][0]}</button>`;
-    const stack = (...ks) => `<div class="zd-stack zd-stack-sm">${ks.map(n).join("")}</div>`;
+    const P = { feeds: [40, 60], media: [120, 60], ingest: [200, 60], pg: [280, 60], listapi: [360, 60], app: [440, 60], zoro: [400, 150], client: [480, 150], repliers: [560, 150], apple: [40, 220], osm: [120, 220], poi: [200, 220], local: [280, 220], mv: [360, 220] };
+    const C = { red: "#e5484d", blue: "#2f7de1", green: "#2fa05a", grey: "#9a9a95" };
+    const LINES = [["red", ["feeds", "media", "ingest", "pg", "listapi", "app"]], ["blue", ["zoro", "client", "repliers"]], ["green", ["apple", "osm", "poi", "local", "mv", "zoro"]]];
+    const color = (a, b) => (LINES.find(([, s]) => s.some((x, i) => (x === a && (s[i + 1] === b || s[i - 1] === b))))?.[0]) || "grey";
+    const R = {
+      listing: ["a new listing hits the board", ["feeds", "media", "ingest", "pg", "listapi", "app"], "✓ the buyer sees it on the map, with photos."],
+      nophoto: ["…but it has no photo", ["feeds", "media"], "✗ no published photo, so it never reaches the app.", true],
+      search: ["“3-bed semis under $900k?”", ["zoro", "client", "repliers", "client", "zoro", "mv", "zoro"], "✓ live mls results, plus neighbourhood facts from one lookup."],
+      sparse: ["live results come up short", ["zoro", "client", "repliers", "client", "zoro", "pg", "zoro"], "✓ our own database tops up the list."],
+      nearby: ["“what's within 1 km?”", ["zoro", "mv", "zoro"], "✓ one quick lookup in the summary table. no live map calls."],
+      hood: ["nightly neighbourhood refresh", ["apple", "osm", "poi", "local", "mv"], "✓ everything around every home is pre-joined before anyone asks."],
+    };
+    const lab = (k) => {
+      const [x, y] = P[k], above = ["feeds", "ingest", "pg", "app", "osm", "local"].includes(k);
+      return `<text x="${x}" y="${above ? y - 16 : y + 26}" text-anchor="middle" class="zd-tm-lab${k === "zoro" ? " big" : ""}">${N[k][0]}</text>`;
+    };
+    const seg2 = (a, b, c, dash) => `<line x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}" stroke="${C[c]}" class="zd-tm-line${dash ? " dash" : ""}"/>`;
     el.innerHTML = `
-      <div class="zd-head"><span class="zd-title">where zoro's home facts come from</span>${seg("sc", [["listing", "a listing arrives"], ["ask", "a buyer asks zoro"], ["hood", "neighbourhood refresh"]], "listing")}</div>
-      <div class="zd-pipeline">
-        <div class="zd-lane"><span class="zd-lane-name">listings</span><div class="zd-flow">${stack("feeds", "media")}${arrow}${n("ingest")}${arrow}${n("pg")}${arrow}${n("listapi")}${arrow}${n("app")}</div></div>
-        <div class="zd-lane"><span class="zd-lane-name">live search</span><div class="zd-flow">${n("zoro")}${arrow}${n("client")}${arrow}${n("repliers")}</div></div>
-        <div class="zd-lane"><span class="zd-lane-name">neighbourhood</span><div class="zd-flow">${stack("apple", "osm")}${arrow}${stack("poi", "local")}${arrow}${n("mv")}</div></div>
-        <span class="zd-packet no-anim"></span>
-      </div>
-      <div class="zd-out" data-detail></div>
-      <div class="zd-controls">
-        <div class="zd-player">
-          <button type="button" data-p="prev" aria-label="previous step">&lsaquo;</button>
-          <button type="button" data-p="play" aria-label="play">&#9654;</button>
-          <button type="button" data-p="next" aria-label="next step">&rsaquo;</button>
-          <span class="zd-count"></span>
-        </div>
-        <div class="zd-toggles"></div>
-      </div>`;
-
-    const T = { photo: true, sparse: false, legacy: false };
-    const TOGGLES = { listing: [["photo", "has a published photo"]], ask: [["sparse", "live results come up short"], ["legacy", "switch back to the old order"]], hood: [] };
-    // each step: [node, packet label, explanation, dropped?]
-    const build = (sc) => {
-      if (sc === "listing") {
-        const head = [["feeds", "listing", "a real estate board publishes a new listing.", false, true], ["media", "photos", "its photos come in separately.", false, true]];
-        if (!T.photo) return [...head, ["media", "no photo", "no published photo, so it never shows up on the app.", true]];
-        return [...head,
-          ["ingest", "listing", "we clean it up and pin the address on a map.", false, true],
-          ["pg", "listing", "it's saved in our database. if the price changes later, buyers watching it get an alert.", false, true],
-          ["listapi", "listing", "the listings api reads only from our database. no outside calls.", false, true],
-          ["app", "home", "the buyer sees it on the map, in the filters, with photos.", false, true]];
-      }
-      if (sc === "ask") {
-        const first = T.legacy ? ["pg", "search", "switched back to the old order: our database answers first."] : ["repliers", "search", "first stop is the live mls, because in a chat, fresh beats fast."];
-        const topUp = T.legacy ? ["repliers", "top-up", "our database came up short, so the live mls fills in the rest."] : ["pg", "top-up", "the live mls came up short, so our database fills in the rest."];
-        return [
-          ["zoro", "search", "a buyer asks zoro for homes on whatsapp."],
-          ["client", "search", "the request goes through one connector, zoro's only door to an mls."],
-          first,
-          T.sparse ? topUp : [first[0], "results", "enough results came back. no top-up needed."],
-          ["mv", "homes", "for each home, one lookup in the summary table.", false, true],
-          ["zoro", "answer", "zoro answers with facts already prepared. no searching the web mid conversation.", false, true]];
-      }
-      return [
-        ["apple", "address", "apple maps turns the address into a point on the map."],
-        ["osm", "sweep", "openstreetmap finds what's nearby."],
-        ["poi", "pois", "both fill the nearby places catalog."],
-        ["local", "stats", "schools, census, climate, walk + transit and market stats refresh on a schedule."],
-        ["mv", "view", "everything is joined into one summary table."],
-        ["zoro", "1 query", "zoro asks “what's within 1 km?” and gets one quick answer. no live map calls."]];
-    };
-
-    const pipe = el.querySelector(".zd-pipeline"), packet = el.querySelector(".zd-packet");
-    const detail = el.querySelector("[data-detail]"), count = el.querySelector(".zd-count");
-    const playBtn = el.querySelector('[data-p="play"]');
-    let sc = "listing", steps = [], i = 0, timer = null;
-
-    const place = (k) => {
-      const c = pipe.getBoundingClientRect(), r = el.querySelector(`[data-k="${k}"]`).getBoundingClientRect();
-      packet.style.transform = `translate(${r.right - c.left}px, ${r.top - c.top}px) translate(-85%, -55%)`;
-    };
-    const go = (to) => {
-      i = Math.max(0, Math.min(steps.length - 1, to));
-      const [k, label, text, drop, pic] = steps[i];
-      const seen = new Set(steps.slice(0, i).map((st) => st[0]));
-      const order = {};
-      steps.forEach(([nk], j) => (order[nk] = order[nk] ? `${order[nk]}·${j + 1}` : `${j + 1}`));
-      el.querySelectorAll("[data-k]").forEach((b) => {
-        const nk = b.dataset.k;
-        b.classList.toggle("live", nk === k);
-        b.classList.toggle("done", nk !== k && seen.has(nk));
-        b.classList.toggle("off", !order[nk]);
-        order[nk] ? (b.dataset.n = order[nk]) : delete b.dataset.n;
-      });
-      el.querySelectorAll(".zd-lane").forEach((ln) => ln.classList.toggle("off-lane", !ln.querySelector("[data-n]")));
-      packet.innerHTML = (pic ? `<img src="${SAMPLE}" alt="" />` : HOUSE) + label;
-      packet.classList.toggle("pic", !!pic);
-      packet.classList.toggle("drop", !!drop);
-      place(k);
-      detail.innerHTML = `<span class="zd-step">step ${i + 1}</span>${text}`;
-      count.textContent = `${i + 1} / ${steps.length}`;
-    };
-    const stop = () => { clearInterval(timer); timer = null; playBtn.innerHTML = "&#9654;"; playBtn.setAttribute("aria-label", "play"); };
-    const play = () => {
-      if (i >= steps.length - 1) go(0);
-      playBtn.innerHTML = "&#10073;&#10073;"; playBtn.setAttribute("aria-label", "pause");
-      timer = setInterval(() => (i >= steps.length - 1 ? stop() : go(i + 1)), 1700);
-    };
-    const restart = () => {
-      stop();
-      steps = build(sc);
-      el.querySelector(".zd-toggles").innerHTML = TOGGLES[sc]
-        .map(([k, label]) => `<label><input type="checkbox" data-t="${k}"${T[k] ? " checked" : ""} /> ${label}</label>`).join("");
-      go(0);
-    };
-
-    bindSeg(el, "sc", (v) => { sc = v; restart(); });
-    el.addEventListener("change", (e) => { const t = e.target.closest("[data-t]"); if (t) { T[t.dataset.t] = t.checked; restart(); play(); } });
-    el.addEventListener("click", (e) => {
-      const p = e.target.closest("[data-p]");
-      if (p) {
-        if (p.dataset.p === "play") return timer ? stop() : play();
-        stop();
-        return go(i + (p.dataset.p === "next" ? 1 : -1));
-      }
-      const b = e.target.closest("[data-k]");
-      if (!b) return;
-      stop();
-      detail.innerHTML = `<strong>${N[b.dataset.k][0]}</strong>: ${N[b.dataset.k][1]}`;
+      <div class="zd-head"><span class="zd-title">where zoro's home facts come from</span></div>
+      <div class="zd-tm-chips">${Object.entries(R).map(([k, r]) => `<button type="button" data-r="${k}">${r[0]}</button>`).join("")}</div>
+      <div class="zd-tm-wrap"><svg viewBox="-20 -8 660 270" class="zd-tm" role="img" aria-label="a transit map with three lines meeting at zoro">
+        ${LINES.map(([c, s]) => s.slice(1).map((b, i) => seg2(s[i], b, c)).join("")).join("")}
+        ${seg2("pg", "zoro", "grey", true)}
+        ${Object.keys(P).map((k) => `<circle data-k="${k}" cx="${P[k][0]}" cy="${P[k][1]}" r="${k === "zoro" ? 11 : 7}" class="zd-tm-st"/>`).join("")}
+        ${Object.keys(P).map(lab).join("")}
+        <g data-train class="zd-tm-train"><rect x="-13" y="-7" width="26" height="14" rx="5"/><rect x="-8" y="-3" width="5" height="4" rx="1" class="w"/><rect x="2" y="-3" width="5" height="4" rx="1" class="w"/></g>
+      </svg></div>
+      <div class="zd-tm-legend"><span style="--c:${C.red}">listings</span><span style="--c:${C.blue}">live search</span><span style="--c:${C.green}">neighbourhood</span><span style="--c:${C.grey}" class="dash">transfer</span></div>
+      <div class="zd-out" data-cap></div>`;
+    const train = el.querySelector("[data-train]"), cap = el.querySelector("[data-cap]");
+    const fast = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let token = 0, auto = true;
+    const put = ([x, y]) => train.setAttribute("transform", `translate(${x} ${y})`);
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    const tween = (a, b, ms, my) => new Promise((done) => {
+      const t0 = performance.now();
+      const f = (now) => {
+        if (my !== token) return done();
+        const u = Math.min(1, (now - t0) / ms), e = u * u * (3 - 2 * u);
+        put([a[0] + (b[0] - a[0]) * e, a[1] + (b[1] - a[1]) * e]);
+        u < 1 ? requestAnimationFrame(f) : done();
+      };
+      requestAnimationFrame(f);
     });
-    addEventListener("resize", () => steps.length && place(steps[i][0]));
-    restart();
-    requestAnimationFrame(() => packet.classList.remove("no-anim"));
-    new IntersectionObserver((en, io) => { if (en[0].isIntersecting) { play(); io.disconnect(); } }, { threshold: 0.5 }).observe(el);
+    const st = (k, cls) => el.querySelector(`[data-k="${k}"]`).classList.add(cls);
+    const run = async (key) => {
+      const my = ++token, [, path, answer, drop] = R[key];
+      el.querySelectorAll("[data-r]").forEach((b) => b.classList.toggle("on", b.dataset.r === key));
+      el.querySelectorAll("[data-k]").forEach((c) => { c.classList.remove("on", "seen", "x"); c.style.fill = ""; });
+      train.classList.remove("gone");
+      const light = (k, c) => { el.querySelectorAll(".zd-tm-st.on").forEach((n) => { n.classList.replace("on", "seen"); n.style.fill = ""; }); st(k, "on"); el.querySelector(`[data-k="${k}"]`).style.fill = C[c]; };
+      const end = () => {
+        if (drop) { st(path.at(-1), "x"); train.classList.add("gone"); }
+        cap.className = `zd-out ${drop ? "warn" : ""}`;
+        cap.textContent = answer;
+      };
+      if (fast) { path.forEach((k) => st(k, "seen")); put(P[path.at(-1)]); return end(); }
+      const c0 = color(path[0], path[1]);
+      train.style.fill = C[c0];
+      put(P[path[0]]);
+      light(path[0], c0);
+      cap.className = "zd-out";
+      cap.innerHTML = `<strong>${N[path[0]][0]}</strong>: ${N[path[0]][1]}`;
+      for (let i = 1; i < path.length; i++) {
+        await sleep(650);
+        if (my !== token) return;
+        const c = color(path[i - 1], path[i]);
+        train.style.fill = C[c];
+        await tween(P[path[i - 1]], P[path[i]], 750, my);
+        if (my !== token) return;
+        light(path[i], c);
+        cap.innerHTML = `<strong>${N[path[i]][0]}</strong>: ${N[path[i]][1]}`;
+      }
+      await sleep(500);
+      if (my !== token) return;
+      end();
+      if (!auto) return;
+      await sleep(2600);
+      const ks = Object.keys(R);
+      if (my === token && auto) run(ks[(ks.indexOf(key) + 1) % ks.length]);
+    };
+    el.querySelector(".zd-tm-chips").addEventListener("click", (e) => { const b = e.target.closest("[data-r]"); if (b) { auto = false; run(b.dataset.r); } });
+    el.querySelector(".zd-tm").addEventListener("click", (e) => {
+      const c = e.target.closest("[data-k]");
+      if (c) cap.innerHTML = `<strong>${N[c.dataset.k][0]}</strong>: ${N[c.dataset.k][1]}`;
+    });
+    put(P.feeds);
+    cap.textContent = "pick a trip, or watch them run.";
+    new IntersectionObserver((en, io) => { if (en[0].isIntersecting) { run("listing"); io.disconnect(); } }, { threshold: 0.4 }).observe(el);
   },
 
   hubspot(el) {
@@ -524,7 +497,7 @@ const D = {
 
 const TLDR = {
   signal: "sellers play one of two games: list low and start a bidding war, or list at the real price and wait. zoro reads the listing history to tell them apart before the buyer bids.",
-  api: "three lanes. listings flow into our own database, live searches hit the mls, and neighbourhood facts are prepared ahead of time. zoro asks once and gets one clean answer.",
+  api: "three subway lines. listings flow into our own database, live searches go out to the mls, and neighbourhood facts are prepared ahead of time. they all meet at zoro.",
   hubspot: "hubspot and our app each own their own data. every event lands on exactly one side, and anything that would blur the line is ignored.",
 };
 
