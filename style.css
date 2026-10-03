@@ -1609,10 +1609,24 @@ body.maker .article-prose .zd-packet img {
 
 /* ---------- site footer — hand-hatched clouds ---------- */
 .clouds-footer {
-  height: clamp(140px, 22vw, 340px);
+  position: relative;
+  height: clamp(160px, 24vw, 360px);
   margin-top: 64px;
-  background: url("/clouds.svg") center bottom / cover no-repeat;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%);
-  mask-image: linear-gradient(to bottom, transparent, #000 45%);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%);
+  mask-image: linear-gradient(to bottom, transparent, #000 40%);
   pointer-events: none;
 }
+/* each layer is 3 tiles wide; sliding by one tile (-33.333%) loops seamlessly */
+.clouds-layer {
+  position: absolute; left: 0; bottom: 0; height: 100%;
+  aspect-ratio: 4800 / 420;
+  background: repeat-x left bottom / auto 100%;
+  animation: clouds-drift linear infinite;
+  will-change: transform;
+}
+.clouds-far { background-image: url("/clouds-far.svg"); animation-duration: 260s; }
+.clouds-near { background-image: url("/clouds-near.svg"); animation-duration: 140s; }
+.clouds-ground { position: absolute; inset: 0; background: url("/clouds-ground.svg") center bottom / cover no-repeat; }
+@keyframes clouds-drift { to { transform: translateX(-33.333%); } }
+@media (prefers-reduced-motion: reduce) { .clouds-layer { animation: none; } }

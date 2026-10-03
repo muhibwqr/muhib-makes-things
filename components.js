@@ -30,6 +30,7 @@ export function mountClouds() {
   const el = document.createElement("div");
   el.className = "clouds-footer";
   el.setAttribute("aria-hidden", "true");
+  el.innerHTML = `<div class="clouds-layer clouds-far"></div><div class="clouds-layer clouds-near"></div><div class="clouds-ground"></div>`;
   document.body.appendChild(el);
 }
 
