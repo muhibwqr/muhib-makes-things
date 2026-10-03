@@ -1727,6 +1727,7 @@ body.maker .article-prose .zd-packet img {
 .zd-im-ico::after { content: ""; position: absolute; left: 4px; top: 5px; width: 12px; height: 9px; border-radius: 50%; background: #fff; }
 .zd-im-banner b { display: block; color: #111; }
 .zd-im-banner p { margin: 1px 0 0; color: #111; }
+.zd-im-note { max-width: 400px; margin: 8px auto 0; color: #999; font-size: 11px; text-align: center; }
 @keyframes zdPop { from { opacity: 0; transform: translateY(4px); } }
 @keyframes zdDrop { from { opacity: 0; transform: translateY(-120%); } }
 @keyframes zdDot { 0%, 60%, 100% { opacity: .3; transform: none; } 30% { opacity: 1; transform: translateY(-2px); } }

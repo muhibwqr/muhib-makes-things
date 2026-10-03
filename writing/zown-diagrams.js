@@ -249,7 +249,8 @@ const D = {
         <div class="zd-im-thread" aria-live="polite"></div>
         <div class="zd-im-chips"></div>
         <div class="zd-im-bar" aria-hidden="true">iMessage</div>
-      </div>`;
+      </div>
+      <p class="zd-im-note">zown didn't officially launch on imessage. this is from a file i was just messing around with.</p>`;
     const thread = el.querySelector(".zd-im-thread"), chips = el.querySelector(".zd-im-chips"), banner = el.querySelector(".zd-im-banner");
     const later = (ms, fn) => timers.push(setTimeout(fn, fast ? 0 : ms));
     const notif = (name, text) => `<div class="zd-im-nhead"><span class="zd-im-ico" aria-hidden="true"></span>MESSAGES<small>now</small></div><b>${name}</b><p>${text}</p>`;
