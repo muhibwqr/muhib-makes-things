@@ -1,50 +1,4 @@
 let actx;
-let engine;
-const engineStop = () => {
-  if (!engine) return;
-  const { a, out, nodes } = engine, t = a.currentTime;
-  out.gain.cancelScheduledValues(t);
-  out.gain.setValueAtTime(out.gain.value, t);
-  out.gain.linearRampToValueAtTime(0, t + 0.4);
-  nodes.forEach((n) => n.stop(t + 0.45));
-  engine = null;
-};
-const engineStart = (fast) => {
-  try {
-    engineStop();
-    actx ||= new (window.AudioContext || window.webkitAudioContext)();
-    const a = actx, t = a.currentTime;
-    if (a.state === "suspended") a.resume();
-    const base = fast ? 95 : 48;
-    const out = a.createGain(), lp = a.createBiquadFilter();
-    lp.type = "lowpass";
-    lp.frequency.value = fast ? 900 : 420;
-    out.gain.setValueAtTime(0, t);
-    out.gain.linearRampToValueAtTime(0.07, t + 0.5);
-    lp.connect(out).connect(a.destination);
-    const o1 = a.createOscillator(), o2 = a.createOscillator();
-    o1.type = "sawtooth";
-    o2.type = "square";
-    o1.frequency.setValueAtTime(base * 0.7, t);
-    o1.frequency.exponentialRampToValueAtTime(base, t + 0.6);
-    o2.frequency.setValueAtTime(base * 0.35, t);
-    o2.frequency.exponentialRampToValueAtTime(base / 2 + 1.5, t + 0.6);
-    const g2 = a.createGain();
-    g2.gain.value = 0.5;
-    o1.connect(lp);
-    o2.connect(g2).connect(lp);
-    const lfo = a.createOscillator(), depth = a.createGain();
-    lfo.frequency.value = fast ? 0.9 : 0.4;
-    depth.gain.value = base * 0.08;
-    lfo.connect(depth);
-    depth.connect(o1.frequency);
-    depth.connect(o2.frequency);
-    const nodes = [o1, o2, lfo];
-    nodes.forEach((n) => n.start(t));
-    engine = { a, out, nodes };
-  } catch {}
-};
-
 const sfx = (zoomIn) => {
   try {
     actx ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -162,10 +116,7 @@ const D = {
     let zoomed = null, dragged = false, was = null;
     const over = el.querySelector(".zd-over");
     const hl = () => {
-      if (zoomed !== was) {
-        sfx(!!zoomed);
-        zoomed && !matchMedia("(prefers-reduced-motion: reduce)").matches ? engineStart(zoomed === "new") : engineStop();
-      }
+      if (zoomed !== was) sfx(!!zoomed);
       was = zoomed;
       el.querySelectorAll("[data-car]").forEach((n) => n.classList.toggle("live", n.dataset.car === zoomed));
       el.classList.toggle("zd-zoomed", !!zoomed);
