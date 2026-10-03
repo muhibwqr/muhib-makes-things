@@ -241,8 +241,7 @@ const D = {
     const fast = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let mode = "driver", timers = [];
     el.innerHTML = `
-      <div class="zd-head"><span class="zd-title">is this price a lure?</span></div>
-      <div class="zd-row">${seg("seller", [["driver", "seller a"], ["still", "seller b"]], "driver")}</div>
+      <div class="zd-row">${seg("seller", [["driver", "seller a (bidding war)"], ["still", "seller b (waiting)"]], "driver")}</div>
       <div class="zd-im">
         <div class="zd-im-top"><button type="button" class="zd-im-back" aria-label="back">‹</button><span class="zd-im-av" aria-hidden="true">LA</span><span class="zd-im-name">listing agent <i>›</i></span></div>
         <div class="zd-im-banner" hidden></div>
@@ -439,7 +438,6 @@ const D = {
 };
 
 const TLDR = {
-  signal: "sellers play one of two games: list low and start a bidding war, or list at the real price and wait. zoro reads the listing history to tell them apart before the buyer bids.",
   api: "three subway lines. listings flow into our own database, live searches go out to the mls, and neighbourhood facts are prepared ahead of time. they all meet at zoro.",
 };
 
