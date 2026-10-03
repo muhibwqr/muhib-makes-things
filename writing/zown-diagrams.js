@@ -305,7 +305,7 @@ const D = {
     el.querySelector(".zd-im-back").addEventListener("click", () => {
       banner.hidden = true;
       requestAnimationFrame(() => {
-        banner.innerHTML = notif("listing agent", "stop tryna see my messages lol");
+        banner.innerHTML = notif("muhib", "stop tryna see my messages lol");
         banner.hidden = false;
       });
       clearTimeout(peek);
