@@ -19,37 +19,38 @@ const HOUSE = `<svg class="zd-house" viewBox="0 0 16 16" width="11" height="11" 
 
 const D = {
   cutover(el) {
-    const tire = (x, y, w, h) =>
-      `<rect class="zd-tire" x="${x}" y="${y}" width="${w}" height="${h}" rx="2"/><path class="zd-tread" d="M${x + 1} ${y + h / 2}H${x + w - 1}"/>`;
-    const W = `fill="#fff"`;
+    const CH = `stroke="#c9ccd1"`, GL = `fill="#16181c"`;
     const OLD = `<svg viewBox="0 0 160 70" aria-hidden="true">
-      <g class="zd-puff"><circle cx="-2" cy="44" r="3"/><circle cx="-9" cy="46" r="4"/><circle cx="-17" cy="43" r="3"/></g>
-      ${tire(30, 7, 18, 9)}${tire(30, 54, 18, 9)}${tire(110, 7, 18, 9)}${tire(110, 54, 18, 9)}
-      <ellipse ${W} cx="39" cy="17" rx="15" ry="5.5"/><ellipse ${W} cx="39" cy="53" rx="15" ry="5.5"/>
-      <ellipse ${W} cx="119" cy="17" rx="15" ry="5.5"/><ellipse ${W} cx="119" cy="53" rx="15" ry="5.5"/>
-      <rect ${W} x="16" y="18" width="128" height="34" rx="10"/>
-      <path d="M13 23q-2 12 0 24M147 22q2 13 0 26" stroke-width="2"/>
-      <circle ${W} cx="9" cy="35" r="6"/><circle cx="9" cy="35" r="2.2"/>
-      <circle ${W} cx="140" cy="18" r="2.6"/><circle ${W} cx="140" cy="52" r="2.6"/>
-      <path d="M114 35h28M118 24h6M118 27h6M118 43h6M118 46h6M128 24h6M128 27h6M128 43h6M128 46h6"/>
-      <path ${W} d="M101 21l8 3v22l-8 3z"/><path d="M103 24v22" stroke-width=".7"/>
-      <rect ${W} x="58" y="21" width="43" height="28" rx="4"/><path d="M66 22v26M93 22v26" stroke-width=".7"/>
-      <path ${W} d="M58 21l-8 3v22l8 3z"/>
-      <path d="M80 18v3M80 49v3M72 19.5h4M84 19.5h4M72 50.5h4M84 50.5h4M22 28v14M28 35h18"/>
-      <ellipse ${W} cx="105" cy="16" rx="3" ry="1.6"/><ellipse ${W} cx="105" cy="54" rx="3" ry="1.6"/>
+      <g class="zd-puff"><circle cx="2" cy="44" r="3"/><circle cx="-5" cy="47" r="4"/><circle cx="-13" cy="44" r="3"/></g>
+      <path fill="#8b1e1e" stroke="#4a0f0f" d="M16 16Q12 35 16 54Q20 61 40 61H120Q144 61 148 50Q151 35 148 20Q144 9 120 9H40Q20 9 16 16Z"/>
+      <path fill="none" stroke="#b03a3a" stroke-width="1" d="M146 29Q122 27 100 31M146 41Q122 43 100 39M140 13Q130 18 128 12M140 57Q130 52 128 58"/>
+      <path fill="none" ${CH} stroke-width="1" d="M22 11.5H122M22 58.5H122"/>
+      <rect fill="none" stroke="#5a1414" stroke-width="1" x="20" y="16" width="32" height="38" rx="5"/>
+      <rect ${GL} ${CH} stroke-width="1.6" x="56" y="14" width="40" height="42" rx="7"/>
+      <rect fill="#2a2c31" stroke="#3d4047" stroke-width=".8" x="62" y="17" width="24" height="16" rx="4"/>
+      <rect fill="#2a2c31" stroke="#3d4047" stroke-width=".8" x="62" y="37" width="24" height="16" rx="4"/>
+      <path fill="none" stroke="#45484f" stroke-width=".7" d="M67 18v14M72 18v14M77 18v14M67 38v14M72 38v14M77 38v14"/>
+      <rect fill="#3a2a22" x="64" y="33.2" width="26" height="3.6" rx="1"/>
+      <circle fill="none" ${CH} stroke-width="1.2" cx="90" cy="45" r="5"/>
+      <path fill="#cfe3ea" fill-opacity=".35" ${CH} stroke-width="2.4" d="M96 13Q105 35 96 57"/>
+      <path fill="none" ${CH} stroke-width="2.4" d="M149.5 18Q153.5 35 149.5 52M12 18Q8.5 35 12 52"/>
+      <circle fill="#eef1f4" stroke="#9aa0a8" stroke-width=".8" cx="145" cy="16" r="2.6"/><circle fill="#eef1f4" stroke="#9aa0a8" stroke-width=".8" cx="145" cy="54" r="2.6"/>
+      <circle fill="#c9ccd1" cx="150" cy="35" r="1.4"/>
     </svg>`;
     const RACE = `<svg viewBox="0 0 160 70" aria-hidden="true">
-      <g class="zd-speed"><path d="M-20 22h14M-24 35h18M-18 48h12"/></g>
-      <path d="M46 26L34 17M46 44L34 53M40 30L34 17M40 40L34 53M104 31L119 18M104 39L119 52M110 32L119 18M110 38L119 52" stroke-width="1"/>
-      ${tire(23, 5, 22, 13)}${tire(23, 52, 22, 13)}${tire(111, 8, 17, 11)}${tire(111, 51, 17, 11)}
-      <rect ${W} x="9" y="14" width="9" height="42" rx="1.5"/><path d="M13.5 15v40M9 22h9M9 48h9" stroke-width=".7"/>
-      <path ${W} d="M18 29L50 22L68 15L94 17L104 28L138 31Q150 35 138 39L104 42L94 53L68 55L50 48L18 41Z"/>
-      <path d="M68 15l-6 7M68 55l-6-7M94 17l-4 6M94 53l-4-6M40 35h34M104 35h40" stroke-width=".8"/>
-      <path ${W} d="M139 12h9v46h-9z"/><path d="M142 13v44M145 13v44" stroke-width=".7"/>
-      <ellipse ${W} cx="84" cy="35" rx="11" ry="6.5"/><circle cx="82" cy="35" r="4" fill="#1a1a1a"/>
-      <path d="M74 29.5q20-1 20 5.5t-20 5.5" stroke-width="1.8"/>
-      <rect ${W} x="94" y="24" width="4" height="2.5" rx="1"/><rect ${W} x="94" y="43.5" width="4" height="2.5" rx="1"/>
-      <circle ${W} cx="124" cy="35" r="3.2"/>
+      <g class="zd-speed"><path d="M-18 20h14M-22 35h18M-16 50h12"/></g>
+      <path fill="#d7262b" stroke="#8a1216" d="M14 20Q12 35 14 50Q16 61 34 62L60 61Q67 64 77 62L118 60Q140 58 148 48Q152 35 148 22Q140 12 118 10L77 8Q67 6 60 9L34 8Q16 9 14 20Z"/>
+      <path fill="none" stroke="#f0585c" stroke-width=".9" d="M146 35H112M116 14Q134 18 146 26M116 56Q134 52 146 44M20 22Q40 18 60 14M20 48Q40 52 60 56"/>
+      <path ${GL} d="M139 13Q146 16 148.5 23L145 22Q142 17 137 15ZM139 57Q146 54 148.5 47L145 48Q142 53 137 55Z"/>
+      <path ${GL} d="M126 20l8 2-2 4-7-2zM126 50l8-2-2-4-7 2z"/>
+      <path ${GL} d="M108 15Q114 35 108 55L86 53Q82 35 86 17Z"/>
+      <path ${GL} d="M84 13.5L60 15L60 17L84 16.5ZM84 56.5L60 55L60 53L84 53.5Z"/>
+      <path ${GL} d="M94 9l6-4 3 1-4 5zM94 61l6 4 3-1-4-5z"/>
+      <rect ${GL} x="24" y="22" width="32" height="26" rx="6"/>
+      <path fill="none" stroke="#7a2a2c" stroke-width=".7" d="M29 24v22M34 24v22M39 24v22M44 24v22M49 24v22M26 35h28"/>
+      <path fill="none" stroke="#16181c" stroke-width="1.1" d="M18 14l8 2M17 18l8 2M18 56l8-2M17 52l8-2"/>
+      <circle fill="#d9dce0" stroke="#9aa0a8" stroke-width=".7" cx="36" cy="57" r="2.4"/>
+      <rect fill="#e8c43a" x="148" y="34" width="1.6" height="2.2" rx=".4"/><circle fill="#e8c43a" cx="113" cy="12" r=".9"/><circle fill="#e8c43a" cx="113" cy="58" r=".9"/>
     </svg>`;
     const car = (k, art, name, rows) => `
       <div class="zd-car" data-host="${k}"><span class="zd-tag"></span><strong>${name}</strong>
