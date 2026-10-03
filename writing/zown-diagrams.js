@@ -53,12 +53,13 @@ const D = {
       <rect fill="#e8c43a" x="148" y="34" width="1.6" height="2.2" rx=".4"/><circle fill="#e8c43a" cx="113" cy="12" r=".9"/><circle fill="#e8c43a" cx="113" cy="58" r=".9"/>
     </svg>`;
     const inner = (svg) => svg.replace(/^<svg[^>]*>|<\/svg>$/g, "");
-    const card = (k, name, why) => `
-      <div class="zd-car" data-host="${k}"><strong>${name}</strong>
-        <ul>${why.map((w) => `<li>${w}</li>`).join("")}</ul></div>`;
+    const WHY = {
+      old: ["python", ["built fast on langchain to prove the idea worked", "the model wrote every answer itself, so each one needed quality checks and a confidence score", "ran on aws ec2, a machine we had to look after"]],
+      new: ["typescript", ["i redesigned the whole structure, on mastra", "deterministic tools do the work: fewer llm calls, more tool calls", "answers come from tools, so most of the extra checks went away", "runs on aws fargate, and reminders run on cron jobs"]],
+    };
     const carG = (k, art) => `<g class="zd-racer" data-car="${k}" role="button" tabindex="0" aria-label="zoom in on the ${k === "old" ? "python" : "typescript"} car"><g transform="scale(.42) translate(-80 -35)">${inner(art)}</g></g>`;
     el.innerHTML = `
-      <svg class="zd-track" viewBox="0 10 600 120" aria-label="two cars side by side. the typescript race car keeps passing the python old car. click a car to zoom in.">
+      <div class="zd-stage"><svg class="zd-track" viewBox="0 10 600 120" aria-label="two cars side by side. the typescript race car keeps passing the python old car. click a car to zoom in.">
         <rect x="-400" y="10" width="1400" height="120" fill="#e9e9e5"/>
         <path d="M-400 10H1000M-400 130H1000" stroke="#d6d6d1" stroke-width="1.5"/>
         <path d="M-400 70H1000" stroke="#fff" stroke-width="1.5" stroke-dasharray="14 10"/>
@@ -67,10 +68,8 @@ const D = {
         <g class="zd-paint">${[["can you get me a cma", "on this home?"], ["what’s the difference", "between In-fill or", "Over-improved?"], ["is this in my budget?"]].map((ls, i) => `<g transform="translate(${150 + i * 165} 70) rotate(90)">${ls.map((l) => `<text text-anchor="middle">${l}</text>`).join("")}</g>`).join("")}</g>
         ${carG("old", OLD)}${carG("new", RACE)}
       </svg>
-      <div class="zd-cars">
-        ${card("old", "python", ["built fast on langchain to prove the idea worked", "the model wrote every answer itself, so each one needed quality checks and a confidence score", "ran on aws ec2, a machine we had to look after"])}
-        ${card("new", "typescript", ["i redesigned the whole structure, on mastra", "deterministic tools do the work: fewer llm calls, more tool calls", "answers come from tools, so most of the extra checks went away", "runs on aws fargate, so aws keeps the container up"])}
-      </div>`;
+      <div class="zd-over" aria-live="polite"><div class="zd-over-head"><img alt="" width="28" height="28"/><strong></strong></div><ul></ul><button type="button" class="zd-out">← zoom out</button></div></div>
+      <p class="zd-hint">click a car to look closer</p>`;
     const svg = el.querySelector(".zd-track");
     el.querySelectorAll(".zd-paint > g").forEach((q) => {
       const ts = [...q.querySelectorAll("text")];
@@ -80,15 +79,20 @@ const D = {
         t.setAttribute("y", ((i - (ts.length - 1) / 2) * fs * 1.15 + fs * 0.35).toFixed(1));
       });
     });
-    let hover = null, zoomed = null;
+    let zoomed = null;
+    const over = el.querySelector(".zd-over");
     const hl = () => {
-      const k = zoomed || hover;
-      el.querySelectorAll("[data-host],[data-car]").forEach((n) => n.classList.toggle("live", (n.dataset.host || n.dataset.car) === k));
+      el.querySelectorAll("[data-car]").forEach((n) => n.classList.toggle("live", n.dataset.car === zoomed));
+      el.classList.toggle("zd-zoomed", !!zoomed);
+      if (zoomed) {
+        over.querySelector("strong").textContent = WHY[zoomed][0];
+        over.dataset.lang = WHY[zoomed][0];
+        over.querySelector("img").src = `/zown/${WHY[zoomed][0]}.webp`;
+        over.querySelector("ul").innerHTML = WHY[zoomed][1].map((w) => `<li>${w}</li>`).join("");
+      }
     };
-    el.querySelectorAll("[data-host],[data-car]").forEach((n) => {
-      const k = n.dataset.host || n.dataset.car;
-      n.addEventListener("mouseenter", () => ((hover = k), hl()));
-      n.addEventListener("mouseleave", () => ((hover = null), hl()));
+    el.querySelectorAll("[data-car]").forEach((n) => {
+      const k = n.dataset.car;
       n.addEventListener("click", (e) => {
         e.stopPropagation();
         zoomed = zoomed === k ? null : k;
@@ -97,6 +101,7 @@ const D = {
       n.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), n.click()));
     });
     svg.addEventListener("click", () => ((zoomed = null), hl()));
+    over.querySelector(".zd-out").addEventListener("click", () => ((zoomed = null), hl()));
     document.addEventListener("keydown", (e) => e.key === "Escape" && zoomed && ((zoomed = null), hl()));
     const SPEED = { old: 70, new: 210 }, Y = { old: 42, new: 102 }, START = { old: 120, new: 40 }, SPAN = 680;
     const g = { old: el.querySelector('[data-car="old"]'), new: el.querySelector('[data-car="new"]') };
@@ -110,8 +115,11 @@ const D = {
       if (zoomed) last = zoomed;
       z += ((zoomed ? 1 : 0) - z) * 0.12;
       if (z < 0.001) z = 0;
-      const w = 600 - 440 * z, h = w / 5;
-      const cx = last ? 300 + (xs[last] - 300) * z : 300, cy = last ? 70 + (Y[last] - 70) * z : 70;
+      const side = el.clientWidth > 560 ? 1 : 0;
+      const w = 600 - 440 * z, h = w / (5 - (side ? 2.9 : 1.8) * z);
+      const fx = last ? xs[last] + w * 0.27 * side : 300;
+      const cx = 300 + (fx - 300) * z;
+      const cy = Math.min(130 - h / 2, Math.max(10 + h / 2, last ? 70 + (Y[last] - 70) * z : 70));
       svg.setAttribute("viewBox", `${(cx - w / 2).toFixed(1)} ${(cy - h / 2).toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
     };
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
