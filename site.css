@@ -411,7 +411,8 @@ a.wheel-chip-link:hover { background:#fff }
 .wheel-index button { all:unset; cursor:pointer; color:inherit; transition:color .15s }
 .wheel-index button.on { color:#1a1a1a; font-weight:500 }
 .wheel-index button:focus-visible { outline:1px solid #fff }
-.wheel-media { position:fixed; left:0; right:0; bottom:14px; z-index:2; overflow:hidden; pointer-events:none; opacity:0 }
+.wheel-media { position:fixed; left:0; right:0; bottom:14px; z-index:2; overflow:hidden; pointer-events:none; opacity:0 ; transform:translateY(16px); transition:opacity .2s ease-out,transform .2s ease-out }
+.wheel-media.on { opacity:1; transform:none }
 .wheel-media-track { display:flex; gap:8px; width:max-content; padding-right:8px; animation:wheel-slide 90s linear infinite; will-change:transform }
 @keyframes wheel-slide {
   to { transform:translate(-50%) }
@@ -421,7 +422,7 @@ a.wheel-chip-link:hover { background:#fff }
 @media(max-width:720px) {
   .wheel,.wheel-label { left:50% }
   .wheel-index { display:none }
-  .wheel-title { top:calc(50% + min(31vw, 19vh) + 14px); left:50%; transform:translateX(-50%); width:86%; max-width:none; text-align:center; font-size:17px !important; line-height:1.25 }
+  .wheel-title { top:calc(50% - min(31vw, 19vh) - 14px); left:50%; transform:translate(-50%,-100%); width:86%; max-width:none; text-align:center; font-size:17px !important; line-height:1.25 }
 }
 body:has(>.hills-footer) { background:#fff }
 .hills-footer { position:relative; aspect-ratio:5 / 3; margin-top:-34vw; overflow:hidden; -webkit-mask-image:linear-gradient(to bottom,transparent,#000 40%); mask-image:linear-gradient(to bottom,transparent,#000 40%) }

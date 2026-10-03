@@ -147,7 +147,7 @@ export function initWheel(root, items, { label = "", action = "", onOpen } = {})
     }
     labelEl.style.opacity = String(1 - m);
     titleEl.style.opacity = String(m);
-    mediaEl.style.opacity = String(m);
+    mediaEl.classList.toggle("on", m > 0.5);
     setActive(clamp(Math.round(pos), 0, last));
     if (m > 0.5 && Math.abs(target - turn) < 0.02) showMedia(active);
   };
