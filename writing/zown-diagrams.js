@@ -63,6 +63,7 @@ const D = {
         <path d="M-400 10H1000M-400 130H1000" stroke="#d6d6d1" stroke-width="1.5"/>
         <path d="M-400 70H1000" stroke="#fff" stroke-width="1.5" stroke-dasharray="14 10"/>
         <text class="zd-lane-tag" x="8" y="26">python</text><text class="zd-lane-tag" x="8" y="86">typescript</text>
+        <path class="zd-ticks" d="${Array.from({ length: 36 }, (_, i) => `M${-400 + i * 40} 10V130`).join("")}"/>
         <g class="zd-paint">${[["can you get me a cma", "on this home?"], ["what’s the difference", "between In-fill or", "Over-improved?"], ["is this in my budget?"]].map((ls, i) => `<g transform="translate(${150 + i * 165} 70) rotate(90)">${ls.map((l) => `<text text-anchor="middle">${l}</text>`).join("")}</g>`).join("")}</g>
         ${carG("old", OLD)}${carG("new", RACE)}
       </svg>
