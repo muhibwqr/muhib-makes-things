@@ -19,29 +19,40 @@ const HOUSE = `<svg class="zd-house" viewBox="0 0 16 16" width="11" height="11" 
 
 const D = {
   cutover(el) {
+    const wheel = (x, y, r) =>
+      `<g class="zd-wheel"><circle cx="${x}" cy="${y}" r="${r}"/><circle cx="${x}" cy="${y}" r="${r * 0.3}"/><path d="M${x - r * 0.8} ${y}h${r * 1.6}M${x} ${y - r * 0.8}v${r * 1.6}"/></g>`;
+    const OLD = `<svg viewBox="0 0 120 50" aria-hidden="true">
+      <path d="M8 37V29q2-5 12-6l14-1 6-10q2-2 6-2h26q4 0 6 3l6 9 20 1q8 1 8 7v7z"/>
+      <path d="M44 13l-2 8h16v-8zM62 13v8h18l-4-8z"/><path d="M8 33h104"/><circle cx="109" cy="27" r="1.6"/>
+      <g class="zd-puff"><circle cx="3" cy="33" r="2"/><circle cx="-3" cy="29" r="2.8"/></g>
+      ${wheel(28, 39, 7)}${wheel(92, 39, 7)}</svg>`;
+    const RACE = `<svg viewBox="0 0 120 50" aria-hidden="true">
+      <path d="M4 37l2-7 24-2 20-6q6-3 14-2l10 2q6 0 12 4l24 4q6 1 6 5v2z"/>
+      <path d="M54 22q6-8 16-1"/><path d="M8 30V19h14M10 19l4 9"/><circle cx="84" cy="31" r="3.5"/><path d="M30 33h70"/>
+      <g class="zd-speed"><path d="M-14 24h10M-18 30h12M-12 36h8"/></g>
+      ${wheel(24, 38, 8)}${wheel(98, 38, 8)}</svg>`;
+    const car = (k, art, name, rows) => `
+      <div class="zd-car" data-host="${k}"><span class="zd-tag"></span><strong>${name}</strong>
+        <div class="zd-car-art">${art}<div class="zd-road"></div></div>
+        <dl>${rows.map(([t, d]) => `<dt>${t}</dt><dd>${d}</dd>`).join("")}</dl></div>`;
     el.innerHTML = `
       <div class="zd-head"><span class="zd-title">switching servers without a big launch</span>
-        <span class="zd-label">whatsapp goes to ${seg("host", [["old", "old server"], ["new", "new server"]], "old")}</span></div>
-      <div class="zd-flow">
-        <div class="zd-node">whatsapp<small>via maytapi</small></div>${arrow}
-        <div class="zd-stack">
-          <div class="zd-node" data-host="old"><span class="zd-tag"></span>old server<small>python bot on aws ec2</small></div>
-          <div class="zd-node" data-host="new"><span class="zd-tag"></span>new server<small>typescript bot on aws fargate</small>
-            <div class="zd-pipe"><span>check the message</span>${arrow}<span>think + use tools</span>${arrow}<span>check the reply</span></div>
-          </div>
-        </div>
+        <span class="zd-label">whatsapp drives ${seg("host", [["old", "old car"], ["new", "race car"]], "old")}</span></div>
+      <div class="zd-cars">
+        ${car("old", OLD, "the old car", [["is", "the old server"], ["engine", "python + langchain"], ["garage", "aws ec2, a machine we look after"]])}
+        ${car("new", RACE, "the race car", [["is", "the new server"], ["engine", "typescript on mastra"], ["garage", "aws fargate, a container aws runs for us"], ["safety", "check the message → think + use tools → check the reply"]])}
       </div>
-      <div class="zd-side"><span>shared files: knowledge base, cma pdfs</span><span>timers: follow-ups, listing alerts</span></div>
+      <div class="zd-side"><span>same fuel: knowledge base, cma pdfs</span><span>same routes: follow-ups, listing alerts</span><span>the key: one setting in maytapi</span></div>
       <div class="zd-note"></div>`;
     const notes = {
-      old: "messages still go to the old python bot. the new one is running, it just isn't getting messages yet.",
-      new: "messages go to the new bot. the old one stays on as a backup until the new one is boring. switching is one setting, and switching back is the same setting.",
+      old: "whatsapp is still driving the old car. the race car is parked next to it with the engine running, it just has no driver yet.",
+      new: "whatsapp moved into the race car. the old car stays parked beside it as a backup. moving over was one setting, and moving back is the same setting.",
     };
     const set = (v) => {
       el.querySelectorAll("[data-host]").forEach((n) => {
         const live = n.dataset.host === v;
         n.classList.toggle("live", live);
-        n.querySelector(".zd-tag").textContent = live ? "receiving" : "standby";
+        n.querySelector(".zd-tag").textContent = live ? "driving" : "parked, engine on";
       });
       el.querySelector(".zd-note").textContent = notes[v];
     };
@@ -389,7 +400,7 @@ const D = {
 };
 
 const TLDR = {
-  cutover: "the new bot runs right next to the old one. moving whatsapp over is one switch, and so is moving it back.",
+  cutover: "think of two cars parked side by side, both running. whatsapp is the driver. switching cars is one setting, and so is switching back.",
   signal: "a low price alone means nothing. a price well under what similar homes sold for, plus “offers held until a date”, means it will likely sell over asking. so zoro warns the buyer with a fixed sentence instead of guessing.",
   stage: "two facts decide it: did they fill the form, and where are they in the sales pipeline. the pipeline wins, because a buyer with a deal already has a human agent.",
   api: "three lanes. listings flow into our own database, live searches hit the mls, and neighbourhood facts are prepared ahead of time. zoro asks once and gets one clean answer.",
