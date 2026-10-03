@@ -1677,7 +1677,7 @@ body.maker .article-prose .zd-packet img {
 
 /* hover note on an underlined term */
 .tip { position: relative; z-index: 5; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: #9cc9f5; cursor: help; outline: none; }
-.tip::after { content: attr(data-tip); position: absolute; left: 50%; top: calc(100% + 6px); transform: translate(-50%, -4px) rotate(-2deg); font-family: 'Caveat', cursive; font-size: 20px; line-height: 1.1; color: #2a2a2a; background: #fff; border: 1px solid #e3e3df; border-radius: 8px; padding: 6px 10px; white-space: normal; width: max-content; max-width: min(280px, 80vw); text-align: left; z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,.08); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+.tip::after { content: attr(data-tip) "\A" attr(data-by); position: absolute; left: 50%; top: calc(100% + 6px); transform: translate(-50%, -4px) rotate(-2deg); font-family: 'Caveat', cursive; font-size: 20px; line-height: 1.1; color: #2a2a2a; background: #fff; border: 1px solid #e3e3df; border-radius: 8px; padding: 6px 10px; white-space: pre-line; width: max-content; max-width: min(280px, 80vw); text-align: left; z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,.08); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
 .tip:hover::after, .tip:focus::after { opacity: 1; transform: translate(-50%, 0) rotate(-2deg); }
 .article-prose p:has(.tip:hover), .article-prose p:has(.tip:focus) { position: relative; z-index: 10; }
 @media (min-width: 1180px) {
