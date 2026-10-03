@@ -20,22 +20,22 @@ const HOUSE = `<svg class="zd-house" viewBox="0 0 16 16" width="11" height="11" 
 const D = {
   cutover(el) {
     el.innerHTML = `
-      <div class="zd-head"><span class="zd-title">cutover: two real hosts, one pointer</span>
-        <span class="zd-label">maytapi points at ${seg("host", [["old", "ec2 · python"], ["new", "fargate · typescript"]], "old")}</span></div>
+      <div class="zd-head"><span class="zd-title">switching servers without a big launch</span>
+        <span class="zd-label">whatsapp goes to ${seg("host", [["old", "old server"], ["new", "new server"]], "old")}</span></div>
       <div class="zd-flow">
         <div class="zd-node">whatsapp<small>via maytapi</small></div>${arrow}
         <div class="zd-stack">
-          <div class="zd-node" data-host="old"><span class="zd-tag"></span>ec2<small>python agent · <code>backend/agents/orchestrator.py</code></small></div>
-          <div class="zd-node" data-host="new"><span class="zd-tag"></span>fargate container<small>typescript on mastra</small>
-            <div class="zd-pipe"><span>inbound validator</span>${arrow}<span>orchestrator + tool loop</span>${arrow}<span>outbound validator</span></div>
+          <div class="zd-node" data-host="old"><span class="zd-tag"></span>old server<small>python bot on aws ec2</small></div>
+          <div class="zd-node" data-host="new"><span class="zd-tag"></span>new server<small>typescript bot on aws fargate</small>
+            <div class="zd-pipe"><span>check the message</span>${arrow}<span>think + use tools</span>${arrow}<span>check the reply</span></div>
           </div>
         </div>
       </div>
-      <div class="zd-side"><span>object storage: knowledge, cma pdfs</span><span>scheduled jobs: follow-ups, listing alerts</span></div>
+      <div class="zd-side"><span>shared files: knowledge base, cma pdfs</span><span>timers: follow-ups, listing alerts</span></div>
       <div class="zd-note"></div>`;
     const notes = {
-      old: "traffic still lands on the python service. the typescript one is deployed and real, just not receiving messages yet.",
-      new: "traffic lands on fargate. ec2 stays up beside it until the new host is boring. cutover is a pointer change, not a press release.",
+      old: "messages still go to the old python bot. the new one is running, it just isn't getting messages yet.",
+      new: "messages go to the new bot. the old one stays on as a backup until the new one is boring. switching is one setting, and switching back is the same setting.",
     };
     const set = (v) => {
       el.querySelectorAll("[data-host]").forEach((n) => {
@@ -52,12 +52,12 @@ const D = {
   signal(el) {
     const ASK = 799900;
     el.innerHTML = `
-      <div class="zd-head"><span class="zd-title">is this list price bait?</span></div>
+      <div class="zd-head"><span class="zd-title">is this price a lure?</span></div>
       <div class="zd-listing">
         <div class="zd-listing-img"><img src="${SAMPLE}" alt="aerial photo of a sample toronto listing" loading="lazy" decoding="async" /><span class="zd-badge">likely sells over asking</span></div>
         <div class="zd-listing-info"><small>sample listing</small><strong>${money(ASK)}</strong><span>remarks: “<em data-remark></em>”</span></div>
       </div>
-      <div class="zd-row zd-col"><span>cma midpoint from comparable sales <strong data-cma></strong></span>
+      <div class="zd-row zd-col"><span>what similar homes sold for (cma) <strong data-cma></strong></span>
         <input type="range" min="700000" max="1000000" step="5000" value="850000" aria-label="cma midpoint" /></div>
       <div class="zd-row"><span>public remarks</span>${seg("remarks", [["anytime", "offers welcome anytime"], ["held", "offers held until a set date"]], "anytime")}</div>
       <div class="zd-checks"><div data-c="gap"></div><div data-c="date"></div></div>
@@ -72,15 +72,15 @@ const D = {
         c.className = ok ? "zd-ok" : "zd-no";
         c.textContent = (ok ? "✓ " : "✗ ") + text;
       };
-      chk("gap", gapHit, "cma midpoint sits $100k+ above ask");
-      chk("date", held, "deferred offer date found in remarks");
+      chk("gap", gapHit, "similar homes sold for $100k+ more than the ask");
+      chk("date", held, "the listing holds offers until a set date");
       const out = el.querySelector(".zd-out");
       out.classList.toggle("warn", gapHit && held);
       el.querySelector(".zd-listing").classList.toggle("warn", gapHit && held);
       el.querySelector("[data-remark]").textContent = held ? "offers reviewed on a set date" : "offers welcome anytime";
       out.textContent = gapHit && held
-        ? "both arrived together, so it's deterministic: a heads-up is appended in zoro's voice (likely priced to draw offers, may sell above asking) and the account manager is flagged."
-        : "no warning. one signal alone is not the fact, and a false warning is worse than silence.";
+        ? "both are true, so zoro adds a fixed heads-up, not a guess: this home is likely priced to draw offers and may sell above asking. a human on the team is flagged too."
+        : "no warning. one clue on its own isn't proof, and a false alarm is worse than saying nothing.";
     };
     range.addEventListener("input", render);
     bindSeg(el, "remarks", (v) => { held = v === "held"; render(); });
@@ -89,11 +89,11 @@ const D = {
 
   stage(el) {
     el.innerHTML = `
-      <div class="zd-head"><span class="zd-title">two independent facts, one operating state</span></div>
-      <div class="zd-row zd-col"><span>score from the qualification form</span>
+      <div class="zd-head"><span class="zd-title">what can zoro do for this buyer, right now?</span></div>
+      <div class="zd-row zd-col"><span>did they fill the qualification form?</span>
         ${seg("form", [["none", "never filled"], ["fail", "filled · score short"], ["pass", "filled · passed"]], "none")}</div>
-      <div class="zd-row zd-col"><span>journey from the hubspot deal stage label</span>
-        ${seg("journey", [["none", "no deal"], ["deal", "deal · has an agent"], ["contract", "under contract"], ["hold", "on hold"], ["unknown", "unrecognized label"]], "none")}</div>
+      <div class="zd-row zd-col"><span>where are they in the sales pipeline (hubspot)?</span>
+        ${seg("journey", [["none", "no deal"], ["deal", "deal · has an agent"], ["contract", "under contract"], ["hold", "on hold"], ["unknown", "unknown stage"]], "none")}</div>
       <div class="zd-out zd-state"><div data-state></div><small data-why></small></div>
       <div class="zd-rules"></div>
       <div class="zd-controls">
@@ -105,8 +105,8 @@ const D = {
         </div>
         <span class="zd-tally"></span>
       </div>
-      <div class="zd-limits"><span>never submits, counters, or negotiates</span><span>internal language never reaches a client</span><span>never passes a verdict on the buyer</span><span>no tier names or “you don’t qualify”, but what a lender may do about a specific price is fair</span></div>
-      <div class="zd-note">a simplified slice of the real table: eleven actions × seven states, every cell filled or the build breaks.</div>`;
+      <div class="zd-limits"><span>never submits, counters, or negotiates</span><span>no internal jargon to clients</span><span>never passes a verdict on the buyer</span><span>never says “you don’t qualify”, but can say what a lender may think of a specific price</span></div>
+      <div class="zd-note">a simplified slice of the real rulebook: eleven actions × seven buyer types. if any cell is left empty, the code won't build.</div>`;
     // [form, journey, why]
     const CASES = [
       ["none", "none", "never filled the form, no deal: no showing until the form is done."],
@@ -115,7 +115,7 @@ const D = {
       ["pass", "deal", "passed, but there's a deal: journey outranks the score. they have an agent."],
       ["fail", "contract", "under contract: no new searches volunteered, hand them to their account manager."],
       ["none", "hold", "on hold: nurture them, don't treat them as a fresh lead."],
-      ["none", "unknown", "an unrecognized stage label still means they have an agent. fail closed."],
+      ["none", "unknown", "a stage we don't recognize? assume they have an agent. when unsure, do less."],
     ];
     const ACTIONS = ["encourage a sale showing", "volunteer a new search", "treat as a fresh lead", "nudge to their account manager"];
     el.querySelector(".zd-rules").innerHTML = ACTIONS
@@ -134,7 +134,7 @@ const D = {
         contract: "under contract",
         hold: "on hold",
       }[j];
-      el.querySelector("[data-state]").innerHTML = `operating state: <strong>${state}</strong>`;
+      el.querySelector("[data-state]").innerHTML = `this buyer is: <strong>${state}</strong>`;
       el.querySelector("[data-why]").textContent = why;
       const agent = j === "deal" || j === "contract";
       const verdicts = [
@@ -184,29 +184,29 @@ const D = {
 
   api(el) {
     const N = {
-      feeds: ["board feeds", "trreb and itso arrive as odata feeds."],
-      media: ["media pipeline", "photos arrive separately. a listing with no published image is not a listing you show."],
-      ingest: ["ingest", "normalizes rows and geocodes addresses on the way in."],
-      pg: ["postgres", "our normalized inventory. price changes observed here drive alerts."],
-      listapi: ["listings api", "reads postgres and never imports repliers. serves an avm for listing pages."],
+      feeds: ["board feeds", "the real estate boards (trreb, itso) send us their listings."],
+      media: ["photos", "photos arrive separately. no published photo, no listing on the app."],
+      ingest: ["clean-up", "puts every listing in the same format and pins the address on a map."],
+      pg: ["database", "postgres. every listing in one shape. price changes spotted here trigger alerts."],
+      listapi: ["listings api", "what the app reads from. it only talks to our database, and gives each listing page a price estimate."],
       app: ["buyer app", "the map, the filters, the published photos."],
       zoro: ["zoro", "the agent, mid whatsapp turn."],
-      client: ["one http client", "the agent's only door to an mls. swapping providers is a one-file change."],
-      repliers: ["repliers", "the live mls. freshness matters in a conversation, so sold history and photo search stay here."],
-      apple: ["apple maps", "geocoding on ingest."],
-      osm: ["openstreetmap", "a sweep that fills in what is nearby."],
-      poi: ["poi · postgis", "the points-of-interest catalog. insights ask what is within a kilometre, no live apple calls."],
-      local: ["local logic", "eqao results, fraser rankings, catchment polygons, census, climate, walk + transit scores, market stats. on a schedule, under a lock so two crons don't scrape the province twice."],
-      mv: ["materialized view", "the home and what is around it, in one shape a tool can return and a model can speak."],
+      client: ["one connector", "zoro's only door to an mls. switching providers means changing one file."],
+      repliers: ["live mls", "repliers: up-to-the-minute listings. in a chat, fresh matters, so sold history and photo search come from here."],
+      apple: ["apple maps", "turns an address into a point on the map."],
+      osm: ["openstreetmap", "fills in what's nearby: parks, transit, shops."],
+      poi: ["nearby places", "a catalog of what's around every home, stored once (postgis). “what's within 1 km?” is a quick lookup, not a live call."],
+      local: ["area stats", "schools (eqao, fraser, catchments), census, climate, walk + transit scores, market stats. refreshed on a schedule, with a lock so two jobs never scrape the province twice."],
+      mv: ["summary table", "a materialized view: the home plus everything around it, pre-joined, in a shape zoro can read out loud."],
     };
     const n = (k) => `<button type="button" class="zd-node" data-k="${k}">${N[k][0]}</button>`;
     const stack = (...ks) => `<div class="zd-stack zd-stack-sm">${ks.map(n).join("")}</div>`;
     el.innerHTML = `
-      <div class="zd-head"><span class="zd-title">the api underneath</span>${seg("sc", [["listing", "a listing arrives"], ["ask", "a buyer asks zoro"], ["hood", "neighbourhood refresh"]], "listing")}</div>
+      <div class="zd-head"><span class="zd-title">where zoro's home facts come from</span>${seg("sc", [["listing", "a listing arrives"], ["ask", "a buyer asks zoro"], ["hood", "neighbourhood refresh"]], "listing")}</div>
       <div class="zd-pipeline">
-        <div class="zd-lane"><span class="zd-lane-name">inventory</span><div class="zd-flow">${stack("feeds", "media")}${arrow}${n("ingest")}${arrow}${n("pg")}${arrow}${n("listapi")}${arrow}${n("app")}</div></div>
-        <div class="zd-lane"><span class="zd-lane-name">discovery</span><div class="zd-flow">${n("zoro")}${arrow}${n("client")}${arrow}${n("repliers")}</div></div>
-        <div class="zd-lane"><span class="zd-lane-name">context</span><div class="zd-flow">${stack("apple", "osm")}${arrow}${stack("poi", "local")}${arrow}${n("mv")}</div></div>
+        <div class="zd-lane"><span class="zd-lane-name">listings</span><div class="zd-flow">${stack("feeds", "media")}${arrow}${n("ingest")}${arrow}${n("pg")}${arrow}${n("listapi")}${arrow}${n("app")}</div></div>
+        <div class="zd-lane"><span class="zd-lane-name">live search</span><div class="zd-flow">${n("zoro")}${arrow}${n("client")}${arrow}${n("repliers")}</div></div>
+        <div class="zd-lane"><span class="zd-lane-name">neighbourhood</span><div class="zd-flow">${stack("apple", "osm")}${arrow}${stack("poi", "local")}${arrow}${n("mv")}</div></div>
         <span class="zd-packet no-anim"></span>
       </div>
       <div class="zd-out" data-detail></div>
@@ -221,36 +221,36 @@ const D = {
       </div>`;
 
     const T = { photo: true, sparse: false, legacy: false };
-    const TOGGLES = { listing: [["photo", "has a published photo"]], ask: [["sparse", "live results are sparse"], ["legacy", "env flag: old order"]], hood: [] };
+    const TOGGLES = { listing: [["photo", "has a published photo"]], ask: [["sparse", "live results come up short"], ["legacy", "switch back to the old order"]], hood: [] };
     // each step: [node, packet label, explanation, dropped?]
     const build = (sc) => {
       if (sc === "listing") {
-        const head = [["feeds", "listing", "trreb or itso publishes a listing as an odata row.", false, true], ["media", "photos", "its photos come through a separate media pipeline.", false, true]];
-        if (!T.photo) return [...head, ["media", "no photo", "no published image, so it never becomes a listing you show.", true]];
+        const head = [["feeds", "listing", "a real estate board publishes a new listing.", false, true], ["media", "photos", "its photos come in separately.", false, true]];
+        if (!T.photo) return [...head, ["media", "no photo", "no published photo, so it never shows up on the app.", true]];
         return [...head,
-          ["ingest", "listing", "ingest normalizes the row and geocodes the address on the way in.", false, true],
-          ["pg", "row", "a normalized row lands in postgres. price changes observed here drive alerts.", false, true],
-          ["listapi", "row", "the listings api reads postgres. it does not import repliers at all.", false, true],
-          ["app", "home", "the buyer sees it: on the map, in the filters, with published photos.", false, true]];
+          ["ingest", "listing", "we clean it up and pin the address on a map.", false, true],
+          ["pg", "listing", "it's saved in our database. if the price changes later, buyers watching it get an alert.", false, true],
+          ["listapi", "listing", "the listings api reads only from our database. no outside calls.", false, true],
+          ["app", "home", "the buyer sees it on the map, in the filters, with photos.", false, true]];
       }
       if (sc === "ask") {
-        const first = T.legacy ? ["pg", "search", "env flag set: the old order, our db answers first."] : ["repliers", "search", "repliers first: the live mls, because freshness matters in a conversation."];
-        const topUp = T.legacy ? ["repliers", "top-up", "our db came back sparse, so repliers tops up the list."] : ["pg", "top-up", "the live source came back sparse, so our db tops up the list."];
+        const first = T.legacy ? ["pg", "search", "switched back to the old order: our database answers first."] : ["repliers", "search", "first stop is the live mls, because in a chat, fresh beats fast."];
+        const topUp = T.legacy ? ["repliers", "top-up", "our database came up short, so the live mls fills in the rest."] : ["pg", "top-up", "the live mls came up short, so our database fills in the rest."];
         return [
-          ["zoro", "search", "a buyer asks for homes mid whatsapp turn."],
-          ["client", "search", "the request goes through one http client, the agent's only door to an mls."],
+          ["zoro", "search", "a buyer asks zoro for homes on whatsapp."],
+          ["client", "search", "the request goes through one connector, zoro's only door to an mls."],
           first,
           T.sparse ? topUp : [first[0], "results", "enough results came back. no top-up needed."],
-          ["mv", "homes", "for each home: one query against the materialized view.", false, true],
-          ["zoro", "answer", "the answer arrives pre-chewed. no browsing the internet for eqao mid turn.", false, true]];
+          ["mv", "homes", "for each home, one lookup in the summary table.", false, true],
+          ["zoro", "answer", "zoro answers with facts already prepared. no searching the web mid conversation.", false, true]];
       }
       return [
-        ["apple", "address", "apple maps geocodes the address."],
-        ["osm", "sweep", "an openstreetmap sweep finds what is nearby."],
-        ["poi", "pois", "both fill the points-of-interest catalog in postgis."],
-        ["local", "stats", "schools, census, climate, walk + transit and market stats refresh on a schedule, under a lock."],
-        ["mv", "view", "everything rolls into one materialized view."],
-        ["zoro", "1 query", "insights ask postgis what is within a kilometre. no live apple calls."]];
+        ["apple", "address", "apple maps turns the address into a point on the map."],
+        ["osm", "sweep", "openstreetmap finds what's nearby."],
+        ["poi", "pois", "both fill the nearby places catalog."],
+        ["local", "stats", "schools, census, climate, walk + transit and market stats refresh on a schedule."],
+        ["mv", "view", "everything is joined into one summary table."],
+        ["zoro", "1 query", "zoro asks “what's within 1 km?” and gets one quick answer. no live map calls."]];
     };
 
     const pipe = el.querySelector(".zd-pipeline"), packet = el.querySelector(".zd-packet");
@@ -320,21 +320,21 @@ const D = {
   hubspot(el) {
     // [label, side that owns the write ("app" | "hs" | null = stays level), weight, steps, result]
     const E = {
-      submit: ["form submitted", "hs", "qualification lead", ["allowlisted properties, same bytes from web and mobile", "<code>cid</code> / <code>zcid</code> aliased to one field", "queued on the outbox"], "one qualification lead per user. account managers own the pipeline after this. a flaky request never becomes two leads."],
-      edit: ["form edited", "hs", "edit note", ["allowlisted properties", "queued on the outbox"], "logged with a different note title than a first submission, so the “form submission” call workflow doesn't fire again over a typo."],
-      stage: ["deal stage changed", "app", "stage label, verbatim", ["webhook in", "label stored verbatim, no frozen enum"], "zoro's stage is now a fact, mirrored from the deal."],
-      echo: ["echo of our own deal", null, "echo", ["webhook in", "recognized as a deal we just created"], "ignored. nothing moves."],
-      claim: ["chat sends HIGHLY_QUALIFIED", null, "HIGHLY_QUALIFIED", ["metadata from the chat client"], "rejected. if the client could claim a stage, it could talk the bot past every rule in the table."],
-      admin: ["admin crm (ops tool)", "app", "ops data", ["no hubspot connection"], "two systems side by side, on purpose. reconciliation was a problem we declined."],
+      submit: ["form submitted", "hs", "qualification lead", ["only approved fields, same from web and mobile", "<code>cid</code> and <code>zcid</code> treated as one field", "queued, so a retry can't send it twice"], "one lead per buyer in hubspot. after that, account managers own it. a glitchy retry never creates a duplicate."],
+      edit: ["form edited", "hs", "edit note", ["only approved fields", "queued, so a retry can't send it twice"], "saved with a different note title than a first submission, so fixing a typo doesn't trigger another sales call."],
+      stage: ["deal stage changed", "app", "deal stage", ["hubspot tells us", "we copy the stage name exactly"], "zoro now knows where the buyer is, straight from the deal."],
+      echo: ["hubspot echoes our own deal", null, "echo", ["hubspot tells us", "we recognize it as our own change"], "ignored, so nothing loops."],
+      claim: ["chat claims “highly qualified”", null, "HIGHLY_QUALIFIED", ["the chat app says the buyer is highly qualified"], "rejected. if the chat could set its own stage, it could talk the bot past every rule."],
+      admin: ["ops tool saves data", "app", "ops data", ["never talks to hubspot"], "two separate systems, on purpose. we chose not to sync them."],
     };
     el.innerHTML = `
-      <div class="zd-head"><span class="zd-title">two systems, side by side: stack what happens</span><button type="button" class="zd-chip" data-reset>reset</button></div>
+      <div class="zd-head"><span class="zd-title">who owns which data?</span><button type="button" class="zd-chip" data-reset>reset</button></div>
       <div class="zd-chips">${Object.entries(E).map(([k, [label]]) => `<button type="button" class="zd-chip" data-e="${k}">${label}</button>`).join("")}</div>
       <div class="zd-seesaw">
         <span class="zd-bounce"></span>
         <div class="zd-beam">
-          <div class="zd-pan" data-side="app"><span class="zd-weights"></span><span class="zd-pan-name">our app · postgres</span></div>
-          <div class="zd-pan" data-side="hs"><span class="zd-weights"></span><span class="zd-pan-name">hubspot · system of record</span></div>
+          <div class="zd-pan" data-side="app"><span class="zd-weights"></span><span class="zd-pan-name">our app · our database</span></div>
+          <div class="zd-pan" data-side="hs"><span class="zd-weights"></span><span class="zd-pan-name">hubspot · the sales record</span></div>
         </div>
         <div class="zd-fulcrum" aria-hidden="true"></div>
       </div>
@@ -343,7 +343,7 @@ const D = {
     const beam = el.querySelector(".zd-beam"), bounce = el.querySelector(".zd-bounce");
     const active = new Set();
     const show = (k) => {
-      const [, , , steps, result] = E[k] || [, , , [], "tap events to stack them. each one lands on the system that owns the write."];
+      const [, , , steps, result] = E[k] || [, , , [], "tap an event. it lands on whichever system owns that data."];
       el.querySelector(".zd-steps").innerHTML = steps.map((s) => `<div class="zd-node">${s}</div>`).join(arrow);
       el.querySelector(".zd-out").innerHTML = result;
     };
@@ -388,7 +388,16 @@ const D = {
   },
 };
 
+const TLDR = {
+  cutover: "the new bot runs right next to the old one. moving whatsapp over is one switch, and so is moving it back.",
+  signal: "a low price alone means nothing. a price well under what similar homes sold for, plus “offers held until a date”, means it will likely sell over asking. so zoro warns the buyer with a fixed sentence instead of guessing.",
+  stage: "two facts decide it: did they fill the form, and where are they in the sales pipeline. the pipeline wins, because a buyer with a deal already has a human agent.",
+  api: "three lanes. listings flow into our own database, live searches hit the mls, and neighbourhood facts are prepared ahead of time. zoro asks once and gets one clean answer.",
+  hubspot: "hubspot and our app each own their own data. every event lands on exactly one side, and anything that would blur the line is ignored.",
+};
+
 document.querySelectorAll(".zd[data-zd]").forEach((el) => {
   D[el.dataset.zd]?.(el);
+  if (TLDR[el.dataset.zd]) el.querySelector(".zd-head")?.insertAdjacentHTML("afterend", `<div class="zd-tldr">${TLDR[el.dataset.zd]}</div>`);
   el.querySelector(".zd-title")?.insertAdjacentHTML("afterbegin", HOUSE);
 });
