@@ -301,11 +301,12 @@ const D = {
       });
     };
     banner.addEventListener("click", () => (banner.hidden = true));
-    let peek;
+    let peek, taps = 0;
+    const JOKES = ["stop tryna see my messages lol", "dang bro chill", "u not finding anything crazy here"];
     el.querySelector(".zd-im-back").addEventListener("click", () => {
       banner.hidden = true;
       requestAnimationFrame(() => {
-        banner.innerHTML = notif("muhib", "stop tryna see my messages lol");
+        banner.innerHTML = notif("muhib", JOKES[taps++ % JOKES.length]);
         banner.hidden = false;
       });
       clearTimeout(peek);
