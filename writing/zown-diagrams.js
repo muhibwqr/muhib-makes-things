@@ -52,33 +52,70 @@ const D = {
       <circle fill="#d9dce0" stroke="#9aa0a8" stroke-width=".7" cx="36" cy="57" r="2.4"/>
       <rect fill="#e8c43a" x="148" y="34" width="1.6" height="2.2" rx=".4"/><circle fill="#e8c43a" cx="113" cy="12" r=".9"/><circle fill="#e8c43a" cx="113" cy="58" r=".9"/>
     </svg>`;
-    const car = (k, art, name, rows) => `
+    const inner = (svg) => svg.replace(/^<svg[^>]*>|<\/svg>$/g, "");
+    const card = (k, name, rows) => `
       <div class="zd-car" data-host="${k}"><span class="zd-tag"></span><strong>${name}</strong>
-        <div class="zd-car-art">${art}<div class="zd-road"></div></div>
         <dl>${rows.map(([t, d]) => `<dt>${t}</dt><dd>${d}</dd>`).join("")}</dl></div>`;
+    const carG = (k, art) => `<g class="zd-racer" data-car="${k}"><g transform="scale(.42) translate(-80 -35)">${inner(art)}</g>
+      <g class="zd-wa"><circle r="7" cx="0" cy="-19"/><text x="0" y="-16.2" text-anchor="middle">wa</text></g></g>`;
     el.innerHTML = `
       <div class="zd-head"><span class="zd-title">switching servers without a big launch</span>
-        <span class="zd-label">whatsapp drives ${seg("host", [["old", "old car"], ["new", "race car"]], "old")}</span></div>
+        <span class="zd-label">whatsapp rides in ${seg("host", [["old", "old car"], ["new", "race car"]], "old")}</span></div>
+      <svg class="zd-track" viewBox="0 0 600 140" aria-label="an old car and a race car side by side. the race car speeds off the edge while the old car is still crawling.">
+        <rect x="0" y="10" width="600" height="120" fill="#e9e9e5"/>
+        <path d="M0 10H600M0 130H600" stroke="#d6d6d1" stroke-width="1.5"/>
+        <path d="M0 70H600" stroke="#fff" stroke-width="1.5" stroke-dasharray="14 10"/>
+        <g>${Array.from({ length: 30 }, (_, i) => `<rect x="${74 + (i % 2) * 6}" y="${10 + Math.floor(i / 2) * 8}" width="6" height="8" fill="${(i + Math.floor(i / 2)) % 2 ? "#1a1a1a" : "#fff"}"/>`).join("")}</g>
+        <text class="zd-lane-tag" x="8" y="26">old car</text><text class="zd-lane-tag" x="8" y="86">race car</text>
+        ${carG("old", OLD)}${carG("new", RACE)}
+      </svg>
       <div class="zd-cars">
-        ${car("old", OLD, "the old car", [["is", "the old server"], ["engine", "python + langchain"], ["garage", "aws ec2, a machine we look after"]])}
-        ${car("new", RACE, "the race car", [["is", "the new server"], ["engine", "typescript on mastra"], ["garage", "aws fargate, a container aws runs for us"], ["safety", "check the message → think + use tools → check the reply"]])}
+        ${card("old", "the old car", [["is", "the old server"], ["engine", "python + langchain"], ["garage", "aws ec2, a machine we look after"]])}
+        ${card("new", "the race car", [["is", "the new server"], ["engine", "typescript on mastra"], ["garage", "aws fargate, a container aws runs for us"], ["safety", "check the message → think + use tools → check the reply"]])}
       </div>
       <div class="zd-side"><span>same fuel: knowledge base, cma pdfs</span><span>same routes: follow-ups, listing alerts</span><span>the key: one setting in maytapi</span></div>
       <div class="zd-note"></div>`;
     const notes = {
-      old: "whatsapp is still driving the old car. the race car is parked next to it with the engine running, it just has no driver yet.",
-      new: "whatsapp moved into the race car. the old car stays parked beside it as a backup. moving over was one setting, and moving back is the same setting.",
+      old: "whatsapp is still riding in the old car. the race car is already running right beside it, and leaves it behind, just with no passengers yet.",
+      new: "whatsapp moved into the race car. the old car keeps running beside it as a backup. moving over was one setting, and moving back is the same setting.",
     };
     const set = (v) => {
       el.querySelectorAll("[data-host]").forEach((n) => {
         const live = n.dataset.host === v;
         n.classList.toggle("live", live);
-        n.querySelector(".zd-tag").textContent = live ? "driving" : "parked, engine on";
+        n.querySelector(".zd-tag").textContent = live ? "carrying whatsapp" : "backup, still running";
       });
+      el.querySelectorAll("[data-car]").forEach((g) => g.classList.toggle("live", g.dataset.car === v));
       el.querySelector(".zd-note").textContent = notes[v];
     };
     bindSeg(el, "host", set);
     set("old");
+    const LOOP = 5000, Y = { old: 42, new: 102 }, X0 = 30;
+    const pos = {
+      old: (t) => X0 + 70 * t,
+      new: (t) => X0 + 260 * t * t,
+    };
+    const g = { old: el.querySelector('[data-car="old"]'), new: el.querySelector('[data-car="new"]') };
+    const place = (ms) => {
+      const t = (ms % LOOP) / 1000, fade = t > 4.4 ? Math.max(0, (4.9 - t) / 0.5) : Math.min(1, t / 0.2);
+      ["old", "new"].forEach((k) => {
+        g[k].setAttribute("transform", `translate(${pos[k](t).toFixed(1)} ${Y[k]})`);
+        g[k].style.opacity = fade.toFixed(2);
+      });
+    };
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) place(1300);
+    else {
+      let t0 = null, visible = false;
+      new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(el);
+      const tick = (now) => {
+        if (t0 === null) t0 = now;
+        if (visible) place(now - t0);
+        else t0 += 16;
+        requestAnimationFrame(tick);
+      };
+      place(0);
+      requestAnimationFrame(tick);
+    }
   },
 
   signal(el) {
@@ -421,7 +458,7 @@ const D = {
 };
 
 const TLDR = {
-  cutover: "think of two cars parked side by side, both running. whatsapp is the driver. switching cars is one setting, and so is switching back.",
+  cutover: "both cars run side by side. the race car leaves the old one behind, but whatsapp only rides in one. moving it between cars is one setting, and so is moving it back.",
   signal: "a low price alone means nothing. a price well under what similar homes sold for, plus “offers held until a date”, means it will likely sell over asking. so zoro warns the buyer with a fixed sentence instead of guessing.",
   stage: "two facts decide it: did they fill the form, and where are they in the sales pipeline. the pipeline wins, because a buyer with a deal already has a human agent.",
   api: "three lanes. listings flow into our own database, live searches hit the mls, and neighbourhood facts are prepared ahead of time. zoro asks once and gets one clean answer.",
