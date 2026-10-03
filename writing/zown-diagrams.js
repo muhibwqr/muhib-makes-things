@@ -220,95 +220,87 @@ const D = {
   },
 
   signal(el) {
-    const EX = [[649000, 835000, "semi · leslieville"], [1199000, 1180000, "detached · etobicoke"], [499900, 699000, "condo · liberty village"], [875000, 910000, "town · markham"], [999000, 1390000, "detached · north york"]];
     const k = (v) => (v >= 1e6 ? `$${(v / 1e6).toFixed(2).replace(/0$/, "")}M` : `$${Math.round(v / 1000)}k`);
-    const PX = 210, FL = 186, REST = 52, H = 50, T = 8.4;
-    const PH = `<path d="M-30 0V-32H30V0Z" class="zd-h-body"/><path d="M-35 -31L0 -50L35 -31Z" class="zd-h-roof"/><rect x="-6" y="-16" width="12" height="16" class="zd-h-door"/><rect x="-23" y="-26" width="10" height="9" class="zd-h-win"/><rect x="13" y="-26" width="10" height="9" class="zd-h-win"/>`;
-    const roll = (x) => `<g class="zd-roll" data-roll transform="translate(${x} ${FL + 9})"><circle r="6"/><line x1="-6" x2="6"/></g>`;
+    const S = {
+      driver: {
+        label: "bid driver", list: 649000, cma: 835000, addr: "semi · leslieville",
+        hist: [["mar", 849000], ["may", 799000], ["now", 649000]],
+        rivals: [661000, 690000, 712000, 745000, 778000, 805000, 842000],
+        agent: "we have 7 offers, but for you we'd close asap",
+        zoro: ["listed 3× in 4 months", "price cut 24% to $649k", "similar homes sold ~$835k", "→ bid driver. plan near $835k, not $649k."],
+      },
+      still: {
+        label: "stagnant", list: 829000, cma: 835000, addr: "semi · riverdale",
+        hist: [["now", 829000]],
+        rivals: [805000, 815000],
+        agent: "we're reviewing offers as they come in",
+        zoro: ["listed once, price unchanged", "close to what similar homes sold for (~$835k)", "→ no war expected. offer near asking."],
+      },
+    };
+    const OFFERS = [["at asking", 0], ["+5%", 0.05], ["+15%", 0.15], ["+30%", 0.3]];
+    let mode = "driver", timers = [];
+    const fast = matchMedia("(prefers-reduced-motion: reduce)").matches;
     el.innerHTML = `
       <div class="zd-head"><span class="zd-title">is this price a lure?</span></div>
-      <div class="zd-press-stage">
-        <svg viewBox="0 0 600 222" class="zd-press" role="img" aria-label="homes ride a conveyor belt into a press that checks the list price against what similar homes sold for">
-          <rect x="${PX - 78}" y="8" width="14" height="${FL - 6}" class="zd-p-frame"/>
-          <rect x="${PX + 64}" y="8" width="14" height="${FL - 6}" class="zd-p-frame"/>
-          <rect x="${PX - 78}" y="8" width="156" height="18" rx="3" class="zd-p-frame"/>
-          <rect x="${PX - 14}" y="24" width="28" height="18" class="zd-p-cyl"/>
-          <rect data-rod x="${PX - 6}" y="40" width="12" height="0" class="zd-p-rod"/>
-          <rect data-plate x="${PX - 58}" y="${REST - 12}" width="116" height="12" rx="2" class="zd-p-plate"/>
-          <rect x="10" y="${FL + 2}" width="580" height="14" rx="7" class="zd-belt"/>
-          <line data-belt x1="18" x2="582" y1="${FL + 3}" y2="${FL + 3}" class="zd-belt-top"/>
-          ${roll(17)}${roll(583)}
-          <line data-scan x1="${PX - 60}" x2="${PX + 60}" class="zd-p-scan"/>
-          <g data-ghost class="zd-ghost">${PH}</g>
-          <g data-house>${PH}</g>
-          <text data-real class="zd-p-real" text-anchor="middle"></text>
-          <text data-addr class="zd-p-addr" text-anchor="middle" y="${FL + 30}"></text>
-        </svg>
-        <div class="zd-screen"><div data-l="0"></div><div data-l="1"></div><div data-l="2"></div></div>
+      <div class="zd-row">${seg("seller", [["driver", "seller a"], ["still", "seller b"]], "driver")}</div>
+      <div class="zd-bid">
+        <div class="zd-bid-card">
+          <small data-addr></small>
+          <strong data-list></strong>
+          <div class="zd-bid-hist" data-hist></div>
+          <div class="zd-bid-btns" data-btns></div>
+        </div>
+        <div class="zd-bid-room" aria-live="polite">
+          <div class="zd-bid-feed" data-feed></div>
+          <div class="zd-bid-zoro" data-zoro hidden></div>
+        </div>
       </div>`;
     const $ = (s) => el.querySelector(s);
-    const house = $("[data-house]"), ghost = $("[data-ghost]"), plate = $("[data-plate]"), rod = $("[data-rod]"), scan = $("[data-scan]"), belt = $("[data-belt]"), real = $("[data-real]"), addrT = $("[data-addr]"), screen = $(".zd-screen"), rolls = el.querySelectorAll("[data-roll]");
-    const ease = (a) => (a <= 0 ? 0 : a >= 1 ? 1 : a * a * (3 - 2 * a));
-    let off = 0, lastX = null, lastKey = "";
-    const render = (t) => {
-      const i = Math.floor(t / T) % EX.length, u = t % T, [list, cma, addr] = EX[i], lure = list < 0.85 * cma, hS = H * Math.min(2, 1 + (cma / list - 1) * 2.5);
-      const sg = (a, b) => ease((u - a) / (b - a));
-      const x = u < 2.2 ? -50 + (PX + 50) * sg(0, 2.2) : u < 6.4 ? PX : PX + (660 - PX) * sg(6.4, 8.4);
-      let h = H, ram = REST;
-      if (lure) {
-        if (u >= 3 && u < 3.8) h = H + (hS - H) * sg(3, 3.8);
-        if (u >= 3.8 && u < 4.4) ram = REST + (FL - H * 0.8 - REST) * sg(3.8, 4.4);
-        else if (u >= 4.4 && u < 4.7) ram = FL - H * (0.8 + 0.2 * sg(4.4, 4.7));
-        else if (u >= 4.7 && u < 5.6) ram = FL - H;
-        else if (u >= 5.6 && u < 6.4) ram = FL - H + (REST - FL + H) * sg(5.6, 6.4);
-        if (u >= 3.8 && u < 4.7) h = Math.min(hS, FL - ram);
-      }
-      const sx = 1 + Math.max(0, (H - h) / H) * 1.5;
-      house.setAttribute("transform", `translate(${x.toFixed(1)} ${FL}) scale(${sx.toFixed(3)} ${(h / H).toFixed(3)})`);
-      const g = lure && u >= 3;
-      ghost.style.opacity = g ? 1 : 0;
-      ghost.setAttribute("transform", `translate(${x.toFixed(1)} ${FL}) scale(1 ${(hS / H).toFixed(3)})`);
-      real.style.opacity = g ? 1 : 0;
-      real.setAttribute("x", x.toFixed(1));
-      real.setAttribute("y", (FL - hS - 6).toFixed(1));
-      real.textContent = `real value ~${k(cma)}`;
-      addrT.setAttribute("x", x.toFixed(1));
-      addrT.textContent = `${addr} · list ${k(list)}`;
-      plate.setAttribute("y", (ram - 12).toFixed(1));
-      rod.setAttribute("height", Math.max(0, ram - 52).toFixed(1));
-      const sc = u > 2.2 && u < 3;
-      scan.style.opacity = sc ? 1 : 0;
-      const sy = FL - 25 + Math.sin(u * 14) * 22;
-      scan.setAttribute("y1", sy.toFixed(1));
-      scan.setAttribute("y2", sy.toFixed(1));
-      if (lastX != null && x >= lastX) off += x - lastX;
-      lastX = x;
-      belt.style.strokeDashoffset = (-off).toFixed(1);
-      rolls.forEach((r, j) => r.setAttribute("transform", `translate(${j ? 583 : 17} ${FL + 9}) rotate(${((off * 180) / (Math.PI * 6)) % 360})`));
-      const st = u < 2.2 ? "idle" : u < 3 || (lure && u < 4.4) ? "check" : lure ? "warn" : "ok";
-      const key = st + i;
-      if (key === lastKey) return;
-      lastKey = key;
-      const L = {
-        idle: [`next: ${addr}`, "waiting on the belt…", ""],
-        check: ["checking the price…", `list    ${k(list)}`, `similar ${k(cma)}`],
-        warn: [`⚠ ${Math.round((1 - list / cma) * 100)}% under similar homes`, `real value ~${k(cma)}`, "expect bids over asking"],
-        ok: ["✓ priced near similar homes", `list ${k(list)} · sold ~${k(cma)}`, "no warning needed"],
-      }[st];
-      screen.className = `zd-screen ${st}`;
-      screen.querySelectorAll("[data-l]").forEach((d, j) => (d.textContent = L[j]));
+    const later = (ms, fn) => timers.push(setTimeout(fn, fast ? 0 : ms));
+    const line = (cls, html) => {
+      const d = document.createElement("div");
+      d.className = `zd-bid-msg ${cls}`;
+      d.innerHTML = html;
+      $("[data-feed]").append(d);
     };
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return render(5);
-    let visible = false, t = 0, prev = 0;
-    new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(el);
-    const loop = (ms) => {
-      const dt = Math.min(0.05, (ms - prev) / 1000);
-      prev = ms;
-      if (visible) render((t += dt));
-      requestAnimationFrame(loop);
+    const reset = () => {
+      timers.forEach(clearTimeout);
+      timers = [];
+      const s = S[mode];
+      $("[data-addr]").textContent = s.addr;
+      $("[data-list]").textContent = `listed at ${k(s.list)}`;
+      $("[data-hist]").innerHTML = s.hist.map(([m, p], i) => `${i ? "<i>→</i>" : ""}<span class="${i === s.hist.length - 1 ? "now" : ""}">${m} ${k(p)}</span>`).join("");
+      $("[data-btns]").innerHTML = `<p>you're the buyer. what do you offer?</p>` +
+        OFFERS.map(([t, p]) => `<button type="button" data-p="${p}">${t}<em>${k(s.list * (1 + p))}</em></button>`).join("");
+      $("[data-feed]").innerHTML = `<div class="zd-bid-msg idle">pick an offer to start the bidding</div>`;
+      $("[data-zoro]").hidden = true;
+      el.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => play(+b.dataset.p)));
     };
-    render(0);
-    requestAnimationFrame(loop);
+    const play = (p) => {
+      const s = S[mode], mine = Math.round(s.list * (1 + p)), top = Math.max(...s.rivals);
+      el.querySelectorAll("[data-p]").forEach((b) => { b.disabled = true; b.classList.toggle("on", +b.dataset.p === p); });
+      $("[data-feed]").innerHTML = "";
+      line("me", `you offer <b>${k(mine)}</b>`);
+      let t = 500;
+      later(t, () => line("agent", `listing agent: “${s.agent}”`));
+      s.rivals.forEach((r, i) => later((t += 450), () => line("rival", `offer ${i + 2} <b>${k(r)}</b>`)));
+      const won = mine > top;
+      later((t += 700), () => {
+        const sold = won ? mine : top, over = sold - s.list;
+        line(won ? "win" : "lose", won
+          ? `you won at <b>${k(sold)}</b>${over > 0 ? `, ${k(over)} over asking` : ""}`
+          : `outbid. sold for <b>${k(sold)}</b>, ${k(over)} over asking`);
+      });
+      later((t += 600), () => {
+        const z = $("[data-zoro]");
+        z.innerHTML = `<small>what zoro told you before you bid</small>` + s.zoro.map((x) => `<div>${x}</div>`).join("") +
+          `<button type="button" data-again>↺ try again</button>`;
+        z.hidden = false;
+        z.querySelector("[data-again]").addEventListener("click", reset);
+      });
+    };
+    bindSeg(el, "seller", (v) => { mode = v; reset(); });
+    reset();
   },
 
   api(el) {
@@ -518,7 +510,7 @@ const D = {
 };
 
 const TLDR = {
-  signal: "zoro checks each list price against what similar homes sold for. if it’s ridiculously under, the home is probably priced low to start a bidding war, so he tells the buyer to plan on going over asking.",
+  signal: "sellers play one of two games: list low and start a bidding war, or list at the real price and wait. zoro reads the listing history to tell them apart before the buyer bids.",
   api: "three lanes. listings flow into our own database, live searches hit the mls, and neighbourhood facts are prepared ahead of time. zoro asks once and gets one clean answer.",
   hubspot: "hubspot and our app each own their own data. every event lands on exactly one side, and anything that would blur the line is ignored.",
 };
