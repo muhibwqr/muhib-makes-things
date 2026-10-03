@@ -1707,18 +1707,23 @@ body.maker .article-prose p.zd-im-note { margin: 6px 0 36px; color: #999; font-s
 .zd-tm-chips button { padding: 5px 11px; border: 1px solid #ddd; border-radius: 999px; background: #fff; font: 13px inherit; font-family: inherit; cursor: pointer; transition: border-color .12s, background .12s; }
 .zd-tm-chips button:hover { border-color: #2a2a2a; }
 .zd-tm-chips button.on { border-color: #2a2a2a; background: #2a2a2a; color: #fff; }
-.zd-tm { display: block; width: 100%; height: auto; }
-.zd-tm-line { stroke-width: 7; stroke-linecap: round; }
-.zd-tm-line.dash { stroke-width: 3; stroke-dasharray: 2 7; }
-.zd-tm-st { fill: #fff; stroke: #2a2a2a; stroke-width: 2.5; cursor: pointer; transition: fill .2s; }
-.zd-tm-st.seen { fill: #d6d6d0; }
+.zd-tm { display: block; width: 100%; height: auto; overflow: visible; }
+.zd-tm polyline { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.zd-tm-line { stroke-width: 9; }
+.zd-tm-xfer { stroke: #9a9a95; stroke-width: 9; }
+.zd-tm-xfer.in { stroke: #fbfbfa; stroke-width: 3.5; }
+.zd-tm-st { fill: #fff; stroke: #1a1a1a; stroke-width: 3; cursor: pointer; transition: fill .2s, r .2s; }
+.zd-tm-st.hub { stroke-width: 4.5; }
+.zd-tm-st.seen { fill: #d9d9d4; }
 .zd-tm-st.x { fill: #fff; stroke: #e5484d; stroke-width: 4; }
-.zd-tm-lab { fill: #444; font: 500 11.5px Inter, sans-serif; pointer-events: none; }
-.zd-tm-lab.big { fill: #111; font-weight: 700; font-size: 13px; }
-.zd-tm-train { stroke: #2a2a2a; stroke-width: 1.5; transition: opacity .3s; }
-.zd-tm-train .w { fill: #fff; stroke: none; }
+.zd-tm-lab { fill: #2a2a2a; font: 600 11px Inter, sans-serif; letter-spacing: .01em; pointer-events: none; }
+.zd-tm-lab.big { fill: #111; font-weight: 800; font-size: 14px; letter-spacing: .04em; }
+.zd-tm-badge text { fill: #fff; font: 800 11px Inter, sans-serif; }
+.zd-tm-train rect:not(.w) { stroke: #fff; stroke-width: 2; }
+.zd-tm-train .w { fill: #fff; }
+.zd-tm-train { transition: opacity .3s; filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.25)); }
 .zd-tm-train.gone { opacity: 0; }
 .zd-tm-legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 4px 0 2px; color: #777; font-size: 12px; }
 .zd-tm-legend span::before { content: ""; display: inline-block; width: 18px; height: 5px; margin-right: 6px; border-radius: 3px; background: var(--c); vertical-align: middle; }
-@media (max-width: 640px) { .zd-tm-lab { font-size: 17px; } .zd-tm-lab.big { font-size: 19px; } }
-.zd-tm-legend span.dash::before { height: 0; border-top: 3px dotted var(--c); background: none; }
+@media (max-width: 640px) { .zd-tm-lab { font-size: 16px; } .zd-tm-lab.big { font-size: 19px; } }
+.zd-tm-legend span.dash::before { height: 2px; border: 2px solid var(--c); background: #fbfbfa; }

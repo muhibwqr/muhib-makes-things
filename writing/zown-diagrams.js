@@ -333,9 +333,11 @@ const D = {
       local: ["area stats", "schools, census, climate, walk + transit scores, refreshed on a schedule."],
       mv: ["summary table", "the home plus everything around it, pre-joined, in a shape zoro can read out loud."],
     };
-    const P = { feeds: [40, 60], media: [120, 60], ingest: [200, 60], pg: [280, 60], listapi: [360, 60], app: [440, 60], zoro: [400, 150], client: [480, 150], repliers: [560, 150], apple: [40, 220], osm: [120, 220], poi: [200, 220], local: [280, 220], mv: [360, 220] };
+    const P = { feeds: [60, 80], media: [140, 80], ingest: [220, 80], pg: [300, 80], listapi: [380, 80], app: [460, 80], zoro: [440, 170], client: [520, 170], repliers: [600, 170], apple: [60, 230], osm: [140, 230], poi: [220, 230], local: [300, 230], mv: [380, 230] };
     const C = { red: "#e5484d", blue: "#2f7de1", green: "#2fa05a", grey: "#9a9a95" };
     const LINES = [["red", ["feeds", "media", "ingest", "pg", "listapi", "app"]], ["blue", ["zoro", "client", "repliers"]], ["green", ["apple", "osm", "poi", "local", "mv", "zoro"]]];
+    const W = { "pg>zoro": [[390, 170]] };
+    const pts = (a, b) => [P[a], ...(W[`${a}>${b}`] || (W[`${b}>${a}`] || []).slice().reverse()), P[b]];
     const color = (a, b) => (LINES.find(([, s]) => s.some((x, i) => (x === a && (s[i + 1] === b || s[i - 1] === b))))?.[0]) || "grey";
     const R = {
       listing: ["a new listing hits the board", ["feeds", "media", "ingest", "pg", "listapi", "app"], "✓ the buyer sees it on the map, with photos."],
@@ -346,37 +348,48 @@ const D = {
       hood: ["nightly neighbourhood refresh", ["apple", "osm", "poi", "local", "mv"], "✓ everything around every home is pre-joined before anyone asks."],
     };
     const lab = (k) => {
-      const [x, y] = P[k], above = ["feeds", "ingest", "pg", "app", "osm", "local"].includes(k);
-      return `<text x="${x}" y="${above ? y - 16 : y + 26}" text-anchor="middle" class="zd-tm-lab${k === "zoro" ? " big" : ""}">${N[k][0]}</text>`;
+      const [x, y] = P[k];
+      if (k === "zoro") return `<text x="${x}" y="${y - 22}" text-anchor="middle" class="zd-tm-lab big">zoro</text>`;
+      if (y === 170) return `<text x="${x}" y="${y + 26}" text-anchor="middle" class="zd-tm-lab">${N[k][0]}</text>`;
+      const up = y === 80;
+      return `<text transform="translate(${x + 4} ${up ? y - 15 : y + 19}) rotate(${up ? -40 : 40})" class="zd-tm-lab">${N[k][0]}</text>`;
     };
-    const seg2 = (a, b, c, dash) => `<line x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}" stroke="${C[c]}" class="zd-tm-line${dash ? " dash" : ""}"/>`;
+    const poly = (ks) => ks.slice(1).reduce((a, b, i) => a.concat(pts(ks[i], b).slice(1)), [P[ks[0]]]).map((p) => p.join(",")).join(" ");
+    const badge = (x, y, c, t) => `<g class="zd-tm-badge"><circle cx="${x}" cy="${y}" r="11" fill="${C[c]}"/><text x="${x}" y="${y + 4}" text-anchor="middle">${t}</text></g>`;
     el.innerHTML = `
       <div class="zd-head"><span class="zd-title">where zoro's home facts come from</span></div>
       <div class="zd-tm-chips">${Object.entries(R).map(([k, r]) => `<button type="button" data-r="${k}">${r[0]}</button>`).join("")}</div>
-      <div class="zd-tm-wrap"><svg viewBox="-20 -8 660 270" class="zd-tm" role="img" aria-label="a transit map with three lines meeting at zoro">
-        ${LINES.map(([c, s]) => s.slice(1).map((b, i) => seg2(s[i], b, c)).join("")).join("")}
-        ${seg2("pg", "zoro", "grey", true)}
-        ${Object.keys(P).map((k) => `<circle data-k="${k}" cx="${P[k][0]}" cy="${P[k][1]}" r="${k === "zoro" ? 11 : 7}" class="zd-tm-st"/>`).join("")}
+      <div class="zd-tm-wrap"><svg viewBox="0 -20 660 345" class="zd-tm" role="img" aria-label="a transit map with three lines meeting at zoro">
+        <polyline points="${poly(["pg", "zoro"])}" class="zd-tm-xfer"/><polyline points="${poly(["pg", "zoro"])}" class="zd-tm-xfer in"/>
+        ${LINES.map(([c, s]) => `<polyline points="${poly(s)}" stroke="${C[c]}" class="zd-tm-line"/>`).join("")}
+        ${badge(26, 80, "red", "L")}${badge(26, 230, "green", "N")}${badge(634, 170, "blue", "S")}
+        ${Object.keys(P).map((k) => `<circle data-k="${k}" cx="${P[k][0]}" cy="${P[k][1]}" r="${k === "zoro" ? 12 : 6.5}" class="zd-tm-st${k === "zoro" ? " hub" : ""}"/>`).join("")}
         ${Object.keys(P).map(lab).join("")}
-        <g data-train class="zd-tm-train"><rect x="-13" y="-7" width="26" height="14" rx="5"/><rect x="-8" y="-3" width="5" height="4" rx="1" class="w"/><rect x="2" y="-3" width="5" height="4" rx="1" class="w"/></g>
+        <g data-train class="zd-tm-train"><g data-rot><rect x="-15" y="-6.5" width="30" height="13" rx="6.5"/><rect x="-9" y="-2.5" width="5" height="5" rx="1.5" class="w"/><rect x="-1" y="-2.5" width="5" height="5" rx="1.5" class="w"/><rect x="7" y="-2.5" width="4" height="5" rx="1.5" class="w"/></g></g>
       </svg></div>
       <div class="zd-tm-legend"><span style="--c:${C.red}">listings</span><span style="--c:${C.blue}">live search</span><span style="--c:${C.green}">neighbourhood</span><span style="--c:${C.grey}" class="dash">transfer</span></div>
       <div class="zd-out" data-cap></div>`;
-    const train = el.querySelector("[data-train]"), cap = el.querySelector("[data-cap]");
+    const train = el.querySelector("[data-train]"), rot = el.querySelector("[data-rot]"), cap = el.querySelector("[data-cap]");
     const fast = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let token = 0, auto = true;
     const put = ([x, y]) => train.setAttribute("transform", `translate(${x} ${y})`);
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-    const tween = (a, b, ms, my) => new Promise((done) => {
+    const leg = (a, b, ms, my) => new Promise((done) => {
+      const ang = (Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) / Math.PI;
+      rot.setAttribute("transform", `rotate(${Math.abs(ang) > 90 ? ang + 180 : ang})`);
       const t0 = performance.now();
       const f = (now) => {
         if (my !== token) return done();
-        const u = Math.min(1, (now - t0) / ms), e = u * u * (3 - 2 * u);
-        put([a[0] + (b[0] - a[0]) * e, a[1] + (b[1] - a[1]) * e]);
+        const u = Math.min(1, (now - t0) / ms);
+        put([a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u]);
         u < 1 ? requestAnimationFrame(f) : done();
       };
       requestAnimationFrame(f);
     });
+    const tween = async (a, b, ms, my) => {
+      const ps = pts(a, b), d = ps.slice(1).map((p, i) => Math.hypot(p[0] - ps[i][0], p[1] - ps[i][1])), tot = d.reduce((x, y) => x + y, 0);
+      for (let i = 1; i < ps.length && my === token; i++) await leg(ps[i - 1], ps[i], (ms * d[i - 1]) / tot, my);
+    };
     const st = (k, cls) => el.querySelector(`[data-k="${k}"]`).classList.add(cls);
     const run = async (key) => {
       const my = ++token, [, path, answer, drop] = R[key];
@@ -401,7 +414,7 @@ const D = {
         if (my !== token) return;
         const c = color(path[i - 1], path[i]);
         train.style.fill = C[c];
-        await tween(P[path[i - 1]], P[path[i]], 750, my);
+        await tween(path[i - 1], path[i], 750, my);
         if (my !== token) return;
         light(path[i], c);
         cap.innerHTML = `<strong>${N[path[i]][0]}</strong>: ${N[path[i]][1]}`;
