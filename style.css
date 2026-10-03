@@ -1274,7 +1274,7 @@ body.maker .article-prose p.noted { position: relative; }
 }
 .wfmt-top {
   display: flex; justify-content: space-between; align-items: center;
-  max-width: 1040px; margin: 0 auto; padding: 18px 24px;
+  padding: 18px max(24px, calc(50vw - 610px));
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 12px;
 }
 .wfmt-top a { color: #999; text-decoration: none; }
