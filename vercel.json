@@ -1,4 +1,9 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "zown-writeup": false
+    }
+  },
   "functions": {
     "api/chat.ts": {
       "maxDuration": 60
@@ -76,7 +81,7 @@
       "permanent": true
     }
   ],
-    "rewrites": [
+  "rewrites": [
     {
       "source": "/resume",
       "destination": "/resume.pdf"
