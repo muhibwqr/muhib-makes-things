@@ -19,6 +19,7 @@ const pages = [
   ...html("projects"),
   ...html("community"),
   ...html("books"),
+  ...html("perception"),
   ...html("writing/attention"),
   ...html("writing/attention/explore"),
   ...html("writing/flash-attention"),

@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#111111" />
+<title>Check It</title>
+<style>
+  :root {
+    --bg: #111;
+    --fg: #fff;
+    --dim: #b8b8b8;
+    --accent: #ffd400;
+    --accent-ink: #111;
+    --panel: #1e1e1e;
+    --line: #3a3a3a;
+    --danger: #ff6b5b;
+    --r: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font: 600 20px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior: none;
+  }
+  .screen {
+    display: none;
+    min-height: 100%;
+    min-height: 100dvh;
+    padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+    max-width: 560px;
+    margin: 0 auto;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .screen.on { display: flex; animation: in .2s ease-out; }
+  @keyframes in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .grow { flex: 1; }
+  .center { text-align: center; }
+  h1 { font-size: clamp(56px, 18vw, 96px); line-height: .95; letter-spacing: -.03em; font-weight: 900; }
+  h2 { font-size: clamp(30px, 9vw, 44px); line-height: 1.05; font-weight: 850; letter-spacing: -.01em; }
+  .kicker { color: var(--accent); font-size: 16px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+  .lede { color: var(--dim); font-size: 20px; font-weight: 500; }
+  .big-name { font-size: clamp(48px, 15vw, 84px); font-weight: 900; color: var(--accent); line-height: 1; word-break: break-word; }
+
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; touch-action: manipulation; }
+  .btn {
+    display: block; width: 100%;
+    min-height: 68px; padding: 16px 20px;
+    border-radius: var(--r);
+    background: var(--accent); color: var(--accent-ink);
+    font-size: 24px; font-weight: 850;
+    transition: transform .1s ease-out, opacity .2s ease-out;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn:disabled { opacity: .35; }
+  .btn.ghost { background: transparent; color: var(--fg); border: 3px solid var(--line); }
+  .btn.small { min-height: 54px; font-size: 19px; }
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; }
+  .link { color: var(--dim); text-decoration: underline; font-size: 17px; font-weight: 600; padding: 10px; align-self: center; }
+
+  .stepper { display: flex; align-items: center; justify-content: center; gap: 22px; }
+  .stepper button {
+    width: 76px; height: 76px; border-radius: 50%;
+    background: var(--panel); border: 3px solid var(--line);
+    font-size: 40px; font-weight: 800; line-height: 1;
+  }
+  .stepper button:disabled { opacity: .3; }
+  .count { font-size: 104px; font-weight: 900; min-width: 1.1em; text-align: center; font-variant-numeric: tabular-nums; }
+
+  .names { display: flex; flex-direction: column; gap: 12px; }
+  .names label { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--dim); letter-spacing: .06em; text-transform: uppercase; font-weight: 800; }
+  .names input {
+    font: inherit; font-size: 24px; font-weight: 700;
+    color: var(--fg); background: var(--panel);
+    border: 3px solid var(--line); border-radius: 14px;
+    padding: 14px 16px; width: 100%;
+  }
+  .names input:focus { outline: none; border-color: var(--accent); }
+
+  .wheel-wrap { position: relative; width: min(84vw, 380px); aspect-ratio: 1; margin: 8px auto 0; }
+  .wheel-wrap svg { width: 100%; height: 100%; display: block; }
+  #wheel { transition: transform 4s cubic-bezier(.12, .7, .12, 1); transform-box: fill-box; transform-origin: center; }
+  .pointer {
+    position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 18px solid transparent; border-right: 18px solid transparent;
+    border-top: 34px solid var(--fg);
+    filter: drop-shadow(0 2px 0 #000);
+    z-index: 2;
+  }
+  .pick { min-height: 1.1em; transition: opacity .2s ease-out, transform .2s ease-out; }
+  .pick.hide { opacity: 0; transform: translateY(8px); }
+
+  .hold {
+    position: relative;
+    width: 100%; min-height: 300px;
+    border-radius: 24px;
+    border: 4px dashed var(--line);
+    background: var(--panel);
+    display: flex; align-items: center; justify-content: center;
+    padding: 22px;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+    touch-action: none;
+  }
+  .hold .prompt { font-size: 28px; font-weight: 850; text-align: center; }
+  .hold .prompt small { display: block; font-size: 17px; color: var(--dim); font-weight: 600; margin-top: 8px; }
+  .hold .secret { display: none; flex-direction: column; gap: 18px; width: 100%; }
+  .hold.held { border-style: solid; border-color: var(--accent); background: #000; }
+  .hold.held .prompt { display: none; }
+  .hold.held .secret { display: flex; }
+  .card-label { font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 900; }
+  .card-text { font-size: clamp(26px, 7.5vw, 34px); font-weight: 850; line-height: 1.15; }
+
+  .timer {
+    font-size: clamp(96px, 32vw, 160px); font-weight: 900; text-align: center;
+    font-variant-numeric: tabular-nums; letter-spacing: -.03em; line-height: 1;
+  }
+  .timer.paused { opacity: .45; }
+  .timer.low { color: var(--danger); }
+  .timer.done { color: var(--danger); animation: blink 1s steps(2, start) infinite; }
+  @keyframes blink { to { visibility: hidden; } }
+  .hint {
+    border-left: 5px solid var(--accent);
+    background: var(--panel);
+    border-radius: 0 14px 14px 0;
+    padding: 14px 16px;
+    font-size: 17px; font-weight: 500; color: var(--dim);
+  }
+  .hint b { color: var(--fg); font-weight: 800; }
+  .hint em { color: var(--accent); font-style: normal; font-weight: 700; }
+
+  .reveal-card { background: var(--panel); border: 3px solid var(--line); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .reveal-card.main { border-color: var(--accent); }
+  .note { color: var(--dim); font-size: 16px; font-weight: 500; text-align: center; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #wheel { transition-duration: 1s; }
+    .screen.on { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<section class="screen on" id="s-start">
+  <div class="grow"></div>
+  <div>
+    <p class="kicker">a perception game</p>
+    <h1>Check<br />It</h1>
+  </div>
+  <p class="lede">One phone per team. One Guesser. Everyone else knows how the Guesser is being seen. The Guesser has to work it out.</p>
+  <div class="grow"></div>
+  <button class="btn" data-go="count">Start</button>
+</section>
+
+<section class="screen" id="s-count">
+  <p class="kicker">step 1</p>
+  <h2>How many players?</h2>
+  <div class="grow"></div>
+  <div class="stepper">
+    <button id="minus" aria-label="fewer players">&minus;</button>
+    <div class="count" id="count" aria-live="polite">4</div>
+    <button id="plus" aria-label="more players">+</button>
+  </div>
+  <p class="note">3 to 5 players</p>
+  <div class="grow"></div>
+  <div class="row">
+    <button class="btn ghost small" data-go="start">Back</button>
+    <button class="btn small" data-go="names">Next</button>
+  </div>
+</section>
+
+<section class="screen" id="s-names">
+  <p class="kicker">step 2</p>
+  <h2>Who's playing?</h2>
+  <div class="names" id="names"></div>
+  <button class="link" id="clear">Clear names</button>
+  <div class="grow"></div>
+  <div class="row">
+    <button class="btn ghost small" data-go="count">Back</button>
+    <button class="btn small" id="to-wheel">Spin</button>
+  </div>
+</section>
+
+<section class="screen" id="s-wheel">
+  <p class="kicker center">picking the guesser</p>
+  <div class="wheel-wrap">
+    <div class="pointer"></div>
+    <svg viewBox="-110 -110 220 220" aria-hidden="true"><g id="wheel"></g></svg>
+  </div>
+  <div class="center">
+    <div class="big-name pick hide" id="pick">&nbsp;</div>
+    <p class="note pick hide" id="pick-sub">you're the Guesser</p>
+  </div>
+  <div class="grow"></div>
+  <button class="btn" id="to-secret" disabled>Continue</button>
+</section>
+
+<section class="screen" id="s-secret">
+  <p class="kicker"><span id="guesser-a"></span> is the guesser</p>
+  <h2>Guesser, look away.</h2>
+  <p class="lede">Everyone else: press and hold below to see the secret. Let go to hide it.</p>
+  <div class="hold" id="hold" role="button" aria-label="press and hold to see the secret">
+    <div class="prompt">Press &amp; hold<small>team only</small></div>
+    <div class="secret">
+      <div><div class="card-label">Treat the Guesser like</div><div class="card-text" id="sec-perception"></div></div>
+      <div><div class="card-label">Scenario</div><div class="card-text" id="sec-scenario"></div></div>
+    </div>
+  </div>
+  <div class="grow"></div>
+  <button class="btn" id="ready" disabled>Ready</button>
+  <p class="note" id="ready-note">Hold the box at least once first.</p>
+</section>
+
+<section class="screen" id="s-play">
+  <p class="kicker center">act it out. don't say it.</p>
+  <div class="grow"></div>
+  <div class="timer" id="timer">5:00</div>
+  <div class="hint">
+    <b>Guesser:</b> do a perception check first. "I noticed you're all <em>[behavior]</em>, it could mean X or Y, which is it?"
+  </div>
+  <div class="grow"></div>
+  <div class="row">
+    <button class="btn ghost small" id="pause">Pause</button>
+    <button class="btn small" id="reveal">Reveal</button>
+  </div>
+</section>
+
+<section class="screen" id="s-reveal">
+  <p class="kicker"><span id="guesser-b"></span> was seen as</p>
+  <div class="reveal-card main">
+    <div class="card-label">Perception</div>
+    <div class="card-text" id="rev-perception"></div>
+  </div>
+  <div class="reveal-card">
+    <div class="card-label">Scenario</div>
+    <div class="card-text" id="rev-scenario"></div>
+  </div>
+  <div class="grow"></div>
+  <button class="btn" id="new-game">New game</button>
+</section>
+
+<script>
+const PERCEPTIONS = [
+  "the boss everyone is scared of",
+  "the genius",
+  "the one who always cancels plans",
+  "the funniest person in the room",
+  "the person who never listens",
+  "the new friend everyone wants to impress",
+  "the one who is always late",
+  "a celebrity",
+  "the person everyone comes to for advice",
+];
+
+const SCENARIOS = [
+  "a boss and their employees in a Monday meeting",
+  "a teacher and their students on test day",
+  "a coach and their team at halftime",
+  "a group of friends planning a trip",
+  "a family at dinner",
+  "restaurant staff and their regular customer",
+  "a class group project meeting",
+  "a team waiting on an important client call",
+  "roommates having a house meeting",
+];
+
+const ROUND_SECONDS = 5 * 60;
+const MIN_PLAYERS = 3;
+const MAX_PLAYERS = 5;
+const NAMES_KEY = "checkit.names";
+const COLORS = ["#ffd400", "#4dd2ff", "#ff6b9d", "#7cff6b", "#b88cff"];
+
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  del(k) { try { localStorage.removeItem(k); } catch {} },
+};
+const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+const state = {
+  count: Math.min(MAX_PLAYERS, Math.max(MIN_PLAYERS, store.get(NAMES_KEY, []).length || 4)),
+  players: [],
+  beenGuesser: new Set(),
+  guesser: null,
+  perception: "",
+  scenario: "",
+  rotation: 0,
+};
+
+function show(name) {
+  document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("on", s.id === "s-" + name));
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll("[data-go]").forEach((b) =>
+  b.addEventListener("click", () => {
+    if (b.dataset.go === "names") renderNames();
+    show(b.dataset.go);
+  })
+);
+
+function renderCount() {
+  $("count").textContent = state.count;
+  $("minus").disabled = state.count <= MIN_PLAYERS;
+  $("plus").disabled = state.count >= MAX_PLAYERS;
+}
+$("minus").addEventListener("click", () => { state.count = Math.max(MIN_PLAYERS, state.count - 1); renderCount(); });
+$("plus").addEventListener("click", () => { state.count = Math.min(MAX_PLAYERS, state.count + 1); renderCount(); });
+renderCount();
+
+function currentInputs() { return [...$("names").querySelectorAll("input")].map((i) => i.value); }
+
+function renderNames() {
+  const typed = currentInputs();
+  const saved = store.get(NAMES_KEY, []);
+  $("names").innerHTML = "";
+  for (let i = 0; i < state.count; i++) {
+    const label = document.createElement("label");
+    label.textContent = "Player " + (i + 1);
+    const input = document.createElement("input");
+    input.type = "text";
+    input.maxLength = 18;
+    input.autocomplete = "off";
+    input.autocapitalize = "words";
+    input.enterKeyHint = i === state.count - 1 ? "done" : "next";
+    input.placeholder = "Player " + (i + 1);
+    input.value = typed[i] ?? saved[i] ?? "";
+    input.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      const next = $("names").querySelectorAll("input")[i + 1];
+      next ? next.focus() : input.blur();
+    });
+    label.append(input);
+    $("names").append(label);
+  }
+}
+
+$("clear").addEventListener("click", () => {
+  store.del(NAMES_KEY);
+  $("names").querySelectorAll("input").forEach((i) => (i.value = ""));
+  state.beenGuesser.clear();
+});
+
+$("to-wheel").addEventListener("click", () => {
+  const raw = currentInputs().map((v) => v.trim());
+  state.players = raw.map((v, i) => v || "Player " + (i + 1));
+  store.set(NAMES_KEY, raw);
+  for (const n of [...state.beenGuesser]) if (!state.players.includes(n)) state.beenGuesser.delete(n);
+  startWheel();
+});
+
+function polar(r, deg) {
+  const a = (deg - 90) * Math.PI / 180;
+  return [r * Math.cos(a), r * Math.sin(a)];
+}
+
+function drawWheel() {
+  const n = state.players.length;
+  const seg = 360 / n;
+  const g = $("wheel");
+  let svg = "";
+  state.players.forEach((name, i) => {
+    const a0 = i * seg, a1 = (i + 1) * seg, mid = a0 + seg / 2;
+    const [x0, y0] = polar(100, a0), [x1, y1] = polar(100, a1);
+    const used = state.beenGuesser.has(name);
+    svg += `<path d="M0 0 L${x0} ${y0} A100 100 0 ${seg > 180 ? 1 : 0} 1 ${x1} ${y1} Z"
+      fill="${used ? "#2a2a2a" : COLORS[i % COLORS.length]}" stroke="#111" stroke-width="2"/>`;
+    const [tx, ty] = polar(58, mid);
+    const label = name.length > 12 ? name.slice(0, 11) + "…" : name;
+    const size = label.length > 8 ? Math.max(9, 15 - (label.length - 8) * 1.7) : 15;
+    const turn = mid > 180 ? mid + 90 : mid - 90;
+    svg += `<text x="${tx}" y="${ty}" transform="rotate(${turn} ${tx} ${ty})"
+      text-anchor="middle" dominant-baseline="central"
+      font-size="${size}" font-weight="900" fill="${used ? "#777" : "#111"}"
+      font-family="system-ui, sans-serif">${escapeHtml(label)}</text>`;
+  });
+  svg += `<circle r="14" fill="#111" stroke="#fff" stroke-width="3"/>`;
+  g.innerHTML = svg;
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function startWheel() {
+  if (state.players.every((p) => state.beenGuesser.has(p))) state.beenGuesser.clear();
+  const pool = state.players.map((p, i) => i).filter((i) => !state.beenGuesser.has(state.players[i]));
+  const idx = pickRandom(pool);
+  state.guesser = state.players[idx];
+
+  const wheel = $("wheel");
+  wheel.style.transition = "none";
+  wheel.style.transform = `rotate(${state.rotation % 360}deg)`;
+  state.rotation %= 360;
+  drawWheel();
+
+  $("pick").classList.add("hide");
+  $("pick-sub").classList.add("hide");
+  $("to-secret").disabled = true;
+  show("wheel");
+
+  const seg = 360 / state.players.length;
+  const center = idx * seg + seg / 2;
+  const jitter = (Math.random() - 0.5) * seg * 0.6;
+  const base = state.rotation - (state.rotation % 360);
+  const target = base + 360 * 5 + (360 - center) - jitter;
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    wheel.style.transition = "";
+    wheel.style.transform = `rotate(${target}deg)`;
+    state.rotation = target;
+  }));
+
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    $("pick").textContent = state.guesser;
+    $("pick").classList.remove("hide");
+    $("pick-sub").classList.remove("hide");
+    $("to-secret").disabled = false;
+    navigator.vibrate?.(60);
+  };
+  wheel.addEventListener("transitionend", finish, { once: true });
+  setTimeout(finish, 4400);
+}
+
+$("to-secret").addEventListener("click", () => {
+  state.perception = pickRandom(PERCEPTIONS);
+  state.scenario = pickRandom(SCENARIOS);
+  $("sec-perception").textContent = state.perception;
+  $("sec-scenario").textContent = state.scenario;
+  $("guesser-a").textContent = state.guesser;
+  $("ready").disabled = true;
+  $("ready-note").style.visibility = "";
+  show("secret");
+});
+
+const hold = $("hold");
+const showSecret = (e) => {
+  e.preventDefault();
+  if (e.pointerId !== undefined) hold.setPointerCapture?.(e.pointerId);
+  hold.classList.add("held");
+  $("ready").disabled = false;
+  $("ready-note").style.visibility = "hidden";
+};
+const hideSecret = () => hold.classList.remove("held");
+hold.addEventListener("pointerdown", showSecret);
+["pointerup", "pointercancel", "lostpointercapture"].forEach((t) => hold.addEventListener(t, hideSecret));
+hold.addEventListener("contextmenu", (e) => e.preventDefault());
+document.addEventListener("visibilitychange", hideSecret);
+window.addEventListener("blur", hideSecret);
+
+const timer = { endsAt: 0, left: ROUND_SECONDS, running: false, raf: 0 };
+let wakeLock = null;
+
+async function keepAwake(on) {
+  try {
+    if (on && !wakeLock && "wakeLock" in navigator) {
+      wakeLock = await navigator.wakeLock.request("screen");
+      wakeLock.addEventListener("release", () => (wakeLock = null));
+    } else if (!on && wakeLock) {
+      await wakeLock.release();
+    }
+  } catch {}
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && timer.running) keepAwake(true);
+});
+
+function fmt(s) {
+  const t = Math.max(0, Math.ceil(s));
+  return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0");
+}
+
+function renderTimer() {
+  const el = $("timer");
+  el.textContent = fmt(timer.left);
+  el.classList.toggle("paused", !timer.running && timer.left > 0);
+  el.classList.toggle("low", timer.left > 0 && timer.left <= 30);
+  el.classList.toggle("done", timer.left <= 0);
+  $("pause").textContent = timer.running ? "Pause" : timer.left > 0 ? "Resume" : "Time's up";
+  $("pause").disabled = timer.left <= 0;
+}
+
+function tick() {
+  if (!timer.running) return;
+  timer.left = (timer.endsAt - Date.now()) / 1000;
+  if (timer.left <= 0) {
+    timer.left = 0;
+    timer.running = false;
+    navigator.vibrate?.([200, 100, 200]);
+    keepAwake(false);
+  }
+  renderTimer();
+  if (timer.running) timer.raf = requestAnimationFrame(tick);
+}
+
+function startTimer() {
+  timer.endsAt = Date.now() + timer.left * 1000;
+  timer.running = true;
+  keepAwake(true);
+  cancelAnimationFrame(timer.raf);
+  tick();
+}
+function stopTimer() {
+  timer.running = false;
+  cancelAnimationFrame(timer.raf);
+  keepAwake(false);
+  renderTimer();
+}
+
+$("ready").addEventListener("click", () => {
+  hideSecret();
+  timer.left = ROUND_SECONDS;
+  show("play");
+  startTimer();
+});
+$("pause").addEventListener("click", () => {
+  if (timer.running) { timer.left = (timer.endsAt - Date.now()) / 1000; stopTimer(); }
+  else if (timer.left > 0) startTimer();
+});
+$("reveal").addEventListener("click", () => {
+  stopTimer();
+  state.beenGuesser.add(state.guesser);
+  $("guesser-b").textContent = state.guesser;
+  $("rev-perception").textContent = state.perception;
+  $("rev-scenario").textContent = state.scenario;
+  show("reveal");
+});
+$("new-game").addEventListener("click", () => {
+  if (state.players.length && state.players.every((p) => state.beenGuesser.has(p))) state.beenGuesser.clear();
+  show("start");
+});
+
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  navigator.serviceWorker.register("/perception/sw.js", { scope: "/perception/" }).catch(() => {});
+}
+</script>
+</body>
+</html>
