@@ -1,4 +1,4 @@
-const CACHE = "check-it-v1";
+const CACHE = "check-it-v2";
 const PAGE = "/perception/";
 
 self.addEventListener("install", (e) => {

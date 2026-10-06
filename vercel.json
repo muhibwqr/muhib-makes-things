@@ -113,6 +113,15 @@
           "value": "inline; filename=\"muhib-waqar-resume.pdf\""
         }
       ]
+    },
+    {
+      "source": "/perception(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
     }
   ]
 }

@@ -3,19 +3,20 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#111111" />
+<meta name="theme-color" content="#ffffff" />
+<meta name="robots" content="noindex, nofollow, noarchive" />
 <title>Check It</title>
 <style>
   :root {
-    --bg: #111;
-    --fg: #fff;
-    --dim: #b8b8b8;
-    --accent: #ffd400;
-    --accent-ink: #111;
-    --panel: #1e1e1e;
-    --line: #3a3a3a;
-    --danger: #ff6b5b;
-    --r: 18px;
+    --bg: #fff;
+    --fg: #1a1a1a;
+    --dim: #5c5c5c;
+    --accent: #1a1a1a;
+    --accent-ink: #fff;
+    --panel: #f6f6f4;
+    --line: #e4e4e0;
+    --danger: #d23a2a;
+    --r: 16px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
@@ -41,11 +42,11 @@
   @keyframes in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
   .grow { flex: 1; }
   .center { text-align: center; }
-  h1 { font-size: clamp(56px, 18vw, 96px); line-height: .95; letter-spacing: -.03em; font-weight: 900; }
+  h1 { font-size: clamp(56px, 18vw, 96px); line-height: .95; letter-spacing: -.04em; font-weight: 850; }
   h2 { font-size: clamp(30px, 9vw, 44px); line-height: 1.05; font-weight: 850; letter-spacing: -.01em; }
-  .kicker { color: var(--accent); font-size: 16px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+  .kicker { color: var(--dim); font-size: 17px; font-weight: 600; }
   .lede { color: var(--dim); font-size: 20px; font-weight: 500; }
-  .big-name { font-size: clamp(48px, 15vw, 84px); font-weight: 900; color: var(--accent); line-height: 1; word-break: break-word; }
+  .big-name { font-size: clamp(48px, 15vw, 84px); font-weight: 900; color: var(--fg); line-height: 1; word-break: break-word; }
 
   button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; touch-action: manipulation; }
   .btn {
@@ -58,7 +59,7 @@
   }
   .btn:active { transform: scale(.97); }
   .btn:disabled { opacity: .35; }
-  .btn.ghost { background: transparent; color: var(--fg); border: 3px solid var(--line); }
+  .btn.ghost { background: var(--bg); color: var(--fg); border: 2px solid var(--line); }
   .btn.small { min-height: 54px; font-size: 19px; }
   .row { display: flex; gap: 12px; }
   .row > * { flex: 1; }
@@ -67,21 +68,21 @@
   .stepper { display: flex; align-items: center; justify-content: center; gap: 22px; }
   .stepper button {
     width: 76px; height: 76px; border-radius: 50%;
-    background: var(--panel); border: 3px solid var(--line);
+    background: var(--bg); border: 2px solid var(--line);
     font-size: 40px; font-weight: 800; line-height: 1;
   }
   .stepper button:disabled { opacity: .3; }
   .count { font-size: 104px; font-weight: 900; min-width: 1.1em; text-align: center; font-variant-numeric: tabular-nums; }
 
   .names { display: flex; flex-direction: column; gap: 12px; }
-  .names label { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--dim); letter-spacing: .06em; text-transform: uppercase; font-weight: 800; }
+  .names label { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--dim); font-weight: 600; }
   .names input {
     font: inherit; font-size: 24px; font-weight: 700;
     color: var(--fg); background: var(--panel);
-    border: 3px solid var(--line); border-radius: 14px;
+    border: 2px solid var(--line); border-radius: 14px;
     padding: 14px 16px; width: 100%;
   }
-  .names input:focus { outline: none; border-color: var(--accent); }
+  .names input:focus { outline: none; border-color: var(--fg); background: var(--bg); }
 
   .wheel-wrap { position: relative; width: min(84vw, 380px); aspect-ratio: 1; margin: 8px auto 0; }
   .wheel-wrap svg { width: 100%; height: 100%; display: block; }
@@ -90,8 +91,7 @@
     position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
     width: 0; height: 0;
     border-left: 18px solid transparent; border-right: 18px solid transparent;
-    border-top: 34px solid var(--fg);
-    filter: drop-shadow(0 2px 0 #000);
+    border-top: 30px solid var(--fg);
     z-index: 2;
   }
   .pick { min-height: 1.1em; transition: opacity .2s ease-out, transform .2s ease-out; }
@@ -100,8 +100,8 @@
   .hold {
     position: relative;
     width: 100%; min-height: 300px;
-    border-radius: 24px;
-    border: 4px dashed var(--line);
+    border-radius: 20px;
+    border: 2px solid var(--line);
     background: var(--panel);
     display: flex; align-items: center; justify-content: center;
     padding: 22px;
@@ -111,10 +111,10 @@
   .hold .prompt { font-size: 28px; font-weight: 850; text-align: center; }
   .hold .prompt small { display: block; font-size: 17px; color: var(--dim); font-weight: 600; margin-top: 8px; }
   .hold .secret { display: none; flex-direction: column; gap: 18px; width: 100%; }
-  .hold.held { border-style: solid; border-color: var(--accent); background: #000; }
+  .hold.held { border-color: var(--fg); background: var(--bg); }
   .hold.held .prompt { display: none; }
   .hold.held .secret { display: flex; }
-  .card-label { font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 900; }
+  .card-label { font-size: 15px; color: var(--dim); font-weight: 600; margin-bottom: 2px; }
   .card-text { font-size: clamp(26px, 7.5vw, 34px); font-weight: 850; line-height: 1.15; }
 
   .timer {
@@ -126,17 +126,16 @@
   .timer.done { color: var(--danger); animation: blink 1s steps(2, start) infinite; }
   @keyframes blink { to { visibility: hidden; } }
   .hint {
-    border-left: 5px solid var(--accent);
     background: var(--panel);
-    border-radius: 0 14px 14px 0;
+    border-radius: 14px;
     padding: 14px 16px;
     font-size: 17px; font-weight: 500; color: var(--dim);
   }
   .hint b { color: var(--fg); font-weight: 800; }
-  .hint em { color: var(--accent); font-style: normal; font-weight: 700; }
+  .hint em { color: var(--fg); font-style: normal; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 
-  .reveal-card { background: var(--panel); border: 3px solid var(--line); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
-  .reveal-card.main { border-color: var(--accent); }
+  .reveal-card { background: var(--panel); border: 2px solid var(--panel); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .reveal-card.main { background: var(--bg); border-color: var(--fg); }
   .note { color: var(--dim); font-size: 16px; font-weight: 500; text-align: center; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -206,7 +205,7 @@
   <h2>Guesser, look away.</h2>
   <p class="lede">Everyone else: press and hold below to see the secret. Let go to hide it.</p>
   <div class="hold" id="hold" role="button" aria-label="press and hold to see the secret">
-    <div class="prompt">Press &amp; hold<small>team only</small></div>
+    <div class="prompt">Press &amp; hold<small>team only, guesser looks away</small></div>
     <div class="secret">
       <div><div class="card-label">Treat the Guesser like</div><div class="card-text" id="sec-perception"></div></div>
       <div><div class="card-label">Scenario</div><div class="card-text" id="sec-scenario"></div></div>
@@ -274,7 +273,7 @@ const ROUND_SECONDS = 5 * 60;
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 5;
 const NAMES_KEY = "checkit.names";
-const COLORS = ["#ffd400", "#4dd2ff", "#ff6b9d", "#7cff6b", "#b88cff"];
+const COLORS = ["#f4d35e", "#9ad1f5", "#f5a3b5", "#a8e6a1", "#c9b6f2"];
 
 const $ = (id) => document.getElementById(id);
 const store = {
@@ -370,17 +369,17 @@ function drawWheel() {
     const [x0, y0] = polar(100, a0), [x1, y1] = polar(100, a1);
     const used = state.beenGuesser.has(name);
     svg += `<path d="M0 0 L${x0} ${y0} A100 100 0 ${seg > 180 ? 1 : 0} 1 ${x1} ${y1} Z"
-      fill="${used ? "#2a2a2a" : COLORS[i % COLORS.length]}" stroke="#111" stroke-width="2"/>`;
+      fill="${used ? "#efefec" : COLORS[i % COLORS.length]}" stroke="#fff" stroke-width="2.5"/>`;
     const [tx, ty] = polar(58, mid);
     const label = name.length > 12 ? name.slice(0, 11) + "…" : name;
     const size = label.length > 8 ? Math.max(9, 15 - (label.length - 8) * 1.7) : 15;
     const turn = mid > 180 ? mid + 90 : mid - 90;
     svg += `<text x="${tx}" y="${ty}" transform="rotate(${turn} ${tx} ${ty})"
       text-anchor="middle" dominant-baseline="central"
-      font-size="${size}" font-weight="900" fill="${used ? "#777" : "#111"}"
+      font-size="${size}" font-weight="800" fill="${used ? "#a3a3a0" : "#1a1a1a"}"
       font-family="system-ui, sans-serif">${escapeHtml(label)}</text>`;
   });
-  svg += `<circle r="14" fill="#111" stroke="#fff" stroke-width="3"/>`;
+  svg += `<circle r="12" fill="#fff" stroke="#1a1a1a" stroke-width="3"/>`;
   g.innerHTML = svg;
 }
 
