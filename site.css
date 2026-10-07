@@ -355,12 +355,6 @@ body:has(.intro:not(.out)) { overflow:hidden }
   .site-webring { transform:scale(.4); transform-origin:bottom right }
 }
 .copy-email { cursor:pointer }
-.email-copy-btn { display:inline-flex; align-items:center; justify-content:center; width:1.1em; height:1.1em; margin:0 0 0 .2em; padding:0; border:0; background:none; color:#8a8a8a; vertical-align:-.12em; border-radius:4px; transition:color .15s ease-out }
-.email-copy-btn:hover, .email-copy-btn:focus-visible { color:#1a1a1a }
-.email-copy-btn svg { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
-.email-copy-btn .ic-done, .email-copy-btn.is-copied .ic-copy { display:none }
-.email-copy-btn.is-copied .ic-done { display:block }
-.email-copy-btn.is-copied, .home-bio a.is-copied { color:#1f8a4c; text-decoration-color:#1f8a4c }
 .contact-line a.is-copied { color:#1a1a1a }
 .collage-overlay { position:fixed;top:0;right:0;bottom:0;left:0;background:#08090c8c;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:90;padding:24px;opacity:0;visibility:hidden;transition:opacity .22s ease,visibility 0s .22s }
 .collage-overlay.open { opacity:1;visibility:visible;transition:opacity .22s ease }
@@ -446,3 +440,13 @@ body::after { content:""; position:fixed; top:0; right:0; bottom:0; left:0; z-in
 .zd-tally { display: inline-flex; align-items: center; color: #777; font-size: 11.5px; }
 .zd-tally .zd-lamp { width: 8px; height: 8px; margin: 0 6px 0 12px; box-shadow: none; }
 
+
+.sign-links { display:flex; align-items:center; gap:.45rem; margin-bottom:.35rem }
+.sq-ic { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; padding:0; border:0; background:none; color:#6f6f6f; text-decoration:none; cursor:pointer; transition:color .15s ease-out, border-color .15s ease-out }
+.sq-ic.boxed { border:1px solid #cfcfcf; border-radius:0 }
+.sq-ic:hover, .sq-ic:focus-visible { color:#1a1a1a; border-color:#1a1a1a }
+.sq-ic svg { width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round }
+.sq-ic svg .fill { fill:currentColor; stroke:none }
+.sq-ic .ic-done, .sq-ic.is-copied .ic-main { display:none }
+.sq-ic.is-copied .ic-done { display:block }
+.sq-ic.is-copied { color:#1f8a4c; border-color:#1f8a4c }
