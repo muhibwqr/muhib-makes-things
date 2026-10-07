@@ -52,9 +52,8 @@ code { font-family:Menlo,Monaco,Courier New,monospace; font-size:.92em; padding:
 .bird-flip { position:relative; overflow-x:clip; margin:1.2em 0 1.5em; aspect-ratio:918/616; user-select:none; -webkit-user-select:none; touch-action:manipulation }
 .bird-sky { position:absolute; inset:0 }
 .bird { position:absolute; display:block }
-.bird i { display:block; aspect-ratio:237/289; background-size:400% 100%; background-position:var(--bp) 0; background-repeat:no-repeat; animation:dove-flap var(--f) steps(4) var(--fd) infinite, dove-bob calc(var(--f) * 5) ease-in-out var(--fd) infinite }
+.bird i { display:block; aspect-ratio:237/289; background-size:400% 100%; background-position:var(--bp) 0; background-repeat:no-repeat; animation:dove-flap var(--f) steps(4) var(--fd) infinite }
 @keyframes dove-flap { from { background-position:0 0 } to { background-position:133.333% 0 } }
-@keyframes dove-bob { 0%,100% { transform:translate(0,0) } 35% { transform:translate(1.5%,-4%) rotate(-1.5deg) } 70% { transform:translate(-1%,3%) rotate(1deg) } }
 @media (prefers-reduced-motion:reduce) { .bird-sky * { animation:none !important } }
 body:has(.home-bio) .masthead { max-width:560px; margin-left:auto; margin-right:auto }
 .home-bio .dim { color:#1a1a1a }
