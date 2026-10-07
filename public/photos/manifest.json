@@ -1,5 +1,12 @@
 [
   {
+    "src": "/photos/coffee.jpg",
+    "thumb": "/photos/thumbs/coffee.jpg",
+    "type": "image",
+    "tag": "memories",
+    "cap": "coffee"
+  },
+  {
     "src": "/photos/blossoms-portrait.png",
     "thumb": "/photos/thumbs/blossoms-portrait.jpg",
     "type": "image",
