@@ -51,7 +51,7 @@ code { font-family:Menlo,Monaco,Courier New,monospace; font-size:.92em; padding:
 .home-bio .now-close { margin:.45em 0 }
 .home-wave { display:block; width:100%; height:150px; object-fit:fill; margin:1.2em 0 1.5em }
 .home-footer { max-width:560px; margin:2.5rem auto 0 }
-.home-footer img { display:block; width:100%; height:auto; mix-blend-mode:multiply }
+.home-footer img { display:block; width:100%; height:auto; aspect-ratio:16/9 }
 body:has(.home-bio) .masthead { max-width:560px; margin-left:auto; margin-right:auto }
 .home-bio .dim { color:#1a1a1a }
 .home-bio .inline-logo { width:18px; height:18px; vertical-align:-4px; margin-left:4px; border-radius:3px; object-fit:contain }
