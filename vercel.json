@@ -31,16 +31,6 @@
       "permanent": true
     },
     {
-      "source": "/writing",
-      "destination": "/projects/",
-      "permanent": true
-    },
-    {
-      "source": "/writing/",
-      "destination": "/projects/",
-      "permanent": true
-    },
-    {
       "source": "/reasoning",
       "destination": "/my-purpose/",
       "permanent": true

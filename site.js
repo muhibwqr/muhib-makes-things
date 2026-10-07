@@ -85,7 +85,7 @@ if (morphPanel && artEl) {
   if (!REDUCED_MOTION) raf = requestAnimationFrame(loop);
 }
 
-if (document.querySelector(".masthead") && document.querySelector(".home-bio")) {
+if (document.querySelector(".masthead") && document.querySelector(".home-bio .sign-row")) {
   const wrap = document.createElement("div");
   wrap.className = "site-webring";
 

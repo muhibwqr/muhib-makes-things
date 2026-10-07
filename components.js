@@ -2,6 +2,7 @@
 
 export const NAV_LINKS = [
   ["/projects/", "projects"],
+  ["/writing/", "writing"],
   ["/community/", "community"],
 ];
 
