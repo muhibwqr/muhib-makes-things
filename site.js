@@ -357,10 +357,11 @@ document.querySelectorAll(".copy-email").forEach((copyEmail) => {
       try { document.execCommand("copy"); } catch {}
       ta.remove();
     }
-    copyEmail.textContent = "copied!";
+    const iconOnly = copyEmail.querySelector("svg");
+    if (!iconOnly) copyEmail.textContent = "copied!";
     copyEmail.classList.add("is-copied");
     setTimeout(() => {
-      copyEmail.textContent = label;
+      if (!iconOnly) copyEmail.textContent = label;
       copyEmail.classList.remove("is-copied");
     }, 1200);
   });
