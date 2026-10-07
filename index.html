@@ -16,19 +16,15 @@
       <p class="now-close">hi, my name is muhib, i am 19 and live between toronto &amp; waterloo</p>
       <p class="now-close">in a previous life, i was homeschooled, moved around a lot, built computers, clothing brands, &amp; social media &amp; automation agencies, I love learning about people, pushing my body and mind further than i believe possible, and being in the moment</p>
       <p class="now-close">right now, i am at the <a href="https://uwaterloo.ca" target="_blank" rel="noopener"><span class="uw-highlight">university of waterloo<img class="inline-logo no-square" src="/uwaterloo-logo.png" alt="" /></span></a>, making third spaces with <span style="white-space:nowrap"><a href="https://pillars.network" target="_blank" rel="noopener"><strong>pillars</strong><img class="inline-logo" src="/pillars-logo.png" alt="" /></a>;</span> previously i was an applied ai engineer at <a class="zown-peek" href="https://zown.ca" target="_blank" rel="noopener"><strong>zown</strong><img class="inline-logo" src="/zown-logo.png" alt="" /></a></p>
-      <div class="bird-flip" id="bird-flip" title="double-click">
+      <div class="bird-flip">
         <div class="bird-sky" role="img" aria-label="doves in flight">
-          <span class="bird" style="left:-3.8%;top:26.5%;width:25.8%;--x:110%;--y:-300%;--d:180ms;--f:0.62s;--fd:-0.155s;--bp:33.333%"><i style="background-image:url(/doves/dove-a.png)"></i></span>
-          <span class="bird" style="left:15.0%;top:62.3%;width:25.8%;--x:170%;--y:-260%;--d:0ms;--f:0.7s;--fd:-0.350s;--bp:66.666%"><i style="background-image:url(/doves/dove-b.png)"></i></span>
-          <span class="bird" style="left:20.6%;top:18.3%;width:25.8%;--x:140%;--y:-330%;--d:360ms;--f:0.66s;--fd:-0.165s;--bp:33.333%"><i style="background-image:url(/doves/dove-b.png)"></i></span>
-          <span class="bird" style="left:44.1%;top:6.5%;width:25.8%;--x:120%;--y:-300%;--d:90ms;--f:0.74s;--fd:-0.000s;--bp:0.000%"><i style="background-image:url(/doves/dove-a.png)"></i></span>
-          <span class="bird" style="left:50.0%;top:36.7%;width:25.8%;--x:200%;--y:-280%;--d:450ms;--f:0.6s;--fd:-0.300s;--bp:66.666%"><i style="background-image:url(/doves/dove-a.png)"></i></span>
-          <span class="bird" style="left:71.7%;top:57.8%;width:25.8%;--x:90%;--y:-260%;--d:270ms;--f:0.68s;--fd:-0.170s;--bp:33.333%"><i style="background-image:url(/doves/dove-a.png)"></i></span>
+          <span class="bird" style="left:-3.8%;top:26.5%;width:25.8%;--f:0.62s;--fd:-0.155s;--bp:33.333%"><i style="background-image:url(/doves/dove-a.png)"></i></span>
+          <span class="bird" style="left:15.0%;top:62.3%;width:25.8%;--f:0.7s;--fd:-0.350s;--bp:66.666%"><i style="background-image:url(/doves/dove-b.png)"></i></span>
+          <span class="bird" style="left:20.6%;top:18.3%;width:25.8%;--f:0.66s;--fd:-0.165s;--bp:33.333%"><i style="background-image:url(/doves/dove-b.png)"></i></span>
+          <span class="bird" style="left:44.1%;top:6.5%;width:25.8%;--f:0.74s;--fd:-0.000s;--bp:0.000%"><i style="background-image:url(/doves/dove-a.png)"></i></span>
+          <span class="bird" style="left:50.0%;top:36.7%;width:25.8%;--f:0.6s;--fd:-0.300s;--bp:66.666%"><i style="background-image:url(/doves/dove-a.png)"></i></span>
+          <span class="bird" style="left:71.7%;top:57.8%;width:25.8%;--f:0.68s;--fd:-0.170s;--bp:33.333%"><i style="background-image:url(/doves/dove-a.png)"></i></span>
         </div>
-        <blockquote class="bird-back">
-          <p>&ldquo;If you were to rely upon Allah with the reliance He is due, you would be given provision like the birds: they go out hungry in the morning and return with full bellies in the evening.&rdquo;</p>
-          <cite>&mdash; <a href="https://sunnah.com/ibnmajah:4164" target="_blank" rel="noopener">Sunan Ibn Majah 4164</a> (Sahih)</cite>
-        </blockquote>
       </div>
       <p class="now-close">success to me isn't a number, it's a life lived that changes life for others.</p>
 
@@ -50,25 +46,6 @@
 
   <script type="module" src="/site.js"></script>
   <script type="module">
-    const flip = document.getElementById("bird-flip");
-    if (flip) {
-      let lastToggle = 0;
-      const toggle = () => {
-        const t = performance.now();
-        if (t - lastToggle < 400) return;
-        lastToggle = t;
-        const leaving = !flip.classList.contains("flipped");
-        flip.classList.toggle("flipped", leaving);
-        flip.classList.toggle("returning", !leaving);
-      };
-      flip.addEventListener("dblclick", (e) => { if (!e.target.closest("a")) toggle(); });
-      let last = 0;
-      flip.addEventListener("pointerup", (e) => {
-        if (e.pointerType !== "touch" || e.target.closest("a")) return;
-        const now = e.timeStamp;
-        if (now - last < 300) { e.preventDefault(); toggle(); last = 0; } else last = now;
-      });
-    }
   </script>
   <script type="module">
     const memLink = document.querySelector(".mem-open");

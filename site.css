@@ -49,36 +49,13 @@ code { font-family:Menlo,Monaco,Courier New,monospace; font-size:.92em; padding:
 .content.list { border-top:none; padding-top:0; max-width:720px }
 .home-bio { max-width:560px; font-size:15px; line-height:1.6; color:#1a1a1a }
 .home-bio .now-close { margin:.45em 0 }
-.bird-flip { position:relative; overflow-x:clip; margin:1.2em 0 1.5em; aspect-ratio:918/616; cursor:pointer; user-select:none; -webkit-user-select:none; touch-action:manipulation }
+.bird-flip { position:relative; overflow-x:clip; margin:1.2em 0 1.5em; aspect-ratio:918/616; user-select:none; -webkit-user-select:none; touch-action:manipulation }
 .bird-sky { position:absolute; inset:0 }
 .bird { position:absolute; display:block }
 .bird i { display:block; aspect-ratio:237/289; background-size:400% 100%; background-position:var(--bp) 0; background-repeat:no-repeat; animation:dove-flap var(--f) steps(4) var(--fd) infinite, dove-bob calc(var(--f) * 5) ease-in-out var(--fd) infinite }
-.bird-flip.flipped .bird { animation:bird-leave 1.3s cubic-bezier(.45,0,.7,.4) var(--d) both }
-.bird-flip.flipped .bird i { animation:dove-flap .32s steps(4) infinite }
-.bird-flip.returning .bird { animation:bird-return 1s cubic-bezier(.2,.75,.3,1) calc(var(--d) * .6) both }
-.bird-flip.returning .bird i { animation:dove-flap .4s steps(4) 3, dove-flap var(--f) steps(4) 1.2s infinite, dove-bob calc(var(--f) * 5) ease-in-out 1.2s infinite }
 @keyframes dove-flap { from { background-position:0 0 } to { background-position:133.333% 0 } }
 @keyframes dove-bob { 0%,100% { transform:translate(0,0) } 35% { transform:translate(1.5%,-4%) rotate(-1.5deg) } 70% { transform:translate(-1%,3%) rotate(1deg) } }
-@keyframes bird-leave {
-  0% { transform:none; opacity:1 }
-  14% { transform:translate(-6%,8%) }
-  50% { transform:translate(calc(var(--x) * .35), calc(var(--y) * .28)) rotate(-8deg) scale(.9) }
-  80% { opacity:.85 }
-  100% { transform:translate(var(--x), var(--y)) rotate(-14deg) scale(.4); opacity:0 }
-}
-@keyframes bird-return {
-  0% { transform:translate(var(--x), var(--y)) rotate(-14deg) scale(.4); opacity:0 }
-  25% { opacity:1 }
-  70% { transform:translate(calc(var(--x) * .1), calc(var(--y) * .05)) rotate(3deg) scale(.97) }
-  100% { transform:none; opacity:1 }
-}
-.bird-back { position:absolute; inset:0; margin:0; padding:0 8%; display:flex; flex-direction:column; justify-content:center; gap:.6em; color:#1f4e8c; font-style:italic; text-align:center; opacity:0; transform:translateY(6px); pointer-events:none; transition:opacity .2s ease-out, transform .2s ease-out }
-.bird-flip.flipped .bird-back { opacity:1; transform:none; pointer-events:auto; transition:opacity .5s ease-out .75s, transform .5s ease-out .75s }
-.bird-back p { margin:0; font-size:15px; line-height:1.55 }
-.bird-back cite { font-style:normal; font-size:12px; color:#5c6f8a }
-.home-bio .bird-back a { text-decoration-color:currentColor }
-@media (max-width:480px) { .bird-back { padding:0 2% } .bird-back p { font-size:13px; line-height:1.45 } .bird-back cite { font-size:11px } }
-@media (prefers-reduced-motion:reduce) { .bird-sky * { animation:none !important } .bird { transition:opacity .2s } .bird-flip.flipped .bird { opacity:0 } }
+@media (prefers-reduced-motion:reduce) { .bird-sky * { animation:none !important } }
 body:has(.home-bio) .masthead { max-width:560px; margin-left:auto; margin-right:auto }
 .home-bio .dim { color:#1a1a1a }
 .home-bio .inline-logo { width:18px; height:18px; vertical-align:-4px; margin-left:4px; border-radius:3px; object-fit:contain }
@@ -87,7 +64,7 @@ body:has(.home-bio) .masthead { max-width:560px; margin-left:auto; margin-right:
 .home-bio a { color:inherit; text-decoration:underline; text-underline-offset:2px; text-decoration-color:#fff9 }
 .home-bio a:hover { color:#1a1a1a; text-decoration-color:#1a1a1a }
 .bio-more { margin:.35rem 0 1rem }
-.bio-more>summary,.bio-branch>summary { list-style:none; cursor:pointer; color:#515151; font-size:12px; width:fit-content; -webkit-user-select:none; user-select:none }
+.bio-more>summary,.bio-branch>summary { list-style:none; color:#515151; font-size:12px; width:fit-content; -webkit-user-select:none; user-select:none }
 .bio-more>summary::-webkit-details-marker,.bio-branch>summary::-webkit-details-marker { display:none }
 .bio-more>summary .bio-arrow,.bio-branch>summary span { display:inline-block; transform-origin:50% 55%; transition:transform .45s cubic-bezier(.33,1,.68,1) }
 .bio-more[open]>summary .bio-arrow,.bio-branch[open]>summary span { transform:rotate(90deg) }
@@ -298,7 +275,7 @@ body:has(.home-bio) .masthead { max-width:560px; margin-left:auto; margin-right:
   60% { opacity:1; transform:translateY(-4px) scale(1.01) rotate(-.4deg) }
   to { opacity:1; transform:none }
 }
-.mem-close { position:fixed; top:18px; right:20px; width:32px; height:32px; border-radius:50%; border:1px solid rgba(0,0,0,.1); background:#ffffffa6; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); color:#555; font-size:13px; cursor:pointer; z-index:2 }
+.mem-close { position:fixed; top:18px; right:20px; width:32px; height:32px; border-radius:50%; border:1px solid rgba(0,0,0,.1); background:#ffffffa6; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); color:#555; font-size:13px; z-index:2 }
 .mem-close:hover { color:#1a1a1a }
 @media(prefers-reduced-motion:reduce) {
   .mem-cell { opacity:1;transform:none }
@@ -438,7 +415,7 @@ a.wheel-chip-link:hover { background:#fff }
 .wheel-title { position:absolute; top:50%; left:8%; transform:translateY(-50%); pointer-events:none; letter-spacing:-.02em; opacity:0; color:#1a1a1a; max-width:30% }
 .wheel-title-date { font-size:.34em; color:#1a1a1a; margin-top:.35em; letter-spacing:0 }
 .wheel-index { position:absolute; top:7.5%; right:2.5%; z-index:2; text-align:right; line-height:1.75; list-style:none; margin:0; padding:0; color:#1a1a1a }
-.wheel-index button { all:unset; cursor:pointer; color:inherit; transition:color .15s }
+.wheel-index button { all:unset; color:inherit; transition:color .15s }
 .wheel-index button.on { color:#1a1a1a; font-weight:500 }
 .wheel-index button:focus-visible { outline:1px solid #fff }
 .wheel-media { position:fixed; left:0; right:0; bottom:14px; z-index:2; overflow:hidden; pointer-events:none; opacity:0 ; transform:translateY(16px); transition:opacity .2s ease-out,transform .2s ease-out }
