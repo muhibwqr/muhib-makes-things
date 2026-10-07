@@ -344,7 +344,6 @@ if (!REDUCED_MOTION) {
 document.querySelectorAll(".copy-email").forEach((copyEmail) => {
   copyEmail.addEventListener("click", async (e) => {
     e.preventDefault();
-    const label = copyEmail.textContent;
     try {
       await navigator.clipboard.writeText(copyEmail.dataset.email);
     } catch {
@@ -358,10 +357,13 @@ document.querySelectorAll(".copy-email").forEach((copyEmail) => {
       ta.remove();
     }
     const iconOnly = copyEmail.querySelector("svg");
-    if (!iconOnly) copyEmail.textContent = "copied!";
+    const textEl = iconOnly ? copyEmail.previousElementSibling : copyEmail;
+    const text = textEl && textEl.textContent;
+    clearTimeout(copyEmail._t);
+    if (textEl) { textEl.textContent = "copied!"; textEl.classList.add("is-copied"); }
     copyEmail.classList.add("is-copied");
-    setTimeout(() => {
-      if (!iconOnly) copyEmail.textContent = label;
+    copyEmail._t = setTimeout(() => {
+      if (textEl) { textEl.textContent = textEl.dataset.label || text; textEl.classList.remove("is-copied"); }
       copyEmail.classList.remove("is-copied");
     }, 1200);
   });
