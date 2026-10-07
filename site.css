@@ -264,8 +264,9 @@ body:has(.home-bio) .masthead { max-width:560px; margin-left:auto; margin-right:
 @media(max-width:640px) {
   .mem-grid { grid-template-columns:repeat(2,1fr) }
 }
-.mem-cell { display:block;width:100%;aspect-ratio:4 / 5;object-fit:cover;margin:0;border-radius:0;opacity:0;transform:translateY(70px) scale(.88) rotate(2.5deg) }
-.mem-overlay.in .mem-cell { animation:mem-whoosh .65s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(var(--i) * 30ms) }
+.mem-cell { display:block;width:100%;aspect-ratio:4 / 5;object-fit:cover;margin:0;border-radius:0;opacity:0 }
+.mem-overlay.in .mem-cell { animation:mem-fade .2s ease-out forwards }
+@keyframes mem-fade { to { opacity:1 } }
 @keyframes mem-whoosh {
   60% { opacity:1; transform:translateY(-4px) scale(1.01) rotate(-.4deg) }
   to { opacity:1; transform:none }
