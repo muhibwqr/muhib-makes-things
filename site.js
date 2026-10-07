@@ -356,15 +356,17 @@ document.querySelectorAll(".copy-email").forEach((copyEmail) => {
       try { document.execCommand("copy"); } catch {}
       ta.remove();
     }
-    const iconOnly = copyEmail.querySelector("svg");
-    const textEl = iconOnly ? copyEmail.previousElementSibling : copyEmail;
-    const text = textEl && textEl.textContent;
-    clearTimeout(copyEmail._t);
-    if (textEl) { textEl.textContent = "copied!"; textEl.classList.add("is-copied"); }
-    copyEmail.classList.add("is-copied");
-    copyEmail._t = setTimeout(() => {
-      if (textEl) { textEl.textContent = textEl.dataset.label || text; textEl.classList.remove("is-copied"); }
-      copyEmail.classList.remove("is-copied");
+    const group = [copyEmail, copyEmail.previousElementSibling, copyEmail.nextElementSibling]
+      .filter((el) => el && el.classList.contains("copy-email"));
+    const textEl = group.find((el) => !el.querySelector("svg"));
+    const host = group.find((el) => el.querySelector("svg")) || copyEmail;
+    if (textEl && !textEl.dataset.label) textEl.dataset.label = textEl.textContent;
+    clearTimeout(host._t);
+    if (textEl) textEl.textContent = "copied!";
+    group.forEach((el) => el.classList.add("is-copied"));
+    host._t = setTimeout(() => {
+      if (textEl) textEl.textContent = textEl.dataset.label;
+      group.forEach((el) => el.classList.remove("is-copied"));
     }, 1200);
   });
 });
