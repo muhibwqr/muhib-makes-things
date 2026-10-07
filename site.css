@@ -454,3 +454,6 @@ body::after { content:""; position:fixed; top:0; right:0; bottom:0; left:0; z-in
 .sq-ic.is-copied { color:#1f8a4c; border-color:#1f8a4c }
 .sq-ic.wide { width:auto; padding:0 8px; gap:6px }
 .sq-ic svg.ic-sm { width:14px; height:14px; opacity:.75 }
+.sq-ic.copy-email { position:relative }
+.sq-ic.copy-email::after { content:"copied!"; position:absolute; top:calc(100% + 6px); left:50%; transform:translate(-50%,-4px); padding:3px 7px; font-size:11px; line-height:1.2; white-space:nowrap; color:#fff; background:#1f8a4c; opacity:0; pointer-events:none; transition:opacity .15s ease-out, transform .15s ease-out }
+.sq-ic.copy-email.is-copied::after { opacity:1; transform:translate(-50%,0) }
