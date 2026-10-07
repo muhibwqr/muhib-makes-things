@@ -13,7 +13,7 @@
     <header class="masthead"></header>
 
     <article class="content post home-bio">
-      <p class="now-close">hi, my name is muhib, I am 19, i was born in abu dhabi, and live between karachi, toronto, and waterloo</p>
+      <p class="now-close">hi, my name is muhib, I am 19, i live between karachi, toronto, and waterloo</p>
       <p class="now-close">right now, i am at the <a href="https://uwaterloo.ca" target="_blank" rel="noopener"><span class="uw-highlight">university of waterloo<img class="inline-logo no-square" src="/uwaterloo-logo.png" alt="" /></span></a>, making third spaces with <span style="white-space:nowrap"><a href="https://pillars.network" target="_blank" rel="noopener"><strong>pillars</strong><img class="inline-logo" src="/pillars-logo.png" alt="" /></a>;</span> i spent the last 6 months as an applied ai engineer at <a class="zown-peek" href="https://zown.ca" target="_blank" rel="noopener"><strong>zown</strong><img class="inline-logo" src="/zown-logo.png" alt="" /></a></p>
       <img class="home-photo" src="/photos/minaret-birds.jpg" width="1200" height="675" alt="a flock of birds flying past a white minaret" loading="lazy" decoding="async" />
       <p class="now-close">in a previous life, i was homeschooled, moved around a lot, built computers, clothing brands, &amp; social media &amp; automation agencies</p>
@@ -59,12 +59,54 @@
     };
     loadMem(); // prefetch
 
+    // page zoom scales fixed positioning, so map viewport px back to css px
+    const zoomK = () => {
+      const probe = document.createElement("div");
+      probe.style.cssText = "position:fixed;left:100px;top:0;width:0;height:0";
+      document.body.appendChild(probe);
+      const k = probe.getBoundingClientRect().left / 100 || 1;
+      probe.remove();
+      return k;
+    };
+    const placeHover = (r) => {
+      const k = zoomK();
+      memHover.style.left = `${(r.right + 12) / k}px`;
+      memHover.style.top = `${(r.top + r.height / 2) / k}px`;
+    };
+
+    // every line runs to the right edge: nudge word spacing until the last line fills, then justify it
+    const fitPara = (p) => {
+      p.style.wordSpacing = "";
+      p.style.textAlignLast = "";
+      const lastFill = () => {
+        const box = p.getBoundingClientRect();
+        const range = document.createRange();
+        range.selectNodeContents(p);
+        const rects = [...range.getClientRects()].filter((r) => r.width);
+        const lastTop = Math.max(...rects.map((r) => r.top));
+        const right = Math.max(...rects.filter((r) => r.top > lastTop - 4).map((r) => r.right));
+        return (right - box.left) / box.width;
+      };
+      let best = { ws: 0, fill: lastFill() };
+      for (let ws = -1.5; ws <= 3; ws += 0.25) {
+        p.style.wordSpacing = `${ws}px`;
+        const fill = lastFill();
+        if (fill > best.fill + 0.01 || (Math.abs(fill - best.fill) <= 0.01 && Math.abs(ws) < Math.abs(best.ws))) best = { ws, fill };
+      }
+      if (best.fill >= 0.72) {
+        p.style.wordSpacing = `${best.ws}px`;
+        p.style.textAlignLast = "justify";
+      } else p.style.wordSpacing = "";
+    };
+    const fitAll = () => document.querySelectorAll(".home-bio .now-close").forEach(fitPara);
+    document.fonts.ready.then(fitAll);
+    let fitT;
+    addEventListener("resize", () => { clearTimeout(fitT); fitT = setTimeout(fitAll, 80); });
+
     // hover — a strip of shots fans out right of the link, one by one
     memLink.addEventListener("mouseenter", async () => {
       const items = await loadMem();
-      const r = memLink.getBoundingClientRect();
-      memHover.style.left = `${r.right + 12}px`;
-      memHover.style.top = `${r.top + r.height / 2}px`;
+      placeHover(memLink.getBoundingClientRect());
       memHover.innerHTML = items.slice(0, 4).map((item, i) =>
         `<img class="mem-peek" style="--i:${i}" src="${item.thumb || item.src}" alt="" loading="lazy" decoding="async" />`
       ).join("");
@@ -77,9 +119,7 @@
     // hover zown — the rent rewards clip peeks right of the link
     const zownLink = document.querySelector(".zown-peek");
     zownLink?.addEventListener("mouseenter", () => {
-      const r = zownLink.getBoundingClientRect();
-      memHover.style.left = `${r.right + 12}px`;
-      memHover.style.top = `${r.top + r.height / 2}px`;
+      placeHover(zownLink.getBoundingClientRect());
       memHover.style.transform = "translateY(-50%)";
       memHover.innerHTML = `<video class="mem-peek mem-peek-vid" style="--i:0" src="/zown-rent-rewards.mp4" autoplay muted loop playsinline preload="auto"></video>`;
       memHover.querySelectorAll("video").forEach((v) => v.play().catch(() => {}));
