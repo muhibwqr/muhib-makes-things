@@ -49,17 +49,36 @@ code { font-family:Menlo,Monaco,Courier New,monospace; font-size:.92em; padding:
 .content.list { border-top:none; padding-top:0; max-width:720px }
 .home-bio { max-width:560px; font-size:15px; line-height:1.6; color:#1a1a1a }
 .home-bio .now-close { margin:.45em 0 }
-.bird-flip { margin:1.2em 0 1.5em; perspective:1200px; cursor:pointer; user-select:none; -webkit-user-select:none; touch-action:manipulation }
-.bird-flip-inner { position:relative; transition:transform .45s cubic-bezier(.2,.7,.2,1); transform-style:preserve-3d }
-.bird-flip.flipped .bird-flip-inner { transform:rotateY(180deg) }
-.bird-front, .bird-back { backface-visibility:hidden; -webkit-backface-visibility:hidden }
-.bird-front { display:block; width:100%; height:auto }
-.bird-back { position:absolute; inset:0; margin:0; padding:0 8%; display:flex; flex-direction:column; justify-content:center; gap:.6em; transform:rotateY(180deg); color:#1f4e8c; font-style:italic; text-align:center }
+.bird-flip { position:relative; overflow-x:clip; margin:1.2em 0 1.5em; aspect-ratio:672/292; cursor:pointer; user-select:none; -webkit-user-select:none; touch-action:manipulation }
+.bird-sky { position:absolute; inset:0 }
+.bird { position:absolute; display:block }
+.bird i { display:block; aspect-ratio:320/259; background-size:400% 100%; background-repeat:no-repeat; transform:rotate(var(--r)); animation:dove-flap var(--f) steps(4) var(--fd) infinite, dove-bob calc(var(--f) * 5) ease-in-out var(--fd) infinite }
+.bird-flip.flipped .bird { animation:bird-leave 1.3s cubic-bezier(.45,0,.7,.4) var(--d) both }
+.bird-flip.flipped .bird i { animation:dove-flap .32s steps(4) infinite }
+.bird-flip.returning .bird { animation:bird-return 1s cubic-bezier(.2,.75,.3,1) calc(var(--d) * .6) both }
+.bird-flip.returning .bird i { animation:dove-flap .4s steps(4) 3, dove-flap var(--f) steps(4) 1.2s infinite, dove-bob calc(var(--f) * 5) ease-in-out 1.2s infinite }
+@keyframes dove-flap { from { background-position:0 0 } to { background-position:133.333% 0 } }
+@keyframes dove-bob { 0%,100% { transform:translate(0,0) rotate(var(--r)) } 35% { transform:translate(2%,-7%) rotate(calc(var(--r) - 2deg)) } 70% { transform:translate(-1%,5%) rotate(calc(var(--r) + 1.5deg)) } }
+@keyframes bird-leave {
+  0% { transform:none; opacity:1 }
+  14% { transform:translate(-6%,8%) }
+  50% { transform:translate(calc(var(--x) * .35), calc(var(--y) * .28)) rotate(-8deg) scale(.9) }
+  80% { opacity:.85 }
+  100% { transform:translate(var(--x), var(--y)) rotate(-14deg) scale(.4); opacity:0 }
+}
+@keyframes bird-return {
+  0% { transform:translate(var(--x), var(--y)) rotate(-14deg) scale(.4); opacity:0 }
+  25% { opacity:1 }
+  70% { transform:translate(calc(var(--x) * .1), calc(var(--y) * .05)) rotate(3deg) scale(.97) }
+  100% { transform:none; opacity:1 }
+}
+.bird-back { position:absolute; inset:0; margin:0; padding:0 8%; display:flex; flex-direction:column; justify-content:center; gap:.6em; color:#1f4e8c; font-style:italic; text-align:center; opacity:0; transform:translateY(6px); pointer-events:none; transition:opacity .2s ease-out, transform .2s ease-out }
+.bird-flip.flipped .bird-back { opacity:1; transform:none; pointer-events:auto; transition:opacity .5s ease-out .75s, transform .5s ease-out .75s }
 .bird-back p { margin:0; font-size:15px; line-height:1.55 }
 .bird-back cite { font-style:normal; font-size:12px; color:#5c6f8a }
 .home-bio .bird-back a { text-decoration-color:currentColor }
 @media (max-width:480px) { .bird-back { padding:0 2% } .bird-back p { font-size:13px; line-height:1.45 } .bird-back cite { font-size:11px } }
-@media (prefers-reduced-motion:reduce) { .bird-flip-inner { transition:none } }
+@media (prefers-reduced-motion:reduce) { .bird-sky * { animation:none !important } .bird { transition:opacity .2s } .bird-flip.flipped .bird { opacity:0 } }
 body:has(.home-bio) .masthead { max-width:560px; margin-left:auto; margin-right:auto }
 .home-bio .dim { color:#1a1a1a }
 .home-bio .inline-logo { width:18px; height:18px; vertical-align:-4px; margin-left:4px; border-radius:3px; object-fit:contain }

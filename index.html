@@ -17,13 +17,18 @@
       <p class="now-close">in a previous life, i was homeschooled, moved around a lot, built computers, clothing brands, &amp; social media &amp; automation agencies, I love learning about people, pushing my body and mind further than i believe possible, and being in the moment</p>
       <p class="now-close">right now, i am at the <a href="https://uwaterloo.ca" target="_blank" rel="noopener"><span class="uw-highlight">university of waterloo<img class="inline-logo no-square" src="/uwaterloo-logo.png" alt="" /></span></a>, making third spaces with <span style="white-space:nowrap"><a href="https://pillars.network" target="_blank" rel="noopener"><strong>pillars</strong><img class="inline-logo" src="/pillars-logo.png" alt="" /></a>;</span> previously i was an applied ai engineer at <a class="zown-peek" href="https://zown.ca" target="_blank" rel="noopener"><strong>zown</strong><img class="inline-logo" src="/zown-logo.png" alt="" /></a></p>
       <div class="bird-flip" id="bird-flip" title="double-click">
-        <div class="bird-flip-inner">
-          <img class="bird-front" src="/birds.png" alt="birds in flight" />
-          <blockquote class="bird-back">
-            <p>&ldquo;If you were to rely upon Allah with the reliance He is due, you would be given provision like the birds: they go out hungry in the morning and return with full bellies in the evening.&rdquo;</p>
-            <cite>&mdash; <a href="https://sunnah.com/ibnmajah:4164" target="_blank" rel="noopener">Sunan Ibn Majah 4164</a> (Sahih)</cite>
-          </blockquote>
+        <div class="bird-sky" role="img" aria-label="doves in flight">
+          <span class="bird" style="left:0%;top:4%;width:26%;--x:130%;--y:-330%;--d:180ms;--f:0.72s;--fd:-0.1s;--r:-6deg"><i style="background-image:url(/doves/dove1.png)"></i></span>
+          <span class="bird" style="left:17%;top:40%;width:21%;--x:200%;--y:-380%;--d:0ms;--f:0.64s;--fd:-0.4s;--r:3deg"><i style="background-image:url(/doves/dove3.png)"></i></span>
+          <span class="bird" style="left:34%;top:6%;width:27%;--x:150%;--y:-300%;--d:360ms;--f:0.8s;--fd:-0.25s;--r:-4deg"><i style="background-image:url(/doves/dove2.png)"></i></span>
+          <span class="bird" style="left:52%;top:42%;width:20%;--x:230%;--y:-420%;--d:90ms;--f:0.68s;--fd:-0.55s;--r:5deg"><i style="background-image:url(/doves/dove1.png)"></i></span>
+          <span class="bird" style="left:64%;top:2%;width:25%;--x:170%;--y:-320%;--d:450ms;--f:0.76s;--fd:-0.3s;--r:-8deg"><i style="background-image:url(/doves/dove3.png)"></i></span>
+          <span class="bird" style="left:78%;top:34%;width:23%;--x:120%;--y:-360%;--d:270ms;--f:0.7s;--fd:-0.6s;--r:2deg"><i style="background-image:url(/doves/dove2.png)"></i></span>
         </div>
+        <blockquote class="bird-back">
+          <p>&ldquo;If you were to rely upon Allah with the reliance He is due, you would be given provision like the birds: they go out hungry in the morning and return with full bellies in the evening.&rdquo;</p>
+          <cite>&mdash; <a href="https://sunnah.com/ibnmajah:4164" target="_blank" rel="noopener">Sunan Ibn Majah 4164</a> (Sahih)</cite>
+        </blockquote>
       </div>
       <p class="now-close">success to me isn't a number, it's a life lived that changes life for others.</p>
 
@@ -52,7 +57,9 @@
         const t = performance.now();
         if (t - lastToggle < 400) return;
         lastToggle = t;
-        flip.classList.toggle("flipped");
+        const leaving = !flip.classList.contains("flipped");
+        flip.classList.toggle("flipped", leaving);
+        flip.classList.toggle("returning", !leaving);
       };
       flip.addEventListener("dblclick", (e) => { if (!e.target.closest("a")) toggle(); });
       let last = 0;
