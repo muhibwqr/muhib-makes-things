@@ -103,29 +103,42 @@
     let fitT;
     addEventListener("resize", () => { clearTimeout(fitT); fitT = setTimeout(fitAll, 80); });
 
+    // hover previews: only the link currently hovered may open the strip, so late async/rAF callbacks can't reopen it
+    let hoverOwner = null;
+    const showHover = (owner) => requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (hoverOwner === owner) memHover.classList.add("in");
+    }));
+    const hideHover = () => {
+      hoverOwner = null;
+      memHover.classList.remove("in");
+    };
+
     // hover — a strip of shots fans out right of the link, one by one
     memLink.addEventListener("mouseenter", async () => {
+      hoverOwner = memLink;
       const items = await loadMem();
+      if (hoverOwner !== memLink) return;
       placeHover(memLink.getBoundingClientRect());
       memHover.innerHTML = items.slice(0, 4).map((item, i) =>
         `<img class="mem-peek" style="--i:${i}" src="${item.thumb || item.src}" alt="" loading="lazy" decoding="async" />`
       ).join("");
-      requestAnimationFrame(() => requestAnimationFrame(() => memHover.classList.add("in")));
+      showHover(memLink);
     });
-    memLink.addEventListener("mouseleave", () => {
-      memHover.classList.remove("in");
-    });
+    memLink.addEventListener("mouseleave", hideHover);
 
     // hover zown — the rent rewards clip peeks right of the link
     const zownLink = document.querySelector(".zown-peek");
     zownLink?.addEventListener("mouseenter", () => {
+      hoverOwner = zownLink;
       placeHover(zownLink.getBoundingClientRect());
       memHover.style.transform = "translateY(-50%)";
       memHover.innerHTML = `<video class="mem-peek mem-peek-vid" style="--i:0" src="/zown-rent-rewards.mp4" autoplay muted loop playsinline preload="auto"></video>`;
       memHover.querySelectorAll("video").forEach((v) => v.play().catch(() => {}));
-      requestAnimationFrame(() => requestAnimationFrame(() => memHover.classList.add("in")));
+      showHover(zownLink);
     });
-    zownLink?.addEventListener("mouseleave", () => memHover.classList.remove("in"));
+    zownLink?.addEventListener("mouseleave", hideHover);
+    ["scroll", "blur", "pointerdown"].forEach((ev) => addEventListener(ev, hideHover, { passive: true }));
+    document.addEventListener("visibilitychange", hideHover);
     memHover.addEventListener("transitionend", (e) => {
       if (e.propertyName === "opacity" && !memHover.classList.contains("in")) memHover.innerHTML = "";
     });
