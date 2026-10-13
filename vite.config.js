@@ -18,6 +18,7 @@ const pages = [
   ...html("my-purpose"),
   ...html("projects"),
   ...html("community"),
+  ...html("game"),
   ...html("books"),
   ...html("perception"),
   ...html("writing/attention"),
