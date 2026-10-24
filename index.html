@@ -15,7 +15,11 @@
     <article class="content post home-bio">
       <p class="now-close">hi, my name is muhib, i am 19, i live in toronto</p>
       <p class="now-close">right now, i am at the <a href="https://uwaterloo.ca" target="_blank" rel="noopener"><span class="uw-highlight">university of waterloo<img class="inline-logo no-square" src="/uwaterloo-logo.png" alt="" /></span></a>, making third spaces with <span style="white-space:nowrap"><a href="https://pillars.network" target="_blank" rel="noopener"><strong>pillars</strong><img class="inline-logo" src="/pillars-logo.png" alt="" /></a>;</span> i spent the last 6 months as an applied ai engineer at <a class="zown-peek" href="https://zown.ca" target="_blank" rel="noopener"><strong>zown</strong><img class="inline-logo" src="/zown-logo.png" alt="" /></a></p>
-      <img class="home-photo" src="/photos/minaret-birds.jpg" width="1200" height="675" alt="a flock of birds flying past a white minaret" loading="lazy" decoding="async" />
+      <div class="home-hero">
+        <img class="home-photo" src="/photos/minaret-birds.jpg" width="1200" height="675" alt="a flock of birds flying past a white minaret" loading="lazy" decoding="async" />
+        <span class="hero-cursor" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 2.5v17l4.6-4.3 3.2 6.8 2.9-1.3-3.1-6.7h6.3z"/></svg></span>
+        <img class="home-photo-fg" src="/photos/minaret-birds-fg.webp" width="1200" height="675" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+      </div>
       <p class="now-close">in a previous life, i was homeschooled, moved around a lot, built computers, clothing brands, &amp; social media &amp; automation agencies</p>
       <p class="now-close">success to me isn't number, it's a life lived that changes life for others</p>
       <p class="now-close">i love meeting new people, pushing myself, coffee, travelling, and a good sparring sesh, so reach out!</p>
@@ -40,6 +44,20 @@
 
   <script type="module" src="/site.js"></script>
   <script type="module">
+    // over the hero photo the cursor lies flat in the picture, behind the minarets and birds
+    const hero = document.querySelector(".home-hero");
+    if (hero && matchMedia("(hover:hover) and (pointer:fine)").matches) {
+      const cur = hero.querySelector(".hero-cursor");
+      const move = (e) => {
+        const r = hero.getBoundingClientRect();
+        const k = hero.offsetWidth / r.width;
+        cur.style.transform = `translate(${(e.clientX - r.left) * k}px, ${(e.clientY - r.top) * k}px)`;
+      };
+      hero.classList.add("hero-cursor-on");
+      hero.addEventListener("pointerenter", (e) => { move(e); hero.classList.add("cursor-in"); });
+      hero.addEventListener("pointermove", move);
+      hero.addEventListener("pointerleave", () => hero.classList.remove("cursor-in"));
+    }
   </script>
   <script type="module">
     const memLink = document.querySelector(".mem-open");
