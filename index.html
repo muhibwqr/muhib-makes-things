@@ -44,19 +44,169 @@
 
   <script type="module" src="/site.js"></script>
   <script type="module">
-    // over the hero photo the cursor lies flat in the picture, behind the minarets and birds
+    // over the hero photo the cursor lies flat in the picture, behind the minarets and birds; click sends ripples, drag morphs it
+    const heroMorph = async (hero) => {
+      const imgs = [hero.querySelector(".home-photo"), hero.querySelector(".home-photo-fg")];
+      const layers = [];
+      for (const [i, img] of imgs.entries()) {
+        const cv = document.createElement("canvas");
+        cv.className = `hero-gl ${i ? "hero-gl-fg" : "hero-gl-bg"}`;
+        cv.setAttribute("aria-hidden", "true");
+        img.after(cv);
+        const gl = cv.getContext("webgl", { alpha: true, premultipliedAlpha: true, antialias: true });
+        if (!gl) return null;
+        layers.push({ cv, gl, img });
+      }
+      try { await Promise.all(imgs.map((img) => img.decode())); } catch { return null; }
+
+      const GX = 48, GY = 27, N = (GX + 1) * (GY + 1);
+      const ox = new Float32Array(N), oy = new Float32Array(N), pos = new Float32Array(N * 2), uv = new Float32Array(N * 2);
+      const edge = new Uint8Array(N);
+      for (let j = 0; j <= GY; j++) for (let i = 0; i <= GX; i++) {
+        const n = j * (GX + 1) + i;
+        uv[n * 2] = i / GX; uv[n * 2 + 1] = j / GY;
+        edge[n] = i === 0 || j === 0 || i === GX || j === GY;
+      }
+      const idx = [];
+      for (let j = 0; j < GY; j++) for (let i = 0; i < GX; i++) {
+        const a = j * (GX + 1) + i, b = a + 1, c = a + GX + 1, d = c + 1;
+        idx.push(a, b, c, b, d, c);
+      }
+      const VS = "attribute vec2 p;attribute vec2 t;varying vec2 v;void main(){gl_Position=vec4(p,0.,1.);v=t;}";
+      const FS = "precision mediump float;uniform sampler2D s;varying vec2 v;void main(){gl_FragColor=texture2D(s,v);}";
+      for (const L of layers) {
+        const { gl } = L;
+        const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+        const prog = gl.createProgram();
+        gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+        gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+        gl.linkProgram(prog);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
+        gl.useProgram(prog);
+        L.posBuf = gl.createBuffer();
+        const pa = gl.getAttribLocation(prog, "p");
+        gl.bindBuffer(gl.ARRAY_BUFFER, L.posBuf);
+        gl.enableVertexAttribArray(pa);
+        gl.vertexAttribPointer(pa, 2, gl.FLOAT, false, 0, 0);
+        const ta = gl.getAttribLocation(prog, "t");
+        gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+        gl.bufferData(gl.ARRAY_BUFFER, uv, gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(ta);
+        gl.vertexAttribPointer(ta, 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), gl.STATIC_DRAW);
+        gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, L.img);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      }
+
+      let W = 1, H = 1;
+      const size = () => {
+        const r = hero.getBoundingClientRect();
+        W = hero.offsetWidth; H = hero.offsetHeight;
+        for (const { cv } of layers) {
+          cv.width = Math.round(r.width * devicePixelRatio);
+          cv.height = Math.round(r.height * devicePixelRatio);
+        }
+      };
+      const draw = () => {
+        for (let n = 0; n < N; n++) {
+          pos[n * 2] = uv[n * 2] * 2 - 1 + (ox[n] / W) * 2;
+          pos[n * 2 + 1] = 1 - uv[n * 2 + 1] * 2 - (oy[n] / H) * 2;
+        }
+        for (const { gl, cv, posBuf } of layers) {
+          gl.viewport(0, 0, cv.width, cv.height);
+          gl.clearColor(0, 0, 0, 0);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+          gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+          gl.bufferData(gl.ARRAY_BUFFER, pos, gl.DYNAMIC_DRAW);
+          gl.drawElements(gl.TRIANGLES, idx.length, gl.UNSIGNED_SHORT, 0);
+        }
+      };
+      let held = false, raf = 0;
+      const tick = () => {
+        raf = 0;
+        let live = held;
+        if (!held) for (let n = 0; n < N; n++) {
+          ox[n] *= 0.955; oy[n] *= 0.955;
+          if (Math.abs(ox[n]) > 0.05 || Math.abs(oy[n]) > 0.05) live = true;
+          else ox[n] = oy[n] = 0;
+        }
+        draw();
+        if (live) raf = requestAnimationFrame(tick);
+      };
+      const wake = () => { if (!raf) raf = requestAnimationFrame(tick); };
+      size(); draw();
+      addEventListener("resize", () => { size(); draw(); });
+      hero.classList.add("gl-on");
+      return {
+        hold: (on) => { held = on; wake(); },
+        push: (x, y, dx, dy) => {
+          const R = W * 0.11, k = 1 / (2 * R * R);
+          for (let n = 0; n < N; n++) {
+            if (edge[n]) continue;
+            const vx = uv[n * 2] * W + ox[n] - x, vy = uv[n * 2 + 1] * H + oy[n] - y;
+            const w = Math.exp(-(vx * vx + vy * vy) * k);
+            ox[n] += dx * w; oy[n] += dy * w;
+          }
+          wake();
+        },
+      };
+    };
+
     const hero = document.querySelector(".home-hero");
     if (hero && matchMedia("(hover:hover) and (pointer:fine)").matches) {
       const cur = hero.querySelector(".hero-cursor");
-      const move = (e) => {
+      const local = (e) => {
         const r = hero.getBoundingClientRect();
         const k = hero.offsetWidth / r.width;
-        cur.style.transform = `translate(${(e.clientX - r.left) * k}px, ${(e.clientY - r.top) * k}px)`;
+        return [(e.clientX - r.left) * k, (e.clientY - r.top) * k];
       };
+      const move = (e) => {
+        const [x, y] = local(e);
+        cur.style.transform = `translate(${x}px, ${y}px)`;
+        hero.classList.add("cursor-in");
+      };
+      const ripple = (x, y) => {
+        const rip = document.createElement("span");
+        rip.className = "hero-ripple";
+        rip.style.left = `${x}px`;
+        rip.style.top = `${y}px`;
+        rip.innerHTML = "<i></i><i></i><i></i>";
+        hero.insertBefore(rip, cur);
+        rip.lastChild.addEventListener("animationend", () => rip.remove());
+        cur.classList.remove("press");
+        void cur.offsetWidth;
+        cur.classList.add("press");
+      };
+      let morph = null, drag = null;
+      heroMorph(hero).then((m) => { morph = m; });
       hero.classList.add("hero-cursor-on");
-      hero.addEventListener("pointerenter", (e) => { move(e); hero.classList.add("cursor-in"); });
-      hero.addEventListener("pointermove", move);
+      hero.addEventListener("pointerenter", move);
       hero.addEventListener("pointerleave", () => hero.classList.remove("cursor-in"));
+      hero.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        drag = local(e);
+        ripple(...drag);
+        hero.setPointerCapture(e.pointerId);
+        morph?.hold(true);
+      });
+      hero.addEventListener("pointermove", (e) => {
+        move(e);
+        if (!drag || !morph) return;
+        const [x, y] = local(e);
+        morph.push(drag[0], drag[1], x - drag[0], y - drag[1]);
+        drag = [x, y];
+      });
+      const release = () => { drag = null; morph?.hold(false); };
+      hero.addEventListener("pointerup", release);
+      hero.addEventListener("pointercancel", release);
     }
   </script>
   <script type="module">
