@@ -65,5 +65,9 @@ if (canvas && video) {
   }).observe(canvas);
   video.addEventListener("play", () => { if (!raf) raf = requestAnimationFrame(loop); });
   video.addEventListener("loadeddata", draw);
+  video.addEventListener("canplay", draw);
   if (reduced) video.pause();
+  if (video.readyState >= 2) draw();
+  if (!video.paused && !raf) raf = requestAnimationFrame(loop);
+  else if (!reduced) video.play().catch(() => {});
 }
