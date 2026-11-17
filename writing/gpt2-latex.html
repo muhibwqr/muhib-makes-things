@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhib waqar · gpt-2 in latex</title>
+  <meta name="description" content="GPT-2 small running entirely inside pdflatex: every compile writes one more word." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=art2" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    body.maker { --bg: #fff; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+    body.maker::before { display: none; }
+    body.maker .post-title, body.maker .post-desc { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+  </style>
+</head>
+<body class="maker">
+
+  <nav>
+    <a href="/" class="nav-morph-link" aria-label="home"><figure class="morph nav-morph" aria-hidden="true"><div class="morph-stage" id="morph-panel"><pre class="morph-art" id="morph-art"></pre></div></figure></a>
+    <div class="nav-links mono">
+      <a href="/projects/">projects</a>
+      <a href="/#contact">contact</a>
+    </div>
+  </nav>
+
+  <article class="page article work-page" data-site="https://github.com/muhibwqr/muhib-latex-gpt2-">
+    <p class="article-kicker mono dim reveal">projects · stunt</p>
+    <h1 class="article-title reveal">gpt-2 in latex</h1>
+    <p class="article-meta mono dim reveal">november 2026</p>
+
+    <div class="fig-noted wide hero-noted">
+      <figure class="diagram reveal" style="padding:0; overflow:hidden; line-height:0;">
+        <video src="/gpt2/compiles.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%; display:block; border-radius:10px;"></video>
+      </figure>
+      <aside class="fig-note"><span class="fig-note-bracket" aria-hidden="true"></span>15 compiles, <br />one word each</aside>
+    </div>
+
+    <div class="wfmt-facts">
+      <div>
+        <h4>Preface</h4>
+        <p>GPT-2 small, all 124M parameters, running inside an ordinary pdflatex compile. No Python, Lua, or shell escape. The repo is 100% TeX.</p>
+      </div>
+      <div>
+        <h4>Overview</h4>
+        <p>About 20 seconds per token. Every time you hit compile, the PDF writes one more word. It picks exactly the same tokens as the original float GPT-2.</p>
+      </div>
+    </div>
+
+    <div class="prose article-prose reveal">
+      <p>the frat house next to my waterloo rental kept me up all night, so i got gpt-2 running purely in latex.</p>
+
+      <h2>how it works</h2>
+        <p><strong>Matmuls</strong> are TeX's <code>\numexpr</code> integer arithmetic. Each weight row is one expression TeX evaluates as it reads the file.</p>
+      <pre style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; line-height:1.55; background:#f6f6f4; color:#222; border:1px solid #e6e6e2; border-radius:8px; padding:14px 16px; overflow-x:auto; white-space:pre; margin:10px 0 22px;"><code>% one weight row in the file (bytes 128-255 are active chars = input registers)
+\!S-105*^^80-38*^^81+32*^^82+128*^^83-46*^^84-76*^^85 ... \relax
+
+% muhib-gpt2.sty
+\def\!S{\advance\gpt@ai\@ne\count\gpt@ai=\numexpr0}
+\def\!U{\advance\gpt@ai\@ne\count\gpt@ai=\numexpr\count\gpt@ai}</code></pre>
+        <p><strong>The KV cache</strong> uses the same trick LaTeX uses to remember page numbers between runs, so each compile picks up where the last one stopped.</p>
+      <pre style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; line-height:1.55; background:#f6f6f4; color:#222; border:1px solid #e6e6e2; border-radius:8px; padding:14px 16px; overflow-x:auto; white-space:pre; margin:10px 0 22px;"><code>% muhib-gpt2.sty: K and V for each layer/position/head become macros,
+% then get written to \jobname.gpt (like .aux) at the end of the compile
+\def\gpt@wr#1{\immediate\write\gpt@sf{\noexpand\gpt@kv{#1}%
+  {\unexpanded\expandafter\expandafter\expandafter{\csname#1\endcsname}}}}
+
+% what lands in muhibai.gpt
+\gpt@kv {gpt@K0.0.0}{0+-242*\!Qaa +488*\!Qab +225*\!Qac +-38*\!Qad ...}</code></pre>
+        <p><strong>The tokenizer</strong> is GPT-2's real byte-level BPE, written as TeX macros. So are layer norm, softmax, GELU, and the 50,257-way output head.</p>
+      <pre style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; line-height:1.55; background:#f6f6f4; color:#222; border:1px solid #e6e6e2; border-radius:8px; padding:14px 16px; overflow-x:auto; white-space:pre; margin:10px 0 22px;"><code>% muhib-gpt2.sty: bytes -&gt; GPT-2 byte tokens, then apply merges by rank
+\def\gpt@bpe{\gpt@loop{\gpt@pl}{\gpt@byteid{\gpt@PB\gpt@i}\gpt@PB\gpt@i=\gpt@t}\gpt@merge ...}
+\def\gpt@merge{\gpt@br=2147483647 ...
+  \ifnum\gpt@br&lt;2147483647 \gpt@bi=0 \gpt@bo=0 \gpt@mergepass\gpt@pl=\gpt@bo\expandafter\gpt@merge\fi}</code></pre>
+
+      <h2>converting the weights thru latex</h2>
+      <p>The most annoying part. pdflatex reads GPT-2's raw 548 MB checkpoint byte by byte with <code>\pdffiledump</code>, decodes every IEEE-754 float with integer math, and writes all 780 weight files. The first version took 22 minutes; now it's 92 seconds across 12 pdflatex processes.</p>
+      <figure class="diagram" style="padding:0; overflow:hidden; line-height:0;">
+        <video src="/gpt2/conversion.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%; display:block; border-radius:10px;"></video>
+      </figure>
+
+      <p><a href="https://github.com/muhibwqr/muhib-latex-gpt2-" target="_blank" rel="noopener">code on github →</a> &nbsp; <a href="https://x.com/muhibwqr" target="_blank" rel="noopener">the x post →</a></p>
+    </div>
+
+    <div class="article-nav reveal">
+      <a class="mono" href="/projects/">all projects &rarr;</a>
+    </div>
+  </article>
+
+  <script type="module" src="/main.js"></script>
+  <script type="module" src="/writing-format.js"></script>
+</body>
+</html>
