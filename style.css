@@ -1340,6 +1340,7 @@ body.maker .article-prose blockquote {
 .wfmt-side {
   position: fixed; left: max(28px, calc(50vw - 610px));
   top: 120px; width: 170px; z-index: 5;
+  max-height: calc(100vh - 140px); overflow-y: auto; scrollbar-width: none;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   font-size: 12px;
 }

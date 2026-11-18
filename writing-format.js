@@ -52,16 +52,30 @@ if (flat && flatTitle) {
       });
       side.appendChild(ul);
 
-      // highlight the section you're reading
+      // highlight the section you're reading; hide subsections of closed dropdowns
       const links = [...ul.querySelectorAll("a")];
-      const mark = (id) => links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === `#${id}`));
-      const spy = new IntersectionObserver(
-        (entries) => {
-          for (const en of entries) if (en.isIntersecting) mark(en.target.id);
-        },
-        { rootMargin: "-15% 0px -70% 0px" }
-      );
-      heads.forEach((h) => spy.observe(h));
+      const items = [...heads].map((h, i) => ({ h, a: links[i], d: h.closest("details") }));
+      const shut = (it) => it.d && !it.d.open && !it.d.querySelector("summary").contains(it.h);
+      let cur = null;
+      const spy = () => {
+        const line = innerHeight * 0.2;
+        let best = null;
+        for (const it of items) {
+          if (it.a.parentElement.hidden) continue;
+          if (it.h.getBoundingClientRect().top <= line) best = it; else break;
+        }
+        if (best !== cur) { links.forEach((a) => a.classList.remove("active")); best?.a.classList.add("active"); cur = best; }
+      };
+      const fold = () => {
+        items.forEach((it) => {
+          it.a.parentElement.hidden = !!shut(it);
+        });
+        spy();
+      };
+      let tick = 0;
+      addEventListener("scroll", () => { if (!tick) tick = requestAnimationFrame(() => { tick = 0; spy(); }); }, { passive: true });
+      document.addEventListener("toggle", fold, true);
+      fold();
     }
     document.body.insertBefore(side, article);
 
