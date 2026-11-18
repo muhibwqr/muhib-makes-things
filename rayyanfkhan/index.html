@@ -7,12 +7,14 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=art2" />
   <style>
     html, body { margin: 0; height: 100%; background: #1c1c1f; }
-    body { display: flex; align-items: center; justify-content: center; min-height: 100svh; }
-    .px-grid { display: block; height: calc(100svh - 48px); max-width: calc(100vw - 32px); width: auto; object-fit: contain; }
+    body { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-height: 100svh; }
+    h1 { margin: 0; font: 500 18px/1.2 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; letter-spacing: -0.01em; color: #f3cf74; }
+    .px-grid { display: block; height: calc(100svh - 90px); max-width: calc(100vw - 32px); width: auto; object-fit: contain; }
     .px-src { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
   </style>
 </head>
 <body>
+  <h1>we &lt;3 foundersarm</h1>
   <canvas class="px-grid" data-cols="63" data-rows="112" data-cell="6" data-gap="2" role="img" aria-label="goldfish swimming, drawn as gold pixels"></canvas>
   <video class="px-src" src="/photos/goldfish-vertical.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
   <script type="module">
