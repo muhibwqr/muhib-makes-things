@@ -30,6 +30,8 @@
     body.maker .article-prose img.sources-fish, .sources-fish { display: block; width: 140px !important; max-width: 140px !important; height: auto !important; border-radius: 10px; margin: 18px 0 6px; }
     .sources-drop[open] .sources-fish { animation: fish-pop .35s ease-out; }
     @keyframes fish-pop { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: none; } }
+    .case-drop { margin-top: 2.2em; }
+    .case-drop[open] > summary { margin-bottom: 1em; }
     .sources-drop summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; }
     .sources-drop summary::-webkit-details-marker { display: none; }
     body.maker .article-prose .sources-drop summary h2 { margin: 0; }
@@ -217,29 +219,38 @@
       <p>While looking for similar concepts, I came across this research paper that was pretty similar to the concept I was working on. <a href="https://arxiv.org/abs/2608.01964" target="_blank" rel="noopener">LongHorizon-Harness</a> (Ma et al.) keeps an agent's task state outside the model and only updates it with facts checked against the environment. A manager picks the next step, a fresh-context executor does it, and a read-only auditor verifies the result before the next round. The researchers report it lifts Qwen 3.7-Plus from 51.8% to 80.7% on WeaveBench and Claude Opus 4.7 from 20.0% to 34.3% on part of OSWorld 2.0.</p>
 
       <p class="mono dim" style="font-size:12px; line-height:1.6; margin:2.4em 0 0;">disclaimer: i am not affiliated with any of the case studies, everything is from public sources.</p>
-      <h2>case study 1: long horizon agents and harness businesses</h2>
-      <p>As you may have expected, the companies building the frontier are often the earliest to adopt it. Cursor and Devin mostly run on frontier models that anyone can rent off <a href="https://openrouter.ai/" target="_blank" rel="noopener">OpenRouter</a>. What they sell is the harness around the model. Even Anthropic ships Claude Code as a separate harness around its own models.</p>
+      <details class="sources-drop case-drop">
+        <summary><h2>case study 1: long horizon agents and harness businesses</h2></summary>
+      <p>As you may have expected, the companies building the frontier are often the earliest to adopt it. Cursor and Devin mostly run on frontier models that anyone can rent off <a href="https://openrouter.ai/" target="_blank" rel="noopener">OpenRouter</a>. What they sell is the harness around the model. Even Anthropic ships Claude Code as a separate harness around its own models. Below I'm going to go over what I found intuitive and what I think could improve in each, so feel free to skim!</p>
 
       <h3>anthropic's long-running harness</h3>
-      <p>Anthropic already has <a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents" target="_blank" rel="noopener">an article</a> about how they're currently approaching this: "each new session begins with no memory of what came before." Anthropic saw two failures. Early on, the agent tried to one-shot the whole app. Later, a fresh agent would look around, see progress, and declare the job done. The fix: an initializer agent writes an init.sh script, a claude-progress.txt log, a first git commit and a feature list (over 200 features for a claude.ai clone), all marked "failing". Each later coding agent works on one feature, can only flip its "passes" field, and leaves notes for the next session. They chose JSON over Markdown because the model was less likely to overwrite it.</p>
+      <p>Anthropic already has <a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents" target="_blank" rel="noopener">an article</a> about how they're currently approaching this: "each new session begins with no memory of what came before." An initializer agent writes a progress log and a feature list, all marked "failing", and each later session works on one feature and leaves notes for the next.</p>
       <figure class="dg reveal"><canvas data-diagram="c3_features" data-h="170" role="img" aria-label="a feature list where each fresh session flips one feature from failing to passing"></canvas></figure>
-      <p>Relative to the framework suggested above, it has a contract (the feature list), a ledger (the progress log and git) and a handoff (the structured updates). What it doesn't have is a heartbeat or a judgment layer. It runs when someone starts it, and it ends when the project is done. Add those two and the same harness could keep a codebase healthy for a year, instead of only running when someone remembers to start it.</p>
+      <p><strong>What I found intuitive:</strong> the feature list is a contract the model can't quietly rewrite. Each session can only flip a feature from "failing" to "passes", and they chose JSON over Markdown because the model was less likely to overwrite it.</p>
+      <p><strong>What could improve:</strong> there's no heartbeat or judgment layer. It runs when someone starts it and ends when the project is done. Add those two and the same harness could keep a codebase healthy for a year, instead of only running when someone remembers to start it.</p>
 
       <h3>cursor: hundreds of agents for weeks</h3>
-      <p>Cursor has been <a href="https://cursor.com/blog/scaling-agents" target="_blank" rel="noopener">running coding agents autonomously for weeks</a>: hundreds of concurrent agents on one project. One run went for close to a week and wrote over 1 million lines across 1,000 files; another made video rendering 25x faster with a Rust rewrite. The first designs failed in instructive ways. Shared locks were held too long or never released, and with no hierarchy, agents became risk-averse. What worked was structure: planners explore the codebase and create tasks, workers grind on single tasks without coordinating, and at the end of each cycle a judge agent decides whether to continue before the next iteration starts fresh.</p>
+      <p>Cursor has been <a href="https://cursor.com/blog/scaling-agents" target="_blank" rel="noopener">running hundreds of coding agents on one project for weeks</a>. Planners create tasks, workers grind on single tasks, and at the end of each cycle a judge decides whether to continue.</p>
       <figure class="dg reveal"><canvas data-diagram="c3_swarm" data-h="170" role="img" aria-label="a planner fans tasks out to many worker goldfish, and a judge decides whether to continue"></canvas></figure>
-      <p>In terms of the nine layers, the judge is a judgment layer and the fresh start each cycle is a handoff. What's missing is intent that outlives the project, and reconciliation against anything outside the repo. Weeks is the ceiling because the promise is "finish this build," not "keep this true."</p>
+      <p><strong>What I found intuitive:</strong> structure beat coordination. Their first designs used shared locks and no hierarchy, and the agents became risk-averse. Each cycle also starts fresh, which builds a handoff into the loop.</p>
+      <p><strong>What could improve:</strong> weeks is the ceiling, because the promise is "finish this build," not "keep this true." There's no intent that outlives the project, and nothing is reconciled against anything outside the repo.</p>
 
       <h3>replit missions: a swarm with an agreement</h3>
-      <p>In <a href="https://replit.com/blog/introducing-replit-missions" target="_blank" rel="noopener">Replit Missions</a>, you define an outcome like "win our first 10 paying enterprise customers", and during setup it asks questions to pin down what success means. A Missions agreement sets the spending limit and which actions need your permission, a swarm of agents plans, builds and iterates in parallel, and an independent AI judge checks results against the agreed criteria. Replit says its DataCat monitoring platform was built in 2 days within a $3,000 budget.</p>
+      <p>In <a href="https://replit.com/blog/introducing-replit-missions" target="_blank" rel="noopener">Replit Missions</a>, you define an outcome like "win our first 10 paying enterprise customers" and agree on a spending limit and which actions need your permission. A swarm of agents then plans, builds and iterates, while an independent AI judge checks results against the agreed criteria.</p>
       <figure class="dg reveal"><canvas data-diagram="c3_mission" data-h="140" role="img" aria-label="a mission budget drains while criteria are checked, then the mission completes and stops"></canvas></figure>
-      <p>In terms of the nine layers, Missions already has most of the layers. The agreement is intent and contract, the budget and approvals are bounded hands, the judge is an eval, and the status digests are a light handoff. The difference is the ending. A mission is marked complete when the criteria are met, or stops when the budget runs out. A long horizon harness would keep going after that, waking on a heartbeat to check the result is still true and logging the days it decides to do nothing.</p>
-      <h3>devin bots: from tasks to outcomes</h3>
-      <p><a href="https://devin.ai/blog/introducing-devin-bots" target="_blank" rel="noopener">Devin Bots</a> is the closest thing to a long horizon harness I've seen. A Bot is "a persistent agent with its own memory and tools that can lead multiple Devins in parallel", and you give it a responsibility instead of a task: "Keep Android at parity with iOS", not "Port this feature to Android". Cognition's examples, which are company claims: an Android Bot built Devin's Android app in 44 days, merging 1,134 PRs while its engineer sent 183 messages, about one for every six PRs. A Layout Bot runs a check every 3 hours, traces each regression to the PR that caused it, and has merged 159 fixes that cut lag by 70%. One person runs a game studio with about 20 Bots and went from about 50 to 1,900 PRs a week. Earlier, <a href="https://cognition.ai/blog/devin-annual-performance-review-2025" target="_blank" rel="noopener">Cognition's 2025 review</a> reported 67% of Devin's PRs merged, up from 34%.</p>
-      <figure class="dg reveal"><canvas data-diagram="c3_cron" data-h="120" role="img" aria-label="scheduled runs do a task each time; a long horizon harness checks a claim on every wake and logs nothing most of the time"></canvas></figure>
-      <p>In terms of the nine layers, Bots has almost every layer. The responsibility is intent and contract, <a href="https://docs.devin.ai/work-with-devin/bots" target="_blank" rel="noopener">automations</a> are the heartbeat, access and approval limits are the hands, the "Needs you" inbox is judgment, the daily reports are the handoff, and Cognition says engineers have to build the evals. It even logs the quiet days: "The latency check on main is clean." What's left is the step this article is about. Bots are built to be proactive and "find work you would never have assigned", but in health and money the default should be to do nothing. Their memory is mostly notes they write themselves, while a long horizon harness checks its ledger against a source of truth on every wake. And in software a bad change can be reverted, but a missed dose or a wrong transfer can't. Bots is the frontier for code. The next step is the same idea where a promise can't be rolled back.</p>
+      <p><strong>What I found intuitive:</strong> setup asks questions to pin down what success means, so the goal is checkable before any work starts. The agreement is intent and contract, the budget and approvals are bounded hands, and the judge is an eval.</p>
+      <p><strong>What could improve:</strong> the ending. A mission is marked complete when the criteria are met, or stops when the budget runs out. A long horizon harness would keep going after that, waking on a heartbeat to check the result is still true and logging the days it decides to do nothing.</p>
 
-      <h2>case study 2: medtech sector</h2>
+      <h3>devin bots: from tasks to outcomes</h3>
+      <p><a href="https://devin.ai/blog/introducing-devin-bots" target="_blank" rel="noopener">Devin Bots</a> is the closest thing to a long horizon harness I've seen. A Bot is "a persistent agent with its own memory and tools that can lead multiple Devins in parallel", and you give it a responsibility instead of a task: "Keep Android at parity with iOS", not "Port this feature to Android". Cognition's examples, which are company claims: an Android Bot built Devin's Android app in 44 days, merging 1,134 PRs while its engineer sent 183 messages, about one for every six PRs. A Layout Bot runs a check every 3 hours, traces each regression to the PR that caused it, and has merged 159 fixes that cut lag by 70%.</p>
+      <figure class="dg reveal"><canvas data-diagram="c3_cron" data-h="120" role="img" aria-label="scheduled runs do a task each time; a long horizon harness checks a claim on every wake and logs nothing most of the time"></canvas></figure>
+      <p><strong>What I found intuitive:</strong> you give it a responsibility, not a task, and it has almost every layer. The responsibility is intent and contract, <a href="https://docs.devin.ai/work-with-devin/bots" target="_blank" rel="noopener">automations</a> are the heartbeat, access and approval limits are the hands, the "Needs you" inbox is judgment, and the daily reports are the handoff. It even logs the quiet days: "The latency check on main is clean."</p>
+      <p><strong>What could improve:</strong> Bots are built to be proactive and "find work you would never have assigned", but in health and money the default should be to do nothing. Their memory is mostly notes they write themselves, while a long horizon harness checks its ledger against a source of truth on every wake. And in software a bad change can be reverted, but a missed dose or a wrong transfer can't. Bots is the frontier for code. The next step is the same idea where a promise can't be rolled back.</p>
+
+      </details>
+
+      <details class="sources-drop case-drop">
+        <summary><h2>case study 2: medtech sector</h2></summary>
       <p>In most cases, doctors, patients and maintainers alike are skeptical of agents in medtech. I mean, personally I wouldn't want an agent within ten feet of me if I were having surgery. However, there are some cases where agents are already being used, and a long horizon harness could help further.</p>
       <p>Before I get into agents at all, I want to take a look at the Medtronic <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8817690/" target="_blank" rel="noopener">MiniMed 780G</a>. It's an insulin pump and glucose sensor paired with an algorithm. It runs for months on someone with type 1 diabetes, and conceptually it is adjacent to a long horizon harness.</p>
       <p>Here's how it maps:</p>
@@ -314,7 +325,10 @@
       </ul>
       <p>The people it helps most aren't only clinicians. <a href="https://doi.org/10.26419/ppi.00373.003" target="_blank" rel="noopener">63 million Americans</a> are family caregivers, about one in four adults. Most of them are already acting as an unpaid, sleep-deprived long horizon harness for someone they love.</p>
 
-      <h2>case study 3: fintech sector</h2>
+      </details>
+
+      <details class="sources-drop case-drop">
+        <summary><h2>case study 3: fintech sector</h2></summary>
       <p>Money is the other place where people normally get the ick from agents. I mean, who wants an agent to spend on their behalf? I certainly wouldn't! An agent that moves money can lose it, and the failures are fast and public. Synapse, below, is the cautionary tale. But the fear is really about unbounded actions and ledgers that drift from reality, and those are exactly the things a harness exists to control.</p>
       <h3>mercury and the ledger that must not drift</h3>
       <p><a href="https://mercury.com" target="_blank" rel="noopener">Mercury</a> serves <a href="https://www.businesswire.com/news/home/20260616596362/en/Mercury-Launches-Command-a-New-Way-to-Run-Your-Business-Through-Banking" target="_blank" rel="noopener">over 300,000 customers</a>, and if you look closely it has already built most of a long horizon harness, one layer at a time.</p>
@@ -340,7 +354,7 @@
         <li>"If any software vendor's price goes up more than 10%, flag it and draft the cancellation."</li>
       </ul>
       <p>Each of these is a contract, reconciled against a ledger on a heartbeat. Anything that moves money still goes through the approval flow Mercury already has.</p>
-
+      </details>
 
       <h2>won't better models make this unnecessary?</h2>
       <p>The obvious pushback: models are getting memory. Claude and Devin dream, and Google's sleep framework folds memory into the model itself. Won't a model that remembers everything just do this on its own? I don't think so, for three reasons.</p>
@@ -511,5 +525,11 @@
     });
   </script>
   <script type="module" src="/writing/lhh-diagrams.js"></script>
+  <script>
+    const openTo = (id) => { const el = id && document.getElementById(decodeURIComponent(id)); const d = el && el.closest("details"); if (d && !d.open) d.open = true; };
+    document.addEventListener("click", (e) => { const a = e.target.closest('a[href^="#"]'); if (a) openTo(a.getAttribute("href").slice(1)); }, true);
+    addEventListener("hashchange", () => openTo(location.hash.slice(1)));
+    addEventListener("load", () => { openTo(location.hash.slice(1)); if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView(); });
+  </script>
 </body>
 </html>
