@@ -21,34 +21,53 @@
     // the original vertical goldfish video, drawn as gold pixels
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const video = document.querySelector(".px-src"), cv = document.querySelector(".px-grid");
-    const d = cv.dataset, cols = +d.cols, rows = +d.rows, cell = +d.cell, gap = +d.gap;
-    const dpr = Math.min(devicePixelRatio || 1, 2), W = cols * (cell + gap) - gap, H = rows * (cell + gap) - gap;
+    const d = cv.dataset, cols = +d.cols, rows = +d.rows, cell = +d.cell, gap = +d.gap, step = cell + gap;
+    const dpr = Math.min(devicePixelRatio || 1, 2), W = cols * step - gap, H = rows * step - gap;
     cv.width = W * dpr; cv.height = H * dpr; cv.style.aspectRatio = W + " / " + H;
-    const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
+    const ctx = cv.getContext("2d", { alpha: false }); ctx.scale(dpr, dpr);
+    // the dim empty grid never changes, so draw it once and copy it each frame
+    const base = document.createElement("canvas"); base.width = cv.width; base.height = cv.height;
+    const bctx = base.getContext("2d"); bctx.scale(dpr, dpr);
+    bctx.fillStyle = "#1c1c1f"; bctx.fillRect(0, 0, W, H); bctx.fillStyle = "#2c2c2f";
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) bctx.rect(c * step, r * step, cell, cell);
+    bctx.fill();
+    // gaps between cells, in the background colour, laid over the scaled-up frame
+    const mask = document.createElement("canvas"); mask.width = cv.width; mask.height = cv.height;
+    const mctx = mask.getContext("2d"); mctx.scale(dpr, dpr); mctx.fillStyle = "#1c1c1f";
+    for (let c = 1; c < cols; c++) mctx.fillRect(c * step - gap, 0, gap, H);
+    for (let r = 1; r < rows; r++) mctx.fillRect(0, r * step - gap, W, gap);
+    // one pixel per cell: the frame is coloured at video size, then scaled up with no smoothing
     const sc = document.createElement("canvas"); sc.width = cols; sc.height = rows;
-    const sctx = sc.getContext("2d", { willReadFrequently: true }), lum = new Float32Array(cols * rows);
-    const sample = () => {
-      if (video.readyState < 2) return null;
-      sctx.drawImage(video, 0, 0, cols, rows);
-      const px = sctx.getImageData(0, 0, cols, rows).data; let lo = 1, hi = 0;
-      for (let i = 0; i < lum.length; i++) { const v = (0.2126 * px[i * 4] + 0.7152 * px[i * 4 + 1] + 0.0722 * px[i * 4 + 2]) / 255; lum[i] = v; lo = Math.min(lo, v); hi = Math.max(hi, v); }
-      for (let i = 0; i < lum.length; i++) lum[i] = Math.pow(Math.max(0, (lum[i] - lo) / Math.max(hi - lo, 1e-3)), 1.6);
-      return lum;
-    };
+    const sctx = sc.getContext("2d", { willReadFrequently: true });
+    const gold = document.createElement("canvas"); gold.width = cols; gold.height = rows;
+    const gctx = gold.getContext("2d"), out = gctx.createImageData(cols, rows), lum = new Float32Array(cols * rows);
+    ctx.imageSmoothingEnabled = false;
     const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-      const s = sample();
-      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-        const a = s ? s[r * cols + c] : 0, x = c * (cell + gap), y = r * (cell + gap);
-        ctx.fillStyle = "rgba(255,255,255,0.07)"; ctx.fillRect(x, y, cell, cell);
-        ctx.fillStyle = `rgba(255,${(150 + 70 * a) | 0},${(40 + 60 * a * a) | 0},${(a * 0.98).toFixed(3)})`;
-        ctx.fillRect(x, y, cell, cell);
+      if (video.readyState < 2) return ctx.drawImage(base, 0, 0, W, H);
+      sctx.drawImage(video, 0, 0, cols, rows);
+      const px = sctx.getImageData(0, 0, cols, rows).data, o = out.data; let lo = 1, hi = 0;
+      for (let i = 0; i < lum.length; i++) { const v = (0.2126 * px[i * 4] + 0.7152 * px[i * 4 + 1] + 0.0722 * px[i * 4 + 2]) / 255; lum[i] = v; if (v < lo) lo = v; if (v > hi) hi = v; }
+      const span = Math.max(hi - lo, 1e-3);
+      for (let i = 0; i < lum.length; i++) {
+        const a = Math.pow((lum[i] - lo) / span, 1.6), j = i * 4;
+        const t = a * 0.98, u = 1 - t; // gold over the dim empty cell, so each frame is fully opaque
+        o[j] = 44 * u + 255 * t; o[j + 1] = 44 * u + (150 + 70 * a) * t; o[j + 2] = 47 * u + (40 + 60 * a * a) * t; o[j + 3] = 255;
       }
+      gctx.putImageData(out, 0, 0);
+      ctx.drawImage(gold, 0, 0, cols * step, rows * step);
+      ctx.drawImage(mask, 0, 0, W, H);
     };
-    let raf = 0;
-    const loop = () => { draw(); raf = !video.paused && !document.hidden ? requestAnimationFrame(loop) : 0; };
-    video.addEventListener("play", () => { if (!raf) raf = requestAnimationFrame(loop); });
+    // redraw only when the video has a new frame (25 fps), not on every screen refresh
+    const rvfc = "requestVideoFrameCallback" in HTMLVideoElement.prototype;
+    let pending = false;
+    const tick = () => { pending = false; draw(); schedule(); };
+    const schedule = () => {
+      if (pending || video.paused || document.hidden) return; pending = true;
+      rvfc ? video.requestVideoFrameCallback(tick) : requestAnimationFrame(tick);
+    };
+    video.addEventListener("play", schedule);
     video.addEventListener("loadeddata", draw);
+    document.addEventListener("visibilitychange", schedule);
     if (reduced) video.pause(); else video.play().catch(() => {});
     draw();
   </script>
