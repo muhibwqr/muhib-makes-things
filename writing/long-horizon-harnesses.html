@@ -204,7 +204,6 @@
         <h3>9. evals</h3>
         <p>These are the tests that verify results. The harness can recommend changes to the evals, but only a human can approve them. Standing evals check the result and only a human can change them. Posture evals check how the harness behaves, and the harness can propose and improve them. Because a wrong "nothing" fails silently, a human should also spot-check a sample of the "nothing" calls.</p>
         <p class="layer-check">I really like Anthropic's <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents" target="_blank" rel="noopener">guide to agent evals</a>. It separates the transcript from the outcome: a booking agent saying "your flight is booked" doesn't count; only a real reservation in the system does. It also separates pass@k, getting it right at least once in k tries, from pass^k, getting it right every time. A long horizon harness runs the same check hundreds of times, so getting it right every time is what matters: an agent that works 75% of the time only gets three in a row right about 42% of the time. And when you evaluate an agent, you're evaluating the harness and the model together.</p>
-        <p class="layer-check"><strong>There should be an iterative loop that notices patterns and molds the harness around them.</strong> If people keep getting the same alert, or a check keeps finding nothing, the harness suggests a change to its own rules, and a human approves it.</p>
         <figure class="dg"><canvas data-diagram="L_evals" data-h="120" role="img" aria-label="evals layer diagram"></canvas></figure>
       </div>
 
@@ -221,7 +220,7 @@
       <p>As I've been improving how I work and build with agents and harnesses, I was intrigued to see Replit and Devin drop adjacent features on the same day. My gut tells me that in the coming weeks we will see more long horizon harnesses.</p>
 
       <h2>related ideas</h2>
-      <p>An adjacent yet popular idea is <a href="https://en.wikipedia.org/wiki/Recursive_self-improvement" target="_blank" rel="noopener">recursive self-improvement</a> (RSI): an AI system that iteratively builds a more capable successor. It's mostly still a hypothesis, but the early working versions improve the harness, not the model. The <a href="https://arxiv.org/abs/2505.22954" target="_blank" rel="noopener">Darwin Gödel Machine</a> rewrites its own agent code, keeps an archive of every version, and checks each change against coding benchmarks. In my mind, the benefits are more like harness adjustments: better editing tools, long-context management and peer review. That took it from 20% to 50% on SWE-bench. Autoresearch has the same shape: change, test, keep or discard, repeat. Every RSI loop needs what a long horizon harness provides: a memory of what was tried, a contract for "better", and a heartbeat that keeps it going, all inside a sandbox with human oversight. Put side by side, a harness gives an agent tools, an always-on agent gives it a heartbeat, a long horizon agent gives it a goal that lasts, and RSI gives it a way to improve itself; a long horizon harness is what holds all four together, so the goal survives every session, every model and every improvement.</p>
+      <p>An adjacent yet popular idea is <a href="https://en.wikipedia.org/wiki/Recursive_self-improvement" target="_blank" rel="noopener">recursive self-improvement</a> (RSI): an AI system that iteratively builds a more capable successor. It's mostly still a hypothesis. The <a href="https://arxiv.org/abs/2505.22954" target="_blank" rel="noopener">Darwin Gödel Machine</a> rewrites its own agent code, keeps an archive of every version, and checks each change against coding benchmarks. In my mind, the benefits are more like harness adjustments: better editing tools, long-context management and peer review. That took it from 20% to 50% on SWE-bench. Autoresearch has the same shape: change, test, keep or discard, repeat. Every RSI loop needs what a long horizon harness provides: a memory of what was tried, a contract for "better", and a heartbeat that keeps it going, all inside a sandbox with human oversight.</p>
       <p>While looking for similar concepts, I came across this research paper that was pretty similar to the concept I was working on. <a href="https://arxiv.org/abs/2608.01964" target="_blank" rel="noopener">LongHorizon-Harness</a> (Ma et al.) keeps an agent's task state outside the model and only updates it with facts checked against the environment. A manager picks the next step, a fresh-context executor does it, and a read-only auditor verifies the result before the next round. The researchers report it lifts Qwen 3.7-Plus from 51.8% to 80.7% on WeaveBench and Claude Opus 4.7 from 20.0% to 34.3% on part of OSWorld 2.0.</p>
 
       <p class="mono dim" style="font-size:12px; line-height:1.6; margin:2.4em 0 0;">disclaimer: i am not affiliated with any of the case studies, everything is from public sources.</p>
@@ -373,7 +372,6 @@
           <li><a href="https://github.com/karpathy/autoresearch" target="_blank" rel="noopener">Andrej Karpathy: autoresearch</a></li>
           <li><a href="https://code.claude.com/docs/en/scheduled-tasks" target="_blank" rel="noopener">Claude Code: Run prompts on a schedule</a></li>
           <li><a href="https://cursor.com/blog/scaling-agents" target="_blank" rel="noopener">Cursor: Scaling long-running autonomous coding</a></li>
-          <li><a href="https://cognition.ai/blog/devin-annual-performance-review-2025" target="_blank" rel="noopener">Cognition: Devin's 2025 performance review</a></li>
           <li><a href="https://platform.claude.com/docs/en/managed-agents/dreams" target="_blank" rel="noopener">Claude Platform docs: Dreams</a></li>
           <li><a href="https://devin.ai/blog/memory-and-dreaming" target="_blank" rel="noopener">Devin: Memory and dreaming</a></li>
           <li><a href="https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/" target="_blank" rel="noopener">Google Research: The sleep framework</a></li>
@@ -393,15 +391,11 @@
           <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8817690/" target="_blank" rel="noopener">Real-world performance of the MiniMed 780G: 4,120 users</a></li>
           <li><a href="https://news.medtronic.com/2020-06-12-Medtronic-Presents-U-S-Pivotal-Trial-Data-for-MiniMed-TM-780G-Advanced-Hybrid-Closed-Loop-System-with-Automated-Correction-Bolus-Feature" target="_blank" rel="noopener">Medtronic: MiniMed 780G U.S. pivotal trial</a></li>
           <li><a href="https://doi.org/10.1089/dia.2023.0446" target="_blank" rel="noopener">A Peek Under the Hood: the MiniMed 780G algorithm</a></li>
-          <li><a href="https://pubmed.ncbi.nlm.nih.gov/20806684/" target="_blank" rel="noopener">Crossing the finish line: follow-up of abnormal test results</a></li>
-          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8048208/" target="_blank" rel="noopener">Automated tracking registry and incidental pulmonary nodules</a></li>
-          <li><a href="https://www.who.int/news/item/01-07-2003-failure-to-take-prescribed-medicine-for-chronic-diseases-is-a-massive-world-wide-problem" target="_blank" rel="noopener">WHO: adherence to long-term therapies</a></li>
-          <li><a href="https://doi.org/10.26419/ppi.00373.003" target="_blank" rel="noopener">AARP: Caregiving in the US 2025</a></li>
           <li><a href="https://www.abridge.com/press-release/uchealth-scales-abridge" target="_blank" rel="noopener">Abridge at UCHealth</a></li>
+          <li><a href="https://fortune.com/2026/06/11/abridge-operating-system-medicine-nvidia-eli-lilly-artsight/" target="_blank" rel="noopener">Fortune: Abridge wants to be the operating system for medicine</a></li>
+          <li><a href="https://www.epic.com/epic/post/epic-ai-charting-rolls-out-alongside-an-expanding-set-of-built-in-ai-capabilities/" target="_blank" rel="noopener">Epic: AI Charting rolls out</a></li>
+          <li><a href="https://www.epic.com/epic/post/real-results-right-now-how-epic-ai-is-reducing-costs-improving-care-and-helping-patients/" target="_blank" rel="noopener">Epic: real results from Epic AI</a></li>
           <li><a href="https://www.cnbc.com/2025/08/20/epic-ugm-2025-epic-touts-new-ai-tools.html" target="_blank" rel="noopener">CNBC: Epic's new AI tools at UGM 2025</a></li>
-          <li><a href="https://hippocraticai.com/ai-agents-that-call-your-patients/" target="_blank" rel="noopener">Hippocratic AI: agents that call your patients</a></li>
-          <li><a href="https://www.viz.ai/vizai-one" target="_blank" rel="noopener">Viz.ai One</a></li>
-          <li><a href="https://investors.dexcom.com/news/news-details/2024/Dexcom-Launches-the-First-Generative-AI-Platform-in-Glucose-Biosensing/default.aspx" target="_blank" rel="noopener">Dexcom: first generative AI platform in glucose biosensing</a></li>
         </ul>
       </div>
 
@@ -410,9 +404,7 @@
         <ul>
           <li><a href="https://www.businesswire.com/news/home/20260908463918/en/Forus-Raises-%24150M-at-a-%243B-Valuation-as-Its-AI-Network-Becomes-How-Medicine-Reaches-Patients" target="_blank" rel="noopener">Forus: Series C announcement</a></li>
           <li><a href="https://www.reuters.com/legal/transactional/ai-healthcare-platform-forus-valued-3-billion-latest-funding-round-2026-09-08/" target="_blank" rel="noopener">Reuters: Forus valued at $3 billion</a></li>
-          <li><a href="https://forus.com/stories/how-docs-dermatology-accelerated-medication-access-across-140-locations" target="_blank" rel="noopener">Forus: DOCS Dermatology case study</a></li>
           <li><a href="https://www.ama-assn.org/practice-management/prior-authorization/advocacy-action-fixing-prior-authorization" target="_blank" rel="noopener">AMA: fixing prior authorization</a></li>
-          <li><a href="https://coverageadvocate.gastro.org/wp-content/uploads/2025/07/AGA-Worksheets_Reauthorization-2.pdf" target="_blank" rel="noopener">AGA: reauthorization worksheet</a></li>
         </ul>
       </div>
 
@@ -423,8 +415,6 @@
           <li><a href="https://www.businesswire.com/news/home/20260616596362/en/Mercury-Launches-Command-a-New-Way-to-Run-Your-Business-Through-Banking" target="_blank" rel="noopener">Business Wire: Mercury launches Command</a></li>
           <li><a href="https://support.mercury.com/hc/en-us/articles/28768212621332-Setting-up-auto-transfer-rules" target="_blank" rel="noopener">Mercury: setting up auto-transfer rules</a></li>
           <li><a href="https://support.mercury.com/hc/en-us/articles/55019067636628-Moving-money-in-and-out-of-Treasury" target="_blank" rel="noopener">Mercury: moving money in and out of Treasury</a></li>
-          <li><a href="https://mercury.com/blog/mercury-column-na" target="_blank" rel="noopener">Mercury: expanding partner banks with Column</a></li>
-          <li><a href="https://www.americanbanker.com/news/small-business-fintech-mercury-bank-partner-evolve-split" target="_blank" rel="noopener">American Banker: Mercury and Evolve split</a></li>
           <li><a href="https://www.consumerfinance.gov/enforcement/actions/synapse-financial-technologies-inc/" target="_blank" rel="noopener">CFPB: Synapse Financial Technologies</a></li>
         </ul>
       </div>
