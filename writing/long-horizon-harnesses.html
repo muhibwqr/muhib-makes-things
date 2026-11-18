@@ -31,7 +31,9 @@
     .sources-drop[open] .sources-fish { animation: fish-pop .35s ease-out; }
     @keyframes fish-pop { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: none; } }
     .case-drop { margin-top: 2.2em; }
-    .stickers { display: inline-flex; gap: 7px; align-items: center; }
+    .case-drop summary h2 { min-width: 0; }
+    .case-skim { margin-top: 1.2em; }
+    .stickers { flex-shrink: 0; display: inline-flex; gap: 7px; align-items: center; }
     .stickers img { width: 30px; height: 30px; padding: 5px; box-sizing: border-box; object-fit: contain; background: #f4f1ea; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.45); transform: rotate(-7deg); transition: transform .2s; }
     .stickers img:nth-child(even) { transform: rotate(6deg); }
     .case-drop summary:hover .stickers img { transform: rotate(0) scale(1.08); }
@@ -223,7 +225,7 @@
       <p>While looking for similar concepts, I came across this research paper that was pretty similar to the concept I was working on. <a href="https://arxiv.org/abs/2608.01964" target="_blank" rel="noopener">LongHorizon-Harness</a> (Ma et al.) keeps an agent's task state outside the model and only updates it with facts checked against the environment. A manager picks the next step, a fresh-context executor does it, and a read-only auditor verifies the result before the next round. The researchers report it lifts Qwen 3.7-Plus from 51.8% to 80.7% on WeaveBench and Claude Opus 4.7 from 20.0% to 34.3% on part of OSWorld 2.0.</p>
 
       <p class="mono dim" style="font-size:12px; line-height:1.6; margin:2.4em 0 0;">disclaimer: i am not affiliated with any of the case studies, everything is from public sources.</p>
-      <p>I recognize that different people will be intrigued by different industries, so below I'm just going to go over what I found intuitive and what I think could improve in each with long horizon harnesses, so feel free to skim!</p>
+      <p class="case-skim">I recognize that different people will be intrigued by different industries, so below I'm just going to go over what I found intuitive and what I think could improve in each with long horizon harnesses, so feel free to skim!</p>
       <details class="sources-drop case-drop">
         <summary><h2>case study 1: long horizon agents and harness businesses</h2><span class="stickers" aria-hidden="true"><img src="/logos/anthropic.svg" alt="" title="Anthropic" loading="lazy"><img src="/logos/cursor.svg" alt="" title="Cursor" loading="lazy"><img src="/logos/replit.svg" alt="" title="Replit" loading="lazy"><img src="/logos/devin-icon.png" alt="" title="Devin" loading="lazy"></span></summary>
       <p>As you may have expected, the companies building the frontier are often the earliest to adopt it. Cursor and Devin mostly run on frontier models that anyone can rent off <a href="https://openrouter.ai/" target="_blank" rel="noopener">OpenRouter</a>. What they sell is the harness around the model. Even Anthropic ships Claude Code as a separate harness around its own models.</p>
