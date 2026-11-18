@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 
 // every top-level page and every article in writing/ is its own entry
 const html = (dir) =>
@@ -32,7 +32,17 @@ const pages = [
   ...html("work/incinerator"),
 ];
 
+// test: inject the darker grey background into every page except the bespoke interactive pages
+const bgTest = {
+  name: "bg-test",
+  transformIndexHtml(page, ctx) {
+    if (["/writing/attention/", "/writing/flash-attention/", "/yusufproject/"].some((p) => ctx.path.startsWith(p))) return page;
+    return page.replace("</head>", `<style>${readFileSync("bg-test.css", "utf8")}</style></head>`);
+  },
+};
+
 export default defineConfig({
+  plugins: [bgTest],
   build: {
     rollupOptions: {
       input: Object.fromEntries(

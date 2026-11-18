@@ -4,7 +4,7 @@ const video = document.querySelector(".ascii-src");
 
 if (canvas && video) {
   const COLS = 269, ROWS = 151, CELL = 4, HIDE_SHADOWS = 0.06;
-  const INK = 0xfff7f4f4, BG = 0xff100c0c; // ABGR: #F4F4F7 ink on dark
+  const INK = 0xffaaa6a6, BG = 0xff100c0c; // ABGR: #A6A6AA ink on dark, dimmed so the bright mist recedes
   const W = COLS * CELL, H = ROWS * CELL;
   canvas.width = W;
   canvas.height = H;
