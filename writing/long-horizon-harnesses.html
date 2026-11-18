@@ -239,7 +239,7 @@
       <h3>cursor: hundreds of agents for weeks</h3>
       <p>Cursor has been <a href="https://cursor.com/blog/scaling-agents" target="_blank" rel="noopener">running hundreds of coding agents on one project for weeks</a>. Planners create tasks, workers grind on single tasks, and at the end of each cycle a judge decides whether to continue.</p>
       <figure class="dg reveal"><canvas data-diagram="c3_swarm" data-h="170" role="img" aria-label="a planner fans tasks out to many worker goldfish, and a judge decides whether to continue"></canvas></figure>
-      <p><strong>What I found intuitive:</strong> structure beat coordination. Their first designs used shared locks and no hierarchy, and the agents became risk-averse. Each cycle also starts fresh, which builds a handoff into the loop.</p>
+      <p><strong>What I found intuitive:</strong> I really like the way they iterated from shared locks and no hierarchy to each cycle starting fresh, then handing it off to the loop.</p>
       <p><strong>What could improve:</strong> weeks is the ceiling, because the promise is "finish this build," not "keep this true." There's no intent that outlives the project, and nothing is reconciled against anything outside the repo.</p>
 
       <h3>replit missions: a swarm with an agreement</h3>
