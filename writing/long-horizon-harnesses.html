@@ -233,7 +233,7 @@
       <h3>anthropic's long-running harness</h3>
       <p>Anthropic already has <a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents" target="_blank" rel="noopener">an article</a> about how they're currently approaching this: "each new session begins with no memory of what came before." An initializer agent writes a progress log and a feature list, all marked "failing", and each later session works on one feature and leaves notes for the next.</p>
       <figure class="dg reveal"><canvas data-diagram="c3_features" data-h="170" role="img" aria-label="a feature list where each fresh session flips one feature from failing to passing"></canvas></figure>
-      <p><strong>What I found intuitive:</strong> the feature list is a contract the model can't quietly rewrite. Each session can only flip a feature from "failing" to "passes", and they chose JSON over Markdown because the model was less likely to overwrite it.</p>
+      <p><strong>What I found intuitive:</strong> the feature list is a contract the model can't rewrite without you knowing. Each session can only mark a feature as failing or passing, and choosing JSON over Markdown was specific to how their model behaved.</p>
       <p><strong>What could improve:</strong> there's no heartbeat or judgment layer. It runs when someone starts it and ends when the project is done. Add those two and the same harness could keep a codebase healthy for a year, instead of only running when someone remembers to start it.</p>
 
       <h3>cursor: hundreds of agents for weeks</h3>
