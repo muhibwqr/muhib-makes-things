@@ -15,6 +15,15 @@
     <article class="content post projects">
       <ul class="proj-grid">
         <li class="proj-card">
+          <a class="proj-row" href="/writing/long-horizon-harnesses.html"><strong>long horizon harnesses</strong><span>keeping an agent's promise true for months</span><em class="proj-date">nov 2026</em></a>
+          <div class="proj-card-frame"><canvas class="proj-card-media lhh-fish" role="img" aria-label="goldfish swimming, drawn as gold pixels"></canvas><video class="lhh-fish-src" src="/photos/goldfish.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></video>
+            <div class="proj-ov">
+              <div class="proj-ov-text"><strong>long horizon harnesses</strong><span>keeping an agent's promise true for months</span><em class="proj-date">nov 2026</em></div>
+              <a class="proj-pill" href="/writing/long-horizon-harnesses.html">writeup →</a>
+            </div>
+          </div>
+        </li>
+        <li class="proj-card">
           <a class="proj-row" href="/writing/gpt2-latex.html"><strong>gpt-2 in latex</strong><span>all 124M parameters running inside pdflatex. every compile writes one more word</span><em class="proj-date">nov 2026</em></a>
           <div class="proj-card-frame"><video class="proj-card-media" src="/gpt2/compiles.mp4" autoplay muted loop playsinline preload="metadata"></video>
             <div class="proj-ctrls"><button class="proj-pause" type="button">pause</button><button class="proj-mute" type="button">unmute</button></div>
@@ -90,5 +99,35 @@
   </div>
 
   <script type="module" src="/site.js"></script>
+  <script type="module">
+    const cv = document.querySelector(".lhh-fish"), v = document.querySelector(".lhh-fish-src");
+    if (cv && v) {
+      const ctx = cv.getContext("2d"), sc = document.createElement("canvas"), sx = sc.getContext("2d", { willReadFrequently: true });
+      const P = 6, C = 4.5;
+      let cols = 0, rows = 0, dpr = 1, w = 0, h = 0, on = false, raf = 0;
+      const size = () => {
+        const r = cv.parentElement.getBoundingClientRect(); w = r.width; h = r.height;
+        dpr = Math.min(devicePixelRatio || 1, 2); cv.width = w * dpr; cv.height = h * dpr;
+        cols = Math.ceil(w / P); rows = Math.ceil(h / P); sc.width = cols; sc.height = rows;
+      };
+      const draw = () => {
+        if (v.readyState >= 2 && cols) {
+          const vw = v.videoWidth, vh = v.videoHeight, s = Math.max(cols / vw, rows / vh), cw = cols / s, ch = rows / s;
+          sx.drawImage(v, (vw - cw) / 2, (vh - ch) / 2, cw, ch, 0, 0, cols, rows);
+          const px = sx.getImageData(0, 0, cols, rows).data, L = new Float32Array(cols * rows); let lo = 1, hi = 0;
+          for (let i = 0; i < L.length; i++) { const x = (0.2126 * px[i * 4] + 0.7152 * px[i * 4 + 1] + 0.0722 * px[i * 4 + 2]) / 255; L[i] = x; lo = Math.min(lo, x); hi = Math.max(hi, x); }
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = "#1e1e20"; ctx.fillRect(0, 0, w, h);
+          for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+            const a = Math.pow(Math.max(0, (L[r * cols + c] - lo) / Math.max(hi - lo, 1e-3)), 1.6);
+            ctx.fillStyle = "rgba(255,255,255,0.07)"; ctx.fillRect(c * P, r * P, C, C);
+            ctx.fillStyle = `rgba(255,${(150 + 70 * a) | 0},${(40 + 60 * a * a) | 0},${(a * 0.98).toFixed(3)})`; ctx.fillRect(c * P, r * P, C, C);
+          }
+        }
+        raf = on ? requestAnimationFrame(draw) : 0;
+      };
+      size(); new ResizeObserver(size).observe(cv.parentElement);
+      new IntersectionObserver(([e]) => { on = e.isIntersecting; on ? v.play().catch(() => {}) : v.pause(); if (on && !raf) raf = requestAnimationFrame(draw); }).observe(cv);
+    }
+  </script>
 </body>
 </html>
